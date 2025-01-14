@@ -1,0 +1,8 @@
+{
+  "name": "hwptoolkit",
+  "description": "Tooling for building sites with headless WordPress",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
