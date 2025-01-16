@@ -1,0 +1,15 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async rewrites() {
+    return [
+      <% routeMappings.forEach(function(mapping, index) { %>
+        {
+          source: '<%= mapping.route %>',
+          destination: '<%= mapping.directory %>',
+        }<% if (index < routeMappings.length - 1) { %>,<% } %>
+      <% }); %>
+    ];
+  },
+};
+
+export default nextConfig;

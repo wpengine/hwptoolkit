@@ -4,3 +4,8 @@ node_modules/
 ## env vars
 .env*
 !.env.*.example
+
+
+## Sample files
+sample.json
+tmp/*

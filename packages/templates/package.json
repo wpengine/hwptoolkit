@@ -1,0 +1,22 @@
+{
+  "name": "hwptoolkit-templates",
+  "version": "0.0.1-poc",
+  "description": "A package that provides tools for Headless WordPress developers to generate routing and templates for their application.",
+  "main": "src/index.js",
+  "scripts": {
+    "route-create-mapping": "node src/index.js hwptoolkit:template:route:create-mapping"
+  },
+  "keywords": [
+    "headless",
+    "wordpress",
+    "routing",
+    "templates"
+  ],
+  "author": "HWP Toolkit Team",
+  "license": "MIT",
+  "dependencies": {
+    "@inquirer/prompts": "^7.2.3",
+    "commander": "^13.0.0",
+    "ejs": "^3.1.10"
+  }
+}
