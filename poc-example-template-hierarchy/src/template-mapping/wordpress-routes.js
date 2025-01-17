@@ -1,0 +1,91 @@
+export const wordPressRoutes = {
+    "/": {
+      "template": "home",
+      "type": "page",
+    },
+    "/blog": {
+      "template": "home",
+      "post_type": "page",
+      "slug": "/blog",
+      "id": 1
+    },
+    "/about-us": {
+      "template": "page",
+      "post_type": "page",
+      "slug": "about-us",
+      "id": 7
+    },
+    "/contact-us": {
+      "template": "page",
+      "post_type": "page",
+      "slug": "contact-us",
+      "id": 8
+    },
+    "/latest-news-jan-2025": {
+      "template": "blog_post",
+      "post_type": "post",
+      "slug": "latest-news-jan-2025",
+      "id": 1
+    },
+    "/category/news": {
+      "template": "category_archive",
+      "type": "category",
+      "slug": "news",
+      "id": 1
+    },
+    "/category/wordpress": {
+      "template": "category_archive",
+      "type": "category",
+      "slug": "wordpress",
+      "id": 2
+    },
+    "/tag/wpengine": {
+      "template": "tag_archive",
+      "type": "tag",
+      "slug": "wpengine",
+      "id": 3
+    },
+    "/tag/hosting": {
+      "template": "tag_archive",
+      "type": "tag",
+      "slug": "hosting",
+      "id": 3
+    },
+    "/movies": {
+      "template": "custom_post_type_archive",
+      "type": "movie",
+      "slug": "movies"
+    },
+    "/movie/fellowship-of-the-ring": {
+      "template": "custom_post",
+      "post_type": "movie",
+      "slug": "fellowship-of-the-ring",
+      "id": 5
+    },
+    "/movie/two-towers": {
+      "template": "custom_post",
+      "post_type": "movie",
+      "slug": "two-towers",
+      "id": 6
+    },
+    "/movie/return-of-the-king": {
+      "template": "custom_post",
+      "post_type": "movie",
+      "slug": "return-of-the-king",
+      "id": 7
+    },
+    "/author/wpengine": {
+      "template": "author_archive",
+      "type": "author",
+      "slug": "wpengine",
+      "id": 10,
+      "nicename": "wpe"
+    },
+    "/author/hwptoolkit": {
+      "template": "author_archive",
+      "type": "author",
+      "slug": "hwptoolkit",
+      "id": 10,
+      "nicename": "headless-oss-team"
+    }
+  }
