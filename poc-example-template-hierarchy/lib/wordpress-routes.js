@@ -39,6 +39,12 @@ export const wordPressRoutes = {
       "slug": "wordpress",
       "id": 2
     },
+    "/category/faustjs": {
+      "template": "category_archive",
+      "type": "category",
+      "slug": "faustjs",
+      "id": 22
+    },
     "/tag/wpengine": {
       "template": "tag_archive",
       "type": "tag",

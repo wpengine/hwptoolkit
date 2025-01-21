@@ -1,8 +1,6 @@
 import { templateHierarchy } from './template-hierarchy.js';
-import { wordPressRoutes } from './wordpress-routes.js';
 import fs from 'fs';
 import path from 'path';
-
 
 /**
  * This does the following
@@ -15,7 +13,7 @@ import path from 'path';
  * This is then used in next.config.mjs for the dynamic routes
  * It could also be used in middleware.js too as it would bypass the file system but there is no ISR cache
  */
-function generateTemplateMappings(availablePaths = '', subDirectory = '/') {
+export function generateRouteMappings(wordPressRoutes, availablePaths = '', subDirectory = '/') {
     const mappings = [];
 
     for (const [route, routeData] of Object.entries(wordPressRoutes)) {
@@ -24,18 +22,14 @@ function generateTemplateMappings(availablePaths = '', subDirectory = '/') {
 
         const template = findAvailableTemplate(availableTemplates, availablePaths, routeData);
 
-        // Update as needed to match any framework rewrites
-        mappings.push({
-            source: route,
-            destination: `${subDirectory}${template}`
-        });
+        mappings.push({ [route]: `${subDirectory}${template}` });
     }
 
     return mappings;
 }
 
 
-function getAllAvailablePaths(dir, fileName = '', parentPath = '') {
+export function getAllAvailablePaths(dir, fileName = '', parentPath = '') {
     let directories = [];
     const files = fs.readdirSync(dir);
 
@@ -63,7 +57,7 @@ function getAllAvailablePaths(dir, fileName = '', parentPath = '') {
  * @param {Array} routeData 
  * @returns string
  */
-function findAvailableTemplate(availableTemplates, availablePaths, routeData) {
+export function findAvailableTemplate(availableTemplates, availablePaths, routeData) {
     const routeDataKeys = Object.keys(routeData);
 
     for (const template of availableTemplates) {
@@ -84,11 +78,6 @@ function findAvailableTemplate(availableTemplates, availablePaths, routeData) {
     return 'index';
 }
 
-const availablePaths = getAllAvailablePaths('./app//wordpress', 'page.js');
-const templateMappings = generateTemplateMappings(availablePaths, '/wordpress/');
-console.log('Available Paths:', availablePaths);
-console.log('TemplateMappings:', templateMappings);
-
-fs.writeFileSync('./template-mappings.json', JSON.stringify(templateMappings, null, 2));
-
-console.info('Template mappings generated successfully');
+export function writeRouteMappingsToFile(routeMappings, fileName) {
+    fs.writeFileSync(fileName, JSON.stringify(routeMappings, null, 2));
+}

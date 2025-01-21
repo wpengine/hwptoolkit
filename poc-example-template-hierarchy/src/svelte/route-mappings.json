@@ -1,0 +1,50 @@
+[
+  {
+    "/": "/wordpress/index"
+  },
+  {
+    "/blog": "/wordpress/index"
+  },
+  {
+    "/about-us": "/wordpress/index"
+  },
+  {
+    "/contact-us": "/wordpress/index"
+  },
+  {
+    "/latest-news-jan-2025": "/wordpress/index"
+  },
+  {
+    "/category/news": "/wordpress/category"
+  },
+  {
+    "/category/wordpress": "/wordpress/category"
+  },
+  {
+    "/category/faustjs": "/wordpress/category/faustjs"
+  },
+  {
+    "/tag/wpengine": "/wordpress/index"
+  },
+  {
+    "/tag/hosting": "/wordpress/index"
+  },
+  {
+    "/movies": "/wordpress/index"
+  },
+  {
+    "/movie/fellowship-of-the-ring": "/wordpress/index"
+  },
+  {
+    "/movie/two-towers": "/wordpress/index"
+  },
+  {
+    "/movie/return-of-the-king": "/wordpress/index"
+  },
+  {
+    "/author/wpengine": "/wordpress/index"
+  },
+  {
+    "/author/hwptoolkit": "/wordpress/index"
+  }
+]
