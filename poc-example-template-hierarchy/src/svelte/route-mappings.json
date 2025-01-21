@@ -6,45 +6,75 @@
     "/blog": "/wordpress/index"
   },
   {
-    "/about-us": "/wordpress/index"
+    "/about-us": "/wordpress/singular"
   },
   {
-    "/contact-us": "/wordpress/index"
+    "/contact-us": "/wordpress/singular"
   },
   {
-    "/latest-news-jan-2025": "/wordpress/index"
+    "/latest-news-jan-2025": "/wordpress/singular"
   },
   {
-    "/category/news": "/wordpress/category"
+    "/category/news": "/wordpress/category/news"
   },
   {
     "/category/wordpress": "/wordpress/category"
   },
   {
-    "/category/faustjs": "/wordpress/category/faustjs"
+    "/category/faustjs": "/wordpress/category"
   },
   {
-    "/tag/wpengine": "/wordpress/index"
+    "/tag/wpengine": "/wordpress/archive"
   },
   {
-    "/tag/hosting": "/wordpress/index"
+    "/tag/hosting": "/wordpress/archive"
   },
   {
-    "/movies": "/wordpress/index"
+    "/movies": "/wordpress/archive"
   },
   {
-    "/movie/fellowship-of-the-ring": "/wordpress/index"
+    "/movie/fellowship-of-the-ring": "/wordpress/singular"
   },
   {
-    "/movie/two-towers": "/wordpress/index"
+    "/movie/two-towers": "/wordpress/singular"
   },
   {
-    "/movie/return-of-the-king": "/wordpress/index"
+    "/movie/return-of-the-king": "/wordpress/singular"
   },
   {
-    "/author/wpengine": "/wordpress/index"
+    "/author/wpengine": "/wordpress/archive"
   },
   {
-    "/author/hwptoolkit": "/wordpress/index"
+    "/author/hwptoolkit": "/wordpress/archive"
+  },
+  {
+    "/our-brands": "/wordpress/site2/index"
+  },
+  {
+    "/brands": "/wordpress/site2/index"
+  },
+  {
+    "/about-our-brands": "/wordpress/site2/index"
+  },
+  {
+    "/make-enquiry": "/wordpress/site2/index"
+  },
+  {
+    "/brands/latest-brands-jan-2025": "/wordpress/site2/index"
+  },
+  {
+    "/category/health": "/wordpress/site2/category"
+  },
+  {
+    "/category/homeware": "/wordpress/site2/category"
+  },
+  {
+    "/category/faustjs": "/wordpress/site2/category"
+  },
+  {
+    "/tag/new": "/wordpress/site2/index"
+  },
+  {
+    "/tag/cushions": "/wordpress/site2/index"
   }
 ]

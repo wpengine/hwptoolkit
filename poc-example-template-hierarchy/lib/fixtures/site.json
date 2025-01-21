@@ -1,12 +1,12 @@
-export const wordPressRoutes = {
+{
     "/": {
       "template": "home",
-      "type": "page",
+      "type": "page"
     },
     "/blog": {
       "template": "home",
       "post_type": "page",
-      "slug": "/blog",
+      "slug": "blog",
       "id": 1
     },
     "/about-us": {

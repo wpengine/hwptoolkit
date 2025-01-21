@@ -1,0 +1,60 @@
+{
+    "/our-brands": {
+      "template": "home",
+      "type": "page"
+    },
+    "/brands": {
+      "template": "home",
+      "post_type": "page",
+      "slug": "brands",
+      "id": 1
+    },
+    "/about-our-brands": {
+      "template": "page",
+      "post_type": "page",
+      "slug": "about-our-brands",
+      "id": 7
+    },
+    "/make-enquiry": {
+      "template": "page",
+      "post_type": "page",
+      "slug": "make-enquiry",
+      "id": 8
+    },
+    "/brands/latest-brands-jan-2025": {
+      "template": "blog_post",
+      "post_type": "post",
+      "slug": "latest-brands-jan-2025",
+      "id": 1
+    },
+    "/category/health": {
+      "template": "category_archive",
+      "type": "category",
+      "slug": "health",
+      "id": 1
+    },
+    "/category/homeware": {
+      "template": "category_archive",
+      "type": "category",
+      "slug": "homeware",
+      "id": 2
+    },
+    "/category/faustjs": {
+      "template": "category_archive",
+      "type": "category",
+      "slug": "faustjs",
+      "id": 22
+    },
+    "/tag/new": {
+      "template": "tag_archive",
+      "type": "tag",
+      "slug": "new",
+      "id": 3
+    },
+    "/tag/cushions": {
+      "template": "tag_archive",
+      "type": "tag",
+      "slug": "cushions",
+      "id": 3
+    }
+  }

@@ -1,4 +1,8 @@
-import { wordPressRoutes } from '../lib/wordpress-routes.js';
+import fs from 'fs';
+
+
+// Should be an API endpoint
+const wordPressRoutes = JSON.parse(fs.readFileSync('../lib/fixtures/site.json', 'utf-8'));
 import { generateRouteMappings, getAllAvailablePaths, writeRouteMappingsToFile } from '../lib/route-generate.js';
 
 const availablePaths = getAllAvailablePaths('./src/routes/wordpress', '+page.svelte');
