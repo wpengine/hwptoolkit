@@ -13,10 +13,10 @@ Command-line interface for the Headless WordPress Toolkit.
 
 ```bash
 # Check WordPress plugin status
-npx @hwp/cli status
+pnpm dlx @hwp/cli status
 
 # List installed HWP plugins
-npx @hwp/cli plugins
+pnpm dlx @hwp/cli plugins
 ```
 
 ## Development
@@ -35,6 +35,7 @@ pnpm clean
 ```
 
 The WordPress environment will automatically:
+
 1. Start at http://localhost:8889
 2. Install and activate the hwp-cli plugin
 3. Enable WP_DEBUG for development
