@@ -1,0 +1,25 @@
+{
+  "name": "@hwp/cli",
+  "version": "1.0.0",
+  "description": "Headless WordPress Toolkit CLI",
+  "type": "module",
+  "exports": "./src/index.js",
+  "bin": {
+    "hwp": "./bin/hwp.js"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "dev": "wp-env start",
+    "stop": "wp-env stop",
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.4.1"
+  },
+  "devDependencies": {
+    "@wordpress/env": "^8.13.0",
+    "jest": "^29.7.0"
+  }
+}
