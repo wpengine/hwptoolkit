@@ -10,8 +10,7 @@
     "clean": "bash ./scripts/clean.sh",
     "dev": "bash ./scripts/dev.sh",
     "stop": "pnpm --filter '*' stop",
-    "test:e2e": "playwright test -c packages/test-e2e",
-    "build": "pnpm -r build"
+    "test:e2e": "playwright test -c packages/test-e2e"
   },
   "engines": {
     "node": ">=18",
