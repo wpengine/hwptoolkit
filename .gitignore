@@ -1,6 +1,24 @@
-## Node
-node_modules/
+# Dependencies
+node_modules
+.pnpm-store
 
-## env vars
-.env*
-!.env.*.example
+# Build outputs
+dist
+
+# Testing
+coverage
+playwright-report
+test-results/
+
+# WordPress
+.wp-env
+.wp-env.override.json
+
+# Environment
+.env
+.env.local
+
+# IDE and OS
+.DS_Store
+.idea
+.vscode

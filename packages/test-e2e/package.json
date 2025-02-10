@@ -1,0 +1,15 @@
+{
+  "name": "@hwp/test-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.41.1",
+    "@hwp/cli": "workspace:*",
+    "strip-ansi": "^7.1.0"
+  }
+}

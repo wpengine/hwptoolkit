@@ -1,0 +1,18 @@
+{
+  "core": null,
+  "plugins": [
+    "../../plugins/hwp-cli"
+  ],
+  "env": {
+    "development": {
+      "port": 8889
+    },
+    "tests": {
+      "port": 8890
+    }
+  },
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": true
+  }
+}

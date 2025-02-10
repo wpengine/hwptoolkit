@@ -1,0 +1,12 @@
+{
+  "core": "WordPress/WordPress#master",
+  "plugins": [
+    "../../plugins/hwp-cli"
+  ],
+  "port": 8889,
+  "testsPort": 8890,
+  "config": {
+    "WP_DEBUG": false,
+    "SCRIPT_DEBUG": false
+  }
+}
