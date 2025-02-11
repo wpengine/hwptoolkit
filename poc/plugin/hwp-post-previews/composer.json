@@ -1,0 +1,16 @@
+{
+  "name": "wpengine/hwp-post-previews",
+  "description": "Plugin for headless post previews.",
+  "type": "wordpress-plugin",
+  "prefer-stable": true,
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "HWP\\PostPreviews\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "firebase/php-jwt": "^6.11"
+  }
+}
