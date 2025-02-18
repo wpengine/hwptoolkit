@@ -1,4 +1,4 @@
-# @hwp/cli
+# @placeholder/cli
 
 Command-line interface for the Headless WordPress Toolkit.
 
@@ -13,10 +13,10 @@ Command-line interface for the Headless WordPress Toolkit.
 
 ```bash
 # Check WordPress plugin status
-pnpm dlx @hwp/cli status
+pnpm dlx @placeholder/cli status
 
 # List installed HWP plugins
-pnpm dlx @hwp/cli plugins
+pnpm dlx @placeholder/cli plugins
 ```
 
 ## Development

@@ -6,6 +6,6 @@
     "plugins": "hwp plugins"
   },
   "dependencies": {
-    "@hwp/cli": "workspace:*"
+    "@placeholder/cli": "workspace:*"
   }
 }

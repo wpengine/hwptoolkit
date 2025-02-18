@@ -11,7 +11,7 @@
  * Domain Path: /languages
  * Requires PHP: 7.4
  * Requires at least: 6.0
- * NPM Package: @hwp/cli
+ * NPM Package: @placeholder/cli
  * Repository: https://github.com/hwp/cli
  *
  * @package HWP\CLI

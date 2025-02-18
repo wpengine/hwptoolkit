@@ -4,4 +4,4 @@ NPM packages for the Headless WordPress Toolkit. All packages use vanilla ES Mod
 
 ## Packages
 
-- `@hwp/cli`
+- `@placeholder/cli`
