@@ -1,6 +1,6 @@
 {
   "name": "@hwp/cli",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Headless WordPress Toolkit CLI",
   "type": "module",
   "exports": "./src/index.js",
