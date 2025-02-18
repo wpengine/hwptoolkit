@@ -1,0 +1,11 @@
+{
+  "name": "hwp-cli-example",
+  "private": true,
+  "scripts": {
+    "status": "hwp status",
+    "plugins": "hwp plugins"
+  },
+  "dependencies": {
+    "@placeholder/cli": "workspace:*"
+  }
+}

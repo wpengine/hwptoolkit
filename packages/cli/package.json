@@ -1,0 +1,22 @@
+{
+  "name": "@placeholder/cli",
+  "version": "0.0.1",
+  "description": "Headless WordPress Toolkit CLI",
+  "type": "module",
+  "exports": "./src/index.js",
+  "bin": {
+    "hwp": "./bin/hwp.js"
+  },
+  "scripts": {
+    "dev": "wp-env start",
+    "stop": "wp-env stop"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.4.1"
+  },
+  "devDependencies": {
+    "@wordpress/env": "^8.13.0"
+  }
+}

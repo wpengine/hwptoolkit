@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Get the package name from the first argument, default to "cli" if not provided
+PACKAGE=${1:-cli}
+
+# Clean up first
+bash ./scripts/clean.sh
+
+# Run the dev command for the specified package
+echo "Starting development environment for @placeholder/$PACKAGE..."
+pnpm --filter "@placeholder/$PACKAGE" dev

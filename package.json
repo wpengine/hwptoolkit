@@ -1,8 +1,27 @@
 {
-  "name": "hwptoolkit",
-  "description": "Tooling for building sites with headless WordPress",
+  "name": "@placeholder/toolkit",
+  "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "packages/*",
+    "plugins/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "bash ./scripts/clean.sh",
+    "dev": "bash ./scripts/dev.sh",
+    "stop": "pnpm --filter '*' stop"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@wordpress/env": "^8.0.0",
+    "rimraf": "^5.0.5"
   }
 }
