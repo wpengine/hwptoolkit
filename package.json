@@ -9,8 +9,7 @@
   "scripts": {
     "clean": "bash ./scripts/clean.sh",
     "dev": "bash ./scripts/dev.sh",
-    "stop": "pnpm --filter '*' stop",
-    "test:e2e": "playwright test -c packages/test-e2e"
+    "stop": "pnpm --filter '*' stop"
   },
   "engines": {
     "node": ">=18",

@@ -37,18 +37,6 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.10)
 
-  packages/test-e2e:
-    devDependencies:
-      '@hwp/cli':
-        specifier: workspace:*
-        version: link:../cli
-      '@playwright/test':
-        specifier: ^1.41.1
-        version: 1.50.0
-      strip-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
-
 packages:
 
   '@ampproject/remapping@2.3.0':
