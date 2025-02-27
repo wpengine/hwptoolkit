@@ -1,8 +1,8 @@
-# What is Headless Authentication?
+# What is headless authentication?
 
 Headless authentication refers to the process of verifying user identity and managing access control in a decoupled architecture where the content management system (WordPress) and the user-facing frontend are separate systems. Unlike traditional WordPress sites where authentication happens within a single application, headless authentication must work across systems, that may be located accross different regions.
 
-## Why authentication changes in Headless Architectures
+## Why authentication changes in headless architectures
 
 In a traditional WordPress setup, authentication follows a straightforward flow:
 
@@ -22,7 +22,7 @@ However, in a headless architecture:
 
 This fundamental change requires completely different authentication strategies. 
 
-## Major Authentication Approaches for Headless WordPress
+## Major authentication approaches for headless wordPress
 Here are the following options regarding authentication from remote systems:
 
 1. **Application Passwords**
@@ -53,16 +53,16 @@ Basic Credentials Authentication (often called "Basic Auth") is one of the simpl
 
 With all the above options available, we want to understand the security caveats when building web applications that authenticate with WordPress in some way.
 
-## Security Considerations
+## Security considerations
 When implementing authentication in a headless WordPress setup, several security considerations deserve special attention:
 
-### Token Storage
+### Token storage
 How and where you store authentication tokens significantly impacts security. Storing tokens in `localStorage` could make them vulnerable to XSS attacks, while HTTP-only cookies provide better protection but require additional CORS configuration.
 
 ### CORS (Cross-Origin Resource Sharing)
 Since your frontend and WordPress backend operate on different domains, proper CORS configuration is essential. You'll need to configure WordPress to accept requests from your frontend domain while still maintaining security boundaries.
 
-### Token Expiration and Refresh Strategies
+### Token expiration and refresh strategies
 Implementing token expiration reduces the window of opportunity for token misuse, but requires strategies for refreshing tokens without disrupting the user experience. A common pattern involves:
 
 1. Using short-lived access tokens for API requests
