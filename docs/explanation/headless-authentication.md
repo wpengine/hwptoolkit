@@ -26,7 +26,7 @@ This fundamental change requires completely different authentication strategies.
 Here are the following options regarding authentication from remote systems:
 
 1. **Application Passwords**
-WordPress 5.6 introduced Application Passwords as a native authentication method for API access. Here are some of its features:
+WordPress 5.6 introduced [Application Passwords](https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/) as a native authentication method for API access. Here are some of its features:
 
 * Users generate application-specific passwords through their WordPress profile
 * These passwords are used exclusively for API authentication, not for WordPress login
