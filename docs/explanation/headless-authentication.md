@@ -79,7 +79,7 @@ Therefore when implementing an authentication framework with headless WordPress,
 Based on the above, we recommend the following solutions.
 
 ### Server-Side: Dedicated headless authentication plugin
-We suggest using a dedicated headless authentication plugin like **WPGraphQL Headless Login** that specifically caters to the needs of decoupled WordPress architectures. This dedicated plugin ensures that your server-side authentication is robust and properly integrated with WordPress's security model, while offering the flexibility needed for headless implementations.
+We suggest using a dedicated headless authentication plugin like [**WPGraphQL Headless Login**](https://github.com/AxeWP/wp-graphql-headless-login) that specifically caters to the needs of decoupled WordPress architectures. This dedicated plugin ensures that your server-side authentication is robust and properly integrated with WordPress's security model, while offering the flexibility needed for headless implementations.
 
 ### Client-Side: Framework-agnostic authentication libraries
 On the client side, we recommend using thin wrappers or extensions built on top of established authentication frameworks like Next-Auth, or Auth.js. These thin wrappers should handle WordPress-specific authentication details while delegating most functionality to the underlying authentication framework. This makes it easier to:
