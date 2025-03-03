@@ -22,7 +22,7 @@ However, in a headless architecture:
 
 This fundamental change requires completely different authentication strategies. 
 
-## Major authentication approaches for headless wordPress
+## Major authentication approaches for headless WordPress
 Here are the following options regarding authentication from remote systems:
 
 1. **Application Passwords**
