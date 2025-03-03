@@ -17,7 +17,7 @@ However, in a headless architecture:
 
 * WordPress serves as a content API at one domain (e.g., cms.example.com)
 * The frontend application lives at another domain (e.g., example.com)
-* Browser security mechanisms prevent cookies from automatically traveling between these domains (CORS)
+* Browser security mechanisms prevent cookies from automatically traveling between these domains — see [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) for more details.
 * API requests need explicit authentication credentials with each request
 
 This fundamental change requires completely different authentication strategies. 
