@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export function BlogPost({ post }) {
+export function BlogPostItem({ post }) {
   const { title, date, excerpt, uri } = post;
   const postUrl = "blog" + uri;
 
