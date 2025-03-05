@@ -1,17 +1,13 @@
 import "@/styles/globals.css";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-
-const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
-
-const client = new ApolloClient({
-  uri: WORDPRESS_URL + "/graphql",
-  cache: new InMemoryCache(),
-});
+import { client } from "@/lib/client";
+import { ApolloProvider } from "@apollo/client";
 
 export default function App({ Component, pageProps }) {
   return (
     <ApolloProvider client={client}>
-      <Component {...pageProps} />
+      <main className='bg-stone-100 text-gray-800 p-16 min-h-screen'>
+        <Component {...pageProps} />
+      </main>
     </ApolloProvider>
   );
 }
