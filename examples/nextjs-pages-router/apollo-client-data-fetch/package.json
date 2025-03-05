@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.1",
+    "debounce": "^2.2.0",
     "graphql": "^16.10.0",
     "next": "15.2.0",
     "react": "^19.0.0",
