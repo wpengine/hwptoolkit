@@ -1,0 +1,39 @@
+# Overview
+
+This is an example project showing how to setup a WordPress headless site with [Next.js app router](https://nextjs.org/docs/app) using [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
+
+
+# How to run the example
+
+We use [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) for running local WordPress setups
+
+@TODO - Add link to example README.md
+
+
+To setup the WordPress instance you need to:
+
+```bash
+npm ci
+cd examples/client/single-site-setup/nextjs-app-router-fetch-api/
+pnpm example:build
+```
+
+You can then view the frontend of your application at `http://localhost:8888/`
+The WordPress backend can be viewed at `http://localhost:8888/wp-admin/` and username and password is `admin` and `password`.
+
+
+
+## Other scripts
+
+
+| Script              | Description                                                   |
+|----------------------|---------------------------------------------------------------|
+| `example:start`      | Starts the example application                                |
+| `example:stop`       | Stops the example application                                 |
+| `example:restart`    | Restarts the example application                              |
+| `example:prune`      | Deletes the example application and re-builds the application |
+| `example:db:import`  | Imports the database from `db/database.sql`                   |
+| `example:db:export`  | Exports the database to `db/database.sql`                     |
+
+
+> **Note** You can also run wp-env by running `pnpm wp-env [command] [arguments]`
