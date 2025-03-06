@@ -1,37 +1,32 @@
-import Single from "@/components/Single";
+import Page from "@/components/Page";
 import { client } from "@/lib/client";
 import { gql } from "@apollo/client";
-
-const PAGE_URI = "/sample-page";
 
 const GET_PAGE = gql`
   query GetPage($id: ID!) {
     page(id: $id, idType: URI) {
-      content
-      id
-      uri
-      title
-      date
-      author {
-        node {
-          name
-        }
-      }
+      ...Page
     }
   }
 `;
 
 export default function GetPageStatic({ data }) {
-  return <Single data={data?.page} />;
+  return <Page data={data?.page} />;
 }
 
 export async function getStaticProps() {
   const { data } = await client.query({
     query: GET_PAGE,
     variables: {
-      id: PAGE_URI,
+      id: process.env.NEXT_PRIVACY_POLICY_URI,
     },
   });
+
+  if (!data?.page) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
