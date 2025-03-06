@@ -7,19 +7,6 @@ import { sha256 } from "crypto-hash";
 // Define GraphQL fragments for reuse in queries and mutations
 // More info: https://www.apollographql.com/docs/react/data/fragments/
 const fragments = gql`
-  fragment PostFragment on Post {
-    id
-    databaseId
-    uri
-    title
-    date
-    author {
-      node {
-        name
-      }
-    }
-  }
-
   fragment Page on Page {
     title
     content
@@ -40,13 +27,6 @@ const fragments = gql`
         }
       }
     }
-    ...Author
-  }
-
-  fragment Comment on Comment {
-    id
-    content
-    date
     author {
       node {
         name
@@ -54,7 +34,10 @@ const fragments = gql`
     }
   }
 
-  fragment Author on NodeWithAuthor {
+  fragment Comment on Comment {
+    id
+    content
+    date
     author {
       node {
         name
