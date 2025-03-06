@@ -16,6 +16,7 @@
     "SAVEQUERIES": false
   },
   "mappings": {
-    "db": "./db"
+    "db": "./db",
+    "wp-content/uploads": "./uploads"
   }
 }
