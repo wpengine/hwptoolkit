@@ -1,8 +1,8 @@
 import { ApolloClient, gql, HttpLink, InMemoryCache } from "@apollo/client";
 import { createFragmentRegistry } from "@apollo/client/cache";
 import { relayStylePagination } from "@apollo/client/utilities";
-
-const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
+import { createPersistedQueryLink } from "@apollo/client/link/persisted-queries";
+import { sha256 } from "crypto-hash";
 
 const fragments = gql`
   fragment PostFragment on Post {
@@ -61,12 +61,15 @@ const fragments = gql`
   }
 `;
 
+const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
+
+const link = createPersistedQueryLink({ sha256 }).concat(
+  new HttpLink({ uri: WORDPRESS_URL + "/graphql", useGETForQueries: true })
+);
+
 export const client = new ApolloClient({
+  link,
   ssrMode: typeof window === "undefined",
-  link: new HttpLink({
-    uri: WORDPRESS_URL + "/graphql",
-    useGETForQueries: true,
-  }),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
