@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import Link from "next/link";
 
+// Defining a GraphQL query to fetch the blog title
 const GET_BLOG_TITLE = gql`
   query GetBlogTitle {
     allSettings {
@@ -10,7 +11,9 @@ const GET_BLOG_TITLE = gql`
 `;
 
 export default function Header() {
+  // Using the useQuery hook to execute the GraphQL query and get the data
   const { data } = useQuery(GET_BLOG_TITLE);
+  // Extracting the blog title from the fetched data
   const blogTitle = data?.allSettings?.generalSettingsTitle;
 
   return (
@@ -21,12 +24,12 @@ export default function Header() {
         </h1>
 
         <nav class='space-x-6'>
-          <a href='/' class='text-lg hover:underline'>
+          <Link href='/' class='text-lg hover:underline'>
             Home
-          </a>
-          <a href='/privacy-policy' class='text-lg hover:underline'>
+          </Link>
+          <Link href='/privacy-policy' class='text-lg hover:underline'>
             Privacy Policy
-          </a>
+          </Link>
         </nav>
       </div>
     </header>

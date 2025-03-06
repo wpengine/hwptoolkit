@@ -4,6 +4,7 @@ import { client } from "@/lib/client";
 import { gql, useLazyQuery } from "@apollo/client";
 import debounce from "debounce";
 
+// Define the GraphQL query to list blog posts
 const LIST_POSTS = gql`
   query ListPosts($after: String, $search: String = "") {
     posts(after: $after, first: 10, where: { search: $search }) {
@@ -25,14 +26,17 @@ const LIST_POSTS = gql`
 `;
 
 export default function Blog({ serverSideData }) {
+  // Use Apollo Client's useLazyQuery hook to fetch posts on demand
   const [getPosts, { data: clientSideData, fetchMore }] = useLazyQuery(LIST_POSTS, {
     fetchPolicy: "cache-and-network",
   });
 
+  // Use client-side data if available, otherwise fall back to server-side data
   const data = clientSideData ?? serverSideData;
 
   const { endCursor, hasNextPage } = data?.posts?.pageInfo ?? {};
 
+  // Handle search input with debouncing
   const handleSearch = (searchString) =>
     getPosts({
       variables: {
@@ -40,6 +44,7 @@ export default function Blog({ serverSideData }) {
       },
     });
 
+  // Load more posts when the "Load more" button is clicked
   const loadMore = () => fetchMore({ variables: { after: endCursor } });
 
   return (
@@ -52,6 +57,7 @@ export default function Blog({ serverSideData }) {
         return <BlogPostItem key={post.id} post={post} />;
       })}
 
+      {/* Only show the "Load more" button if there are more posts to fetch */}
       {hasNextPage && (
         <button
           onClick={loadMore}
@@ -64,6 +70,7 @@ export default function Blog({ serverSideData }) {
   );
 }
 
+// Fetch the initial list of posts at request time using getServerSideProps
 export async function getServerSideProps() {
   const { data } = await client.query({ query: LIST_POSTS });
 

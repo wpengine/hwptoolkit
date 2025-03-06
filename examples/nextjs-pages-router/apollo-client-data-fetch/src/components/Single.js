@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import CommentForm from "./CommentForm";
 import Comments from "./Comments";
 
+// GraphQL mutation to add a comment to a post
 const ADD_COMMENT_TO_POST = gql`
   mutation AddCommentToPostQuery($author: String!, $authorEmail: String!, $commentOn: Int!, $content: String! = "") {
     createComment(input: { author: $author, authorEmail: $authorEmail, commentOn: $commentOn, content: $content }) {
@@ -15,11 +16,12 @@ export default function Single({ data }) {
 
   const commentsList = comments?.edges;
 
+  // useMutation hook to create a function to add a comment and track its state
   const [addComment, { data: commentData, loading: addingComment, error: commentError }] = useMutation(
     ADD_COMMENT_TO_POST,
     {
-      errorPolicy: "all",
-      fetchPolicy: "no-cache",
+      errorPolicy: "all", // Handle errors gracefully
+      fetchPolicy: "no-cache", // Ensure the mutation result is not cached
     }
   );
 
