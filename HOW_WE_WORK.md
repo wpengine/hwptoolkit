@@ -7,7 +7,7 @@ We believe in transparent, collaborative development. These guidelines document 
 ### Issues & Discussions
 
 - Use **Issues** for bugs and features, **Discussions** for RFCs and support
-- Only Issues appear on our Project Board
+- Only Issues appear on our [Project Board](https://github.com/orgs/wpengine/projects/13)
 - Cross-reference PRs, issues, and discussions to maintain context
 
 ### Pull Requests
