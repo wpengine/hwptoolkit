@@ -1,0 +1,32 @@
+{
+  "name": "nextjs-app-router",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "example:build": "wp-env start && npm run example:db:import",
+    "example:start": "wp-env start",
+    "example:stop": "wp-env stop",
+    "example:restart": "wp-env start --update",
+    "example:prune": "wp-env destroy && npm run example:build",
+    "example:db:export": "wp-env run cli wp db export /var/www/html/db/database.sql",
+    "example:db:import": "wp-env run cli wp db import /var/www/html/db/database.sql"
+  },
+
+  "dependencies": {
+    "env:^10": "link:@wordpress/env:^10",
+    "next": "15.2.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.1",
+    "tailwindcss": "^4"
+  }
+}
