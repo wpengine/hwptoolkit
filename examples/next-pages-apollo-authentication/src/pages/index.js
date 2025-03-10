@@ -27,12 +27,9 @@ export default function Home() {
           {isLoading ? (
             <p>Loading...</p>
           ) : isAuthenticated ? (
-            <Link
-              href="/dashboard"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md"
-            >
-              Dashboard
-            </Link>
+            <button onClick={logout} className='bg-blue-600 text-white px-4 py-2 rounded-md leading-[normal]'>
+              Sign out
+            </button>
           ) : (
             <Link
               href="/login"
