@@ -75,7 +75,7 @@ export default function Home() {
               Authentication Tokens
             </h2>
             {tokens ? (
-              <div className="space-y-2">
+              <div className="space-y-2 break-words">
                 <p>
                   <strong>Auth Token:</strong> {tokens.authToken}
                 </p>
