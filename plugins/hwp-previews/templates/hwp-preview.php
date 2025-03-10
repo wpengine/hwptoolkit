@@ -11,6 +11,8 @@ $header_name = apply_filters( 'hwp_previews_header_name', '' ) ?: null;
 
 $preview_url = (string) get_query_var( Preview_Template_Resolver::HWP_PREVIEWS_IFRAME_PREVIEW_URL );
 
+var_dump($preview_url);
+
 do_action( 'hwp_previews_before_get_header' );
 
 get_header( $header_name, apply_filters( 'hwp_previews_header_args', [] ) );

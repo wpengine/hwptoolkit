@@ -136,7 +136,8 @@ class Plugin {
 			$this->enable_post_statuses_as_parent();
 		}
 
-		if ( $this->settings->get_setting( Headless_Preview_Settings::GENERATE_PREVIEW_LINKS, false ) ) {
+		// The preview url generation works only when the iframe preview disabled.
+		if ( ! $this->settings->get_setting( Headless_Preview_Settings::PREVIEW_IN_IFRAME, true ) ) {
 			$this->enable_generate_preview_url();
 		}
 
@@ -267,17 +268,32 @@ class Plugin {
 			return ''; // todo: maybe do something?
 		}
 
-		$token_auth  = $this->settings->get_setting( Headless_Preview_Settings::TOKEN_AUTH_ENABLED, true );
-		$draft_route = $this->settings->get_setting( Headless_Preview_Settings::DRAFT_ROUTE, '' );
+		$args = (array) apply_filters(
+			'hwp_preview_args',
+			$this->parameter_builder->build_preview_args( $post, $this->generate_token() ),
+			$post
+		);
 
-		$token = '';
-		if ( $this->settings->get_setting( Headless_Preview_Settings::GENERATE_PREVIEW_TOKEN, true ) ) {
-			$token = $this->token_generator->generate_token( $token_auth ? [ 'data' => [ 'user' => [ 'id' => get_current_user_id() ] ] ] : [], 'preview_url_nonce', 300 );
+		return $this->url_generator->generate_url(
+			$post,
+			$preview_url,
+			$args,
+			$this->settings->get_setting( Headless_Preview_Settings::DRAFT_ROUTE, '' )
+		);
+	}
+
+	private function generate_token(): string {
+		if (! $this->settings->get_setting( Headless_Preview_Settings::GENERATE_PREVIEW_TOKEN, true )) {
+			return '';
 		}
 
-		$args = (array) apply_filters( 'hwp_preview_args', $this->parameter_builder->build_preview_args( $post, $token ), $post );
-
-		return $this->url_generator->generate_url( $post, $preview_url, $args, $draft_route );
+		return $this->token_generator->generate_token(
+			$this->settings->get_setting( Headless_Preview_Settings::TOKEN_AUTH_ENABLED, true ) ?
+				[ 'data' => [ 'user' => [ 'id' => get_current_user_id() ] ] ] :
+				[],
+			'preview_url_nonce',
+			300
+		);
 	}
 
 	public function enable_rest_route_token_verification(): void {

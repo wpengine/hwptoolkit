@@ -50,7 +50,7 @@ class Token_REST_Controller implements Token_REST_Controller_Interface {
 			return new WP_REST_Response( [ 'error' => 'Body does not have valid parameters' ], 400 );
 		}
 
-		$token = (string) json_decode( (string) $request->get_param( self::TOKEN_PARAMETER ) );
+		$token = (string) $request->get_param( self::TOKEN_PARAMETER );
 
 		if ( ! $token ) {
 			return new WP_REST_Response( [ 'error' => 'A token is required' ], 400 );
@@ -58,9 +58,9 @@ class Token_REST_Controller implements Token_REST_Controller_Interface {
 
 		$success = $this->verifier->verify_token( $token, $this->nonce_action );
 
-//		if ( ! $success ) {
-//			return new WP_REST_Response( [ 'valid' => false, 'error' => 'The token is not valid.' ], 500 );
-//		}
+		if ( ! $success ) {
+			return new WP_REST_Response( [ 'valid' => false, 'error' => 'The token is not valid.' ], 500 );
+		}
 
 		return new WP_REST_Response( [ 'valid' => true, 'data' => [ 'success' => true ] ], 200 );
 	}

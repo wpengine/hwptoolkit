@@ -12,7 +12,6 @@ class Headless_Preview_Settings {
 	 */
 	const OPTION_NAME = 'headless_preview_settings';
 
-	public const GENERATE_PREVIEW_LINKS = 'generate_preview_links';
 	public const ENABLE_UNIQUE_POST_SLUG = 'enable_unique_post_slug';
 	public const ENABLE_POST_STATUSES_AS_PARENT = 'enable_post_statuses_as_parent';
 	public const PREVIEW_URL = 'preview_url';
@@ -30,7 +29,6 @@ class Headless_Preview_Settings {
 	 * Default settings
 	 */
 	private $defaults = [
-		self::GENERATE_PREVIEW_LINKS         => false,
 		self::PREVIEW_URL                    => 'http://localhost:3000',
 		self::ENABLE_UNIQUE_POST_SLUG        => true,
 		self::GENERATE_PREVIEW_TOKEN         => true,
@@ -107,10 +105,9 @@ class Headless_Preview_Settings {
 			'headless-preview'
 		);
 
-		// Authentication Settings Section
 		add_settings_section(
 			'auth_settings',
-			'Authentication Settings',
+			'Security Settings',
 			[ $this, 'render_auth_section' ],
 			'headless-preview'
 		);
@@ -154,15 +151,6 @@ class Headless_Preview_Settings {
 			[ $this, 'render_draft_route_field' ],
 			'headless-preview',
 			'general_settings'
-		);
-
-		// Preview Settings Fields
-		add_settings_field(
-			'generate_preview_links',
-			'Generate Preview Links',
-			[ $this, 'render_generate_preview_links_field' ],
-			'headless-preview',
-			'preview_settings'
 		);
 
 		add_settings_field(
@@ -293,24 +281,6 @@ class Headless_Preview_Settings {
 	}
 
 	/**
-	 * Render the Generate Preview Links field
-	 */
-	public function render_generate_preview_links_field() {
-		$value = isset( $this->settings['generate_preview_links'] ) ? $this->settings['generate_preview_links'] : false;
-		?>
-        <label>
-            <input type="checkbox"
-                   name="<?php echo self::OPTION_NAME; ?>[generate_preview_links]" <?php checked( $value, true ); ?> />
-            Enable this to replace default WordPress preview links with generated headless frontend preview links
-        </label>
-        <p class="description">
-            When enabled, WordPress's default preview links will be replaced with links to your headless frontend.
-            Should be disabled by default for compatibility with standard WordPress workflows.
-        </p>
-		<?php
-	}
-
-	/**
 	 * Render the Preview URL field
 	 */
 	public function render_preview_url_field() {
@@ -380,6 +350,7 @@ class Headless_Preview_Settings {
             When enabled, previews will be displayed in an iframe within the WordPress admin interface,
             rather than opening in a new tab. This disables preview link generation as it uses a custom template.
             Provides a more seamless editing experience within WordPress.
+            <strong>When enabled the Preview URL filtering for the WP builtin buttons won't work.</strong>
         </p>
 		<?php
 	}
@@ -448,7 +419,7 @@ class Headless_Preview_Settings {
                     <input type="text" name="<?php echo self::OPTION_NAME; ?>[preview_parameter_names][token]"
                            value="<?php echo esc_attr( $parameter_names['token'] ?? '' ); ?>"/>
                 </td>
-                <td>Authentication token parameter</td>
+                <td>Security token parameter</td>
             </tr>
             <tr>
                 <td>Post Slug</td>
@@ -657,7 +628,6 @@ class Headless_Preview_Settings {
 
 		// Boolean fields
 		$boolean_fields = [
-			'generate_preview_links',
 			'generate_preview_token',
 			'token_auth_enabled',
 			'preview_in_iframe',
