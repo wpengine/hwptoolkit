@@ -3,7 +3,7 @@
 
 # Overview
 
-This project is a complete example of a **headless WordPress site** powered by **Next.js App Router**, using the `fetch` API to retrieve content from the WordPress backend. It also includes a robust **local development environment** using `wp-env` and comes with built-in database management tools.
+This project is a complete example of a **headless WordPress site** powered by **Next.js App Router**, using the `fetch` API to retrieve content from the WordPress backend. It also includes a robust **local development environment** using [`wp-env`](https://www.npmjs.com/package/@wordpress/env) and comes with built-in database management tools.
 
 
 ## Installation
@@ -19,12 +19,12 @@ This project is a complete example of a **headless WordPress site** powered by *
 ```
 /
 ├── example-app/            # Next.js App Router project
-├── wp-env/                  # WordPress local environment setup
+├── wp-env/                 # WordPress local environment setup
 │   ├── wp-env.json
-│   ├── uploads/             # WordPress uploaded media directory for example application
-│   ├── db/                   # Example database export
-│   ├── tools/                # Adminer for accessing the database
-├── package.json             # Root scripts to control both systems
+│   ├── uploads/            # WordPress uploaded media directory for example application
+│   ├── db/                 # Example database export
+│   ├── tools/              # Adminer for accessing the database
+├── package.json            # Root scripts to control both systems
 ```
 
 ### Steps
@@ -35,11 +35,17 @@ This project is a complete example of a **headless WordPress site** powered by *
 4. Have Docker running `e.g. docker ps`
 5. Run `pnpm example:build` and this will unzip `wp-env/uploads`, startup [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/) and run Next.js application.
 
+Congratulations, WordPress should now be fully setup.
 
-You should now have WordPress installed and setup at `http://localhost:8888/wp-admin` and your frontend should be running at `http://localhost:3000/`
-The login details for WordPress is `admin` and `password`.
+| Frontend | Admin                        |
+|----------|------------------------------|
+| [http://localhost:3000/](http://localhost:3000/) | [http://localhost:8888/wp-admin/](http://localhost:8888/wp-admin/) |
+
+The login details for the admin is username "admin" and password "password"
+
 
 > **Note** If permalinks are not working, you might need to re-save permalinks to clear the cache.
+> **Note** You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use `wp-env`.
 
 ### Accessing the database
 
@@ -57,6 +63,7 @@ This uses [https://www.adminer.org/](https://www.adminer.org/)
 >**Tip** You can prefill values so this URL might work better <http://localhost:8888/adminer.php?server=mysql&username=root&db=wordpress>
 
 >**Mote** If you ever need to debug the database details you run `docker exec -it 6d90a6769e2b33bf4b44a75350dc4b9d-wordpress-1 bash` and then `printenv | grep WORDPRESS_DB` to get the credentials. `6d90a6769e2b33bf4b44a75350dc4b9d` is the container name which you can get from running `docker ps` 
+
 
 
 ## Command Reference

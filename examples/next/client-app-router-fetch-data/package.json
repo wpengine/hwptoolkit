@@ -8,13 +8,13 @@
     "example:start": "pnpm run wp:start && pnpm run example:dev",
     "example:stop": "pnpm run wp:stop",
     "example:prune": "wp-env destroy --config ./wp-env/wp-env.json && pnpm run example:build",
-    "wp:start": "wp-env start && wp-env run cli -- wp rewrite flush",
+    "wp:start": "wp-env start",
     "wp:stop": "wp-env stop",
     "wp:destroy": "wp-env destroy --config ./wp-env/wp-env.json",
     "wp:db:query": "wp-env run cli -- wp db query",
     "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
     "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
-    "wo:images:unzip": "[ ! -d wp-env/uploads ] && unzip wp-env/uploads.zip -d wp-env;",
+    "wp:images:unzip": "[ ! -d wp-env/uploads ] && unzip wp-env/uploads.zip -d wp-env;",
     "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads"
   },
   "keywords": [
