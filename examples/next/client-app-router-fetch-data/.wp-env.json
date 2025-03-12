@@ -18,6 +18,10 @@
   "mappings": {
     "db": "./wp-env/db",
     "wp-content/uploads": "./wp-env/uploads",
-    "adminer.php": "./wp-env/tools/adminer.php"
+    "adminer.php": "./wp-env/tools/adminer.php",
+    ".htaccess": "./wp-env/setup/.htaccess"
+  },
+  "lifecycleScripts": {
+    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }
 }
