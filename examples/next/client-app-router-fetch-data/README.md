@@ -23,6 +23,7 @@ This project is a complete example of a **headless WordPress site** powered by *
 │   ├── wp-env.json
 │   ├── uploads/            # WordPress uploaded media directory for example application
 │   ├── db/                 # Example database export
+│   ├── setup/              # .htaccess file to fix a CORS issue
 │   ├── tools/              # Adminer for accessing the database
 ├── package.json            # Root scripts to control both systems
 ```
