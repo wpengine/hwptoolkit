@@ -29,13 +29,27 @@ This project is a complete example of a **headless WordPress site** powered by *
 
 ### Steps
 
-1. Clone the repo `git clone git@github.com:wpengine/hwptoolkit.git`
-2. Open your terminal and cd into the current directory e.g. `cd examples/nextjs-app-router/client-fetch-data`
-3. Install Next.js dependencies `cd example-app and npm install`
-4. Have Docker running `e.g. docker ps`
-5. Run `pnpm example:build` and this will unzip `wp-env/uploads`, startup [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/) and run Next.js application.
+#### Prerequisites
+1. Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
+2. Make sure you have Docker running `e.g. docker ps`
+3. Make sure you have a `.env` file in `examples/next/client-app-router-fetch-data/example-app` with the following:
 
-Congratulations, WordPress should now be fully setup.
+```.env
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
+```
+
+#### Build and Start Process
+
+1. Install project dependencies `pnpm install`
+1. cd into the current directory `cd examples/next/client-app-router-fetch-data`
+3. Then run `pnpm example:build` and this will do the following:
+    - unzip `wp-env/uploads`, 
+    - startup [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/) 
+    - Import the database
+    - Install Next.js dependencies
+4. Finally to run `pnpm example:start` to start both the frontend and backend applications
+
+Congratulations, WordPress should now be fully set up.
 
 | Frontend | Admin                        |
 |----------|------------------------------|
@@ -49,7 +63,7 @@ The login details for the admin is username "admin" and password "password"
 
 ### Accessing the database
 
-The database can be accessed at `http://localhost:8888/adminer.php` with the following details:
+>**Note:** This is an optional feature and you can also use `pnpm wp:db:query` also to query the database. The database can be accessed at `http://localhost:8888/adminer.php` with the following details:
 
 | Field     | Value      |
 |-----------|------------|
@@ -65,13 +79,13 @@ This uses [https://www.adminer.org/](https://www.adminer.org/)
 >**Mote** If you ever need to debug the database details you run `docker exec -it 6d90a6769e2b33bf4b44a75350dc4b9d-wordpress-1 bash` and then `printenv | grep WORDPRESS_DB` to get the credentials. `6d90a6769e2b33bf4b44a75350dc4b9d` is the container name which you can get from running `docker ps` 
 
 
-
 ## Command Reference
 
 | Command                | Description                                                                  |
 |------------------------|------------------------------------------------------------------------------|
-| `example:build`        | Unzips images, starts WordPress, imports the database, and runs Next.js app  |
+| `example:build`        | Unzips images, starts WordPress, imports the database                        |
 | `example:dev`          | Runs the Next.js development server.                                         |
+| `example:dev:install`  | Installs the Next.js packages.                                               |
 | `example:start`        | Starts WordPress and runs the Next.js development server.                    |
 | `example:stop`         | Stops the WordPress environment.                                             |
 | `example:prune`        | Destroys the WordPress environment and rebuilds the project.                 |
