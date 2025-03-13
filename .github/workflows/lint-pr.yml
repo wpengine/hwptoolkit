@@ -1,0 +1,56 @@
+name: "Lint Pull Request"
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  main:
+    name: Validate Pull Request Title
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # see: https://github.com/commitizen/conventional-commit-types
+          # 
+          # build:    Changes that affect the build system or external dependencies
+          # chore:    Routine tasks, maintenance, or refactors that don't change functionality
+          # ci:       Changes to CI configuration files and scripts
+          # docs:     Documentation only changes
+          # feat:     A new feature for the user or a significant enhancement
+          # fix:      A bug fix
+          # perf:     A code change that improves performance
+          # refactor: A code change that neither fixes a bug nor adds a feature
+          # release:  Used for release PRs/commits
+          # revert:   Reverts a previous commit
+          # style:    Changes that don't affect the meaning of the code (formatting, missing semi-colons, etc)
+          # test:     Adding missing tests or correcting existing tests
+          types: |
+            build
+            chore
+            ci
+            docs
+            feat
+            fix
+            perf
+            refactor
+            release
+            revert
+            style
+            test
+          requireScope: false
+          ignoreLabels: |
+            bot
+            ignore-semantic-pull-request
+          # For work-in-progress PRs you can typically use draft pull requests
+          # from GitHub. However, private repositories on the free plan don't have
+          # this option and therefore this action allows you to opt-in to using the
+          # special "[WIP]" prefix to indicate this state. This will avoid the
+          # validation of the PR title and the pull request checks remain pending.
+          # Note that a second check will be reported if this is enabled.
+          wip: false
