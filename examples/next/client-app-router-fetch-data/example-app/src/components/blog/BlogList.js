@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { fetchGraphQL } from '@/lib/client';
 import BlogPostItem from '@/components/blog/BlogPostItem';
 
@@ -8,8 +8,11 @@ export default function BlogList({
   initialPosts,
   initialPageInfo,
   postsPerPage,
-  postsQuery
+  postsQuery,
+  slug = ''
 }) {
+
+  // Track various states for posts, page info, and loading
   const [posts, setPosts] = useState(initialPosts || []);
   const [pageInfo, setPageInfo] = useState(initialPageInfo || {});
   const [loading, setLoading] = useState(false);
@@ -19,13 +22,24 @@ export default function BlogList({
 
     setLoading(true);
     try {
-      const data = await fetchGraphQL(postsQuery, {
-        first: postsPerPage,
-        after: pageInfo.endCursor
-      });
 
-      const newPosts = data.posts.edges;
-      const newPageInfo = data.posts.pageInfo;
+      let data;
+
+      // Category or Tag
+      if (slug) {
+        data = await fetchGraphQL(postsQuery, {
+          slug: slug,
+          first: postsPerPage,
+          after: pageInfo.endCursor
+        });
+      } else {
+        data = await fetchGraphQL(postsQuery, {
+          first: postsPerPage,
+          after: pageInfo.endCursor
+        });
+      }
+      const newPosts = data?.posts?.edges || [];
+      const newPageInfo = data?.posts?.pageInfo || {};
 
       setPosts(prevPosts => [...prevPosts, ...newPosts]);
       setPageInfo(newPageInfo);
@@ -35,6 +49,7 @@ export default function BlogList({
       setLoading(false);
     }
   };
+
 
   return (
     <>

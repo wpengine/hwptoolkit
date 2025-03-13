@@ -22,18 +22,19 @@ const Footer = () => {
                         </ul>
                     </div>
                     <div>
-                        <h3 className="text-lg font-semibold mb-4">Latest News</h3>
-                        <ul>
-                            <li className={menuItemClass}><Link href="/blog" className={menuItemLinkClass}>Blog</Link></li>
-                            <li className={menuItemClass}><Link href="/events" className={menuItemLinkClass}>Events</Link></li>
-                        </ul>
-                    </div>
-                    <div>
                         <h3 className="text-lg font-semibold mb-4">Other Links</h3>
                         <ul>
                             <li className={menuItemClass}><Link href="/category/lifestyle" className={menuItemLinkClass}>Lifestyle</Link></li>
                             <li className={menuItemClass}><Link href="/category/sport" className={menuItemLinkClass}>Sport</Link></li>
                             <li className={menuItemClass}><Link href="/tag/interior-design" className={menuItemLinkClass}>Interior Design</Link></li>
+                            <li className={menuItemClass}><Link href="/category/sport/marathon" className={menuItemLinkClass}>Marathon</Link></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-semibold mb-4">Latest News</h3>
+                        <ul>
+                            <li className={menuItemClass}><Link href="/blog" className={menuItemLinkClass}>Blog</Link></li>
+                            <li className={menuItemClass}><Link href="/events" className={menuItemLinkClass}>Events</Link></li>
                         </ul>
                     </div>
                 </div>

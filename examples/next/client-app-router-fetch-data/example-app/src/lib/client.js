@@ -1,4 +1,3 @@
-// @TODO tidy up
 export async function fetchGraphQL(query, variables = {}) {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/graphql`, {

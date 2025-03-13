@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${lato.variable} ${openSans.variable} antialiased`}
       >
-        <main className='bg-stone-100 text-gray-800 pb-16 min-h-screen'>
+        <main className='bg-stone-100 text-gray-800 min-h-screen'>
           <Header />
           {children}
           <Footer />
