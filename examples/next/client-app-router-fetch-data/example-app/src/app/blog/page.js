@@ -1,41 +1,55 @@
-import React from 'react';
+import BlogList from '@/components/blog/BlogList';
+import { fetchGraphQL } from '@/lib/client';
+import { PostFragment } from '@/lib/fragments/PostFragment';
 
-const blogPosts = [
-    {
-        id: 1,
-        title: 'Understanding React Hooks',
-        summary: 'A deep dive into the world of React Hooks and how they can simplify your code.',
-        date: '2023-10-01'
-    },
-    {
-        id: 2,
-        title: 'JavaScript ES6 Features',
-        summary: 'An overview of the most important features introduced in ES6.',
-        date: '2023-09-15'
-    },
-    {
-        id: 3,
-        title: 'CSS Grid vs Flexbox',
-        summary: 'Comparing CSS Grid and Flexbox for building modern web layouts.',
-        date: '2023-08-30'
+// Posts per page. Please change if you want a different number of posts per page.
+const POSTS_PER_PAGE = 5;
+
+const LIST_POSTS_QUERY = `
+  ${PostFragment}
+  query ListPosts($after: String, $first: Int = 10) {
+    posts(after: $after, first: $first) {
+      edges {
+        node {
+          ...PostFragment
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
-];
+  }
+`;
 
-const BlogPage = () => {
-    return (
-        <div>
-            <h1>Blog Listings</h1>
-            <ul>
-                {blogPosts.map(post => (
-                    <li key={post.id}>
-                        <h2>{post.title}</h2>
-                        <p>{post.summary}</p>
-                        <small>{post.date}</small>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
-};
+async function getPosts({ pageSize = POSTS_PER_PAGE, after = null }) {
+  const data = await fetchGraphQL(LIST_POSTS_QUERY, {
+    first: pageSize,
+    after
+  });
 
-export default BlogPage;
+  return data;
+}
+
+
+// Note the approach here is to load the first 5 posts on the server, and then use the client-side component to handle pagination after hydrating the initial data.
+
+export default async function BlogPage() {
+  // Fetch initial data on the server
+  const data = await getPosts({ pageSize: POSTS_PER_PAGE });
+  const initialPosts = data.posts.edges;
+  const initialPageInfo = data.posts.pageInfo;
+
+  return (
+    <div className="container mx-auto px-4 py-12">
+      <h1 className="text-4xl font-bold mb-8">Blog</h1>
+
+      <BlogList 
+        initialPosts={initialPosts} 
+        initialPageInfo={initialPageInfo} 
+        postsPerPage={POSTS_PER_PAGE}
+        postsQuery={LIST_POSTS_QUERY}
+      />
+    </div>
+  );
+}
