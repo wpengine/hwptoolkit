@@ -19,9 +19,10 @@ export function capitalizeWords(str) {
     .join(' ');
 }
 
-export async function getPosts({ query, slug = '', pageSize = 10, after = null }) {
+export async function getPosts({ query, slug = '', pageSize = 10, after = null, revalidate = false }) {
 
     if (! slug) {
+      console.log(query, pageSize, after);
       return await fetchGraphQL(query, {
         first: pageSize,
         after
@@ -32,7 +33,8 @@ export async function getPosts({ query, slug = '', pageSize = 10, after = null }
     return await fetchGraphQL(query, {
       slug: querySlug,
       first: pageSize,
-      after
+      after,
+      revalidate
     });
 }
 

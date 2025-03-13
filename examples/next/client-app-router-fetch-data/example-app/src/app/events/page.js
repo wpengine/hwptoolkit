@@ -1,13 +1,25 @@
-export default function EventsPage() {
-    return (
-        <div>
-            <h1>Events Listings</h1>
-            <p>Welcome to the events page! Here you will find a list of upcoming events.</p>
-            <ul>
-                <li>Event 1: Date, Time, Location</li>
-                <li>Event 2: Date, Time, Location</li>
-                <li>Event 3: Date, Time, Location</li>
-            </ul>
-        </div>
-    );
+
+import {EventListFragment} from '@/lib/fragments/EventListFragment';
+import {CustomPostTypeTemplate} from '@/components/cpt/CustomPostTypeTemplate';
+
+const EVENT_LIST_QUERY = `
+${EventListFragment}
+query GetEvents($after: String, $first: Int = 5) {
+  events(where: {status: PUBLISH}, after: $after, first: $first) {
+    edges {
+      node {
+        ...EventListFragment
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+`;
+
+export default async function EventsPage(params) {
+  return CustomPostTypeTemplate(EVENT_LIST_QUERY, 'events', 'Events');
 }

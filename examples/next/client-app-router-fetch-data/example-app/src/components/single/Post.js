@@ -1,8 +1,11 @@
 import Image from 'next/image';
 import { formatDate } from '@/lib/utils';
+import Comments from '../comment/Comments';
 
 export default function Post({ data }) {
-  const { title, author, content, date } = data ?? {};
+  const { title, author, content, date, comments } = data ?? {};
+  console.log(data);
+  const commentsList = comments?.edges;
 
     return (
       <article className='max-w-2xl px-6 py-24 mx-auto space-y-12 '>
@@ -31,6 +34,7 @@ export default function Post({ data }) {
           )}
         </div>
         <div className="text-gray-800 prose prose-p:my-4 max-w-none wp-content text-xl" dangerouslySetInnerHTML={{ __html: content }} />
+        <Comments comments={commentsList} />
       </article>
     );
   }
