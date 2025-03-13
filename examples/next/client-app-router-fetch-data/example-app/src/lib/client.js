@@ -1,6 +1,7 @@
-export async function fetchGraphQL(query, variables = {}) {
+export async function fetchGraphQL(query, variables = {}, revalidate = null) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/graphql`, {
+
+    const fetchOptions = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -8,8 +9,17 @@ export async function fetchGraphQL(query, variables = {}) {
       body: JSON.stringify({
         query,
         variables,
-      }),
-    });
+      })
+    };
+
+    // Revalidate with ISR if revalidate is set
+    if (revalidate !== null) {
+      fetchOptions.next = {
+        revalidate: revalidate
+      };
+    }
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/graphql`, fetchOptions);
 
     const result = await response.json();
 

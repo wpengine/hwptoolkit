@@ -20,7 +20,7 @@ export async function BlogTemplate(query, params, titlePrefix) {
 
     // Check if posts exists then throw a 404
     if (!data || !data.posts || data.posts.edges.length === 0) {
-        console.log(`No posts found for ${titlePrefix.toLowerCase()}: ${slug}`);
+        console.warn(`No posts found for ${titlePrefix.toLowerCase()}: ${slug}`);
         notFound();
     }
 

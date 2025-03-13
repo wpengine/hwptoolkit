@@ -21,8 +21,6 @@ export function capitalizeWords(str) {
 
 export async function getPosts({ query, slug = '', pageSize = 10, after = null }) {
 
-  console.log(query, slug, pageSize, after);
-
     if (! slug) {
       return await fetchGraphQL(query, {
         first: pageSize,

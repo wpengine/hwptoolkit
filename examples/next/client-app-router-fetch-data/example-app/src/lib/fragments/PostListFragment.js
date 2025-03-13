@@ -1,5 +1,5 @@
-export const PostFragment = `
-  fragment PostFragment on Post {
+export const PostListFragment = `
+  fragment PostListFragment on Post {
     id
     title
     uri

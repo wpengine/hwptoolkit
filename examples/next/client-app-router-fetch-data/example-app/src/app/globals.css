@@ -24,3 +24,11 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+// Add a small bit of styling to the content
+.wp-content {
+  font-size: 1rem;
+}
+.wp-content p {
+  margin: 1.5rem 0;
+}

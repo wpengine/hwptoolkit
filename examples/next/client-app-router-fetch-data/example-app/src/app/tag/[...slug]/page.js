@@ -1,14 +1,14 @@
 // Define Query
-import { PostFragment } from '@/lib/fragments/PostFragment';
+import { PostListFragment } from '@/lib/fragments/PostListFragment';
 import { BlogTemplate } from '@/components/blog/BlogTemplate';
 
 const TAG_POSTS_QUERY = `
-  ${PostFragment}
+  ${PostListFragment}
   query ListPosts($slug: String!, $after: String, $first: Int = 5) {
     posts(where: { tag: $slug }, after: $after, first: $first) {
       edges {
         node {
-          ...PostFragment
+          ...PostListFragment
         }
       }
       pageInfo {
