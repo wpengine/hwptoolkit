@@ -19,9 +19,9 @@ curl 'http://myexample.local/graphql?query={generalSettings{url}}'
 
 Each property is provided as an HTTP query parameter, with values separated by an ampersand (&)1.
 
-GraphQL requests with variables don't work in GET requests because they need to be parsed as JSON1.
+GraphQL requests with variables don't work in GET requests because they need to be parsed as JSON.
 
-Only query operations can be executed; mutation operations don't work with GET requests1.
+Only query operations can be executed; mutation operations don't work with GET requests.
 
 * **POST Request**: This is the standard method for querying WPGraphQL. You send a POST request to the `/graphql` endpoint with your GraphQL query in the request body. It supports complex queries and is more secure.
 
