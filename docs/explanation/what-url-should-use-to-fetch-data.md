@@ -15,7 +15,13 @@ WPGraphQL supports querying data using the `/graphql` endpoint in two primary wa
 ```bash
 curl 'http://myexample.local/graphql?query={generalSettings{url}}'
 ```
-**Note**: GET requests have inherent URL length limitations (typically 2,000-8,000 characters depending on the browser and server). Complex GraphQL queries can easily exceed these limits, making this method impractical for anything beyond basic queries.
+**Note**: GET requests have inherent URL length limitations (typically 2,000-8,000 characters depending on the browser and server). Complex GraphQL queries can easily exceed these limits, making this method impractical for anything beyond basic queries1.
+
+Each property is provided as an HTTP query parameter, with values separated by an ampersand (&)1.
+
+GraphQL requests with variables don't work in GET requests because they need to be parsed as JSON1.
+
+Only query operations can be executed; mutation operations don't work with GET requests1.
 
 * **POST Request**: This is the standard method for querying WPGraphQL. You send a POST request to the `/graphql` endpoint with your GraphQL query in the request body. It supports complex queries and is more secure.
 
@@ -30,4 +36,8 @@ curl -X POST \
 | Method                   | Security                                 | Complexity      | Support    | Use Case               |
 |--------------------------|------------------------------------------|-----------------|------------|------------------------|
 | POST                     | More secure, hides query in request body | Complex queries | Production | complex data retrieval  |
-| GET with Query Parameter | Less secure due to query exposure in URL | Simple queries  | Testing    | simple data retrieval |
+| GET with Query Parameter | Less secure due to query exposure in URL | Simple queries (no mutations)  | Testing    | simple data retrieval |
+
+# Summary
+While both methods have their uses, POST requests are generally recommended for WPGraphQL due to their flexibility, security advantages, and ability to handle complex queries. However, GET requests can be useful for simple, cacheable queries or quick testing. Consider your specific use case, security requirements, and caching needs when choosing between the two methods.
+
