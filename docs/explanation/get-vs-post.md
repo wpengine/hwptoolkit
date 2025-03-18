@@ -8,7 +8,7 @@ WPGraphQL is a GraphQL API for WordPress, enabling flexible and efficient data q
 
 # Details
 
-WPGraphQL supports querying data using the `/graphql` endpoint in two primary ways:
+WPGraphQL supports querying data using [the endpoint(/link/to/endpoints/doc) in two primary ways:
 
 * **GET Request with Query Parameter**: You can query WPGraphQL by appending your GraphQL query as a query parameter to the `/graphql` endpoint. This method is useful for simple queries or testing purposes.
 
