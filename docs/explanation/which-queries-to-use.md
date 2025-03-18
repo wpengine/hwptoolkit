@@ -32,7 +32,7 @@ This query-string endpoint serves as a fallback for WordPress sites that do not 
 
 ## Which one should you use and why?
 
-If you have pretty permalinks enabled, it’s best to use the clean `/graphql` endpoint.
+If your application only talks to a WP instance(s) with pretty permalinks enabled and you trust that will not change, it’s safe to use the clean `/graphql` endpoint.
 
 WordPress is very flexible with URL routing, and even if your permalinks are enabled, the URL `index.php?graphql` is still valid. In this case, WordPress will handle the request through `index.php`, with the graphql query parameter routing it to WPGraphQL.
 
