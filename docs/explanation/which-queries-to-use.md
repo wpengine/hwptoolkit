@@ -1,6 +1,4 @@
-# GET vs POST Requests in WPGraphQL: Choosing the right method
-
-This guide explains the differences between using a GET request with a query parameter versus a POST request to the `/graphql` endpoint.
+# Which WPGraphQL endpoints to use: /graphql vs ?graphql
 
 WPGraphQL exposes a GraphQL endpoint that developers can use to interact with the WordPress backend and retrieve data.
 
