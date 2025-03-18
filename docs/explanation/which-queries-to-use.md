@@ -35,5 +35,3 @@ This query-string endpoint serves as a fallback for WordPress sites that do not 
 If your application only talks to a WP instance(s) with pretty permalinks enabled and you trust that will not change, it’s safe to use the clean `/graphql` endpoint.
 
 If you don't know or don't trust the config to change, `/index.php?graphql` is recommended. WordPress is very flexible with URL routing, and even if your permalinks are enabled, the URL `/index.php?graphql` is still valid.
-
-If there is any issue with the `/graphql` endpoint (perhaps due to rewrite rules, .htaccess configurations, or plugin conflicts), the `/index.php?graphql` endpoint can be a quick alternative to ensure your requests are still processed correctly.
