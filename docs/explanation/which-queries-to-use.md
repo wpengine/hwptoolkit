@@ -26,7 +26,7 @@ This code would change the default `/graphql` endpoint to `/my_endpoint`.
 
 ## The query string endpoint: `/index.php?graphql`
 
-WPGraphQL also provides an alternative endpoint that works even if pretty permalinks are not enabled. This endpoint is based on the standard WordPress `index.php` file, with a query string parameter:
+The `/index.php?graphql` endpoint is the preferred choice for those looking for stability and compatibility.
 
 ```php
 /index.php?graphql
