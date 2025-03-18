@@ -28,10 +28,6 @@ This code would change the default `/graphql` endpoint to `/my_endpoint`.
 
 The `/index.php?graphql` endpoint is the preferred choice for those looking for stability and compatibility.
 
-```php
-/index.php?graphql
-```
-
 This query-string endpoint serves as a fallback for WordPress sites that do not have pretty permalinks enabled. If a site is running with the default URL structure (e.g., `example.com/?p=123`), the `/graphql` pretty URL might not work. In this case, `/index.php?graphql` can be used to access the GraphQL API.
 
 ## Which one should you use and why?
