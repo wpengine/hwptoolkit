@@ -1,0 +1,45 @@
+# GET vs POST Requests in WPGraphQL: Choosing the right method
+
+This guide explains the differences between using a GET request with a query parameter versus a POST request to the `/graphql` endpoint.
+
+WPGraphQL exposes a GraphQL endpoint that developers can use to interact with the WordPress backend and retrieve data.
+
+The plugin provides two primary ways to interact with this API:
+
+1. The pretty URL endpoint `/graphql`
+2. The query-string-based endpoint `/index.php?graphql`
+
+Both serve the same purpose of providing access to the GraphQL API, but they function slightly differently.
+
+## The default `/graphql` endpoint
+
+The `/graphql` default endpoint is the preferred choice for most users because it is easy to read, share, and remember.
+
+WPGraphQL allows you to customize the `/graphql` endpoint using a filter. If you'd like to change the endpoint to something more specific to your site, you can do so with a simple code snippet.
+
+```php
+function my_new_graphql_endpoint() {
+  return 'my_endpoint';
+};
+
+add_filter( 'graphql_endpoint', 'my_new_graphql_endpoint' );
+```
+This code would change the default `/graphql` endpoint to `/my_endpoint`.
+
+## The query string endpoint: `/index.php?graphql`
+
+WPGraphQL also provides an alternative endpoint that works even if pretty permalinks are not enabled. This endpoint is based on the standard WordPress `index.php` file, with a query string parameter:
+
+```php
+/index.php?graphql
+```
+
+This query-string endpoint serves as a fallback for WordPress sites that do not have pretty permalinks enabled. If a site is running with the default URL structure (e.g., `example.com/?p=123`), the `/graphql` pretty URL might not work. In this case, `/index.php?graphql` can be used to access the GraphQL API.
+
+## Which one should you use and why?
+
+If you have pretty permalinks enabled, it’s best to use the clean `/graphql` endpoint.
+
+WordPress is very flexible with URL routing, and even if your permalinks are enabled, the URL `index.php?graphql` is still valid. In this case, WordPress will handle the request through `index.php`, with the graphql query parameter routing it to WPGraphQL.
+
+If there is any issue with the `/graphql` endpoint (perhaps due to rewrite rules, .htaccess configurations, or plugin conflicts), the `/index.php?graphql` endpoint can be a quick alternative to ensure your requests are still processed correctly.
