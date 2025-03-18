@@ -19,7 +19,11 @@ curl 'http://myexample.local/graphql?query={generalSettings{url}}'
 
 Each property is provided as an HTTP query parameter, with values separated by an ampersand (&).
 
-GraphQL requests with variables don't work in GET requests because they need to be parsed as JSON.
+GraphQL requests with variables can work in GET requests, but the variables parameter must be properly encoded as a JSON string:
+
+```text
+https://graphql-cache.local/graphql?query=query($slug:ID!){post(id:$slug,idType:SLUG,asPreview:false){title,content}}&variables={%22slug%22:%22hello-world%22}
+```
 
 Only query operations can be executed; mutation operations don't work with GET requests.
 
@@ -36,7 +40,7 @@ curl -X POST \
 | Method                   | Security                                 | Complexity      | Support    | Use Case               |
 |--------------------------|------------------------------------------|-----------------|------------|------------------------|
 | POST                     | More secure, hides query in request body | Complex queries | Production | complex data retrieval  |
-| GET with Query Parameter | Less secure due to query exposure in URL | Simple queries (no mutations)  | Testing    | simple data retrieval |
+| GET with Query Parameter | URLs in GET requests are visible in browser history, logs, and referrer headers, but when using HTTPS, the query itself is encrypted in transit. | Simple queries (no mutations)  | Testing    | simple data retrieval |
 
 # Summary
 While both methods have their uses, POST requests are generally recommended for WPGraphQL due to their flexibility, security advantages, and ability to handle complex queries. However, GET requests can be useful for simple, cacheable queries or quick testing. Consider your specific use case, security requirements, and caching needs when choosing between the two methods.
