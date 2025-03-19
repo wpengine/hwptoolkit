@@ -1,8 +1,10 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreQuote({ attributes, customParser }) {
   const { value, cssClassName, citation, style } = attributes ?? {};
   const hasCustomParser = typeof customParser === "function";
+  const styles = getInlineStyles(style);
 
   if (!value) {
     return null;
@@ -10,7 +12,7 @@ export function CoreQuote({ attributes, customParser }) {
 
   const content = citation ? value + `<cite>${citation}</cite>` : value;
   const props = {
-    style,
+    style: styles,
     className: cssClassName,
   };
 

@@ -1,8 +1,10 @@
 import React from "react";
 import Link from "next/link.js";
+import { getInlineStyles } from "@/utils/getInlineStyles";
 
 export function CoreButton({ attributes }) {
   const { anchor, cssClassName, text, style, linkClassName, url, rel, linkTarget } = attributes ?? {};
+  const styles = getInlineStyles(style);
 
   const wrapperProps = {
     "id": anchor,
@@ -11,7 +13,7 @@ export function CoreButton({ attributes }) {
   };
 
   const linkElement = (
-    <a target={linkTarget ? "_blank" : undefined} className={linkClassName} rel={rel} style={style}>
+    <a target={linkTarget ? "_blank" : undefined} className={linkClassName} rel={rel} style={styles}>
       <span>{text}</span>
     </a>
   );

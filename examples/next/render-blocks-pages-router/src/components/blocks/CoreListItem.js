@@ -1,8 +1,10 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreListItem({ attributes, children, customParser }) {
   const { content, className, style } = attributes ?? {};
   const hasCustomParser = typeof customParser === "function";
+  const styles = getInlineStyles(style);
 
   if (!content) {
     return null;
@@ -11,7 +13,7 @@ export function CoreListItem({ attributes, children, customParser }) {
   const ownContent = content ? content.split("\n")[0] : "";
 
   return (
-    <li style={style} className={className}>
+    <li style={styles} className={className}>
       {hasCustomParser ? customParser(content) : <div dangerouslySetInnerHTML={{ __html: ownContent }} />}
 
       {children}

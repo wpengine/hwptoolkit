@@ -1,10 +1,12 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreColumns({ attributes, children }) {
   const { style, cssClassName } = attributes ?? {};
+  const styles = getInlineStyles(style);
 
   return (
-    <div style={style} className={cssClassName}>
+    <div style={styles} className={cssClassName}>
       {children}
     </div>
   );

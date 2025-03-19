@@ -1,14 +1,16 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreHeading({ attributes, customParser }) {
   const { anchor, cssClassName, content, style } = attributes ?? {};
   const hasCustomParser = typeof customParser === "function";
+  const styles = getInlineStyles(style);
 
   // Determine the heading level
   const Component = `h${attributes?.level ?? 1}`;
 
   const props = {
-    style,
+    style: styles,
     id: anchor,
     className: cssClassName,
   };

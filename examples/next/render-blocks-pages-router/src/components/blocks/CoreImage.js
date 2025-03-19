@@ -1,7 +1,10 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import Image from "next/image.js";
 
 export function CoreImage({ attributes }) {
   const { anchor, cssClassName, caption, width, height, src, style, alt, title } = attributes ?? {};
+  const hasDimensions = typeof width === "number" && typeof height === "number";
+  const styles = getInlineStyles(style);
 
   if (!src) {
     return null;
@@ -10,11 +13,11 @@ export function CoreImage({ attributes }) {
   return (
     <figure id={anchor ?? undefined} className={cssClassName}>
       <LinkWrapper attributes={attributes}>
-        {width && height ? (
-          <Image style={style} src={src} width={width} height={height} alt={alt ?? ""} title={title ?? undefined} />
+        {hasDimensions ? (
+          <Image style={styles} src={src} width={width} height={height} alt={alt ?? ""} title={title ?? undefined} />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} style={style} alt={alt ?? ""} title={title ?? undefined} />
+          <img src={src} style={styles} alt={alt ?? ""} title={title ?? undefined} />
         )}
       </LinkWrapper>
 

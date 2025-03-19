@@ -1,11 +1,13 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreCode({ attributes, customParser }) {
   const { cssClassName, content, style } = attributes ?? {};
   const hasCustomParser = typeof customParser === "function";
+  const styles = getInlineStyles(style);
 
   return (
-    <pre style={style} className={cssClassName}>
+    <pre style={styles} className={cssClassName}>
       {hasCustomParser ? (
         <code>{customParser(content)}</code>
       ) : (

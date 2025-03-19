@@ -1,10 +1,12 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreAudio({ attributes }) {
   const { autoplay, caption, className, loop, src, style } = attributes ?? {};
+  const styles = getInlineStyles(style);
 
   return (
-    <figure className={className} style={style}>
+    <figure className={className} style={styles}>
       {caption && <figcaption>{caption}</figcaption>}
 
       <audio controls autoplay={autoplay} loop={loop} src={src}>

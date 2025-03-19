@@ -1,12 +1,14 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreTable({ attributes, customParser }) {
-  const { caption, className, head, foot, body, align, backgroundColor } = attributes ?? {};
+  const { caption, className, head, foot, body, align, backgroundColor, style } = attributes ?? {};
+  const styles = getInlineStyles(style);
 
   const renderRows = (row, index) => <TableRow key={index} cells={row.cells} customParser={customParser} />;
 
   return (
-    <table className={className} align={align} bgColor={backgroundColor}>
+    <table className={className} align={align} bgcolor={backgroundColor} style={styles}>
       {caption && <caption>{caption}</caption>}
 
       {head && <thead>{head.map(renderRows)}</thead>}

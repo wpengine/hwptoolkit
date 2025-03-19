@@ -1,7 +1,9 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreList({ attributes, children }) {
   const { values, cssClassName, ordered, reversed, start, style } = attributes ?? {};
+  const styles = getInlineStyles(style);
 
   if (!values) {
     return null;
@@ -11,7 +13,7 @@ export function CoreList({ attributes, children }) {
 
   return (
     <Component
-      style={style}
+      style={styles}
       className={cssClassName}
       reversed={ordered && reversed ? true : undefined}
       start={ordered && start ? start : undefined}>

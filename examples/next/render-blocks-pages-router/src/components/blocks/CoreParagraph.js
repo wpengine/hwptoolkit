@@ -1,11 +1,13 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreParagraph({ attributes, customParser }) {
   const { anchor, cssClassName, content, style } = attributes ?? {};
   const hasCustomParser = typeof customParser === "function";
+  const styles = getInlineStyles(style);
 
   const props = {
-    style,
+    style: styles,
     id: anchor,
     className: cssClassName,
   };

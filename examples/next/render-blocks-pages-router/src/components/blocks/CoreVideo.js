@@ -1,11 +1,13 @@
+import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
 
 export function CoreVideo({ attributes }) {
   const { autoplay, caption, className, controls, muted, preload, poster, loop, playsInline, src, style } =
     attributes ?? {};
+  const styles = getInlineStyles(style);
 
   return (
-    <figure className={className} style={style}>
+    <figure className={className} style={styles}>
       {caption && <figcaption>{caption}</figcaption>}
 
       <video
