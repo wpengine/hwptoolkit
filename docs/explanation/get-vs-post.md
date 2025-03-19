@@ -1,4 +1,4 @@
-# What URL should I use to fetch data from WPGraphQL? (/graphql with query parameter vs /graphql with POST request)
+# GET vs POST in WPGraphQL
 
 When interacting with WPGraphQL, choosing the correct URL and method to fetch data is crucial. This explanation clarifies the difference between using a GET request with a query parameter and a POST request to the `/graphql` endpoint.
 
