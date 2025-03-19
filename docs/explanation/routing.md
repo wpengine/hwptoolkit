@@ -2,7 +2,26 @@
 
 This guide explores the intricacies of implementing routing in a headless WordPress setup, focusing on handling regular posts and pages. We'll cover the core challenges, framework-specific implementations, template resolution strategies, and advanced considerations for optimizing your headless WordPress site.
 
-## Dynamic Content Handling
+## Understanding native WordPress routing mechanism
+WordPress determines the content to display based on URL structure, using `wp_rewrite` and query parameters. The core routing rules rely on:
+
+* Pretty Permalinks (e.g., `/blog/my-post/`)
+
+* Query String-Based Routing (e.g., `/index.php?post_type=post&p=123`)
+
+* Rewrite Rules (e.g., `/category/news/` maps to `index.php?category_name=news`)
+
+## How custom post types impact routing
+In traditional WordPress, custom post types (CPTs) are registered using `register_post_type()` and automatically get rewrite rules based on their settings. For example, a CPT called `portfolio` with the `has_archive` option enabled might have URLs like:
+
+* `/portfolio/` → Archive page for portfolio items
+* `/portfolio/project-name/` → Single portfolio item
+
+## Implementing Routing in a Headless WordPress Setup
+
+Unlike traditional WordPress, a headless setup requires the frontend to manually interpret WordPress URLs and dynamically determine the associated content type. Once identified, the correct template must be matched to the content type while handling query parameters and custom post types. This process is not trivial, as it requires executing specific GraphQL queries in a structured manner to retrieve the necessary data for accurate rendering.
+
+### Dynamic Content Handling
 In a headless WordPress setup, managing dynamic content becomes more complex as the frontend is decoupled from the backend.
 
 Problem: WordPress generates dynamic URLs for posts, pages, and archives that don't automatically map to frontend routes.
@@ -226,3 +245,114 @@ However, this approach comes also with several important caveats:
 2. **Query and variable handling**: The function doesn't address the need for specific queries or variables that a template might require. Developers must ensure that necessary data is fetched separately and passed to the resolved template component.
 
 3. **Shared component queries**: Common components like headers and footers, which often require their own data fetching, aren't considered in this approach. It's more efficient to handle these as separate, reusable components with their own data fetching logic.
+
+## Handling custom post types in a headless setup
+In a headless setup, the frontend needs to fetch CPTs explicitly via GraphQL and define custom routes accordingly. For example, in Next.js pages router, you can pre-fetch CPT pages with `getStaticPaths()`:
+
+```javascript
+export async function getStaticPaths() {
+  const { data } = await client.query({
+    query: gql`
+      {
+        portfolios {
+          nodes {
+            uri
+          }
+        }
+      }
+    `
+  });
+
+  return {
+    paths: data.portfolios.nodes.map(portfolio => ({
+      params: { slug: portfolio.uri },
+    })),
+    fallback: 'blocking'
+  };
+}
+```
+On the frontend, ensure the proper template is used based on the GraphQL response:
+
+```javascript
+export default function ContentRouter({ data }) {
+  const { __typename } = data.nodeByUri;
+
+  switch (__typename) {
+    case 'Post':
+      return <Post data={data} />;
+    case 'Page':
+      return <Page data={data} />;
+    case 'Portfolio':
+      return <Portfolio data={data} />;
+    default:
+      return <NotFound />;
+  }
+}
+```
+## Handling query parameters in a headless setup
+Query parameters (`?s=search`, `?cat=3`, etc.)  are used in special cases for example search, categories, and filtering content. In a headless setup, these parameters must be explicitly handled in the frontend framework.
+
+### Search Queries (?s=search-term)
+WordPress typically resolves search queries at `/index.php?s=search-term`. In a headless setup, you need to pass the search term to a GraphQL query:
+
+```graphql
+query SearchPosts($search: String!) {
+  posts(where: { search: $search }) {
+    nodes {
+      title
+      uri
+    }
+  }
+}
+```
+In Next.js, extract the search term from the URL and fetch results:
+
+```javascript
+import { useRouter } from 'next/router';
+
+export default function SearchPage() {
+  const router = useRouter();
+  const { s } = router.query;  
+
+  const { data } = useQuery(SEARCH_POSTS_QUERY, { variables: { search: s } });
+
+  return (
+    <div>
+      <h1>Search Results</h1>
+      {data?.posts.nodes.map(post => (
+        <div key={post.uri}>
+          <a href={post.uri}>{post.title}</a>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+## Category & Taxonomy Queries (?cat=3, ?tag=wordpress)
+
+Category-based URLs like `/category/news/` get internally rewritten by WordPress as `index.php?category_name=news`. In a headless setup, we must manually query posts based on category:
+
+```graphql
+query GetPostsByCategory($categoryName: String!) {
+  posts(where: { categoryName: $categoryName }) {
+    nodes {
+      title
+      uri
+    }
+  }
+}
+```
+To handle this in Next.js, extract the category from the URL and pass it as a query variable:
+
+```javascript
+export async function getServerSideProps({ query }) {
+  const { category } = query;
+  const { data } = await client.query({
+    query: GET_POSTS_BY_CATEGORY,
+    variables: { categoryName: category }
+  });
+
+  return { props: { posts: data.posts.nodes } };
+}
+```
+**Note**: The use of `getServerSideProps` instead of `getStaticProps` is necessary because query parameters (such as `?category=news`) are not available inside `getStaticProps`. Since `getStaticProps` only runs at build time and does not have access to request-time data, `getServerSideProps` must be used to dynamically handle query parameters at request time.
