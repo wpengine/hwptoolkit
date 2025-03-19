@@ -23,7 +23,11 @@ export function BlockRenderer({ blocks, defaultBlock, customParser }) {
     if (!BlockComponent) {
       const CustomDefaultBlock = defaultBlock;
 
-      return defaultBlock ? <CustomDefaultBlock key={id} /> : <DefaultBlock key={id} />;
+      return defaultBlock ? (
+        <CustomDefaultBlock key={id} block={block} />
+      ) : (
+        <DefaultBlock key={id} renderedHtml={block.renderedHtml} />
+      );
     }
 
     return (
