@@ -1,4 +1,4 @@
-import { blocks as blockComponents } from "@/components/blocks";
+import blockComponents from "@/components/blocks";
 import DefaultBlock from "./DefaultBlock";
 
 export function BlockRenderer({ blocks, defaultBlock, customParser }) {
