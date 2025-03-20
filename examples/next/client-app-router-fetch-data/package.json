@@ -35,9 +35,7 @@
     "local-development",
     "fullstack-example",
     "wordpress-api",
-    "wordpress-database",
-    "wp-adminer",
-    "database-management"
+    "wordpress-database"
   ],
   "author": "hwptoolkit",
   "license": "BSD-3-Clause",

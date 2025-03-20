@@ -25,7 +25,10 @@ async function fetchContent(uri) {
 
 export default async function ContentPage({ params }) {
 
-  const uri = Array.isArray(params?.uri) ? params.uri.join('/') : '';
+  // Await for the params to resolve
+  const resolvedParams = await params;
+
+  const uri = Array.isArray(resolvedParams?.uri) ? resolvedParams.uri.join('/') : '';
   const data = await fetchContent(uri);
 
   if (!data?.nodeByUri) {

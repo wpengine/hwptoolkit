@@ -4,7 +4,6 @@ import Comments from '../comment/Comments';
 
 export default function Post({ data }) {
   const { title, author, content, date, comments } = data ?? {};
-  console.log(data);
   const commentsList = comments?.edges;
 
     return (

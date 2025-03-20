@@ -1,4 +1,4 @@
-import nextConfig from '../../next.config.mjs';
+import getConfig from 'next/config';
 import { fetchGraphQL } from '../lib/client';
 
 
@@ -22,7 +22,6 @@ export function capitalizeWords(str) {
 export async function getPosts({ query, slug = '', pageSize = 10, after = null, revalidate = false }) {
 
     if (! slug) {
-      console.log(query, pageSize, after);
       return await fetchGraphQL(query, {
         first: pageSize,
         after
@@ -39,7 +38,8 @@ export async function getPosts({ query, slug = '', pageSize = 10, after = null, 
 }
 
 export function getPostsPerPage() {
-  return nextConfig.wordPressDisplaySettings?.postsPerPage || 10;
+  const { publicRuntimeConfig } = getConfig() || {};
+  return publicRuntimeConfig?.wordPressDisplaySettings?.postsPerPage || 10;
 }
 
 export function createExcerpt(content, length = 150) {

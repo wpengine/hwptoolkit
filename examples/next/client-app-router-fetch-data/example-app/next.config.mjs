@@ -1,16 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    wordPressDisplaySettings: {
+    images: {
+     // Allow images from localhost.
+     // Please change this to your domain if you are using a different domain.
+      domains: ['localhost'],
+    },
+    // Note: env variables are set in next.config.js only accept string values so used publicRuntimeConfig instead
+    publicRuntimeConfig: {
         // Controls posts per page for blog, category and tag pages
-        postsPerPage: 5,
-    }
-};
-
-// Allow images from localhost. 
-// Please change this to your domain if you are using a different domain.
-nextConfig.images = {
-    domains: ['localhost'],
-};
+        wordPressDisplaySettings: {
+          postsPerPage: 5,
+        }
+      }
+  };
 
 export default nextConfig;
