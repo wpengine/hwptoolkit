@@ -3,7 +3,7 @@ import { FeaturedImage } from '../image/FeaturedImage';
 import { formatDate,createExcerpt } from '@/lib/utils';
 
 export default function EventListItem({ post }) {
-  const { author, content, eventFields, featuredImage, title, uri } = post;
+  const { content, eventFields, title, uri } = post;
   const { date, startTime, endTime } = eventFields;
 
   const locations = post.location?.edges?.map(edge => edge.node.name) || [];

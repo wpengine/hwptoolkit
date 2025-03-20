@@ -1,11 +1,14 @@
 import { notFound } from 'next/navigation';
+import { SingleEventFragment } from '@/lib/fragments/SingleEventFragment';
 import { SinglePageFragment } from '@/lib/fragments/SinglePageFragment';
 import { SinglePostFragment } from '@/lib/fragments/SinglePostFragment';
 import Page from "@/components/single/Page";
 import Post from "@/components/single/Post";
+import Event from "@/components/single/Event";
 import { fetchGraphQL } from '@/lib/client';
 
 const GET_CONTENT_QUERY = `
+  ${SingleEventFragment}
   ${SinglePageFragment}
   ${SinglePostFragment}
   query GetNodeByUri($uri: String!) {
@@ -13,6 +16,7 @@ const GET_CONTENT_QUERY = `
       __typename
       ...SinglePageFragment
       ...SinglePostFragment
+      ...SingleEventFragment
     }
   }
 `;
@@ -40,6 +44,7 @@ export default async function ContentPage({ params }) {
 
     if (contentType === "Post") return <Post data={data.nodeByUri} />;
     if (contentType === "Page") return <Page data={data.nodeByUri} />;
+    if (contentType === "Event") return <Event data={data.nodeByUri} />;
     notFound();
 }
 
