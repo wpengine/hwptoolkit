@@ -1,16 +1,12 @@
 import Link from 'next/link';
-import Image from 'next/image';
-import { formatDate } from '@/lib/utils';
+import { FeaturedImage } from '../image/FeaturedImage';
+import { formatDate,createExcerpt } from '@/lib/utils';
 
 export default function EventListItem({ post }) {
   const { author, content, eventFields, featuredImage, title, uri } = post;
   const { date, startTime, endTime } = eventFields;
-  
-  // Create an excerpt from the content (first 150 characters)
-  const excerpt = content
-    ? content.replace(/<[^>]*>/g, '').substring(0, 150) + (content.length > 150 ? '...' : '')
-    : '';
 
+  const locations = post.location?.edges?.map(edge => edge.node.name) || [];
   return (
     <article className='container max-w-4xl px-10 py-6 mx-auto rounded-lg shadow-sm bg-gray-50 mb-4'>
       <h2 className='mt-3'>
@@ -19,12 +15,7 @@ export default function EventListItem({ post }) {
         </Link>
       </h2>
 
-      <div className="flex items-center mr-4 mb-3">
-        <span>by {post.author.node.name}</span>
-      </div>
-
-      {/* Moved date and time here, below author, with icons */}
-      <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+      <div className="flex flex-wrap gap-4 text-sm text-gray-600 my-2">
         {date && (
           <div className="flex items-center">
             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -42,25 +33,22 @@ export default function EventListItem({ post }) {
             <span>{startTime}{endTime ? ` - ${endTime}` : ''}</span>
           </div>
         )}
+
+        {locations.length > 0 && (
+          <div className="flex items-center">
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span>{locations.join(', ')}</span>
+          </div>
+        )}
       </div>
 
-      {post.featuredImage?.node?.sourceUrl && (
-        <div className="h-48 my-6 relative">
-          <Link href={uri} title={title} className='opacity-80 hover:opacity-100 transition-opacity ease-in-out'>
-            <Image
-              src={post.featuredImage.node.sourceUrl}
-              alt={post.featuredImage.node.altText || post.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover"
-            />
-          </Link>
-        </div>
-      )}
+      <FeaturedImage post={post} uri={uri} title={title} classNames='h-48 my-6 relative'/>
 
       <div className='mt-2 mb-4'>
-        {/* Display excerpt instead of full content */}
-        <p>{excerpt}</p>
+        <p>{createExcerpt(content)}</p>
       </div>
 
       <Link href={uri} title="Read more" className='hover:underline text-orange-600 mt-4'>

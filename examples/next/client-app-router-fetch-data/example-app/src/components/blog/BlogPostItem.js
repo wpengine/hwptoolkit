@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { FeaturedImage } from '../image/FeaturedImage';
 import { formatDate } from '@/lib/utils';
 
 export default function BlogPostItem({ post }) {
@@ -20,19 +20,7 @@ export default function BlogPostItem({ post }) {
           <span>by {post.author.node.name}</span>
       </div>
 
-      {post.featuredImage?.node?.sourceUrl && (
-        <div className="h-48 my-9 relative">
-          <Link href={uri} title={title} className='opacity-80 hover:opacity-100 transition-opacity ease-in-out'>
-            <Image
-              src={post.featuredImage.node.sourceUrl}
-              alt={post.featuredImage.node.altText || post.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover"
-            />
-          </Link>
-        </div>
-      )}
+      <FeaturedImage post={post} uri={uri} title={title} classNames='h-48 my-9 relative'/>
 
       <div className='mt-2 mb-4' dangerouslySetInnerHTML={{ __html: excerpt }} />
 

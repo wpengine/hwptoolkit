@@ -4,6 +4,13 @@ fragment EventListFragment on Event {
     title
     uri
     content
+    location {
+  	  edges {
+  	    node {
+  	     	name
+  	    }
+  	  }
+  	}
     featuredImage {
       node {
         sourceUrl

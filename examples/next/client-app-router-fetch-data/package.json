@@ -9,7 +9,7 @@
     "example:stop": "pnpm run wp:stop",
     "example:prune": "wp-env destroy && pnpm run example:build && pnpm run example:start",
     "example:dev": "pnpm --dir ./example-app dev",
-    "wp:start": "wp-env start",
+    "wp:start": "pnpm install && pnpm wp-env start",
     "wp:stop": "wp-env stop",
     "wp:destroy": "wp-env destroy --config ./wp-env/wp-env.json",
     "wp:db:query": "wp-env run cli -- wp db query",
@@ -40,5 +40,8 @@
     "database-management"
   ],
   "author": "hwptoolkit",
-  "license": "BSD-3-Clause"
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@wordpress/env": "^10.20.0"
+  }
 }

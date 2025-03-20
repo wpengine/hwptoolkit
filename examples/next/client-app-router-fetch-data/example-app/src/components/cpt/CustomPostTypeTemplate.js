@@ -2,7 +2,7 @@ import { getPosts, getPostsPerPage } from '@/lib/utils';
 import { notFound } from 'next/navigation';
 import CustomPostTypeList from './CustomPostTypeList';
 
-// Note the approach here is to load the first 5 posts on the server,
+// Note the approach here is to load the first 5 custom posts on the server,
 // and then use the client-side component to handle pagination after hydrating the initial data.
 export async function CustomPostTypeTemplate(query, customPostType, title) {
 

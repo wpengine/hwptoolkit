@@ -41,3 +41,8 @@ export async function getPosts({ query, slug = '', pageSize = 10, after = null, 
 export function getPostsPerPage() {
   return nextConfig.wordPressDisplaySettings?.postsPerPage || 10;
 }
+
+export function createExcerpt(content, length = 150) {
+  if (!content) return '';
+  return content.replace(/<[^>]*>/g, '').substring(0, length) + (content.length > length ? '...' : '');
+}
