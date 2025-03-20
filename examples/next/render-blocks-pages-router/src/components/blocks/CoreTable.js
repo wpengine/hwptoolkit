@@ -1,5 +1,6 @@
 import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
+import { Caption } from "../Caption";
 
 export function CoreTable({ attributes, customParser }) {
   const { caption, className, head, foot, body, align, backgroundColor, style } = attributes ?? {};
@@ -9,7 +10,7 @@ export function CoreTable({ attributes, customParser }) {
 
   return (
     <table className={className} align={align} bgcolor={backgroundColor} style={styles}>
-      {caption && <caption>{caption}</caption>}
+      <Caption as='caption' caption={caption} customParser={customParser} />
 
       {head && <thead>{head.map(renderRows)}</thead>}
       {body && <tbody>{body.map(renderRows)}</tbody>}

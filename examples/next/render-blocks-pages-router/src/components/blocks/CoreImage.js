@@ -1,7 +1,8 @@
 import { getInlineStyles } from "@/utils/getInlineStyles";
 import Image from "next/image.js";
+import { Caption } from "../Caption";
 
-export function CoreImage({ attributes }) {
+export function CoreImage({ attributes, customParser }) {
   const { anchor, cssClassName, caption, width, height, src, style, alt, title } = attributes ?? {};
   const hasDimensions = typeof width === "number" && typeof height === "number";
   const styles = getInlineStyles(style);
@@ -21,7 +22,7 @@ export function CoreImage({ attributes }) {
         )}
       </LinkWrapper>
 
-      {caption && <figcaption className='wp-element-caption'>{caption}</figcaption>}
+      <Caption caption={caption} customParser={customParser} />
     </figure>
   );
 }

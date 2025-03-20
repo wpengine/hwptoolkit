@@ -1,15 +1,14 @@
 import { getInlineStyles } from "@/utils/getInlineStyles";
 import React from "react";
+import { Caption } from "../Caption";
 
-export function CoreVideo({ attributes }) {
+export function CoreVideo({ attributes, customParser }) {
   const { autoplay, caption, className, controls, muted, preload, poster, loop, playsInline, src, style } =
     attributes ?? {};
   const styles = getInlineStyles(style);
 
   return (
     <figure className={className} style={styles}>
-      {caption && <figcaption>{caption}</figcaption>}
-
       <video
         src={src}
         controls={controls}
@@ -21,6 +20,8 @@ export function CoreVideo({ attributes }) {
         playsInline={playsInline}>
         Your browser does not support the video element.
       </video>
+
+      <Caption caption={caption} customParser={customParser} />
     </figure>
   );
 }
