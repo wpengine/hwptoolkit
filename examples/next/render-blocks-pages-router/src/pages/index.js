@@ -74,6 +74,14 @@ const mockRequest = (/* query, postURI */) => {
   }).then((res) => res.json());
 };
 
+// This is an example parser using `html-react-parser` to demonstrate how to pass a custom parser to the BlockRenderer
+// const customParser = (content) => parse(content, {});
+
+// This is an example custom default block component to override DefaultBlock component
+// function CustomDefaultBlock({ block }) {
+//   return <p>{block?.__typename} is not supported</p>;
+// }
+
 export default function Home() {
   const [post, setPost] = useState();
   // GraphQL response is a flat list of blocks, we need to convert it to a hierarchical structure
@@ -91,7 +99,11 @@ export default function Home() {
 
       <main>
         <h1>{post?.title}</h1>
-        <BlockRenderer blocks={hierarchicalEditorBlocks} />
+        <BlockRenderer
+          blocks={hierarchicalEditorBlocks}
+          // defaultBlock={CustomDefaultBlock}
+          // customParser={customParser}
+        />
       </main>
     </>
   );

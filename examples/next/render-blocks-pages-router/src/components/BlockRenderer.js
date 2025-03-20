@@ -31,7 +31,7 @@ export function BlockRenderer({ blocks, defaultBlock, customParser }) {
     }
 
     return (
-      <BlockComponent key={id} attributes={attributes}>
+      <BlockComponent key={id} attributes={attributes} customParser={customParser}>
         {children && <BlockRenderer blocks={children} defaultBlock={defaultBlock} customParser={customParser} />}
       </BlockComponent>
     );
