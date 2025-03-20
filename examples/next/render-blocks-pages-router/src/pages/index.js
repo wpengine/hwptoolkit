@@ -1,6 +1,7 @@
 import { BlockRenderer } from "@/components/BlockRenderer";
 import blocks from "@/components/blocks";
 import { flatListToHierarchical } from "@/utils/flatListToHierarchical";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 
 // This is an example of a GraphQL query that fetches a post by its URI
@@ -83,9 +84,15 @@ export default function Home() {
   }, []);
 
   return (
-    <main>
-      <h1>{post?.title}</h1>
-      <BlockRenderer blocks={hierarchicalEditorBlocks} />
-    </main>
+    <>
+      <Head>
+        <title>{post?.title}</title>
+      </Head>
+
+      <main>
+        <h1>{post?.title}</h1>
+        <BlockRenderer blocks={hierarchicalEditorBlocks} />
+      </main>
+    </>
   );
 }
