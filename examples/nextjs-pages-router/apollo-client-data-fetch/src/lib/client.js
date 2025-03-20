@@ -52,10 +52,12 @@ const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
 
 // Create a link for persisted queries with SHA-256 hashing
 // More info: https://www.apollographql.com/docs/apollo-server/performance/apq
-const link = new HttpLink({
-  uri: WORDPRESS_URL + "/graphql",
-  useGETForQueries: true,
-});
+const link = createPersistedQueryLink({ sha256 }).concat(
+  new HttpLink({
+    uri: WORDPRESS_URL + "/graphql",
+    useGETForQueries: true,
+  })
+);
 
 // Initialize Apollo Client with the link and cache configuration
 // More info: https://www.apollographql.com/docs/react/api/core/ApolloClient/
