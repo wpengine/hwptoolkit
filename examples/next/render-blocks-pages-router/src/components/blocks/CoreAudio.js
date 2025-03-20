@@ -9,7 +9,7 @@ export function CoreAudio({ attributes }) {
     <figure className={className} style={styles}>
       {caption && <figcaption>{caption}</figcaption>}
 
-      <audio controls autoplay={autoplay} loop={loop} src={src}>
+      <audio controls autoPlay={autoplay} loop={loop} src={src}>
         Your browser does not support the audio element.
       </audio>
     </figure>
