@@ -60,7 +60,7 @@ const mockRequest = (/* query, postURI */) => {
   // It fetches a post data from a JSON file, located in the public directory
   // In a real-world scenario, you would replace REQUEST_URL with the actual WordPress GraphQL endpoint and POST_URI with actual post URI
   return fetch(REQUEST_URL, {
-    // method: "GET",
+    // method: "POST",
     // headers: {
     //   "Content-Type": "application/json",
     // },
