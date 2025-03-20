@@ -29,6 +29,7 @@ We believe in transparent, collaborative development. These guidelines document 
 - Tag issues accurately with "good first issue" and "help wanted" when appropriate
 - Write commit messages explaining *why* changes were made, not just what
 - Document decisions in GitHub discussions, issues, and PRs
+- Actively share your work with the community
 
 ## Code Review Standards
 
