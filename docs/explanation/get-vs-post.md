@@ -15,7 +15,8 @@ WPGraphQL supports querying data using the `/graphql` endpoint in two primary wa
 ```bash
 curl 'http://myexample.local/graphql?query={generalSettings{url}}'
 ```
-**Note**: GET requests have inherent URL length limitations (typically 2,000-8,000 characters depending on the browser and server). Complex GraphQL queries can easily exceed these limits, making this method impractical for anything beyond basic queries.
+> [!IMPORTANT]
+GET requests have inherent URL length limitations (typically 2,000-8,000 characters depending on the browser and server). Complex GraphQL queries can easily exceed these limits, making this method impractical for anything beyond basic queries.
 
 Each property is provided as an HTTP query parameter, with values separated by an ampersand (&).
 
