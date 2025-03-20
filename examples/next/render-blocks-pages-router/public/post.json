@@ -1,0 +1,1396 @@
+{
+  "data": {
+    "post": {
+      "title": "Rendering WordPress Blocks in a headless environment",
+      "content": "\n<p>This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes 16 block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.</p>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Text blocks</h2>\n\n\n\n<ul class=\"wp-block-list\">\n<li>Unordered list item</li>\n\n\n\n<li>Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n\n\n\n<ol class=\"wp-block-list\">\n<li>Ordered list item </li>\n\n\n\n<li>Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ol>\n\n\n\n<h1 class=\"wp-block-heading\">Heading &#8211; H1</h1>\n\n\n\n<h2 class=\"wp-block-heading\">Heading &#8211; H2</h2>\n\n\n\n<h3 class=\"wp-block-heading\">Heading &#8211; H3</h3>\n\n\n\n<h4 class=\"wp-block-heading\">Heading &#8211; H4</h4>\n\n\n\n<h5 class=\"wp-block-heading\">Heading &#8211; H5</h5>\n\n\n\n<h6 class=\"wp-block-heading\">Heading &#8211; H6</h6>\n\n\n\n<pre class=\"wp-block-code\"><code>&lt;CodeBlock /></code></pre>\n\n\n\n<pre class=\"wp-block-preformatted\">Preformatted block &lt;pre>\n</pre>\n\n\n\n<figure class=\"wp-block-table\"><table><tbody><tr><td>cell</td><td>big cell content</td></tr><tr><td>cell</td><td>big cell content</td></tr></tbody></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n\n\n\n<figure class=\"wp-block-table\"><table class=\"has-fixed-layout\"><thead><tr><th>table header</th><th>table header 2</th></tr></thead><tbody><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr></tbody><tfoot><tr><td>table footer </td><td>table footer 2</td></tr></tfoot></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n\n\n\n<blockquote class=\"wp-block-quote is-layout-flow wp-block-quote-is-layout-flow\">\n<p>Quote block</p>\n<cite>Quote citation</cite></blockquote>\n\n\n\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Media blocks</h2>\n\n\n\n<figure class=\"wp-block-image size-large\"><a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY\" target=\"_blank\" rel=\" noreferrer noopener\"><img decoding=\"async\" src=\"https://images.unsplash.com/photo-1671649216692-0dbeaa295d0a?q=80&amp;w=2070&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\" alt=\"\"/></a><figcaption class=\"wp-element-caption\">This photo includes a link to the source (Photo by <a href=\"https://unsplash.com/@lovesquish?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Jessica Christian</a> on <a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Unsplash</a>)</figcaption></figure>\n\n\n\n<figure class=\"wp-block-audio\"><audio controls src=\"https://upload.wikimedia.org/wikipedia/commons/0/0e/Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\"></audio><figcaption class=\"wp-element-caption\">Four Seasons 4 Winter Air Force Strings &#8211; United States Air Force Band: <a href=\"https://commons.wikimedia.org/wiki/File:Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\">Wikimedia link</a></figcaption></figure>\n\n\n\n<figure class=\"wp-block-video\"><video controls loop muted src=\"https://upload.wikimedia.org/wikipedia/commons/0/09/La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\"></video><figcaption class=\"wp-element-caption\">La Sortie de l&#8217;Usine Lumi\u00e8re \u00e0 Lyon I 1895: <a href=\"https://commons.wikimedia.org/wiki/File:La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\">Wikimedia link</a></figcaption></figure>\n\n\n\n<p></p>\n\n\n\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n\n\n\n<p></p>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Design Blocks</h2>\n\n\n\n<div class=\"wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex\">\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\">Button with link</a></div>\n\n\n\n<div class=\"wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--1\"><a class=\"wp-block-button__link wp-element-button\">Button without link</a></div>\n</div>\n\n\n\n<p></p>\n\n\n\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-1 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 1</h3>\n\n\n\n<p>This is a first column of the two column layout</p>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 2</h3>\n\n\n\n<p>This is a second column of the two column layout</p>\n</div>\n</div>\n\n\n\n<p></p>\n\n\n\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-2 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow\">\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<p>This is a separator block within the column block</p>\n</div>\n</div>\n\n\n\n<p></p>\n",
+      "editorBlocks": [
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p>This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes 16 block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.</p>\n",
+          "id": "67dbf6abb5cab",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes 16 block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p></p>\n",
+          "id": "67dbf6abb5cad",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h2 class=\"wp-block-heading\">Text blocks</h2>\n",
+          "id": "67dbf6abb5cae",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Text blocks",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 2,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/list",
+          "__typename": "CoreList",
+          "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Unordered list item</li>\n\n\n\n<li>Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n",
+          "id": "67dbf6abb5caf",
+          "parentId": null,
+          "attributes": {
+            "anchor": null,
+            "backgroundColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "ordered": false,
+            "reversed": null,
+            "start": null,
+            "style": null,
+            "textColor": null,
+            "type": null,
+            "values": "<li>Unordered list item</li><li>Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li><li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li><li>Unordered list item deeper</li><li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li><li>Unordered list item deeper</li><li>Unordered list item deeper</li>",
+            "cssClassName": "wp-block-list"
+          }
+        },
+        {
+          "name": "core/list-item",
+          "__typename": "CoreListItem",
+          "renderedHtml": "\n<li>Unordered list item</li>\n",
+          "id": "67dbf6abb5cb0",
+          "parentId": "67dbf6abb5caf",
+          "attributes": {
+            "content": "Unordered list item",
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "metadata": null,
+            "placeholder": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/list-item",
+          "__typename": "CoreListItem",
+          "renderedHtml": "\n<li>Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n",
+          "id": "67dbf6abb5cb1",
+          "parentId": "67dbf6abb5caf",
+          "attributes": {
+            "content": "Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\nUnordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\nUnordered list item deeper",
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "metadata": null,
+            "placeholder": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/list",
+          "__typename": "CoreList",
+          "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n",
+          "id": "67dbf6abb5cb2",
+          "parentId": "67dbf6abb5cb1",
+          "attributes": {
+            "anchor": null,
+            "backgroundColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "ordered": false,
+            "reversed": null,
+            "start": null,
+            "style": null,
+            "textColor": null,
+            "type": null,
+            "values": "<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li><li>Unordered list item deeper</li><li>Unordered list item deeper</li>",
+            "cssClassName": "wp-block-list"
+          }
+        },
+        {
+          "name": "core/list-item",
+          "__typename": "CoreListItem",
+          "renderedHtml": "\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n",
+          "id": "67dbf6abb5cb3",
+          "parentId": "67dbf6abb5cb2",
+          "attributes": {
+            "content": "Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\nUnordered list item deeper",
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "metadata": null,
+            "placeholder": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/list",
+          "__typename": "CoreList",
+          "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n",
+          "id": "67dbf6abb5cb4",
+          "parentId": "67dbf6abb5cb3",
+          "attributes": {
+            "anchor": null,
+            "backgroundColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "ordered": false,
+            "reversed": null,
+            "start": null,
+            "style": null,
+            "textColor": null,
+            "type": null,
+            "values": "<li>Unordered list item deeper</li>",
+            "cssClassName": "wp-block-list"
+          }
+        },
+        {
+          "name": "core/list-item",
+          "__typename": "CoreListItem",
+          "renderedHtml": "\n<li>Unordered list item deeper</li>\n",
+          "id": "67dbf6abb5cb5",
+          "parentId": "67dbf6abb5cb4",
+          "attributes": {
+            "content": "Unordered list item deeper",
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "metadata": null,
+            "placeholder": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/list",
+          "__typename": "CoreList",
+          "renderedHtml": "\n<ol class=\"wp-block-list\">\n<li>Ordered list item </li>\n\n\n\n<li>Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ol>\n",
+          "id": "67dbf6abb5cb6",
+          "parentId": null,
+          "attributes": {
+            "anchor": null,
+            "backgroundColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "ordered": true,
+            "reversed": null,
+            "start": null,
+            "style": null,
+            "textColor": null,
+            "type": null,
+            "values": "<li>Ordered list item </li><li>Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li><li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li><li>Ordered list item deeper</li><li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li><li>Ordered list item deeper</li><li>Ordered list item deeper</li>",
+            "cssClassName": "wp-block-list"
+          }
+        },
+        {
+          "name": "core/list-item",
+          "__typename": "CoreListItem",
+          "renderedHtml": "\n<li>Ordered list item </li>\n",
+          "id": "67dbf6abb5cb7",
+          "parentId": "67dbf6abb5cb6",
+          "attributes": {
+            "content": "Ordered list item ",
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "metadata": null,
+            "placeholder": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/list-item",
+          "__typename": "CoreListItem",
+          "renderedHtml": "\n<li>Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n",
+          "id": "67dbf6abb5cb8",
+          "parentId": "67dbf6abb5cb6",
+          "attributes": {
+            "content": "Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\nOrdered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\nOrdered list item deeper",
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "metadata": null,
+            "placeholder": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/list",
+          "__typename": "CoreList",
+          "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n",
+          "id": "67dbf6abb5cb9",
+          "parentId": "67dbf6abb5cb8",
+          "attributes": {
+            "anchor": null,
+            "backgroundColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "ordered": false,
+            "reversed": null,
+            "start": null,
+            "style": null,
+            "textColor": null,
+            "type": null,
+            "values": "<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li><li>Ordered list item deeper</li><li>Ordered list item deeper</li>",
+            "cssClassName": "wp-block-list"
+          }
+        },
+        {
+          "name": "core/list-item",
+          "__typename": "CoreListItem",
+          "renderedHtml": "\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n",
+          "id": "67dbf6abb5cba",
+          "parentId": "67dbf6abb5cb9",
+          "attributes": {
+            "content": "Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\nOrdered list item deeper",
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "metadata": null,
+            "placeholder": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/list",
+          "__typename": "CoreList",
+          "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n",
+          "id": "67dbf6abb5cbb",
+          "parentId": "67dbf6abb5cba",
+          "attributes": {
+            "anchor": null,
+            "backgroundColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "ordered": false,
+            "reversed": null,
+            "start": null,
+            "style": null,
+            "textColor": null,
+            "type": null,
+            "values": "<li>Ordered list item deeper</li>",
+            "cssClassName": "wp-block-list"
+          }
+        },
+        {
+          "name": "core/list-item",
+          "__typename": "CoreListItem",
+          "renderedHtml": "\n<li>Ordered list item deeper</li>\n",
+          "id": "67dbf6abb5cbc",
+          "parentId": "67dbf6abb5cbb",
+          "attributes": {
+            "content": "Ordered list item deeper",
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "metadata": null,
+            "placeholder": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h1 class=\"wp-block-heading\">Heading - H1</h1>\n",
+          "id": "67dbf6abb5cbd",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Heading - H1",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 1,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h2 class=\"wp-block-heading\">Heading - H2</h2>\n",
+          "id": "67dbf6abb5cbe",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Heading - H2",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 2,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h3 class=\"wp-block-heading\">Heading - H3</h3>\n",
+          "id": "67dbf6abb5cbf",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Heading - H3",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 3,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h4 class=\"wp-block-heading\">Heading - H4</h4>\n",
+          "id": "67dbf6abb5cc0",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Heading - H4",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 4,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h5 class=\"wp-block-heading\">Heading - H5</h5>\n",
+          "id": "67dbf6abb5cc1",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Heading - H5",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 5,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h6 class=\"wp-block-heading\">Heading - H6</h6>\n",
+          "id": "67dbf6abb5cc2",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Heading - H6",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 6,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/code",
+          "__typename": "CoreCode",
+          "renderedHtml": "\n<pre class=\"wp-block-code\"><code>&lt;CodeBlock /></code></pre>\n",
+          "id": "67dbf6abb5cc3",
+          "parentId": null,
+          "attributes": {
+            "anchor": null,
+            "backgroundColor": null,
+            "borderColor": null,
+            "className": null,
+            "content": "&lt;CodeBlock /&gt;",
+            "cssClassName": "wp-block-code",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/preformatted",
+          "__typename": "CorePreformatted",
+          "renderedHtml": "\n<pre class=\"wp-block-preformatted\">Preformatted block &lt;pre>\n</pre>\n",
+          "id": "67dbf6abb5cc4",
+          "parentId": null,
+          "attributes": {
+            "anchor": null,
+            "borderColor": null,
+            "backgroundColor": null,
+            "className": null,
+            "content": "Preformatted block &lt;pre&gt;\n",
+            "fontFamily": null,
+            "fontSize": null,
+            "lock": null,
+            "gradient": null,
+            "metadata": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/table",
+          "__typename": "CoreTable",
+          "renderedHtml": "\n<figure class=\"wp-block-table\"><table><tbody><tr><td>cell</td><td>big cell content</td></tr><tr><td>cell</td><td>big cell content</td></tr></tbody></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n",
+          "id": "67dbf6abb5cc5",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "body": [
+              {
+                "cells": [
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "tag": "td",
+                    "rowspan": null,
+                    "content": "cell",
+                    "scope": null
+                  },
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "tag": "td",
+                    "rowspan": null,
+                    "content": "big cell content",
+                    "scope": null
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "tag": "td",
+                    "rowspan": null,
+                    "content": "cell",
+                    "scope": null
+                  },
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "tag": "td",
+                    "rowspan": null,
+                    "content": "big cell content",
+                    "scope": null
+                  }
+                ]
+              }
+            ],
+            "borderColor": null,
+            "caption": "Caption",
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "foot": [],
+            "gradient": null,
+            "hasFixedLayout": false,
+            "head": [],
+            "lock": null,
+            "metadata": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/table",
+          "__typename": "CoreTable",
+          "renderedHtml": "\n<figure class=\"wp-block-table\"><table class=\"has-fixed-layout\"><thead><tr><th>table header</th><th>table header 2</th></tr></thead><tbody><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr></tbody><tfoot><tr><td>table footer </td><td>table footer 2</td></tr></tfoot></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n",
+          "id": "67dbf6abb5cc6",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "body": [
+              {
+                "cells": [
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "tag": "td",
+                    "rowspan": null,
+                    "content": "cell in fixed table",
+                    "scope": null
+                  },
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "tag": "td",
+                    "rowspan": null,
+                    "content": "cell in fixed table",
+                    "scope": null
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "tag": "td",
+                    "rowspan": null,
+                    "content": "cell in fixed table",
+                    "scope": null
+                  },
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "tag": "td",
+                    "rowspan": null,
+                    "content": "cell in fixed table",
+                    "scope": null
+                  }
+                ]
+              }
+            ],
+            "borderColor": null,
+            "caption": "Caption",
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "foot": [
+              {
+                "cells": [
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "content": "table footer ",
+                    "rowspan": null,
+                    "scope": null,
+                    "tag": "td"
+                  },
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "content": "table footer 2",
+                    "rowspan": null,
+                    "scope": null,
+                    "tag": "td"
+                  }
+                ]
+              }
+            ],
+            "gradient": null,
+            "hasFixedLayout": true,
+            "head": [
+              {
+                "cells": [
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "content": "table header",
+                    "rowspan": null,
+                    "scope": null,
+                    "tag": "th"
+                  },
+                  {
+                    "align": null,
+                    "colspan": null,
+                    "content": "table header 2",
+                    "rowspan": null,
+                    "scope": null,
+                    "tag": "th"
+                  }
+                ]
+              }
+            ],
+            "lock": null,
+            "metadata": null,
+            "style": null,
+            "textColor": null
+          }
+        },
+        {
+          "name": "core/quote",
+          "__typename": "CoreQuote",
+          "renderedHtml": "\n<blockquote class=\"wp-block-quote is-layout-flow wp-block-quote-is-layout-flow\">\n<p>Quote block</p>\n<cite>Quote citation</cite></blockquote>\n",
+          "id": "67dbf6abb5cc7",
+          "parentId": null,
+          "attributes": {
+            "textAlign": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "citation": "Quote citation",
+            "className": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "lock": null,
+            "style": null,
+            "textColor": null,
+            "value": "<p>Quote block</p>",
+            "cssClassName": "wp-block-quote is-layout-flow wp-block-quote-is-layout-flow"
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p>Quote block</p>\n",
+          "id": "67dbf6abb5cc8",
+          "parentId": "67dbf6abb5cc7",
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "Quote block",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/separator",
+          "__typename": "CoreSeparator",
+          "renderedHtml": "\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n",
+          "id": "67dbf6abb5cc9",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "opacity": "alpha-channel",
+            "gradient": null,
+            "backgroundColor": null,
+            "style": null,
+            "cssClassName": "wp-block-separator has-alpha-channel-opacity"
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p></p>\n",
+          "id": "67dbf6abb5cca",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h2 class=\"wp-block-heading\">Media blocks</h2>\n",
+          "id": "67dbf6abb5ccb",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Media blocks",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 2,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/image",
+          "__typename": "CoreImage",
+          "renderedHtml": "\n<figure class=\"wp-block-image size-large\"><a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY\" target=\"_blank\" rel=\" noreferrer noopener\"><img src=\"https://images.unsplash.com/photo-1671649216692-0dbeaa295d0a?q=80&amp;w=2070&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\" alt=\"\"/></a><figcaption class=\"wp-element-caption\">This photo includes a link to the source (Photo by <a href=\"https://unsplash.com/@lovesquish?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Jessica Christian</a> on <a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Unsplash</a>)</figcaption></figure>\n",
+          "id": "67dbf6abb5ccc",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "alt": "",
+            "anchor": null,
+            "borderColor": null,
+            "caption": "This photo includes a link to the source (Photo by <a href=\"https://unsplash.com/@lovesquish?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Jessica Christian</a> on <a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Unsplash</a>)",
+            "className": null,
+            "width": null,
+            "url": "https://images.unsplash.com/photo-1671649216692-0dbeaa295d0a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "title": null,
+            "style": null,
+            "src": "https://images.unsplash.com/photo-1671649216692-0dbeaa295d0a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "sizeSlug": "large",
+            "rel": " noreferrer noopener",
+            "lock": null,
+            "linkTarget": "_blank",
+            "linkDestination": "custom",
+            "linkClass": null,
+            "href": "https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY",
+            "height": null,
+            "cssClassName": "wp-block-image size-large"
+          }
+        },
+        {
+          "name": "core/audio",
+          "__typename": "CoreAudio",
+          "renderedHtml": "\n<figure class=\"wp-block-audio\"><audio controls src=\"https://upload.wikimedia.org/wikipedia/commons/0/0e/Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\"></audio><figcaption class=\"wp-element-caption\">Four Seasons 4 Winter Air Force Strings - United States Air Force Band: <a href=\"https://commons.wikimedia.org/wiki/File:Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\">Wikimedia link</a></figcaption></figure>\n",
+          "id": "67dbf6abb5ccd",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "autoplay": false,
+            "blob": null,
+            "caption": "Four Seasons 4 Winter Air Force Strings - United States Air Force Band: <a href=\"https://commons.wikimedia.org/wiki/File:Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\">Wikimedia link</a>",
+            "className": null,
+            "id": null,
+            "lock": null,
+            "loop": false,
+            "metadata": null,
+            "src": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3",
+            "style": null
+          }
+        },
+        {
+          "name": "core/video",
+          "__typename": "CoreVideo",
+          "renderedHtml": "\n<figure class=\"wp-block-video\"><video controls loop muted src=\"https://upload.wikimedia.org/wikipedia/commons/0/09/La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\"></video><figcaption class=\"wp-element-caption\">La Sortie de l'Usine Lumi\u00e8re \u00e0 Lyon I 1895: <a href=\"https://commons.wikimedia.org/wiki/File:La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\">Wikimedia link</a></figcaption></figure>\n",
+          "id": "67dbf6abb5cce",
+          "parentId": null,
+          "attributes": {
+            "anchor": null,
+            "autoplay": false,
+            "caption": "La Sortie de l'Usine Lumi\u00e8re \u00e0 Lyon I 1895: <a href=\"https://commons.wikimedia.org/wiki/File:La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\">Wikimedia link</a>",
+            "className": null,
+            "controls": true,
+            "id": null,
+            "lock": null,
+            "loop": true,
+            "muted": true,
+            "playsInline": false,
+            "poster": null,
+            "preload": "metadata",
+            "src": "https://upload.wikimedia.org/wikipedia/commons/0/09/La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm",
+            "style": null
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p></p>\n",
+          "id": "67dbf6abb5ccf",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/separator",
+          "__typename": "CoreSeparator",
+          "renderedHtml": "\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n",
+          "id": "67dbf6abb5cd0",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "opacity": "alpha-channel",
+            "gradient": null,
+            "backgroundColor": null,
+            "style": null,
+            "cssClassName": "wp-block-separator has-alpha-channel-opacity"
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p></p>\n",
+          "id": "67dbf6abb5cd1",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p></p>\n",
+          "id": "67dbf6abb5cd2",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h2 class=\"wp-block-heading\">Design Blocks</h2>\n",
+          "id": "67dbf6abb5cd3",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Design Blocks",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 2,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/buttons",
+          "__typename": "CoreButtons",
+          "renderedHtml": "\n<div class=\"wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex\">\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\">Button with link</a></div>\n\n\n\n<div class=\"wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--2\"><a class=\"wp-block-button__link wp-element-button\">Button without link</a></div>\n</div>\n",
+          "id": "67dbf6abb5cd4",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": "wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex",
+            "align": null,
+            "anchor": null,
+            "fontFamily": null,
+            "fontSize": null,
+            "layout": null,
+            "style": null
+          }
+        },
+        {
+          "name": "core/button",
+          "__typename": "CoreButton",
+          "renderedHtml": "\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\">Button with link</a></div>\n",
+          "id": "67dbf6abb5cd5",
+          "parentId": "67dbf6abb5cd4",
+          "attributes": {
+            "anchor": null,
+            "gradient": null,
+            "text": "Button with link",
+            "textAlign": null,
+            "textColor": null,
+            "style": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "linkTarget": null,
+            "rel": null,
+            "url": null,
+            "backgroundColor": null,
+            "cssClassName": "wp-block-button",
+            "linkClassName": "wp-block-button__link wp-element-button"
+          }
+        },
+        {
+          "name": "core/button",
+          "__typename": "CoreButton",
+          "renderedHtml": "\n<div class=\"wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--10\"><a class=\"wp-block-button__link wp-element-button\">Button without link</a></div>\n",
+          "id": "67dbf6abb5cd6",
+          "parentId": "67dbf6abb5cd4",
+          "attributes": {
+            "anchor": null,
+            "gradient": null,
+            "text": "Button without link",
+            "textAlign": null,
+            "textColor": null,
+            "style": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "linkTarget": null,
+            "rel": null,
+            "url": null,
+            "backgroundColor": null,
+            "cssClassName": "wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--23",
+            "linkClassName": "wp-block-button__link wp-element-button"
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p></p>\n",
+          "id": "67dbf6abb5cd7",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/columns",
+          "__typename": "CoreColumns",
+          "renderedHtml": "\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-3 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 1</h3>\n\n\n\n<p>This is a first column of the two column layout</p>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 2</h3>\n\n\n\n<p>This is a second column of the two column layout</p>\n</div>\n</div>\n",
+          "id": "67dbf6abb5cd8",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "layout": null,
+            "cssClassName": "wp-block-columns is-layout-flex wp-container-core-columns-is-layout-7 wp-block-columns-is-layout-flex",
+            "isStackedOnMobile": true,
+            "verticalAlignment": null,
+            "borderColor": null,
+            "backgroundColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "style": null,
+            "textColor": null,
+            "gradient": null
+          }
+        },
+        {
+          "name": "core/column",
+          "__typename": "CoreColumn",
+          "renderedHtml": "\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 1</h3>\n\n\n\n<p>This is a first column of the two column layout</p>\n</div>\n",
+          "id": "67dbf6abb5cd9",
+          "parentId": "67dbf6abb5cd8",
+          "attributes": {
+            "anchor": null,
+            "borderColor": null,
+            "backgroundColor": null,
+            "cssClassName": "wp-block-column is-layout-flow wp-block-column-is-layout-flow",
+            "fontSize": null,
+            "fontFamily": null,
+            "gradient": null,
+            "layout": null,
+            "style": null,
+            "textColor": null,
+            "verticalAlignment": null,
+            "width": null
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h3 class=\"wp-block-heading\">Column 1</h3>\n",
+          "id": "67dbf6abb5cda",
+          "parentId": "67dbf6abb5cd9",
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Column 1",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 3,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p>This is a first column of the two column layout</p>\n",
+          "id": "67dbf6abb5cdb",
+          "parentId": "67dbf6abb5cd9",
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "This is a first column of the two column layout",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/column",
+          "__typename": "CoreColumn",
+          "renderedHtml": "\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 2</h3>\n\n\n\n<p>This is a second column of the two column layout</p>\n</div>\n",
+          "id": "67dbf6abb5cdc",
+          "parentId": "67dbf6abb5cd8",
+          "attributes": {
+            "anchor": null,
+            "borderColor": null,
+            "backgroundColor": null,
+            "cssClassName": "wp-block-column is-layout-flow wp-block-column-is-layout-flow",
+            "fontSize": null,
+            "fontFamily": null,
+            "gradient": null,
+            "layout": null,
+            "style": null,
+            "textColor": null,
+            "verticalAlignment": null,
+            "width": null
+          }
+        },
+        {
+          "name": "core/heading",
+          "__typename": "CoreHeading",
+          "renderedHtml": "\n<h3 class=\"wp-block-heading\">Column 2</h3>\n",
+          "id": "67dbf6abb5cdd",
+          "parentId": "67dbf6abb5cdc",
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "backgroundColor": null,
+            "content": "Column 2",
+            "fontFamily": null,
+            "fontSize": null,
+            "gradient": null,
+            "level": 3,
+            "style": null,
+            "textAlign": null,
+            "textColor": null,
+            "cssClassName": "wp-block-heading"
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p>This is a second column of the two column layout</p>\n",
+          "id": "67dbf6abb5cde",
+          "parentId": "67dbf6abb5cdc",
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "This is a second column of the two column layout",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p></p>\n",
+          "id": "67dbf6abb5cdf",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/columns",
+          "__typename": "CoreColumns",
+          "renderedHtml": "\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-17 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow\">\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<p>This is a separator block within the column block</p>\n</div>\n</div>\n",
+          "id": "67dbf6abb5ce0",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "layout": null,
+            "cssClassName": "wp-block-columns is-layout-flex wp-container-core-columns-is-layout-21 wp-block-columns-is-layout-flex",
+            "isStackedOnMobile": true,
+            "verticalAlignment": null,
+            "borderColor": null,
+            "backgroundColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "style": null,
+            "textColor": null,
+            "gradient": null
+          }
+        },
+        {
+          "name": "core/column",
+          "__typename": "CoreColumn",
+          "renderedHtml": "\n<div class=\"wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow\">\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n</div>\n",
+          "id": "67dbf6abb5ce1",
+          "parentId": "67dbf6abb5ce0",
+          "attributes": {
+            "anchor": null,
+            "borderColor": null,
+            "backgroundColor": null,
+            "cssClassName": "wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow",
+            "fontSize": null,
+            "fontFamily": null,
+            "gradient": null,
+            "layout": null,
+            "style": null,
+            "textColor": null,
+            "verticalAlignment": "center",
+            "width": null
+          }
+        },
+        {
+          "name": "core/separator",
+          "__typename": "CoreSeparator",
+          "renderedHtml": "\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n",
+          "id": "67dbf6abb5ce2",
+          "parentId": "67dbf6abb5ce1",
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "opacity": "alpha-channel",
+            "gradient": null,
+            "backgroundColor": null,
+            "style": null,
+            "cssClassName": "wp-block-separator has-alpha-channel-opacity"
+          }
+        },
+        {
+          "name": "core/column",
+          "__typename": "CoreColumn",
+          "renderedHtml": "\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<p>This is a separator block within the column block</p>\n</div>\n",
+          "id": "67dbf6abb5ce3",
+          "parentId": "67dbf6abb5ce0",
+          "attributes": {
+            "anchor": null,
+            "borderColor": null,
+            "backgroundColor": null,
+            "cssClassName": "wp-block-column is-layout-flow wp-block-column-is-layout-flow",
+            "fontSize": null,
+            "fontFamily": null,
+            "gradient": null,
+            "layout": null,
+            "style": null,
+            "textColor": null,
+            "verticalAlignment": null,
+            "width": null
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p>This is a separator block within the column block</p>\n",
+          "id": "67dbf6abb5ce4",
+          "parentId": "67dbf6abb5ce3",
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "This is a separator block within the column block",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        },
+        {
+          "name": "core/paragraph",
+          "__typename": "CoreParagraph",
+          "renderedHtml": "\n<p></p>\n",
+          "id": "67dbf6abb5ce5",
+          "parentId": null,
+          "attributes": {
+            "cssClassName": null,
+            "backgroundColor": null,
+            "content": "",
+            "style": null,
+            "textColor": null,
+            "fontSize": null,
+            "fontFamily": null,
+            "direction": null,
+            "dropCap": false,
+            "gradient": null,
+            "align": null,
+            "anchor": null
+          }
+        }
+      ]
+    }
+  },
+  "extensions": {
+    "debug": [
+      {
+        "type": "DEBUG_LOGS_INACTIVE",
+        "message": "GraphQL Debug logging is not active. To see debug logs, GRAPHQL_DEBUG must be enabled."
+      }
+    ],
+    "graphqlSmartCache": {
+      "graphqlObjectCache": []
+    }
+  }
+}

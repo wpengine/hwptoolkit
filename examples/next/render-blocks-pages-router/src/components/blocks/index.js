@@ -15,7 +15,7 @@ import { CoreSeparator } from "./CoreSeparator.js";
 import { CoreColumns } from "./CoreColumns.js";
 import { CoreColumn } from "./CoreColumn.js";
 
-const blockComponents = {
+const blocks = {
   CoreHeading,
   CoreParagraph,
   CoreQuote,
@@ -34,4 +34,4 @@ const blockComponents = {
   CoreColumn,
 };
 
-export default blockComponents;
+export default blocks;
