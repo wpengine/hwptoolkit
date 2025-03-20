@@ -2,18 +2,18 @@
   "data": {
     "post": {
       "title": "Rendering WordPress Blocks in a headless environment",
-      "content": "\n<p>This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes 16 block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.</p>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Text blocks</h2>\n\n\n\n<ul class=\"wp-block-list\">\n<li>Unordered list item</li>\n\n\n\n<li>Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n\n\n\n<ol class=\"wp-block-list\">\n<li>Ordered list item </li>\n\n\n\n<li>Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ol>\n\n\n\n<h1 class=\"wp-block-heading\">Heading &#8211; H1</h1>\n\n\n\n<h2 class=\"wp-block-heading\">Heading &#8211; H2</h2>\n\n\n\n<h3 class=\"wp-block-heading\">Heading &#8211; H3</h3>\n\n\n\n<h4 class=\"wp-block-heading\">Heading &#8211; H4</h4>\n\n\n\n<h5 class=\"wp-block-heading\">Heading &#8211; H5</h5>\n\n\n\n<h6 class=\"wp-block-heading\">Heading &#8211; H6</h6>\n\n\n\n<pre class=\"wp-block-code\"><code>&lt;CodeBlock /></code></pre>\n\n\n\n<pre class=\"wp-block-preformatted\">Preformatted block &lt;pre>\n</pre>\n\n\n\n<figure class=\"wp-block-table\"><table><tbody><tr><td>cell</td><td>big cell content</td></tr><tr><td>cell</td><td>big cell content</td></tr></tbody></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n\n\n\n<figure class=\"wp-block-table\"><table class=\"has-fixed-layout\"><thead><tr><th>table header</th><th>table header 2</th></tr></thead><tbody><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr></tbody><tfoot><tr><td>table footer </td><td>table footer 2</td></tr></tfoot></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n\n\n\n<blockquote class=\"wp-block-quote is-layout-flow wp-block-quote-is-layout-flow\">\n<p>Quote block</p>\n<cite>Quote citation</cite></blockquote>\n\n\n\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Media blocks</h2>\n\n\n\n<figure class=\"wp-block-image size-large\"><a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY\" target=\"_blank\" rel=\" noreferrer noopener\"><img decoding=\"async\" src=\"https://images.unsplash.com/photo-1671649216692-0dbeaa295d0a?q=80&amp;w=2070&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\" alt=\"\"/></a><figcaption class=\"wp-element-caption\">This photo includes a link to the source (Photo by <a href=\"https://unsplash.com/@lovesquish?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Jessica Christian</a> on <a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Unsplash</a>)</figcaption></figure>\n\n\n\n<figure class=\"wp-block-audio\"><audio controls src=\"https://upload.wikimedia.org/wikipedia/commons/0/0e/Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\"></audio><figcaption class=\"wp-element-caption\">Four Seasons 4 Winter Air Force Strings &#8211; United States Air Force Band: <a href=\"https://commons.wikimedia.org/wiki/File:Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\">Wikimedia link</a></figcaption></figure>\n\n\n\n<figure class=\"wp-block-video\"><video controls loop muted src=\"https://upload.wikimedia.org/wikipedia/commons/0/09/La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\"></video><figcaption class=\"wp-element-caption\">La Sortie de l&#8217;Usine Lumi\u00e8re \u00e0 Lyon I 1895: <a href=\"https://commons.wikimedia.org/wiki/File:La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\">Wikimedia link</a></figcaption></figure>\n\n\n\n<p></p>\n\n\n\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n\n\n\n<p></p>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Design Blocks</h2>\n\n\n\n<div class=\"wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex\">\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\">Button with link</a></div>\n\n\n\n<div class=\"wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--1\"><a class=\"wp-block-button__link wp-element-button\">Button without link</a></div>\n</div>\n\n\n\n<p></p>\n\n\n\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-1 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 1</h3>\n\n\n\n<p>This is a first column of the two column layout</p>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 2</h3>\n\n\n\n<p>This is a second column of the two column layout</p>\n</div>\n</div>\n\n\n\n<p></p>\n\n\n\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-2 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow\">\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<p>This is a separator block within the column block</p>\n</div>\n</div>\n\n\n\n<p></p>\n",
+      "content": "\n<p>This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes {NUMBER} block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.</p>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Text blocks</h2>\n\n\n\n<ul class=\"wp-block-list\">\n<li>Unordered list item</li>\n\n\n\n<li>Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n\n\n\n<ol class=\"wp-block-list\">\n<li>Ordered list item </li>\n\n\n\n<li>Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ol>\n\n\n\n<h1 class=\"wp-block-heading\">Heading &#8211; H1</h1>\n\n\n\n<h2 class=\"wp-block-heading\">Heading &#8211; H2</h2>\n\n\n\n<h3 class=\"wp-block-heading\">Heading &#8211; H3</h3>\n\n\n\n<h4 class=\"wp-block-heading\">Heading &#8211; H4</h4>\n\n\n\n<h5 class=\"wp-block-heading\">Heading &#8211; H5</h5>\n\n\n\n<h6 class=\"wp-block-heading\">Heading &#8211; H6</h6>\n\n\n\n<pre class=\"wp-block-code\"><code>&lt;CodeBlock /></code></pre>\n\n\n\n<pre class=\"wp-block-preformatted\">Preformatted block &lt;pre>\n</pre>\n\n\n\n<figure class=\"wp-block-table\"><table><tbody><tr><td>cell</td><td>big cell content</td></tr><tr><td>cell</td><td>big cell content</td></tr></tbody></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n\n\n\n<figure class=\"wp-block-table\"><table class=\"has-fixed-layout\"><thead><tr><th>table header</th><th>table header 2</th></tr></thead><tbody><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr></tbody><tfoot><tr><td>table footer </td><td>table footer 2</td></tr></tfoot></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n\n\n\n<blockquote class=\"wp-block-quote is-layout-flow wp-block-quote-is-layout-flow\">\n<p>Quote block</p>\n<cite>Quote citation</cite></blockquote>\n\n\n\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Media blocks</h2>\n\n\n\n<figure class=\"wp-block-image size-large\"><a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY\" target=\"_blank\" rel=\" noreferrer noopener\"><img decoding=\"async\" src=\"https://images.unsplash.com/photo-1671649216692-0dbeaa295d0a?q=80&amp;w=2070&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\" alt=\"\"/></a><figcaption class=\"wp-element-caption\">This photo includes a link to the source (Photo by <a href=\"https://unsplash.com/@lovesquish?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Jessica Christian</a> on <a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Unsplash</a>)</figcaption></figure>\n\n\n\n<figure class=\"wp-block-audio\"><audio controls src=\"https://upload.wikimedia.org/wikipedia/commons/0/0e/Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\"></audio><figcaption class=\"wp-element-caption\">Four Seasons 4 Winter Air Force Strings &#8211; United States Air Force Band: <a href=\"https://commons.wikimedia.org/wiki/File:Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\">Wikimedia link</a></figcaption></figure>\n\n\n\n<figure class=\"wp-block-video\"><video controls loop muted src=\"https://upload.wikimedia.org/wikipedia/commons/0/09/La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\"></video><figcaption class=\"wp-element-caption\">La Sortie de l&#8217;Usine Lumi\u00e8re \u00e0 Lyon I 1895: <a href=\"https://commons.wikimedia.org/wiki/File:La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\">Wikimedia link</a></figcaption></figure>\n\n\n\n<p></p>\n\n\n\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n\n\n\n<p></p>\n\n\n\n<p></p>\n\n\n\n<h2 class=\"wp-block-heading\">Design Blocks</h2>\n\n\n\n<div class=\"wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex\">\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\" href=\"https://github.com/wpengine/hwptoolkit\">Button with link</a></div>\n\n\n\n<div class=\"wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--1\"><a class=\"wp-block-button__link wp-element-button\">Button without link</a></div>\n</div>\n\n\n\n<p></p>\n\n\n\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-1 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 1</h3>\n\n\n\n<p>This is a first column of the two column layout</p>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 2</h3>\n\n\n\n<p>This is a second column of the two column layout</p>\n</div>\n</div>\n\n\n\n<p></p>\n\n\n\n<p>This is the separator below</p>\n\n\n\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n\n\n\n<div style=\"height:100px\" aria-hidden=\"true\" class=\"wp-block-spacer\"></div>\n\n\n\n<p></p>\n",
       "editorBlocks": [
         {
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
-          "renderedHtml": "\n<p>This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes 16 block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.</p>\n",
-          "id": "67dbf6abb5cab",
+          "renderedHtml": "\n<p>This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes {NUMBER} block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.</p>\n",
+          "id": "67dc15a827cc6",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
             "backgroundColor": null,
-            "content": "This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes 16 block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.",
+            "content": "This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes {NUMBER} block components across various categories. Example includes a utility to convert flat blocks data from GraphQL response into the hierarchical data structure. Passing this data into <code>BlockRenderer</code> component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.",
             "style": null,
             "textColor": null,
             "fontSize": null,
@@ -29,7 +29,7 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p></p>\n",
-          "id": "67dbf6abb5cad",
+          "id": "67dc15a827cc8",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
@@ -50,7 +50,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h2 class=\"wp-block-heading\">Text blocks</h2>\n",
-          "id": "67dbf6abb5cae",
+          "id": "67dc15a827cc9",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -71,7 +71,7 @@
           "name": "core/list",
           "__typename": "CoreList",
           "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Unordered list item</li>\n\n\n\n<li>Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n",
-          "id": "67dbf6abb5caf",
+          "id": "67dc15a827cca",
           "parentId": null,
           "attributes": {
             "anchor": null,
@@ -95,8 +95,8 @@
           "name": "core/list-item",
           "__typename": "CoreListItem",
           "renderedHtml": "\n<li>Unordered list item</li>\n",
-          "id": "67dbf6abb5cb0",
-          "parentId": "67dbf6abb5caf",
+          "id": "67dc15a827ccb",
+          "parentId": "67dc15a827cca",
           "attributes": {
             "content": "Unordered list item",
             "anchor": null,
@@ -117,8 +117,8 @@
           "name": "core/list-item",
           "__typename": "CoreListItem",
           "renderedHtml": "\n<li>Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n",
-          "id": "67dbf6abb5cb1",
-          "parentId": "67dbf6abb5caf",
+          "id": "67dc15a827ccc",
+          "parentId": "67dc15a827cca",
           "attributes": {
             "content": "Unordered list item\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\nUnordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\nUnordered list item deeper",
             "anchor": null,
@@ -139,8 +139,8 @@
           "name": "core/list",
           "__typename": "CoreList",
           "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n</ul>\n",
-          "id": "67dbf6abb5cb2",
-          "parentId": "67dbf6abb5cb1",
+          "id": "67dc15a827ccd",
+          "parentId": "67dc15a827ccc",
           "attributes": {
             "anchor": null,
             "backgroundColor": null,
@@ -163,8 +163,8 @@
           "name": "core/list-item",
           "__typename": "CoreListItem",
           "renderedHtml": "\n<li>Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n</li>\n",
-          "id": "67dbf6abb5cb3",
-          "parentId": "67dbf6abb5cb2",
+          "id": "67dc15a827cce",
+          "parentId": "67dc15a827ccd",
           "attributes": {
             "content": "Unordered list item deep\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\nUnordered list item deeper",
             "anchor": null,
@@ -185,8 +185,8 @@
           "name": "core/list",
           "__typename": "CoreList",
           "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Unordered list item deeper</li>\n</ul>\n",
-          "id": "67dbf6abb5cb4",
-          "parentId": "67dbf6abb5cb3",
+          "id": "67dc15a827ccf",
+          "parentId": "67dc15a827cce",
           "attributes": {
             "anchor": null,
             "backgroundColor": null,
@@ -209,8 +209,8 @@
           "name": "core/list-item",
           "__typename": "CoreListItem",
           "renderedHtml": "\n<li>Unordered list item deeper</li>\n",
-          "id": "67dbf6abb5cb5",
-          "parentId": "67dbf6abb5cb4",
+          "id": "67dc15a827cd0",
+          "parentId": "67dc15a827ccf",
           "attributes": {
             "content": "Unordered list item deeper",
             "anchor": null,
@@ -231,7 +231,7 @@
           "name": "core/list",
           "__typename": "CoreList",
           "renderedHtml": "\n<ol class=\"wp-block-list\">\n<li>Ordered list item </li>\n\n\n\n<li>Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n</ol>\n",
-          "id": "67dbf6abb5cb6",
+          "id": "67dc15a827cd1",
           "parentId": null,
           "attributes": {
             "anchor": null,
@@ -255,8 +255,8 @@
           "name": "core/list-item",
           "__typename": "CoreListItem",
           "renderedHtml": "\n<li>Ordered list item </li>\n",
-          "id": "67dbf6abb5cb7",
-          "parentId": "67dbf6abb5cb6",
+          "id": "67dc15a827cd2",
+          "parentId": "67dc15a827cd1",
           "attributes": {
             "content": "Ordered list item ",
             "anchor": null,
@@ -277,8 +277,8 @@
           "name": "core/list-item",
           "__typename": "CoreListItem",
           "renderedHtml": "\n<li>Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n</li>\n",
-          "id": "67dbf6abb5cb8",
-          "parentId": "67dbf6abb5cb6",
+          "id": "67dc15a827cd3",
+          "parentId": "67dc15a827cd1",
           "attributes": {
             "content": "Ordered list item \n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\nOrdered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\nOrdered list item deeper",
             "anchor": null,
@@ -299,8 +299,8 @@
           "name": "core/list",
           "__typename": "CoreList",
           "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n</ul>\n",
-          "id": "67dbf6abb5cb9",
-          "parentId": "67dbf6abb5cb8",
+          "id": "67dc15a827cd4",
+          "parentId": "67dc15a827cd3",
           "attributes": {
             "anchor": null,
             "backgroundColor": null,
@@ -323,8 +323,8 @@
           "name": "core/list-item",
           "__typename": "CoreListItem",
           "renderedHtml": "\n<li>Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n</li>\n",
-          "id": "67dbf6abb5cba",
-          "parentId": "67dbf6abb5cb9",
+          "id": "67dc15a827cd5",
+          "parentId": "67dc15a827cd4",
           "attributes": {
             "content": "Ordered list item deep\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\nOrdered list item deeper",
             "anchor": null,
@@ -345,8 +345,8 @@
           "name": "core/list",
           "__typename": "CoreList",
           "renderedHtml": "\n<ul class=\"wp-block-list\">\n<li>Ordered list item deeper</li>\n</ul>\n",
-          "id": "67dbf6abb5cbb",
-          "parentId": "67dbf6abb5cba",
+          "id": "67dc15a827cd6",
+          "parentId": "67dc15a827cd5",
           "attributes": {
             "anchor": null,
             "backgroundColor": null,
@@ -369,8 +369,8 @@
           "name": "core/list-item",
           "__typename": "CoreListItem",
           "renderedHtml": "\n<li>Ordered list item deeper</li>\n",
-          "id": "67dbf6abb5cbc",
-          "parentId": "67dbf6abb5cbb",
+          "id": "67dc15a827cd7",
+          "parentId": "67dc15a827cd6",
           "attributes": {
             "content": "Ordered list item deeper",
             "anchor": null,
@@ -391,7 +391,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h1 class=\"wp-block-heading\">Heading - H1</h1>\n",
-          "id": "67dbf6abb5cbd",
+          "id": "67dc15a827cd8",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -412,7 +412,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h2 class=\"wp-block-heading\">Heading - H2</h2>\n",
-          "id": "67dbf6abb5cbe",
+          "id": "67dc15a827cd9",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -433,7 +433,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h3 class=\"wp-block-heading\">Heading - H3</h3>\n",
-          "id": "67dbf6abb5cbf",
+          "id": "67dc15a827cda",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -454,7 +454,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h4 class=\"wp-block-heading\">Heading - H4</h4>\n",
-          "id": "67dbf6abb5cc0",
+          "id": "67dc15a827cdb",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -475,7 +475,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h5 class=\"wp-block-heading\">Heading - H5</h5>\n",
-          "id": "67dbf6abb5cc1",
+          "id": "67dc15a827cdc",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -496,7 +496,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h6 class=\"wp-block-heading\">Heading - H6</h6>\n",
-          "id": "67dbf6abb5cc2",
+          "id": "67dc15a827cdd",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -517,7 +517,7 @@
           "name": "core/code",
           "__typename": "CoreCode",
           "renderedHtml": "\n<pre class=\"wp-block-code\"><code>&lt;CodeBlock /></code></pre>\n",
-          "id": "67dbf6abb5cc3",
+          "id": "67dc15a827cde",
           "parentId": null,
           "attributes": {
             "anchor": null,
@@ -538,7 +538,7 @@
           "name": "core/preformatted",
           "__typename": "CorePreformatted",
           "renderedHtml": "\n<pre class=\"wp-block-preformatted\">Preformatted block &lt;pre>\n</pre>\n",
-          "id": "67dbf6abb5cc4",
+          "id": "67dc15a827cdf",
           "parentId": null,
           "attributes": {
             "anchor": null,
@@ -559,7 +559,7 @@
           "name": "core/table",
           "__typename": "CoreTable",
           "renderedHtml": "\n<figure class=\"wp-block-table\"><table><tbody><tr><td>cell</td><td>big cell content</td></tr><tr><td>cell</td><td>big cell content</td></tr></tbody></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n",
-          "id": "67dbf6abb5cc5",
+          "id": "67dc15a827ce0",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -626,7 +626,7 @@
           "name": "core/table",
           "__typename": "CoreTable",
           "renderedHtml": "\n<figure class=\"wp-block-table\"><table class=\"has-fixed-layout\"><thead><tr><th>table header</th><th>table header 2</th></tr></thead><tbody><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr><tr><td>cell in fixed table</td><td>cell in fixed table</td></tr></tbody><tfoot><tr><td>table footer </td><td>table footer 2</td></tr></tfoot></table><figcaption class=\"wp-element-caption\">Caption</figcaption></figure>\n",
-          "id": "67dbf6abb5cc6",
+          "id": "67dc15a827ce1",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -735,7 +735,7 @@
           "name": "core/quote",
           "__typename": "CoreQuote",
           "renderedHtml": "\n<blockquote class=\"wp-block-quote is-layout-flow wp-block-quote-is-layout-flow\">\n<p>Quote block</p>\n<cite>Quote citation</cite></blockquote>\n",
-          "id": "67dbf6abb5cc7",
+          "id": "67dc15a827ce2",
           "parentId": null,
           "attributes": {
             "textAlign": null,
@@ -757,8 +757,8 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p>Quote block</p>\n",
-          "id": "67dbf6abb5cc8",
-          "parentId": "67dbf6abb5cc7",
+          "id": "67dc15a827ce3",
+          "parentId": "67dc15a827ce2",
           "attributes": {
             "cssClassName": null,
             "backgroundColor": null,
@@ -778,7 +778,7 @@
           "name": "core/separator",
           "__typename": "CoreSeparator",
           "renderedHtml": "\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n",
-          "id": "67dbf6abb5cc9",
+          "id": "67dc15a827ce4",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -794,7 +794,7 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p></p>\n",
-          "id": "67dbf6abb5cca",
+          "id": "67dc15a827ce5",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
@@ -815,7 +815,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h2 class=\"wp-block-heading\">Media blocks</h2>\n",
-          "id": "67dbf6abb5ccb",
+          "id": "67dc15a827ce6",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -836,7 +836,7 @@
           "name": "core/image",
           "__typename": "CoreImage",
           "renderedHtml": "\n<figure class=\"wp-block-image size-large\"><a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY\" target=\"_blank\" rel=\" noreferrer noopener\"><img src=\"https://images.unsplash.com/photo-1671649216692-0dbeaa295d0a?q=80&amp;w=2070&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\" alt=\"\"/></a><figcaption class=\"wp-element-caption\">This photo includes a link to the source (Photo by <a href=\"https://unsplash.com/@lovesquish?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Jessica Christian</a> on <a href=\"https://unsplash.com/photos/a-lifeguard-tower-sitting-on-top-of-a-sandy-beach-MBoyqkgW_xY?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash\">Unsplash</a>)</figcaption></figure>\n",
-          "id": "67dbf6abb5ccc",
+          "id": "67dc15a827ce7",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -865,7 +865,7 @@
           "name": "core/audio",
           "__typename": "CoreAudio",
           "renderedHtml": "\n<figure class=\"wp-block-audio\"><audio controls src=\"https://upload.wikimedia.org/wikipedia/commons/0/0e/Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\"></audio><figcaption class=\"wp-element-caption\">Four Seasons 4 Winter Air Force Strings - United States Air Force Band: <a href=\"https://commons.wikimedia.org/wiki/File:Vivaldi_-_Four_Seasons_4_Winter_Air_Force_Strings_-_United_States_Air_Force_Band.mp3\">Wikimedia link</a></figcaption></figure>\n",
-          "id": "67dbf6abb5ccd",
+          "id": "67dc15a827ce8",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -886,7 +886,7 @@
           "name": "core/video",
           "__typename": "CoreVideo",
           "renderedHtml": "\n<figure class=\"wp-block-video\"><video controls loop muted src=\"https://upload.wikimedia.org/wikipedia/commons/0/09/La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\"></video><figcaption class=\"wp-element-caption\">La Sortie de l'Usine Lumi\u00e8re \u00e0 Lyon I 1895: <a href=\"https://commons.wikimedia.org/wiki/File:La_Sortie_de_l%27Usine_Lumi%C3%A8re_%C3%A0_Lyon_I_1895.webm\">Wikimedia link</a></figcaption></figure>\n",
-          "id": "67dbf6abb5cce",
+          "id": "67dc15a827ce9",
           "parentId": null,
           "attributes": {
             "anchor": null,
@@ -909,7 +909,7 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p></p>\n",
-          "id": "67dbf6abb5ccf",
+          "id": "67dc15a827cea",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
@@ -930,7 +930,7 @@
           "name": "core/separator",
           "__typename": "CoreSeparator",
           "renderedHtml": "\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n",
-          "id": "67dbf6abb5cd0",
+          "id": "67dc15a827ceb",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -946,7 +946,7 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p></p>\n",
-          "id": "67dbf6abb5cd1",
+          "id": "67dc15a827cec",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
@@ -967,7 +967,7 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p></p>\n",
-          "id": "67dbf6abb5cd2",
+          "id": "67dc15a827ced",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
@@ -988,7 +988,7 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h2 class=\"wp-block-heading\">Design Blocks</h2>\n",
-          "id": "67dbf6abb5cd3",
+          "id": "67dc15a827cee",
           "parentId": null,
           "attributes": {
             "align": null,
@@ -1008,8 +1008,8 @@
         {
           "name": "core/buttons",
           "__typename": "CoreButtons",
-          "renderedHtml": "\n<div class=\"wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex\">\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\">Button with link</a></div>\n\n\n\n<div class=\"wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--2\"><a class=\"wp-block-button__link wp-element-button\">Button without link</a></div>\n</div>\n",
-          "id": "67dbf6abb5cd4",
+          "renderedHtml": "\n<div class=\"wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex\">\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\" href=\"https://github.com/wpengine/hwptoolkit\">Button with link</a></div>\n\n\n\n<div class=\"wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--2\"><a class=\"wp-block-button__link wp-element-button\">Button without link</a></div>\n</div>\n",
+          "id": "67dc15a827cef",
           "parentId": null,
           "attributes": {
             "cssClassName": "wp-block-buttons is-layout-flex wp-block-buttons-is-layout-flex",
@@ -1024,9 +1024,9 @@
         {
           "name": "core/button",
           "__typename": "CoreButton",
-          "renderedHtml": "\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\">Button with link</a></div>\n",
-          "id": "67dbf6abb5cd5",
-          "parentId": "67dbf6abb5cd4",
+          "renderedHtml": "\n<div class=\"wp-block-button\"><a class=\"wp-block-button__link wp-element-button\" href=\"https://github.com/wpengine/hwptoolkit\">Button with link</a></div>\n",
+          "id": "67dc15a827cf0",
+          "parentId": "67dc15a827cef",
           "attributes": {
             "anchor": null,
             "gradient": null,
@@ -1038,7 +1038,7 @@
             "fontFamily": null,
             "linkTarget": null,
             "rel": null,
-            "url": null,
+            "url": "https://github.com/wpengine/hwptoolkit",
             "backgroundColor": null,
             "cssClassName": "wp-block-button",
             "linkClassName": "wp-block-button__link wp-element-button"
@@ -1048,8 +1048,8 @@
           "name": "core/button",
           "__typename": "CoreButton",
           "renderedHtml": "\n<div class=\"wp-block-button has-custom-width wp-block-button__width-50 is-style-outline is-style-outline--10\"><a class=\"wp-block-button__link wp-element-button\">Button without link</a></div>\n",
-          "id": "67dbf6abb5cd6",
-          "parentId": "67dbf6abb5cd4",
+          "id": "67dc15a827cf1",
+          "parentId": "67dc15a827cef",
           "attributes": {
             "anchor": null,
             "gradient": null,
@@ -1071,7 +1071,7 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p></p>\n",
-          "id": "67dbf6abb5cd7",
+          "id": "67dc15a827cf2",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
@@ -1091,14 +1091,14 @@
         {
           "name": "core/columns",
           "__typename": "CoreColumns",
-          "renderedHtml": "\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-3 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 1</h3>\n\n\n\n<p>This is a first column of the two column layout</p>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 2</h3>\n\n\n\n<p>This is a second column of the two column layout</p>\n</div>\n</div>\n",
-          "id": "67dbf6abb5cd8",
+          "renderedHtml": "\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-2 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 1</h3>\n\n\n\n<p>This is a first column of the two column layout</p>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 2</h3>\n\n\n\n<p>This is a second column of the two column layout</p>\n</div>\n</div>\n",
+          "id": "67dc15a827cf3",
           "parentId": null,
           "attributes": {
             "align": null,
             "anchor": null,
             "layout": null,
-            "cssClassName": "wp-block-columns is-layout-flex wp-container-core-columns-is-layout-7 wp-block-columns-is-layout-flex",
+            "cssClassName": "wp-block-columns is-layout-flex wp-container-core-columns-is-layout-6 wp-block-columns-is-layout-flex",
             "isStackedOnMobile": true,
             "verticalAlignment": null,
             "borderColor": null,
@@ -1114,8 +1114,8 @@
           "name": "core/column",
           "__typename": "CoreColumn",
           "renderedHtml": "\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 1</h3>\n\n\n\n<p>This is a first column of the two column layout</p>\n</div>\n",
-          "id": "67dbf6abb5cd9",
-          "parentId": "67dbf6abb5cd8",
+          "id": "67dc15a827cf4",
+          "parentId": "67dc15a827cf3",
           "attributes": {
             "anchor": null,
             "borderColor": null,
@@ -1135,8 +1135,8 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h3 class=\"wp-block-heading\">Column 1</h3>\n",
-          "id": "67dbf6abb5cda",
-          "parentId": "67dbf6abb5cd9",
+          "id": "67dc15a827cf5",
+          "parentId": "67dc15a827cf4",
           "attributes": {
             "align": null,
             "anchor": null,
@@ -1156,8 +1156,8 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p>This is a first column of the two column layout</p>\n",
-          "id": "67dbf6abb5cdb",
-          "parentId": "67dbf6abb5cd9",
+          "id": "67dc15a827cf6",
+          "parentId": "67dc15a827cf4",
           "attributes": {
             "cssClassName": null,
             "backgroundColor": null,
@@ -1177,8 +1177,8 @@
           "name": "core/column",
           "__typename": "CoreColumn",
           "renderedHtml": "\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<h3 class=\"wp-block-heading\">Column 2</h3>\n\n\n\n<p>This is a second column of the two column layout</p>\n</div>\n",
-          "id": "67dbf6abb5cdc",
-          "parentId": "67dbf6abb5cd8",
+          "id": "67dc15a827cf7",
+          "parentId": "67dc15a827cf3",
           "attributes": {
             "anchor": null,
             "borderColor": null,
@@ -1198,8 +1198,8 @@
           "name": "core/heading",
           "__typename": "CoreHeading",
           "renderedHtml": "\n<h3 class=\"wp-block-heading\">Column 2</h3>\n",
-          "id": "67dbf6abb5cdd",
-          "parentId": "67dbf6abb5cdc",
+          "id": "67dc15a827cf8",
+          "parentId": "67dc15a827cf7",
           "attributes": {
             "align": null,
             "anchor": null,
@@ -1219,8 +1219,8 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p>This is a second column of the two column layout</p>\n",
-          "id": "67dbf6abb5cde",
-          "parentId": "67dbf6abb5cdc",
+          "id": "67dc15a827cf9",
+          "parentId": "67dc15a827cf7",
           "attributes": {
             "cssClassName": null,
             "backgroundColor": null,
@@ -1240,7 +1240,7 @@
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p></p>\n",
-          "id": "67dbf6abb5cdf",
+          "id": "67dc15a827cfa",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
@@ -1258,95 +1258,15 @@
           }
         },
         {
-          "name": "core/columns",
-          "__typename": "CoreColumns",
-          "renderedHtml": "\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-17 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow\">\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<p>This is a separator block within the column block</p>\n</div>\n</div>\n",
-          "id": "67dbf6abb5ce0",
-          "parentId": null,
-          "attributes": {
-            "align": null,
-            "anchor": null,
-            "layout": null,
-            "cssClassName": "wp-block-columns is-layout-flex wp-container-core-columns-is-layout-21 wp-block-columns-is-layout-flex",
-            "isStackedOnMobile": true,
-            "verticalAlignment": null,
-            "borderColor": null,
-            "backgroundColor": null,
-            "fontSize": null,
-            "fontFamily": null,
-            "style": null,
-            "textColor": null,
-            "gradient": null
-          }
-        },
-        {
-          "name": "core/column",
-          "__typename": "CoreColumn",
-          "renderedHtml": "\n<div class=\"wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow\">\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n</div>\n",
-          "id": "67dbf6abb5ce1",
-          "parentId": "67dbf6abb5ce0",
-          "attributes": {
-            "anchor": null,
-            "borderColor": null,
-            "backgroundColor": null,
-            "cssClassName": "wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow",
-            "fontSize": null,
-            "fontFamily": null,
-            "gradient": null,
-            "layout": null,
-            "style": null,
-            "textColor": null,
-            "verticalAlignment": "center",
-            "width": null
-          }
-        },
-        {
-          "name": "core/separator",
-          "__typename": "CoreSeparator",
-          "renderedHtml": "\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n",
-          "id": "67dbf6abb5ce2",
-          "parentId": "67dbf6abb5ce1",
-          "attributes": {
-            "align": null,
-            "anchor": null,
-            "opacity": "alpha-channel",
-            "gradient": null,
-            "backgroundColor": null,
-            "style": null,
-            "cssClassName": "wp-block-separator has-alpha-channel-opacity"
-          }
-        },
-        {
-          "name": "core/column",
-          "__typename": "CoreColumn",
-          "renderedHtml": "\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\">\n<p>This is a separator block within the column block</p>\n</div>\n",
-          "id": "67dbf6abb5ce3",
-          "parentId": "67dbf6abb5ce0",
-          "attributes": {
-            "anchor": null,
-            "borderColor": null,
-            "backgroundColor": null,
-            "cssClassName": "wp-block-column is-layout-flow wp-block-column-is-layout-flow",
-            "fontSize": null,
-            "fontFamily": null,
-            "gradient": null,
-            "layout": null,
-            "style": null,
-            "textColor": null,
-            "verticalAlignment": null,
-            "width": null
-          }
-        },
-        {
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
-          "renderedHtml": "\n<p>This is a separator block within the column block</p>\n",
-          "id": "67dbf6abb5ce4",
-          "parentId": "67dbf6abb5ce3",
+          "renderedHtml": "\n<p>This is the separator below</p>\n",
+          "id": "67dc15a827cfb",
+          "parentId": null,
           "attributes": {
             "cssClassName": null,
             "backgroundColor": null,
-            "content": "This is a separator block within the column block",
+            "content": "This is the separator below",
             "style": null,
             "textColor": null,
             "fontSize": null,
@@ -1359,10 +1279,33 @@
           }
         },
         {
+          "name": "core/separator",
+          "__typename": "CoreSeparator",
+          "renderedHtml": "\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n",
+          "id": "67dc15a827cfc",
+          "parentId": null,
+          "attributes": {
+            "align": null,
+            "anchor": null,
+            "opacity": "alpha-channel",
+            "gradient": null,
+            "backgroundColor": null,
+            "style": null,
+            "cssClassName": "wp-block-separator has-alpha-channel-opacity"
+          }
+        },
+        {
+          "name": "core/spacer",
+          "__typename": "CoreSpacer",
+          "renderedHtml": "\n<div style=\"height:100px\" aria-hidden=\"true\" class=\"wp-block-spacer\"></div>\n",
+          "id": "67dc15a827cfd",
+          "parentId": null
+        },
+        {
           "name": "core/paragraph",
           "__typename": "CoreParagraph",
           "renderedHtml": "\n<p></p>\n",
-          "id": "67dbf6abb5ce5",
+          "id": "67dc15a827cfe",
           "parentId": null,
           "attributes": {
             "cssClassName": null,
