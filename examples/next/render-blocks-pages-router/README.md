@@ -4,7 +4,7 @@ This example demonstrates rendering WordPress Blocks with JSX in a Next.js proje
 
 ## Features
 
-- 16 sample block component
+- 16 sample block components
 - Custom HTML parser option
 - Default block for fallback
 - Custom default block option
