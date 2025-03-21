@@ -1,7 +1,7 @@
 {
   "name": "hwptoolkit-example-nextjs-app-router-fetch-data",
   "version": "1.0.0",
-  "description": "A headless WordPress application using Next.js App Router and the fetch API to fetch data from WordPress using WPGraphQL.",
+  "description": "An example headless WordPress application using Next.js App Router and the fetch API to fetch data from WordPress using WPGraphQL.",
   "scripts": {
     "example:build": "pnpm run wp:images:unzip && pnpm run example:dev:install && pnpm run wp:start && pnpm run wp:db:import && pnpm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
