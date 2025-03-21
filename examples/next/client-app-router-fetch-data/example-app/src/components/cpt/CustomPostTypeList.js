@@ -28,8 +28,8 @@ export default function CustomPostTypeList({
         after: pageInfo.endCursor
       });
 
-      const newPosts = data?.posts?.edges || [];
-      const newPageInfo = data?.posts?.pageInfo || {};
+      const newPosts = data[customPostType]?.edges || [];
+      const newPageInfo = data[customPostType]?.pageInfo || {};
 
       setPosts(prevPosts => [...prevPosts, ...newPosts]);
       setPageInfo(newPageInfo);
