@@ -14,7 +14,7 @@ This example demonstrates rendering WordPress Blocks with JSX in a Next.js proje
 
 ## Important notes
 
-- This example does not require a working WordPress instance, it uses fake request to get prefetched GQL response
+- This example does not require a working WordPress instance, it uses a fake request to get a prefetched GQL response
 - If you have a working WordPress instance you can easily connect it to this example. For the details check the `pages/index.js` file.
 - You will need to have [`wp-graphql-content-blocks`](https://github.com/wpengine/wp-graphql-content-blocks) and [`WPGraphQL`](https://wordpress.org/plugins/wp-graphql/) plugins installed if you want to connect it to a WordPress instance.
 
