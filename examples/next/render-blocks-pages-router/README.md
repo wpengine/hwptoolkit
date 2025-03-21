@@ -45,7 +45,7 @@ This example demonstrates rendering WordPress Blocks with JSX in a Next.js proje
 ### Prerequisites
 
 1. Node.js 18.18 or later
-2. npm or other package manager
+2. npm or another package manager
 
 ### Clone the repository
 
