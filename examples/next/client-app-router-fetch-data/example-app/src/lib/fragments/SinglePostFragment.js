@@ -1,5 +1,3 @@
-
-
 export const SinglePostFragment = `
   fragment Comment on Comment {
     id

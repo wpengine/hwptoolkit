@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from 'react';
-import { fetchGraphQL } from '@/lib/client';
-import EventListItem from './EventListItem';
+import { useState } from "react";
+import { fetchGraphQL } from "@/lib/client";
+import EventListItem from "./EventListItem";
 
 export default function CustomPostTypeList({
   initialPosts,
   initialPageInfo,
   postsPerPage,
   postsQuery,
-  customPostType
+  customPostType,
 }) {
-
   // Track various states for posts, page info, and loading
   const [posts, setPosts] = useState(initialPosts || []);
   const [pageInfo, setPageInfo] = useState(initialPageInfo || {});
@@ -22,16 +21,15 @@ export default function CustomPostTypeList({
 
     setLoading(true);
     try {
-
       const data = await fetchGraphQL(postsQuery, {
         first: postsPerPage,
-        after: pageInfo.endCursor
+        after: pageInfo.endCursor,
       });
 
       const newPosts = data[customPostType]?.edges || [];
       const newPageInfo = data[customPostType]?.pageInfo || {};
 
-      setPosts(prevPosts => [...prevPosts, ...newPosts]);
+      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       setPageInfo(newPageInfo);
     } catch (error) {
       console.error("Error loading more posts:", error);
@@ -40,28 +38,27 @@ export default function CustomPostTypeList({
     }
   };
 
-
-return (
+  return (
     <>
-        <div className="grid post-list gap-4">
-            {/* Add your own templates here for different cpt */}
-            {posts.map(({ node }) => (
-                customPostType === 'events' ? (
-                    <EventListItem key={node.id} post={node} />
-                ) : null
-            ))}
-        </div>
-
-        {pageInfo.hasNextPage && (
-            <button
-                onClick={loadMorePosts}
-                type="button"
-                className="px-8 py-3 font-semibold rounded bg-gray-800 hover:bg-gray-700 text-gray-100 mx-auto block mt-8"
-                disabled={loading}
-            >
-                {loading ? 'Loading...' : 'Load more'}
-            </button>
+      <div className="grid post-list gap-4">
+        {/* Add your own templates here for different cpt */}
+        {posts.map(({ node }) =>
+          customPostType === "events" ? (
+            <EventListItem key={node.id} post={node} />
+          ) : null,
         )}
+      </div>
+
+      {pageInfo.hasNextPage && (
+        <button
+          onClick={loadMorePosts}
+          type="button"
+          className="px-8 py-3 font-semibold rounded bg-gray-800 hover:bg-gray-700 text-gray-100 mx-auto block mt-8"
+          disabled={loading}
+        >
+          {loading ? "Loading..." : "Load more"}
+        </button>
+      )}
     </>
-);
+  );
 }

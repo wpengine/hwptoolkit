@@ -1,6 +1,5 @@
-
-import {EventListFragment} from '@/lib/fragments/EventListFragment';
-import {CustomPostTypeTemplate} from '@/components/cpt/CustomPostTypeTemplate';
+import { EventListFragment } from "@/lib/fragments/EventListFragment";
+import { CustomPostTypeTemplate } from "@/components/cpt/CustomPostTypeTemplate";
 
 const EVENT_LIST_QUERY = `
 ${EventListFragment}
@@ -21,5 +20,5 @@ query GetEvents($after: String, $first: Int = 5) {
 `;
 
 export default async function EventsPage(params) {
-  return CustomPostTypeTemplate(EVENT_LIST_QUERY, 'events', 'Events');
+  return CustomPostTypeTemplate(EVENT_LIST_QUERY, "events", "Events");
 }

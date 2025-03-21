@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from 'react';
-import { fetchGraphQL } from '@/lib/client';
-import BlogPostItem from '@/components/blog/BlogPostItem';
+import { useState } from "react";
+import { fetchGraphQL } from "@/lib/client";
+import BlogPostItem from "@/components/blog/BlogPostItem";
 
 export default function BlogList({
   initialPosts,
   initialPageInfo,
   postsPerPage,
   postsQuery,
-  slug = ''
+  slug = "",
 }) {
-
   // Track various states for posts, page info, and loading
   const [posts, setPosts] = useState(initialPosts || []);
   const [pageInfo, setPageInfo] = useState(initialPageInfo || {});
@@ -22,7 +21,6 @@ export default function BlogList({
 
     setLoading(true);
     try {
-
       let data;
 
       // Category or Tag
@@ -30,18 +28,18 @@ export default function BlogList({
         data = await fetchGraphQL(postsQuery, {
           slug: slug,
           first: postsPerPage,
-          after: pageInfo.endCursor
+          after: pageInfo.endCursor,
         });
       } else {
         data = await fetchGraphQL(postsQuery, {
           first: postsPerPage,
-          after: pageInfo.endCursor
+          after: pageInfo.endCursor,
         });
       }
       const newPosts = data?.posts?.edges || [];
       const newPageInfo = data?.posts?.pageInfo || {};
 
-      setPosts(prevPosts => [...prevPosts, ...newPosts]);
+      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       setPageInfo(newPageInfo);
     } catch (error) {
       console.error("Error loading more posts:", error);
@@ -49,7 +47,6 @@ export default function BlogList({
       setLoading(false);
     }
   };
-
 
   return (
     <>
@@ -66,7 +63,7 @@ export default function BlogList({
           className="px-8 py-3 font-semibold rounded bg-gray-800 hover:bg-gray-700 text-gray-100 mx-auto block mt-8"
           disabled={loading}
         >
-          {loading ? 'Loading...' : 'Load more'}
+          {loading ? "Loading..." : "Load more"}
         </button>
       )}
     </>

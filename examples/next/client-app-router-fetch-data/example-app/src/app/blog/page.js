@@ -1,5 +1,5 @@
-import { PostListFragment } from '@/lib/fragments/PostListFragment';
-import { BlogTemplate } from '@/components/blog/BlogTemplate';
+import { PostListFragment } from "@/lib/fragments/PostListFragment";
+import { BlogTemplate } from "@/components/blog/BlogTemplate";
 
 const LIST_POSTS_QUERY = `
   ${PostListFragment}
@@ -19,5 +19,5 @@ const LIST_POSTS_QUERY = `
 `;
 
 export default async function BlogPage(params) {
-  return BlogTemplate(LIST_POSTS_QUERY, params, 'Blog');
+  return BlogTemplate(LIST_POSTS_QUERY, params, "Blog");
 }

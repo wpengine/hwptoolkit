@@ -35,7 +35,7 @@ export default function Post({ data }) {
 
       if (result.errors) {
         throw new Error(
-          result.errors[0]?.message || "Error submitting comment"
+          result.errors[0]?.message || "Error submitting comment",
         );
       }
 
