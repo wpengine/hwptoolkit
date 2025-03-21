@@ -3,7 +3,7 @@
 name: Headless WordPress with Next.js
 description: This project demonstrates a headless WordPress setup using Next.js App Router with the fetch API to fetch data from WordPress using WPGraphQL.
 version: 1.0.0
-author: Colin Murphy
+author: hwptoolkit
 license: BSD-3-Clause
 website: https://github.com/wpengine/hwptoolkit
 repository: https://github.com/wpengine/hwptoolkit

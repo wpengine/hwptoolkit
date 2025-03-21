@@ -1,10 +1,9 @@
-// Define Query
 import { PostListFragment } from "@/lib/fragments/PostListFragment";
 import { BlogListingTemplate } from "@/components/blog/BlogListingTemplate";
 
 const TAG_POSTS_QUERY = `
   ${PostListFragment}
-  query ListPosts($slug: String!, $after: String, $first: Int = 5) {
+  query ListPostsForTag($slug: String!, $after: String, $first: Int = 5) {
     posts(where: { tag: $slug }, after: $after, first: $first) {
       edges {
         node {

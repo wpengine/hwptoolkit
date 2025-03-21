@@ -9,6 +9,7 @@ export async function CustomPostTypeTemplate(query, customPostType, title) {
   const data = await getPosts({
     query: query,
     pageSize: getPostsPerPage(),
+    revalidate: 3600 // Caches for 60 minutes
   });
 
   // Check if posts exists then throw a 404

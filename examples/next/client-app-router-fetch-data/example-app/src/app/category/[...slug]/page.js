@@ -3,7 +3,7 @@ import { BlogListingTemplate } from "@/components/blog/BlogListingTemplate";
 
 const CAT_POSTS_QUERY = `
   ${PostListFragment}
-  query ListPosts($slug: String!, $after: String, $first: Int = 5) {
+  query ListPostsForCategory($slug: String!, $after: String, $first: Int = 5) {
     posts(where: { categoryName: $slug }, after: $after, first: $first) {
       edges {
         node {

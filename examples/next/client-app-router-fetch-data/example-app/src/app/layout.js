@@ -1,5 +1,7 @@
 import { Lato, Open_Sans } from "next/font/google";
 import "./globals.css";
+
+// Note: You can use nested layouts too in Next.js - https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts#per-page-layouts
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 

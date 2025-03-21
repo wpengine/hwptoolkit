@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FeaturedImage } from "../image/FeaturedImage";
 import { formatDate } from "@/lib/utils";
 
-export default function BlogPostItem({ post }) {
+export default function BlogListItem({ post }) {
   const { title, excerpt, uri } = post;
 
   return (

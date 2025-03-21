@@ -8,6 +8,7 @@ import Post from "@/components/single/Post";
 import Event from "@/components/single/Event";
 import { fetchGraphQL } from "@/lib/client";
 
+// See WPGraphQL docs on nodeByUri: https://www.wpgraphql.com/2021/12/23/query-any-page-by-its-path-using-wpgraphql
 const GET_CONTENT_QUERY = `
   ${SingleEventFragment}
   ${SinglePageFragment}

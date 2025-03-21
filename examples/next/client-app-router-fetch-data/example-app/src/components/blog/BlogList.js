@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { fetchGraphQL } from "@/lib/client";
-import BlogPostItem from "@/components/blog/BlogPostItem";
+import BlogListItem from "@/components/blog/BlogListItem";
 
 export default function BlogList({
   initialPosts,
@@ -23,7 +23,9 @@ export default function BlogList({
     try {
       let data;
 
-      // Category or Tag
+      /**
+       * if a category or tag slug is provided
+       */
       if (slug) {
         data = await fetchGraphQL(postsQuery, {
           slug: slug,
@@ -52,7 +54,7 @@ export default function BlogList({
     <>
       <div className="grid post-list gap-4">
         {posts.map(({ node }) => (
-          <BlogPostItem key={node.id} post={node} />
+          <BlogListItem key={node.id} post={node} />
         ))}
       </div>
 
