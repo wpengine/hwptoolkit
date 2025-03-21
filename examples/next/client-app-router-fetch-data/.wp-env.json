@@ -22,6 +22,6 @@
     ".htaccess": "./wp-env/setup/.htaccess"
   },
   "lifecycleScripts": {
-    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+    "afterStart": "wp-env run cli -- wp plugin update wpgraphql-acf && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }
 }

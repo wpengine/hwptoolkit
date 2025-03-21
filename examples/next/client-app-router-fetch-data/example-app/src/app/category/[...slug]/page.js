@@ -1,5 +1,5 @@
 import { PostListFragment } from "@/lib/fragments/PostListFragment";
-import { BlogTemplate } from "@/components/blog/BlogTemplate";
+import { BlogListingTemplate } from "@/components/blog/BlogListingTemplate";
 
 const CAT_POSTS_QUERY = `
   ${PostListFragment}
@@ -19,5 +19,5 @@ const CAT_POSTS_QUERY = `
 `;
 
 export default async function CategoryPage({ params }) {
-  return BlogTemplate(CAT_POSTS_QUERY, params, "Category");
+  return BlogListingTemplate(CAT_POSTS_QUERY, params, "Category");
 }

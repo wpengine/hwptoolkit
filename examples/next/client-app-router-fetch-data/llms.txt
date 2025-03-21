@@ -1,0 +1,47 @@
+# LLM.txt for Headless WordPress with Next.js
+
+name: Headless WordPress with Next.js
+description: This project demonstrates a headless WordPress setup using Next.js App Router with the fetch API to fetch data from WordPress using WPGraphQL.
+version: 1.0.0
+author: Colin Murphy
+license: BSD-3-Clause
+website: https://github.com/wpengine/hwptoolkit
+repository: https://github.com/wpengine/hwptoolkit
+
+## Project Type
+headless-wordpress-nextjs-example
+
+## Frameworks & Technologies
+- Next.js (App Router)
+- Fetch API
+- wp-env (for local development)
+- WPGraphQL
+- JavaScript, PHP
+
+## Structure
+- **Frontend:** Next.js application with App Router
+- **Backend:** WordPress with WPGraphQL plugin
+
+## Features
+- Decoupled architecture
+- Server-side rendering (SSR)
+- Static Site Generation (SSG)
+- Incremental Static Regeneration (ISR)
+- Client-Side Rendering (CSR)
+- Content fetching via GraphQL
+- WordPress admin for content management
+- Pagination for navigating through posts and content
+- Support for custom post types
+
+## System Requirements
+- Node.js >=18.0.0
+- Docker (for WordPress environment)
+
+## Setup Instructions
+Refer to [README.md](https://github.com/wpengine/hwptoolkit/examples/next/client-app-router-fetch-data/README.md) for detailed setup instructions.
+
+## API & Data Sources
+This project fetches data from a headless WordPress backend using WPGraphQL.
+
+### WPGraphQL Endpoint:
+http://localhost:8888/graphql

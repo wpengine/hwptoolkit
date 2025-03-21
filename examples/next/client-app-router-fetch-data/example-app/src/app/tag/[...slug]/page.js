@@ -1,6 +1,6 @@
 // Define Query
 import { PostListFragment } from "@/lib/fragments/PostListFragment";
-import { BlogTemplate } from "@/components/blog/BlogTemplate";
+import { BlogListingTemplate } from "@/components/blog/BlogListingTemplate";
 
 const TAG_POSTS_QUERY = `
   ${PostListFragment}
@@ -20,5 +20,5 @@ const TAG_POSTS_QUERY = `
 `;
 
 export default async function TagPage({ params }) {
-  return BlogTemplate(TAG_POSTS_QUERY, params, "Tag");
+  return BlogListingTemplate(TAG_POSTS_QUERY, params, "Tag");
 }

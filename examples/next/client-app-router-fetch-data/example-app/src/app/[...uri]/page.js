@@ -1,3 +1,4 @@
+// Catch all template
 import { notFound } from "next/navigation";
 import { SingleEventFragment } from "@/lib/fragments/SingleEventFragment";
 import { SinglePageFragment } from "@/lib/fragments/SinglePageFragment";
@@ -27,7 +28,7 @@ async function fetchContent(uri) {
     {
       uri: uri,
     },
-    3600,
+    3600, // Caches for 60 minutes
   );
 }
 
@@ -47,6 +48,7 @@ export default async function ContentPage({ params }) {
 
   const contentType = data?.nodeByUri?.__typename;
 
+  // Add your own CPT templates here for single post types
   if (contentType === "Post") return <Post data={data.nodeByUri} />;
   if (contentType === "Page") return <Page data={data.nodeByUri} />;
   if (contentType === "Event") return <Event data={data.nodeByUri} />;

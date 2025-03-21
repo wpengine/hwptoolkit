@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 // Note the approach here is to load the first 5 posts on the server,
 // and then use the client-side component to handle pagination after hydrating the initial data.
-export async function BlogTemplate(query, params, titlePrefix) {
+export async function BlogListingTemplate(query, params, titlePrefix) {
   // Get the last value in the array of params
   const slug = Array.isArray(params.slug)
     ? params.slug[params.slug.length - 1]

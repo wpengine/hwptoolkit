@@ -4,17 +4,16 @@ import Page from "@/components/single/Page";
 import { fetchGraphQL } from "@/lib/client";
 
 const GET_CONTENT_QUERY = `
-  ${SinglePageFragment}
-  query GetNodeByUri($uri: String!) {
-    nodeByUri(uri: $uri) {
-      __typename
-      ...SinglePageFragment
-    }
+${SinglePageFragment}
+query GetNodeByUri($uri: String!) {
+  nodeByUri(uri: $uri) {
+    __typename
+    ...SinglePageFragment
   }
+}
 `;
 
 export default async function HomePage({ params }) {
-  const uri = Array.isArray(params?.uri) ? params.uri.join("/") : "";
   const data = await await fetchGraphQL(
     GET_CONTENT_QUERY,
     {
