@@ -27,6 +27,8 @@ This example demonstrates rendering WordPress Blocks with JSX in a Next.js proje
 ├── pages/
 │   ├── index.js                        # Home page to showcase all blocks
 ├── components/
+│   ├── Caption.js                      # Component for figcaption and caption elements
+│   ├── DefaultBlock.js                 # Default block to render if there's no corresponding block
 │   ├── BlockRenderer.js                # Component to render to render blocks
 │   ├── blocks/
 │   │   ├── CoreAudio.js                # Audio block component
