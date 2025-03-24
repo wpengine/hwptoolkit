@@ -17,6 +17,7 @@ We believe in transparent, collaborative development. These guidelines document 
 - Clearly flag breaking changes and update relevant documentation
 - Notify the team when PRs are ready for review
 - Request reviews from specific maintainers based on expertise
+- Leave a comment in the PR to say ready for another review after follow up commits from a review
 
 ### Releases
 
