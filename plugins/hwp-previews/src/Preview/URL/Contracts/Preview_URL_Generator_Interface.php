@@ -8,6 +8,6 @@ use WP_Post;
 
 interface Preview_URL_Generator_Interface {
 
-	public function generate_url( WP_Post $post, string $frontend_url, array $args, string $draft_route = '' ): string;
+	public function generate_url( WP_Post $post, string $frontend_url, string $page_uri, array $args, string $draft_route = '' ): string;
 
 }

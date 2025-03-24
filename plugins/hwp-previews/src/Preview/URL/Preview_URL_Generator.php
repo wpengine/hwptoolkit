@@ -22,6 +22,7 @@ class Preview_URL_Generator implements Preview_URL_Generator_Interface {
 	public function generate_url(
 		WP_Post $post,
 		string $frontend_url,
+		string $page_uri,
 		array $args,
 		string $draft_route = ''
 	): string {
@@ -36,6 +37,8 @@ class Preview_URL_Generator implements Preview_URL_Generator_Interface {
 		// Format frontend URL to the draft route handler.
 		if ( $draft_route ) {
 			$frontend_url = trailingslashit( $frontend_url ) . $draft_route;
+		} else {
+			$frontend_url = trailingslashit( $frontend_url ) . $page_uri;
 		}
 
 		if ( $args ) {
