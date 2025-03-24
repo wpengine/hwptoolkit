@@ -65,3 +65,7 @@ npm install
 ```bash
 npm run dev
 ```
+
+http://localhost:3000/ should render the blocks as shown below.
+
+![Animated screenshot, scrolling down and revealing the blocks supported by this example rendered on the page.](./public/screenshot.gif)
