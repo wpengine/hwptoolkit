@@ -14,7 +14,8 @@ export default function Home({ posts, movies }) {
             {posts.map((post) => (
               <li key={post.slug} className="py-4">
                 <Link href={post.uri}>{post.title}</Link>
-                <div className="mt-2 text-sm text-gray-600">{post.excerpt}</div>
+                <div className="mt-2 text-sm text-gray-600" dangerouslySetInnerHTML={{ __html: post.excerpt }}></div>
+
               </li>
             ))}
           </ul>
