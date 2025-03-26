@@ -14,23 +14,7 @@
     "GRAPHQL_DEBUG": true,
     "WP_DEBUG_LOG": true,
     "WP_DEBUG_DISPLAY": false,
-    "SAVEQUERIES": false,
-    "WP_ALLOW_MULTISITE": true,
-    "MULTISITE": true,
-    "SUBDOMAIN_INSTALL": false,
-    "DOMAIN_CURRENT_SITE": "localhost:8888",
-    "PATH_CURRENT_SITE": "/",
-    "SITE_ID_CURRENT_SITE": 1,
-    "BLOG_ID_CURRENT_SITE": 1
-  },
-  "env": {
-    "tests": {
-      "config": {
-        "WP_ALLOW_MULTISITE": false,
-        "MULTISITE": false,
-        "SUBDOMAIN_INSTALL": false
-      }
-    }
+    "SAVEQUERIES": false
   },
   "mappings": {
     "db": "./wp-env/db",
@@ -39,6 +23,6 @@
     ".htaccess": "./wp-env/setup/.htaccess"
   },
   "lifecycleScripts": {
-    "afterStart": "wp-env run cli -- bash -c 'if [ \"$(wp site list --format=count)\" -le 1 ]; then wp core multisite-convert; fi' && wp-env run cli -- wp plugin update wpgraphql-acf && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+    "afterStart": "wp-env run cli -- wp plugin update wpgraphql-acf && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }
 }
