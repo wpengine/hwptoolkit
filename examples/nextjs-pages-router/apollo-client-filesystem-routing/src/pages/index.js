@@ -28,9 +28,7 @@ export default function Home({ posts, movies }) {
             {movies.map((movie) => (
               <li key={movie.slug} className="py-4">
                 <Link href={movie.uri}>{movie.title}</Link>
-                <div className="mt-2 text-sm text-gray-600">
-                  {movie.excerpt}
-                </div>
+                <div className="mt-2 text-sm text-gray-600" dangerouslySetInnerHTML={{ __html: movie.excerpt }}></div>
               </li>
             ))}
           </ul>
