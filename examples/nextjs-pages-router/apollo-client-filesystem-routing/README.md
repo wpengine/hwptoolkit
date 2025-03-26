@@ -53,7 +53,9 @@ Categories are structured as:
 /category/category-name/
 ```
 
-This is handled dynamically through Next.js.
+To achieve this category structure make sure the `Category base` in the Settings -> Permalinks page has the value of `category`. 
+
+The rest is handled dynamically through Next.js.
 
 ## Environment Variables
 Create a `.env.local` file in the root of your project and add:
