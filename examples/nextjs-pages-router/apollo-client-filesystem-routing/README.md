@@ -45,6 +45,7 @@ And not:
 ```
 /posts/movies/movie-title/
 ```
+As a last step go to the `GraphQL` tab in the Advanced Settings and enable the `Show in GraphQL` toggle.
 
 ## Categories
 Categories are structured as:
