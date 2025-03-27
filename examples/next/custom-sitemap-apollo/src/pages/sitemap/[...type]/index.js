@@ -9,7 +9,7 @@ const publicUrl = process.env.NEXT_PUBLIC_URL;
 const LIST_SITEMAP_ENTRIES = gql`
   query ListSitemapEntries($type: String!, $subType: String!, $page: Int!) {
     sitemapEntries(type: $type, subType: $subType, page: $page) {
-      loc
+      uri
       lastmod
       imageLoc
     }
@@ -17,7 +17,7 @@ const LIST_SITEMAP_ENTRIES = gql`
 `;
 
 function renderEntries(entry) {
-  const { imageLoc, lastmod, loc } = entry ?? {};
+  const { imageLoc, lastmod, uri } = entry ?? {};
   // We're also adding featured images when available
   // More info: https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps
   const imageString = imageLoc
@@ -29,7 +29,7 @@ function renderEntries(entry) {
   const lastmodString = lastmod ? `<lastmod>${lastmod}</lastmod>` : "";
 
   return `<url>
-            <loc>${publicUrl}${loc}</loc>
+            <loc>${publicUrl}${uri}</loc>
             ${lastmodString}
             ${imageString}
           </url>`;
