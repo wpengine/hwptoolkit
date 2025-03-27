@@ -76,7 +76,7 @@ The following directory structure helps organize the project components efficien
 |--|-- ...              # Examples based on other front-end frameworks
 ```
 
-**Writing documentation**
+#### Writing documentation
 
 We are using the approach of [Diátaxis](https://diataxis.fr/) for our documentation. Diátaxis provides four different forms of documentation:
 
