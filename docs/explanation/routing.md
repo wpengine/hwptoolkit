@@ -231,7 +231,8 @@ This works! But this basic implementation has several related issues. Because Fi
 2. A single large GraphQL query doesn't cache well causing performance issues due to low cache hit rate.
 
 All this has solutions but we'll talk about those next.
-
+> [!TIP]
+> You can see examples of this approach as part of some of our existing client examples for Next.js where we used a catch-all template [https://github.com/wpengine/hwptoolkit/tree/main/examples/next](https://github.com/wpengine/hwptoolkit/tree/main/examples/next)
 ### The Seed Query
 
 The concept of a "Seed Query" is to get only the information needed to decide what template the content will use to be rendered. This is what WordPress does under the hood before rendering a template. In headless this GraphQL request is extremely small. This reduced size means it's relatively stable and can benefit from a high cache-hit rate.
