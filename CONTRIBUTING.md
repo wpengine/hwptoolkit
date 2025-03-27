@@ -8,6 +8,7 @@ In this guide we will discuss the different types of contribution, how you can g
 
 - [How we work](https://github.com/wpengine/hwptoolkit/blob/main/HOW_WE_WORK.md)
 - [Project board](https://github.com/orgs/wpengine/projects/13)
+- [Code of Conduct](https://github.com/wpengine/hwptoolkit/blob/main/CODE_OF_CONDUCT.md)
 - [Discord Server](https://faustjs.org/discord/)
 - [Faustjs documentation](https://faustjs.org/)
 - [Issues](https://github.com/wpengine/hwptoolkit/issues)
