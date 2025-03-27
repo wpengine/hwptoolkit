@@ -45,7 +45,7 @@ A usual bug reporting/feature suggesting workflow should look like this:
 
 ### Help other people and engage with community
 
-You can check the open issues, join the discussion, solve the issue and save the day for others. Don't limit yourself just with the GitHub issues. You can check [Discussions](https://github.com/wpengine/hwptoolkit/discussions) and [Discord Server](https://discord.gg/RZ7XWgF2) as well to see anyone needs your expertise. Also you can join us at our twice-monthly [headless WordPress community meetings](https://discord.gg/headless-wordpress-836253505944813629?event=1336404483013480588) to share your opinions and your experience.
+You can check the open issues, join the discussion, solve the issue, and save the day for others. Don't limit yourself just to the GitHub issues. You can also check [Discussions](https://github.com/wpengine/hwptoolkit/discussions) and [Discord Server](https://faustjs.org/discord/) to see if anyone needs your expertise. Also, you can join us at our twice-monthly [headless WordPress community meetings](https://faustjs.org/community-meeting/) to share your opinions and your experience.
 
 ### Triage issues
 
