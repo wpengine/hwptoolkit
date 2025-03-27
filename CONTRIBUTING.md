@@ -59,7 +59,7 @@ This is a kind of contribution that puts a smile to the face of every maintainer
 - If there's no issue related to your PR, create one and describe the problem you're facing and the solution you're proposing. Discuss it with the maintainers. If it's approved, you can start working on your PR.
 - Submit a separate PR for each issue. Avoid combining multiple issues into one PR.
 
-**Project structure**
+#### Project structure
 The following directory structure helps organize the project components efficiently.
 
 ```
