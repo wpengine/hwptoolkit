@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "pnpm fetch-styles && next dev",
+    "build": "pnpm fetch-styles && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fetch-styles": "node scripts/fetchWpGlobalStyles.js"
   },
   "dependencies": {
     "@wordpress/style-engine": "^2.20.0",
@@ -18,6 +19,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "commander": "^11.1.0",
+    "dotenv": "^16.4.1",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
     "tailwindcss": "^4"

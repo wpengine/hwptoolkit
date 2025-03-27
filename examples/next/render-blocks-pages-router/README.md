@@ -66,6 +66,12 @@ npm install
 npm run dev
 ```
 
+### Fetch WP Global Styles
+
+```bash
+npm run fetch-styles
+```
+
 http://localhost:3000/ should render the blocks as shown below.
 
 ![Animated screenshot, scrolling down and revealing the blocks supported by this example rendered on the page.](./public/screenshot.gif)
