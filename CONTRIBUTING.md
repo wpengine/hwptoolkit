@@ -108,7 +108,7 @@ We're using [Conventional Commits](https://www.conventionalcommits.org/) to orga
 # test:     Adding missing tests or correcting existing tests
 ```
 
-**Steps to contribute**
+#### Steps to contribute
 
 We use the [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) workflow. The workflow for a typical code change looks like:
 
