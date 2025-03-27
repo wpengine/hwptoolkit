@@ -89,7 +89,7 @@ These are four distinct ways of teaching people how to achieve different types o
 
 If you're intending to contribute to the documentation, you need to determine the correct category for the message you want to convey. Please don't forget to create your docs in the appropriate folder.
 
-**Conventional Commits**
+#### Conventional Commits
 
 We're using [Conventional Commits](https://www.conventionalcommits.org/) to organize our commits and pull requests. You can familiarize yourself with the different prefixes and their use cases below:
 
