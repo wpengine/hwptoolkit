@@ -9,7 +9,6 @@
     "example:stop": "pnpm run wp:stop",
     "example:prune": "wp-env destroy && pnpm run example:build && pnpm run example:start",
     "example:dev": "pnpm --dir ./example-app dev",
-    "wp:multisite:convert": "wp-env run cli -- wp core multisite-convert",
     "wp:multisite:set:variables": "wp-env run cli -- wp config set WP_ALLOW_MULTISITE true --raw && wp-env run cli -- wp config set MULTISITE true --raw && wp-env run cli -- wp config set SUBDOMAIN_INSTALL false --raw && wp-env run cli -- wp config set DOMAIN_CURRENT_SITE localhost:8888 && wp-env run cli -- wp config set PATH_CURRENT_SITE / && wp-env run cli -- wp config set SITE_ID_CURRENT_SITE 1 --raw && wp-env run cli -- wp config set BLOG_ID_CURRENT_SITE 1 --raw",
     "wp:start": "pnpm wp-env start",
     "wp:stop": "wp-env stop",
