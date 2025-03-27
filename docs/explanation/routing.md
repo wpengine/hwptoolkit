@@ -22,7 +22,7 @@ At a minimum in headless WordPress, we must get our front-end framework routing 
 
 ## Solution #1: File System Routers
 
-Modern front-end frameworks all have various ways you can define the routes of your application. Most have settled on some form of file-system based routing. These opinionated routing systems expect to be the source of source of truth for routing. This
+Modern front-end frameworks all have various ways you can define the routes of your application. Most have settled on some form of file-system based routing. These opinionated routing systems expect to be the source of source of truth for routing.
 
 > [!NOTE]
 > Gatsby is one of the few (only?) where you can programmatically connect content from a CMS to a template. A sadly under-valued feature. Though this can be finagled in to many frameworks using rewrites or other methods as we will discuss.
