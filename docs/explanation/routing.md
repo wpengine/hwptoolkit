@@ -275,7 +275,7 @@ WordPress uses the a variety of data (content type, post type, selected template
 single-post.php → single.php → singular.php → index.php
 ```
 
-> [!INFO]
+> [!NOTE]
 > The WordPress template hierarchy and all of its intricacies are out of scope for this guide. Please checkout the [WordPress documentation](https://developer.wordpress.org/themes/basics/template-hierarchy/) for more details.
 
 In headless WordPress we can use GraphQL queries to fetch template information. Then we can chose to simulate the template hierarchy resolution logic to determine the appropriate component to render.
