@@ -43,7 +43,10 @@ const Footer = () => {
                 </Link>
               </li>
               <li className={menuItemClass}>
-                <Link href="/category/mental-health" className={menuItemLinkClass}>
+                <Link
+                  href="/category/mental-health"
+                  className={menuItemLinkClass}
+                >
                   Mental Health
                 </Link>
               </li>
@@ -57,7 +60,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Tags</h3>
             <ul>
-            <li className={menuItemClass}>
+              <li className={menuItemClass}>
                 <Link href="/tag/mindfulness" className={menuItemLinkClass}>
                   Mindfulness
                 </Link>
