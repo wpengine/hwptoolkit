@@ -36,6 +36,12 @@ const GET_CONTENT = gql`
   fragment Page on Page {
     title
     content
+    featuredImage {
+      node {
+        sourceUrl(size: LARGE)
+        caption
+      }
+    }
   }
 
   fragment Post on Post {
@@ -52,6 +58,12 @@ const GET_CONTENT = gql`
         name
       }
     }
+    featuredImage {
+      node {
+        sourceUrl(size: LARGE)
+        caption
+      }
+    }
   }
 
   fragment Building on Building {
@@ -61,6 +73,12 @@ const GET_CONTENT = gql`
     excerpt
     date
     content
+    featuredImage {
+      node {
+        sourceUrl(size: LARGE)
+        caption
+      }
+    }
   }
 
   query GetNodeByUri($uri: String!) {

@@ -5,7 +5,7 @@ import Head from "next/head";
 
 const LIST_POSTS = gql`
   query ListPosts {
-    posts {
+    posts(first: 20) {
       edges {
         node {
           id
@@ -13,6 +13,12 @@ const LIST_POSTS = gql`
           uri
           excerpt
           date
+          featuredImage {
+            node {
+              sourceUrl(size: LARGE)
+              caption
+            }
+          }
         }
       }
     }

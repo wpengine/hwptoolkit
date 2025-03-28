@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import { gql, useQuery } from "@apollo/client";
 import Link from "next/link";
 
@@ -27,6 +28,9 @@ export default function Header() {
           <Link href='/' className='text-lg hover:underline'>
             Home
           </Link>
+          <a href='/sitemap.xml' className='text-lg hover:underline'>
+            Sitemap
+          </a>
         </nav>
       </div>
     </header>
