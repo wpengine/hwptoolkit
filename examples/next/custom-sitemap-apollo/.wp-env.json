@@ -3,7 +3,8 @@
   "plugins": [
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
     "https://github.com/AdvancedCustomFields/acf/releases/download/6.3.12/advanced-custom-fields-6.3.12.zip",
-    "https://github.com/wp-graphql/wpgraphql-acf/releases/latest/download/wpgraphql-acf.zip"
+    "https://github.com/wp-graphql/wpgraphql-acf/releases/latest/download/wpgraphql-acf.zip",
+    "https://github.com/wpengine/hwptoolkit/raw/refs/heads/example-custom-sitemap-apollo-pages/examples/next/custom-sitemap-apollo/hwpt-wpgraphql-sitemap.zip"
   ],
   "config": {
     "WP_DEBUG": true,
