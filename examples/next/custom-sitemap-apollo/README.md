@@ -1,6 +1,9 @@
-# Example:
+# Example: Create a custom WordPress sitemap with WPGraphQL and Apollo Client
 
 # Overview
+
+> [!IMPORTANT]  
+> If the XML sitemap feature in Yoast SEO is enabled, it disables the native WordPress sitemap. To run this example, you must turn off Yoast SEO's XML sitemap feature.
 
 ## Prerequisites
 
@@ -28,16 +31,16 @@
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && pnpm install
-- Setup a .env file under `examples/next/client-app-router-fetch-data/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
+- Setup a .env file under `examples/next/custom-sitemap-apollo/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
   e.g.
 
 ```bash
-echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/client-app-router-fetch-data/example-app/.env
+echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888\\nNEXT_PUBLIC_URL=http://localhost:3000" > examples/next/custom-sitemap-apollo/example-app/.env
 ```
 
 ## Build and start the application
 
-- `cd examples/next/client-app-router-fetch-data`
+- `cd examples/next/custom-sitemap-apollo`
 - Then run `pnpm example:build` will build and start your application.
 - This does the following:
   - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
