@@ -8,14 +8,14 @@ export default function Header() {
 
   return (
     <header className="bg-gray-800 text-white py-4 px-8 mb-8">
-      <div className="flex flex-col md:flex-row justify-between items-center max-w-4xl mx-auto">
-        <h1 className="text-3xl font-semibold w-full md:w-auto mb-4 md:mb-0 text-center md:text-left">
+      <div className="flex flex-col lg:flex-row justify-between items-center max-w-4xl mx-auto">
+        <h1 className="text-3xl font-semibold w-full lg:w-auto mb-4 lg:mb-0 text-center lg:text-left">
           <Link href="/" className="hover:underline focus:underline">
             {blogTitle}
           </Link>
         </h1>
 
-        <nav className="space-x-6 w-full md:w-auto text-center md:text-left">
+        <nav className="space-x-6 w-full lg:w-auto text-center lg:text-left">
           <Link href="/blog" className={menuItemClass}>
             Blog
           </Link>

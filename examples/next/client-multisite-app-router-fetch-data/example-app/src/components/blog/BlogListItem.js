@@ -6,7 +6,7 @@ export default function BlogListItem({ post }) {
   const { title, excerpt, uri } = post;
 
   return (
-    <article className="container max-w-4xl px-10 py-6 mx-auto rounded-lg shadow-sm bg-gray-50 mb-4">
+    <article className="container max-w-4xl px-4 lg:px-10 py-2 lg:py-6 mx-auto rounded-lg shadow-sm bg-gray-50 mb-4">
       <time dateTime={post.date} className="text-sm text-gray-600">
         {formatDate(post.date)}
       </time>

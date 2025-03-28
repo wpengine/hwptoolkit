@@ -30,8 +30,8 @@ export async function BlogListingTemplate(query, params, titlePrefix) {
   const capitalizeSlug = capitalizeWords(slug);
 
   return (
-    <div className="container mx-auto px-4 py-12" data-slug={slug}>
-      <h1 className="text-4xl font-bold mb-8 container max-w-4xl px-10 py-6 mx-auto">
+    <div className="container mx-auto px-4 pb-12" data-slug={slug}>
+      <h1 className="text-3xl lg:text-4xl font-bold mb-8 container max-w-4xl text-center lg:text-left lg:px-10 py-2 mx-auto">
         {capitalizeSlug ? `${titlePrefix}: ${capitalizeSlug}` : titlePrefix}
       </h1>
 

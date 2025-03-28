@@ -4,10 +4,11 @@ import CustomPostTypeList from "./CustomPostTypeList";
 
 // Note the approach here is to load the first 5 custom posts on the server,
 // and then use the client-side component to handle pagination after hydrating the initial data.
-export async function CustomPostTypeTemplate(query, customPostType, title) {
+export async function CustomPostTypeTemplate(query, siteKey, customPostType, title) {
   // Fetch initial data on the server using the slug from the route
   const data = await getPosts({
     query: query,
+    siteKey: siteKey,
     pageSize: getPostsPerPage(),
     revalidate: 3600, // Caches for 60 minutes
   });
@@ -36,6 +37,7 @@ export async function CustomPostTypeTemplate(query, customPostType, title) {
         initialPageInfo={initialPageInfo}
         postsPerPage={getPostsPerPage()}
         postsQuery={query}
+        siteKey={siteKey}
         customPostType={customPostType}
       />
     </div>
