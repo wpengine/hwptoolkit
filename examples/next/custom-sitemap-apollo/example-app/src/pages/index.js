@@ -1,6 +1,7 @@
 import { BlogPostItem } from "@/components/BlogPostItem";
 import { client } from "@/lib/client";
 import { gql } from "@apollo/client";
+import Head from "next/head";
 
 const LIST_POSTS = gql`
   query ListPosts {
@@ -21,6 +22,10 @@ const LIST_POSTS = gql`
 export default function Blog({ data }) {
   return (
     <>
+      <Head>
+        <title>Home</title>
+      </Head>
+
       {data?.posts?.edges?.map((item) => {
         const post = item.node;
 
