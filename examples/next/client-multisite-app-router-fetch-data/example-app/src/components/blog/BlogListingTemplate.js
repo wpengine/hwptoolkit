@@ -1,11 +1,14 @@
 import BlogList from "@/components/blog/BlogList";
-import { Heading } from "@/components/heading/heading";
+import { PageHeading } from "@/components/heading/PageHeading";
 import { getPosts, getPostsPerPage } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
 // Note the approach here is to load the first 5 posts on the server,
 // and then use the client-side component to handle pagination after hydrating the initial data.
-export async function BlogListingTemplate(query, params, siteKey, titlePrefix) {
+export async function BlogListingTemplate(query, args) {
+
+  const { params, siteKey, titlePrefix, postsPerPage, cacheExpiry } = args;
+
   // Get the last value in the array of params
   const slug = Array.isArray(params.slug)
     ? params.slug[params.slug.length - 1]
@@ -16,8 +19,8 @@ export async function BlogListingTemplate(query, params, siteKey, titlePrefix) {
     query,
     siteKey,
     slug,
-    pageSize: getPostsPerPage(),
-    revalidate: 3600, // Caches for 60 minutes
+    pageSize: postsPerPage ? postsPerPage : getPostsPerPage(),
+    revalidate: cacheExpiry ? cacheExpiry : 3600,
   });
 
   // Check if posts exists then throw a 404
@@ -36,7 +39,7 @@ export async function BlogListingTemplate(query, params, siteKey, titlePrefix) {
 
   return (
     <div className="container mx-auto px-4 pb-12" data-slug={slug}>
-      <Heading heading={title} />
+      <PageHeading heading={title} />
 
       <BlogList
         initialPosts={initialPosts}

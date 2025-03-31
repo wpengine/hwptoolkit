@@ -1,17 +1,20 @@
 import { getPosts, getPostsPerPage } from "@/lib/utils";
-import { Heading } from "@/components/heading/heading";
+import { PageHeading } from "@/components/heading/PageHeading";
 import { notFound } from "next/navigation";
 import CustomPostTypeList from "./CustomPostTypeList";
 
 // Note the approach here is to load the first 5 custom posts on the server,
 // and then use the client-side component to handle pagination after hydrating the initial data.
-export async function CustomPostTypeTemplate(query, siteKey, customPostType, title) {
+export async function CustomPostTypeTemplate(query, args) {
+
+  const { params, siteKey, title, customPostType, postsPerPage, cacheExpiry } = args;
+
   // Fetch initial data on the server using the slug from the route
   const data = await getPosts({
     query: query,
     siteKey: siteKey,
-    pageSize: getPostsPerPage(),
-    revalidate: 3600, // Caches for 60 minutes
+    pageSize: postsPerPage ? postsPerPage : getPostsPerPage(),
+    revalidate: cacheExpiry ? cacheExpiry : 3600,
   });
 
   // Check if posts exists then throw a 404
@@ -29,7 +32,7 @@ export async function CustomPostTypeTemplate(query, siteKey, customPostType, tit
 
   return (
     <div className="container mx-auto px-4 pb-12" data-cpt={customPostType}>
-      <Heading heading={title} />
+      <PageHeading heading={title} />
 
       <CustomPostTypeList
         initialPosts={initialPosts}
