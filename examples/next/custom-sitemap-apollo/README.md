@@ -70,7 +70,7 @@ After following the installation steps, you should have the example sitemap page
 ### Setup Repository and Packages
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
-- Install packages `cd hwptoolkit && pnpm install
+- Install packages `cd hwptoolkit && pnpm install`
 - Setup a .env file under `examples/next/custom-sitemap-apollo/example-app` and add these values inside:
 
 ```
