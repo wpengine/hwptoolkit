@@ -2,24 +2,24 @@
 
 ## Overview
 
-This example demonstrates how to generate a custom sitemap in the headless WordPress application using Next.js framework. The example app fetches data from WordPress using Apollo Client and WPGraphQL. As WPGraphQL doesn't support sitemaps natively, we are extending it with a custom plugin, which is included in this example as well. This plugin exposes new fields to fetch sitemap index, with the identical data that's been rendered on native WordPress sitemap. Another field exposed by this plugin allows you to request sitemap subpages by specifying the types and pages. Plugin also adds featured image data, enabling you to create [Image Sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps).
+This example demonstrates how to generate a custom sitemap in a headless WordPress application using the Next.js framework. The example app fetches data from WordPress using Apollo Client and WPGraphQL. Since WPGraphQL doesn't support sitemaps natively, we are extending it with a custom plugin, which is included in this example as well. This plugin exposes new fields to fetch the sitemap index, with data identical to what's rendered on the native WordPress sitemap. Another field exposed by this plugin allows you to request sitemap subpages by specifying the types and pages. The plugin also adds featured image data, enabling you to create [Image Sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps).
 
-The example includes wp-env setup, which will allow you to build and start this example in no time. With this wp-env setup you don't need to have a separate WordPress instance or demo data to inspect the example.
+The example includes a wp-env setup, which will allow you to build and start this example quickly. With this wp-env setup, you don't need to have a separate WordPress instance or demo data to inspect the example.
 
 ## Features
 
-1. Fetching sitemap data with API allows maximum customizability
-2. Custom plugin to extend WPGraphQL with sitemap feature
-3. Plugin uses native WordPress sitemap hooks and methods for the security and performance
-4. An identical WordPress sitemap structure on the headless setup
+1. Fetching sitemap data with the API allows maximum customizability
+2. Custom plugin to extend WPGraphQL with the sitemap feature
+3. Plugin uses native WordPress sitemap hooks and methods for security and performance
+4. An identical WordPress sitemap structure in the headless setup
 5. [Image Sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps) implementation
 6. Configured WordPress instance with demo data and required plugins, using wp-env
 7. Sitemaps for custom post and taxonomy types
-8. Permanent redirect `/sitemap` requests to `/sitemap.xml`, in the `next.config.mjs`
+8. Permanent redirect of `/sitemap` requests to `/sitemap.xml`, in the `next.config.mjs`
 
 ## Screenshots
 
-After following the installation steps you should have the example sitemap pages as shown the screenshots below:
+After following the installation steps, you should have the example sitemap pages as shown in the screenshots below:
 
 |                                                                              |                                                                                      |
 | :--------------------------------------------------------------------------: | :----------------------------------------------------------------------------------: |
@@ -27,13 +27,6 @@ After following the installation steps you should have the example sitemap pages
 | ![categories](./screenshots/sitemap-category.png "Categories")<br>Categories |                ![tags](./screenshots/sitemap-tag.png "Tags")<br>Tags                 |
 |          ![users](./screenshots/sitemap-user.png "Users")<br>Users           |               ![page](./screenshots/sitemap-page.png "Pages")<br>Pages               |
 | ![cpt](./screenshots/sitemap-cpt.png "Custom post type")<br>Custom post type | ![ctt](./screenshots/sitemap-ctt.png "Custom taxonomy type")<br>Custom taxonomy type |
-
-## Important notes
-
-If you're intending to use this example with your own WordPress instance, don't forget to uncheck the `Discourage search engines from indexing this site` checkbox under `Settings -> Reading` page in wp-admin.
-
-> [!IMPORTANT]  
-> If the XML sitemap feature in Yoast SEO is enabled, it disables the native WordPress sitemap. To run this example, you must turn off Yoast SEO's XML sitemap feature.
 
 ## Project Structure
 
@@ -50,7 +43,7 @@ If you're intending to use this example with your own WordPress instance, don't 
 │           ├── sitemap                        # Base path for sitemap subpages
 │           │   └── [...type]                  # Catch-all route for sitemap subpages
 │           └── sitemap.xml.js                 # Index sitemap.xml page
-├── hwpt-wpgraphql-sitemap                     # PHP files of the HWPT WPGraphQL Sitemap plugin
+├── hwpt-wpgraphql-sitemap                     # PHP files for the HWPT WPGraphQL Sitemap plugin
 ├── hwpt-wpgraphql-sitemap.zip                 # HWPT WPGraphQL Sitemap plugin to enable sitemap fields
 ├── .wp-env.json                               # wp-env configuration file
 └── wp-env
@@ -58,6 +51,11 @@ If you're intending to use this example with your own WordPress instance, don't 
     │   └── database.sql                       # WordPress database including all demo data for the example
     └── uploads.zip                            # WordPress content to be used by wp-env
 ```
+
+## Important notes
+
+- If you're intending to use this example with your own WordPress instance, make sure to uncheck the `Discourage search engines from indexing this site` checkbox under `Settings -> Reading` in the WordPress admin.
+- If the XML sitemap feature in Yoast SEO is enabled, it will disable the native WordPress sitemap. To run this example, you must disable Yoast SEO's XML sitemap feature.
 
 ## Running the example with wp-env
 
