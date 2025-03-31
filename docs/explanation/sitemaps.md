@@ -75,7 +75,7 @@ This route will serve the WordPress `sitemap.xml` in your Next.js application dy
 
 2. **Generating a Sitemap from GraphQL Content**
 
-Approach: This approach involves fetching content via GraphQL and generating a custom sitemap. This can be implemented using either server-side rendering (SSR) or static generation strategies.
+Approach: This approach involves fetching all available post and page info via GraphQL and generating a custom sitemap. This can be implemented using either server-side rendering (SSR) or static generation strategies. However since, WPGraphQL returns maximum 100 node per page trying to fetch all available post or pages on a large site might be problematic and slow. See [pagination limits in wp-graphql](https://www.wpgraphql.com/docs/known-limitations#pagination-limits).
 
 Example implementation using Next.js and WPGraphQL:
 
@@ -83,26 +83,17 @@ Example implementation using Next.js and WPGraphQL:
 import { gql } from '@apollo/client';
 import { client } from '../lib/apolloClient';
 
+// Function to fetch all posts from WordPress
+async function fetchAllPosts() {}
+
+// Similar function for pages
+async function fetchAllPages() {}
+
 export async function generateSitemap() {
-  const { data } = await client.query({
-    query: gql`
-      query GetAllContent {
-        posts(first: 1000) {
-          nodes {
-            slug
-            modified
-          }
-        }
-        pages(first: 1000) {
-          nodes {
-            slug
-            modified
-          }
-        }
-        // Add other custom post types as needed
-      }
-    `,
-  });
+  const [posts, pages] = await Promise.all([
+    fetchAllPosts(),
+    fetchAllPages(),
+  ]);
   const allContent = [
     ...data.posts.nodes.map(post => ({ 
       slug: `posts/${post.slug}`, 
@@ -158,6 +149,7 @@ export async function GET() {
     * Requires manual updates to include new content types or custom routes
     * May require pagination handling for large sites
     * Doesn't leverage WordPress SEO plugin sitemap enhancements
+    * Increasing the GraphQL limits may cause performance issues on resource-constrained WordPress instances.
 
 3. **Hybrid Approach: Fetching, Parsing, and Enhancing Existing Sitemaps**
 
