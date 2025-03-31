@@ -11,6 +11,7 @@ export default function BlogList({
   postsQuery,
   siteKey,
   slug = "",
+  postListContainerClass,
 }) {
   // Track various states for posts, page info, and loading
   const [posts, setPosts] = useState(initialPosts || []);
@@ -53,7 +54,7 @@ export default function BlogList({
 
   return (
     <>
-      <div className="grid post-list gap-4">
+      <div className={postListContainerClass || "grid post-list gap-4"}>
         {posts.map(({ node }) => (
           <BlogListItem key={node.id} post={node} />
         ))}

@@ -11,6 +11,7 @@ export default function CustomPostTypeList({
   postsQuery,
   siteKey,
   customPostType,
+  postListContainerClass,
 }) {
   // Track various states for posts, page info, and loading
   const [posts, setPosts] = useState(initialPosts || []);
@@ -41,7 +42,7 @@ export default function CustomPostTypeList({
 
   return (
     <>
-      <div className="grid post-list gap-4">
+      <div className={postListContainerClass || "grid post-list gap-4"}>
         {/* Add your own templates here for different cpt */}
         {posts.map(({ node }) =>
           customPostType === "movies" ? (

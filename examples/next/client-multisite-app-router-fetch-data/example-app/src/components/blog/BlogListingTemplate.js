@@ -6,8 +6,15 @@ import { notFound } from "next/navigation";
 // Note the approach here is to load the first 5 posts on the server,
 // and then use the client-side component to handle pagination after hydrating the initial data.
 export async function BlogListingTemplate(query, args) {
-
-  const { params, siteKey, titlePrefix, postsPerPage, cacheExpiry } = args;
+  const {
+    params,
+    siteKey,
+    titlePrefix,
+    postsPerPage,
+    cacheExpiry,
+    containerClass,
+    postListContainerClass,
+  } = args;
 
   // Get the last value in the array of params
   const slug = Array.isArray(params.slug)
@@ -38,8 +45,11 @@ export async function BlogListingTemplate(query, args) {
   }
 
   return (
-    <div className="container mx-auto px-4 pb-12" data-slug={slug}>
-      <PageHeading heading={title} />
+    <div
+      className={containerClass || "container mx-auto px-4 pb-12"}
+      data-slug={slug}
+    >
+      {title && <PageHeading heading={title} />}
 
       <BlogList
         initialPosts={initialPosts}
@@ -48,6 +58,7 @@ export async function BlogListingTemplate(query, args) {
         postsQuery={query}
         siteKey={siteKey}
         slug={slug}
+        postListContainerClass={postListContainerClass}
       />
     </div>
   );
