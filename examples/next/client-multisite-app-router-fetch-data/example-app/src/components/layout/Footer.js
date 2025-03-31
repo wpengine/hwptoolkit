@@ -64,12 +64,18 @@ const Footer = () => {
                 <Link href="/tag/mindfulness" className={menuItemLinkClass}>
                   Mindfulness
                 </Link>
+              </li>
+              <li className={menuItemClass}>
                 <Link href="/tag/nutrition" className={menuItemLinkClass}>
                   Nutrition
                 </Link>
+              </li>
+              <li className={menuItemClass}>
                 <Link href="/tag/mindset" className={menuItemLinkClass}>
                   Mindset
                 </Link>
+              </li>
+              <li className={menuItemClass}>
                 <Link href="/tag/wellness" className={menuItemLinkClass}>
                   Wellness
                 </Link>

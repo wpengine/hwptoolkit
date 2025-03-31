@@ -1,4 +1,5 @@
 import { getPosts, getPostsPerPage } from "@/lib/utils";
+import { Heading } from "@/components/heading/heading";
 import { notFound } from "next/navigation";
 import CustomPostTypeList from "./CustomPostTypeList";
 
@@ -28,9 +29,7 @@ export async function CustomPostTypeTemplate(query, siteKey, customPostType, tit
 
   return (
     <div className="container mx-auto px-4 pb-12" data-cpt={customPostType}>
-      <h1 className="text-3xl lg:text-4xl font-bold mb-8 container max-w-4xl text-center lg:text-left lg:px-10 py-2 mx-auto">
-        {title}
-      </h1>
+      <Heading heading={title} />
 
       <CustomPostTypeList
         initialPosts={initialPosts}

@@ -1,5 +1,5 @@
 import BlogList from "@/components/blog/BlogList";
-import { capitalizeWords } from "@/lib/utils";
+import { Heading } from "@/components/heading/heading";
 import { getPosts, getPostsPerPage } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
@@ -28,13 +28,15 @@ export async function BlogListingTemplate(query, params, siteKey, titlePrefix) {
 
   const initialPosts = data.posts.edges;
   const initialPageInfo = data.posts.pageInfo;
-  const capitalizeSlug = capitalizeWords(slug);
+
+  let title = titlePrefix;
+  if (slug) {
+    title = `${titlePrefix}: ${slug}`;
+  }
 
   return (
     <div className="container mx-auto px-4 pb-12" data-slug={slug}>
-      <h1 className="text-3xl lg:text-4xl font-bold mb-8 container max-w-4xl text-center lg:text-left lg:px-10 py-2 mx-auto">
-        {capitalizeSlug ? `${titlePrefix}: ${capitalizeSlug}` : titlePrefix}
-      </h1>
+      <Heading heading={title} />
 
       <BlogList
         initialPosts={initialPosts}

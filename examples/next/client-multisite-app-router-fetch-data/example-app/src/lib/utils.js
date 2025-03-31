@@ -13,9 +13,11 @@ export function formatDate(dateString) {
 export function capitalizeWords(str) {
   if (!str) return "";
   return str
+    .toString()
     .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 export async function getPosts({
