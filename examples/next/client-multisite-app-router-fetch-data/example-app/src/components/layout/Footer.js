@@ -23,8 +23,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li className={menuItemClass}>
-                <Link href="/contact-us" className={menuItemLinkClass}>
-                  Contact Us
+                <Link href="/bookings" className={menuItemLinkClass}>
+                  Bookings
                 </Link>
               </li>
               <li className={menuItemClass}>

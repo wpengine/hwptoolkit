@@ -25,6 +25,9 @@ export default function Header() {
           <Link href="/about-us" className={menuItemClass}>
             About Us
           </Link>
+          <Link href="/bookings" className={menuItemClass}>
+            Bookings
+          </Link>
         </nav>
       </div>
     </header>

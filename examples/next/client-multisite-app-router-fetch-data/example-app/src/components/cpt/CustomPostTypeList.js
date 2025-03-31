@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { fetchGraphQL } from "@/lib/client";
 import MovieListingItem from "./MovieListingItem";
+import { LoadMoreButton } from "../button/LoadMoreButton";
 
 export default function CustomPostTypeList({
   initialPosts,
@@ -52,14 +53,11 @@ export default function CustomPostTypeList({
       </div>
 
       {pageInfo.hasNextPage && (
-        <button
+        <LoadMoreButton
+          text="Load More Listings"
           onClick={loadMorePosts}
-          type="button"
-          className="px-8 py-3 font-semibold rounded bg-gray-800 hover:bg-gray-700 text-gray-100 mx-auto block mt-8"
-          disabled={loading}
-        >
-          {loading ? "Loading..." : "Load more"}
-        </button>
+          loading={loading}
+        />
       )}
     </>
   );
