@@ -22,8 +22,8 @@ export default function Header() {
           <Link href="/cinema-listings" className={menuItemClass}>
             Cinema Listings
           </Link>
-          <Link href="/events" className={menuItemClass}>
-            Events
+          <Link href="/about-us" className={menuItemClass}>
+            About Us
           </Link>
         </nav>
       </div>

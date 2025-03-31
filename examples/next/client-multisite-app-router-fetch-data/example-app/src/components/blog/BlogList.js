@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { fetchGraphQL } from "@/lib/client";
 import BlogListItem from "@/components/blog/BlogListItem";
+import { LoadMoreButton } from "../button/LoadMoreButton";
 
 export default function BlogList({
   initialPosts,
@@ -61,14 +62,11 @@ export default function BlogList({
       </div>
 
       {pageInfo.hasNextPage && (
-        <button
+        <LoadMoreButton
+          text="Load More Posts"
           onClick={loadMorePosts}
-          type="button"
-          className="px-8 py-3 font-semibold rounded bg-gray-800 hover:bg-gray-700 text-gray-100 mx-auto block mt-8"
-          disabled={loading}
-        >
-          {loading ? "Loading..." : "Load more"}
-        </button>
+          loading={loading}
+        />
       )}
     </>
   );

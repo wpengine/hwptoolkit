@@ -3,7 +3,7 @@ import { HomeCinemaListingsQuery } from "@/lib/queries/HomeCinemaListingsQuery";
 import { BlogListingTemplate } from "@/components/blog/BlogListingTemplate";
 import { CustomPostTypeTemplate } from "@/components/cpt/CustomPostTypeTemplate";
 import { PageHeading } from "@/components/heading/PageHeading";
-import Link from "next/link";
+import { Button } from "@/components/button/Button";
 
 export default async function HomePage(params) {
   const postListContainerClass =
@@ -26,12 +26,7 @@ export default async function HomePage(params) {
         })}
 
         <div className="flex flex-col items-center">
-          <Link
-            href={"/blog"}
-            className="text-center p-3 bg-orange-600 hover:bg-orange-400 text-white uppercase transition-colors duration-300"
-          >
-            View All News
-          </Link>
+          <Button text="View All News" href="/blog" />
         </div>
       </div>
       <div className="homepage-cinema-listings pb-20">
@@ -48,12 +43,7 @@ export default async function HomePage(params) {
           postListContainerClass: postListContainerClass,
         })}
         <div className="flex flex-col items-center">
-          <Link
-            href={"/cinema-listings"}
-            className="text-center p-3 bg-orange-600 hover:bg-orange-400 text-white uppercase transition-colors duration-300"
-          >
-            View All Cinema Listings
-          </Link>
+          <Button text="View All Cinema Listings" href="/cinema-listings" />
         </div>
       </div>
     </>
