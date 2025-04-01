@@ -1,6 +1,6 @@
-import { BlogPostItem } from "@/components/BlogPostItem";
-import SearchInput from "@/components/SearchInput";
-import { client } from "@/lib/client";
+import { BlogPostItem } from "../components/BlogPostItem";
+import SearchInput from "../components/SearchInput";
+import { client } from "../lib/client";
 import { gql, useLazyQuery } from "@apollo/client";
 import debounce from "debounce";
 

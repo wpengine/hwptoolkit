@@ -1,7 +1,7 @@
-import CouldNotLoad from "@/components/CouldNotLoad";
-import Page from "@/components/Page";
-import Single from "@/components/Single";
-import { client } from "@/lib/client";
+import CouldNotLoad from "../components/CouldNotLoad";
+import Page from "../components/Page";
+import Single from "../components/Single";
+import { client } from "../lib/client";
 import { gql } from "@apollo/client";
 
 // GraphQL query with the Page and Post fragments

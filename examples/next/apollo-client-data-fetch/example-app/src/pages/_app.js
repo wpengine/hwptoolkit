@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
-import { client } from "@/lib/client";
+import { client } from "../lib/client";
 import { ApolloProvider } from "@apollo/client";
-import Header from "@/components/Header";
+import Header from "../components/Header";
 
 // Custom App component to initialize pages
 export default function App({ Component, pageProps }) {

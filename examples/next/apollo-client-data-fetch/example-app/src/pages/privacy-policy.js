@@ -1,5 +1,5 @@
-import Page from "@/components/Page";
-import { client } from "@/lib/client";
+import Page from "../components/Page";
+import { client } from "../lib/client";
 import { gql } from "@apollo/client";
 
 const GET_PAGE = gql`
