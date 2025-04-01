@@ -39,7 +39,8 @@ export default async function ContentPage({ params }) {
     : "";
 
   const wordpressSites = JSON.parse(process.env.WORDPRESS_SITES || "{}");
-  let data, currentSiteKey = null;
+  let data,
+    currentSiteKey = null;
   for (const [siteKey] of Object.entries(wordpressSites)) {
     currentSiteKey = siteKey;
     data = await fetchContent(uri, siteKey);
@@ -57,9 +58,12 @@ export default async function ContentPage({ params }) {
   const contentType = data?.nodeByUri?.__typename;
 
   // Add your own CPT templates here for single post types
-  if (contentType === "Movie") return <Movie data={data.nodeByUri} siteKey={currentSiteKey} />;
-  if (contentType === "Post") return <Post data={data.nodeByUri} siteKey={currentSiteKey} />;
-  if (contentType === "Page") return <Page data={data.nodeByUri} siteKey={currentSiteKey} />;
+  if (contentType === "Movie")
+    return <Movie data={data.nodeByUri} siteKey={currentSiteKey} />;
+  if (contentType === "Post")
+    return <Post data={data.nodeByUri} siteKey={currentSiteKey} />;
+  if (contentType === "Page")
+    return <Page data={data.nodeByUri} siteKey={currentSiteKey} />;
   notFound();
 }
 

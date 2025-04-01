@@ -28,7 +28,7 @@ export default function Post({ data, siteKey }) {
     setCommentStatus({ loading: true, error: null, success: false });
 
     try {
-      const result = await fetchGraphQL(AddCommentToPostMutation, siteKey,{
+      const result = await fetchGraphQL(AddCommentToPostMutation, siteKey, {
         ...inputs,
         commentOn: databaseId,
       });

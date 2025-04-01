@@ -1,8 +1,6 @@
-
 import { SinglePageFragment } from "@/lib/fragments/SinglePageFragment";
 import { SinglePostFragment } from "@/lib/fragments/SinglePostFragment";
 import { SingleMovieFragment } from "@/lib/fragments/SingleMovieFragment";
-
 
 // Important Note: As not all sites have the same CPT, making a query for a CPT which doesn't exist for a site, will result in an error
 // So instead we have an object with the key matching the siteKey defined in next.config.mjs
@@ -12,7 +10,7 @@ import { SingleMovieFragment } from "@/lib/fragments/SingleMovieFragment";
 
 // See WPGraphQL docs on nodeByUri: https://www.wpgraphql.com/2021/12/23/query-any-page-by-its-path-using-wpgraphql
 export const NodeByUriQuery = {
-    main: `
+  main: `
         ${SinglePageFragment}
         ${SinglePostFragment}
         query GetNodeByUri($uri: String!) {
@@ -23,7 +21,7 @@ export const NodeByUriQuery = {
             }
         }
     `,
-    movie_site: `
+  movie_site: `
     ${SinglePageFragment}
     ${SinglePostFragment}
     ${SingleMovieFragment}
@@ -35,5 +33,5 @@ export const NodeByUriQuery = {
             ...SingleMovieFragment
         }
     }
-`
+`,
 };
