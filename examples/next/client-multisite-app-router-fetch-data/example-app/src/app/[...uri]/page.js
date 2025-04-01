@@ -1,15 +1,22 @@
-// Catch all template
-// Please add other components for other post types here too and update the query template
+// Catch all template for all pages, posts and CPT
 import { notFound } from "next/navigation";
 import Page from "@/components/single/Page";
 import Post from "@/components/single/Post";
+import Movie from "@/components/single/Movie";
 import { fetchGraphQL } from "@/lib/client";
 import { NodeByUriQuery } from "@/lib/queries/NodeByUriQuery";
 
 // This function fetches the data for the given uri and siteKey
 async function fetchContent(uri, siteKey) {
-  return await await fetchGraphQL(
-    NodeByUriQuery,
+  const query = NodeByUriQuery[siteKey] || false;
+
+  if (!query) {
+    console.warn(`Site configuration for siteKey "${siteKey}" not found.`);
+    return null;
+  }
+
+  return await fetchGraphQL(
+    query,
     siteKey,
     {
       uri: uri,
@@ -50,6 +57,7 @@ export default async function ContentPage({ params }) {
   const contentType = data?.nodeByUri?.__typename;
 
   // Add your own CPT templates here for single post types
+  if (contentType === "Movie") return <Movie data={data.nodeByUri} siteKey={currentSiteKey} />;
   if (contentType === "Post") return <Post data={data.nodeByUri} siteKey={currentSiteKey} />;
   if (contentType === "Page") return <Page data={data.nodeByUri} siteKey={currentSiteKey} />;
   notFound();
