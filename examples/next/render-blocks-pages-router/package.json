@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/runtime": "^7.27.0",
     "@wordpress/style-engine": "^2.21.0",
     "next": "15.2.3",
     "react": "^19.0.0",
