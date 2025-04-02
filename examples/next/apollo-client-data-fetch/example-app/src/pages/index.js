@@ -15,6 +15,12 @@ const LIST_POSTS = gql`
           uri
           excerpt
           date
+          featuredImage {
+            node {
+              sourceUrl(size: LARGE)
+              caption
+            }
+          }
         }
       }
       pageInfo {

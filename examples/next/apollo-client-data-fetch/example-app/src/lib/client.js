@@ -32,6 +32,12 @@ const fragments = gql`
         name
       }
     }
+    featuredImage {
+      node {
+        sourceUrl(size: LARGE)
+        caption
+      }
+    }
   }
 
   fragment Comment on Comment {
