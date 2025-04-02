@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { BlogPostItem } from "../components/BlogPostItem";
 import SearchInput from "../components/SearchInput";
 import { client } from "../lib/client";
@@ -55,6 +56,10 @@ export default function Blog({ serverSideData }) {
 
   return (
     <>
+      <Head>
+        <title>Home</title>
+      </Head>
+
       <SearchInput onSearch={debounce(handleSearch, 200)} />
 
       {data?.posts?.edges?.map((item) => {

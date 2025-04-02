@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Page from "../components/Page";
 import { client } from "../lib/client";
 import { gql } from "@apollo/client";
@@ -12,7 +13,15 @@ const GET_PAGE = gql`
 
 export default function GetPageStatic({ data }) {
   // Render the Page component with the fetched data
-  return <Page data={data?.page} />;
+  return (
+    <>
+      <Head>
+        <title>Privacy Policy</title>
+      </Head>
+
+      <Page data={data?.page} />
+    </>
+  );
 }
 
 export async function getStaticProps() {
