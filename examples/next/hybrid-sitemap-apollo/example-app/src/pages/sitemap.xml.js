@@ -31,12 +31,8 @@ export async function getServerSideProps({ req, res }) {
     }
   }
   nodesToRemove.forEach((node) => doc.removeChild(node));
-
-  // Determine the type of sitemap
   const isIndex = doc.getElementsByTagName("sitemapindex").length > 0;
-  const isUrlset = doc.getElementsByTagName("urlset").length > 0;
 
-  // Create new xml-stylesheet node and insert
   const newStylesheetPI = doc.createProcessingInstruction(
     "xml-stylesheet",
     `type="text/xsl" href="${frontEndUrl}/sitemap.xsl"`
@@ -44,7 +40,6 @@ export async function getServerSideProps({ req, res }) {
   doc.insertBefore(newStylesheetPI, doc.childNodes[0].nextSibling);
 
   if (isIndex) {
-    // If it's a sitemap index, update the loc nodes
     const sitemaps = doc.getElementsByTagName("sitemap");
     for (let i = 0; i < sitemaps.length; i++) {
       const locNode = sitemaps[i].getElementsByTagName("loc")[0];
@@ -69,7 +64,6 @@ export async function getServerSideProps({ req, res }) {
       }
     }
   } else {
-    // If it's a regular sitemap (urlset), update the loc nodes
     const urls = doc.getElementsByTagName("url");
     for (let i = 0; i < urls.length; i++) {
       const locNode = urls[i].getElementsByTagName("loc")[0];
