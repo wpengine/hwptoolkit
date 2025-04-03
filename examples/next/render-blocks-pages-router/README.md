@@ -68,8 +68,24 @@ npm run dev
 
 ### Fetch WP Global Styles
 
-```bash
-npm run fetch-styles
+This example supports fetching and applying `Global Styles` from a WordPress instance using the custom `globalStylesheet GraphQL field` (provided by the hwp-global-stylesheet plugin).
+To ensure correct visual rendering of blocks, we also include WordPress’s foundational CSS via the `@wordpress/base-styles` package. This ensures consistent typography, spacing, and block formatting across your frontend.
+
+#### How It Works
+An example script `scripts/fetchWpGlobalStyles.js` fetches the global stylesheet from your WordPress site using GraphQL and saves it to `public/hwp-global-styles.css`. This file is automatically included in the frontend to style blocks according to your theme settings.
+
+```javascript
+fetchWpGlobalStyles(
+    'https://your-wp-site.com/graphql',                      // Your WordPress GraphQL endpoint
+    'public/hwp-global-styles.css',                          // Output path
+    ['variables', 'presets', 'styles', 'base-layout-styles'] // Types of styles to fetch
+);
+```
+
+Make sure the fetched CSS are loaded:
+```javascript
+import '@wordpress/base-styles';               // Essential WordPress block styling
+import "/hwp-global-styles.css";               // Styles pulled from WordPress
 ```
 
 http://localhost:3000/ should render the blocks as shown below.
