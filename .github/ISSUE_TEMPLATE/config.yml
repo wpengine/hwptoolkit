@@ -1,0 +1,13 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Community (Headless WordPress Discord)
+    url: https://discord.gg/YH8Pqja2
+    about: Join our community Discord server for real-time discussions and community support
+
+  - name: Support / Feature Request / General Help
+    url: https://github.com/wpengine/hwptoolkit/discussions
+    about: Please use our GitHub Discussions for questions, feature ideas, and general help
+
+  - name: Security Policy
+    url: https://github.com/wpengine/hwptoolkit/security/policy
+    about: Please review our security policy for reporting security vulnerabilities
