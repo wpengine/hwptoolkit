@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Community (Headless WordPress Discord)
-    url: https://discord.gg/YH8Pqja2
+    url: https://faustjs.org/discord
     about: Join our community Discord server for real-time discussions and community support
 
   - name: Support / Feature Request / General Help
