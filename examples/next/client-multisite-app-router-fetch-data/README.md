@@ -1,19 +1,19 @@
 # Example: Multisite Next.js App Router using the Fetch API
 
 # Table of Contents
-
 - [Overview](#overview)
-    - [Prerequisites](#prerequisites)
-    - [Project Structure](#project-structure)
-    - [Features](#features)
-    - [Screenshots](#screenshots)
-
+  - [Prerequisites](#prerequisites)
+  - [Project Structure](#project-structure)
+  - [Features](#features)
+  - [Screenshots](#screenshots)
 - [Running the Example with wp-env](#running-the-example-with-wp-env)
-    - [Prerequisites](#prerequisites-1)
-    - [Setup Repository and Packages](#setup-repository-and-packages)
-    - [Build and Start the Application](#build-and-start-the-application)
-    - [Command Reference](#command-reference)
-    - [Database Access](#database-access)
+  - [Prerequisites](#prerequisites-1)
+  - [Setup Repository and Packages](#setup-repository-and-packages)
+  - [Build and Start the Application](#build-and-start-the-application)
+  - [Command Reference](#command-reference)
+  - [Database Access](#database-access)
+  - [Adding More Sites to the Multisite Examples](#adding-more-sites-to-the-multisite-examples)
+
 
 # Overview
 
@@ -119,7 +119,7 @@ echo "NEXT_PUBLIC_MOVIE_WORDPRESS_URL=http://localhost:8888/movies" >> examples/
 ```
 
 > [!IMPORTANT]
-> The site configuration is based off values set in [examples/next/client-multisite-app-router-fetch-data/example-app/next.config.mjs](examples/next/client-multisite-app-router-fetch-data/example-app/next.config.mjs)
+> The site configuration is based off values set in [example-app/next.config.mjs](example-app/next.config.mjs)
 > If you want to add more sites please feel free to add more sites to your .env file and update the configuration in the next.config.mjs
 
 
@@ -176,3 +176,43 @@ There are issues with setting variables for multisite in .wp-env.json before con
 If you need database access add the following to your wp-env `"phpmyadminPort": 11111,` (where port 11111 is not allocated).
 
 You can check if a port is free by running `lsof -i :11111`
+
+### Adding more sites to the multisite examples
+
+If you want to add more sites you need to do the followint
+
+1. Add the variable to your .env next.js setup e.g. `NEXT_PUBLIC_SPORT_WORDPRESS_URL=http://localhost:8888/sport`
+2. Update your next.config.mjs with a site key and this value e.g. 
+```js
+    WORDPRESS_SITES: JSON.stringify({
+      main: process.env.NEXT_PUBLIC_WORDPRESS_URL + "/graphql",
+      movie_site: process.env.NEXT_PUBLIC_MOVIE_WORDPRESS_URL + "/graphql",
+      sport_site: process.env.NEXT_PUBLIC_SPORT_WORDPRESS_URL + "/graphql",
+    }),
+```
+
+You then use the site key e.g. `sport_site` when fetching data with a template or the `fetchGraphQL` function
+
+e.g. 
+
+```
+# example-app/src/app/sport-news/page.js
+import { SportsListingsQuery } from "@/lib/queries/SportsListingsQuery";
+import { CustomPostTypeTemplate } from "@/components/cpt/CustomPostTypeTemplate";
+
+export default async function SportsListingsPage(params) {
+  return CustomPostTypeTemplate(SportsListingsQuery, {
+    params: params,
+    customPostType: "sport", # Update CPT
+    siteKey: "sport_site", # This is your site key
+    title: "Sport News",
+    cacheExpiry: 3600,
+  });
+}
+
+```
+
+**Note**
+
+1. You need to add the query
+2. You also need to update the Custom Post Type Template to include your listings template
