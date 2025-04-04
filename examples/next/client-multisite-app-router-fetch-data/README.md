@@ -103,7 +103,7 @@ An example mulitsite headless WordPress application using Next.js App Router and
 ## Setup Repository and Packages
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
-- Install packages `cd hwptoolkit && pnpm install
+- Install packages `cd hwptoolkit && pnpm install`
 - Setup a .env file under `examples/next/client-multisite-app-router-fetch-data/example-app` with 
 
 ```
