@@ -1,3 +1,4 @@
 wp-env/__MACOSX
 wp-env/uploads
 package-lock.json
+example-app/package-lock.json
