@@ -1,0 +1,74 @@
+name: "✅ Bug Report"
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank You for taking the time to fill out this bug report! The more information you provide, the faster we can help.
+        
+        Please remember, a bug report is _not the place to ask questions_. You can
+        use [Discord](https://discord.gg/YH8Pqja2) for that, or start a topic in [GitHub
+        Discussions](https://github.com/wpengine/hwptoolkit/discussions).
+        
+        Also please note that _not all the fields are required_, but _the more information_ you provide, _the better_ we can help you.
+
+  - type: textarea
+    id: what-did
+    attributes:
+      label: What did you do?
+      description: Steps you took that led to the issue
+      placeholder: I used the `usePost` hook to fetch a post with ID 123 from my WordPress site
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-expected
+    attributes:
+      label: What did you expect to happen?
+      description: The behavior you anticipated
+      placeholder: The hook should have returned the post data and set isLoading to false
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What actually happened?
+      description: The unexpected behavior you observed
+      placeholder: The hook returned undefined data but isLoading remained true indefinitely, even though the network request completed successfully
+    validations:
+      required: true
+
+  - type: textarea
+    id: minimal-reproduction
+    attributes:
+      label: Please provide a [minimal reproduction example](https://stackoverflow.com/help/minimal-reproducible-example)
+      description: Add any code snippets or links to a repository that can help us reproduce the issue. This is crucial for us to understand and fix the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context (Optional)
+      description: Add any other context about the problem here, such as screenshots, error logs, etc.
+
+  - type: input
+    id: toolkit-version
+    attributes:
+      label: Toolkit Version
+      description: Which version/branch of the toolkit are you using?
+      placeholder: "e.g., v1.2.3 OR main"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
