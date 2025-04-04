@@ -5,10 +5,18 @@
 <!-- What problem does this PR solve? What functionality does it add/improve? -->
 
 ## Related Issue
-<!-- Please link any related issues here. Use the syntax: "Fixes #123" or "Related to #456" -->
+<!-- Please link any related issues here and describe the relationship.
+     Examples:
+     - "#123 - the issue that the PR resolves"
+     - "#456 - this PR addresses part of the issue" -->
 
 ## Dependant PRs
-<!-- List any dependent PR's that are awaiting review. Use the following syntax: "#1234" -->
+<!-- List any PRs that have a dependency relationship with this one.
+     Describe the nature of each dependency.
+     Examples:
+     - "#1234 - Must be merged BEFORE this PR (this PR relies on those changes)"
+     - "#5678 - Must be merged WITH this PR (these changes must be deployed together)"
+     - "#9012 - Should be merged AFTER this PR (depends on changes in this PR)" -->
 
 ## Type of Change
 <!-- What types of changes does your code introduce? Put an x in all boxes that apply -->
@@ -38,8 +46,3 @@
 - [ ] My changes generate no new warnings
 - [ ] I have added tests that prove my fix is effective or that my feature works (if applicable)
 - [ ] Any dependent changes have been highlighted, merged or published
-
-## Additional Context
-<!-- Add any other context about the PR here. -->
-
-<!-- Optional: Include @mentions of collaborators who should review the changes -->
