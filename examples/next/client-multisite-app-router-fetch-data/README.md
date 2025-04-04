@@ -48,14 +48,24 @@ An example mulitsite headless WordPress application using Next.js App Router and
 
 ## Features
 
-@TODO Fill in
-
 - **Covers various rendering patterns of Next.js**
 
   - Server-Side Rendering (SSR) for dynamic pages
   - Static Site Generation (SSG) for static pages
   - Client-Side data fetching (CSR) for blog settings
   - Hybrid data fetching, combining SSR and CSR
+
+- **Multisite Features**
+
+  - Dynamic site management in next.config.mjs
+  - Fetch data based off site key defined in next.config.mjs
+  - Homepage dynamically fetches and displays data from multiple WordPress sites in the multisite network.
+
+  - **Catch-All Template**
+
+    - The catch-all template fetches data from all WordPress sites in the multisite network.
+    - It loops through each site until it finds the relevant data to display.
+    - Can be extended on a per site basis for querying different fragments
 
 - **Blog features**
 
@@ -74,7 +84,15 @@ An example mulitsite headless WordPress application using Next.js App Router and
 
 ## Screenshots
 
-@TODO fill in
+![Home](wp-env/screenshots/Home.png)
+![Blog Listing](wp-env/screenshots/Blog_listing.png)
+![Blog Listing Pagination](wp-env/screenshots/Blog_listing_pagination.png)
+![Single Blog Page](wp-env/screenshots/Single_blog.png)
+![Comments](wp-env/screenshots/Comments.png)
+![Comment Form](wp-env/screenshots/Comment_form.png)
+![Catch All](wp-env/screenshots/Catch_all.png)
+![Catch All second site](wp-env/screenshots/Catch_all_second_site.png)
+![CPT Second site](wp-env/screenshots/cpt.png)
 
 # Running the example with wp-env
 
@@ -84,17 +102,28 @@ An example mulitsite headless WordPress application using Next.js App Router and
 
 ## Setup Repository and Packages
 
-@TODO update variable setup
-
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && pnpm install
-- Setup a .env file under `examples/next/client-multisite-app-router-fetch-data/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
-e.g.
+- Setup a .env file under `examples/next/client-multisite-app-router-fetch-data/example-app` with 
 
+```
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
+NEXT_PUBLIC_MOVIE_WORDPRESS_URL=http://localhost:8888/movies
+```
+
+e.g.
 
 ```bash
 echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/client-multisite-app-router-fetch-data/example-app/.env
+echo "NEXT_PUBLIC_MOVIE_WORDPRESS_URL=http://localhost:8888/movies" >> examples/next/client-multisite-app-router-fetch-data/example-app/.env
 ```
+```
+
+> [!IMPORTANT]
+> The site configuration is based off values set in [examples/next/client-multisite-app-router-fetch-data/example-app/next.config.mjs](examples/next/client-multisite-app-router-fetch-data/example-app/next.config.mjs)
+> If you want to add more sites please feel free to add more sites to your .env file and update the configuration in the next.config.mjs
+
+
 
 ## Build and start the application
 
