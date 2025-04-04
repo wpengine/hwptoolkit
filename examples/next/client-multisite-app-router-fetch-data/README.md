@@ -117,12 +117,10 @@ e.g.
 echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/client-multisite-app-router-fetch-data/example-app/.env
 echo "NEXT_PUBLIC_MOVIE_WORDPRESS_URL=http://localhost:8888/movies" >> examples/next/client-multisite-app-router-fetch-data/example-app/.env
 ```
-```
 
 > [!IMPORTANT]
 > The site configuration is based off values set in [examples/next/client-multisite-app-router-fetch-data/example-app/next.config.mjs](examples/next/client-multisite-app-router-fetch-data/example-app/next.config.mjs)
 > If you want to add more sites please feel free to add more sites to your .env file and update the configuration in the next.config.mjs
-
 
 
 ## Build and start the application
