@@ -1,0 +1,110 @@
+# WP Engine Headless WordPress Multisite Example (Next.js App Router + WPGraphQL)
+
+This project demonstrates a headless WordPress multisite implementation using Next.js App Router and the fetch API for data retrieval through WPGraphQL. It showcases different data fetching strategies, state management techniques, and modern web development patterns in a real-world application context.
+
+## Key Features
+
+### Next.js Rendering Patterns
+- Server-Side Rendering (SSR) for dynamic pages
+- Static Site Generation (SSG) for static pages
+- Client-Side Rendering (CSR) for blog settings
+- Hybrid data fetching combining SSR and CSR
+
+### Multisite Integration
+- Dynamic site management in next.config.mjs
+- Site-key based data fetching from multiple WordPress instances
+- Homepage aggregation of content from multiple sites in the network
+- Catch-all template that searches across all sites for content
+
+### WordPress Content Handling
+- Blog post listings with pagination
+- Content retrieval using WPGraphQL's nodeByUri resolver
+- Static page fetching at build time
+- Comment system with submission functionality
+- Dynamic header with blog title
+- Featured image support
+- Category and tag blog post filtering
+
+### Additional Template Features
+- Reusable page templates
+- Custom Post Type (CPT) templates for specialized content
+- ACF (Advanced Custom Fields) integration for custom meta fields
+
+## Technical Implementation
+
+### Data Fetching Architecture
+This example uses the native fetch API to retrieve data from WordPress via WPGraphQL. The multisite configuration allows fetching data from different sites using a site key defined in the Next.js configuration.
+
+### Site Configuration
+The multisite setup is configured in next.config.mjs:
+```javascript
+// Example configuration
+WORDPRESS_SITES: JSON.stringify({
+  main: process.env.NEXT_PUBLIC_WORDPRESS_URL + "/graphql",
+  movie_site: process.env.NEXT_PUBLIC_MOVIE_WORDPRESS_URL + "/graphql",
+  // Additional sites as needed
+}),
+```
+
+### Content Routing
+The application implements:
+- Site-specific routes and templates
+- A catch-all route that searches across all sites
+- Content type detection for appropriate component rendering
+
+### WordPress Configuration
+The example integrates with a WordPress multisite installation configured with:
+- WPGraphQL for API access
+- Custom post types registered for specialized content
+- ACF for extended meta fields
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+- pnpm package manager
+- Docker for local WordPress development
+
+### Local Development Setup
+1. Clone the repository
+2. Install dependencies with `pnpm install`
+3. Configure environment variables for WordPress URLs
+4. Run the dev script with `pnpm example:build`
+
+### Environment Configuration
+Create a .env file with the following variables:
+```
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
+NEXT_PUBLIC_MOVIE_WORDPRESS_URL=http://localhost:8888/movies
+# Add additional sites as needed
+```
+
+## Expanding the Example
+
+### Adding New Sites
+1. Add the site URL to your .env file
+2. Update next.config.mjs with the new site key
+3. Create templates that reference the site key for data fetching
+
+### Creating New Templates
+Templates can be created for specific content types or sites by:
+1. Creating a query file in lib/queries
+2. Implementing a page component that uses the query
+3. Referencing the appropriate site key for data retrieval
+
+## Best Practices
+
+### Performance Optimization
+- Implement appropriate caching strategies based on content update frequency
+- Use static generation for relatively stable content
+- Implement pagination for large content collections
+
+### WordPress Configuration
+- Use WPGraphQL fragments for optimized queries
+- Configure CORS headers for cross-domain requests
+- Set up proper cache headers for API responses
+
+### Frontend Development
+- Create reusable components for content rendering
+- Implement responsive designs for all templates
+- Use proper SEO metadata for each page
