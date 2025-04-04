@@ -4,7 +4,7 @@ import { renderEntries } from "@/lib/renderEntries";
 import { queries } from "@/queries";
 
 const publicUrl = process.env.NEXT_PUBLIC_URL;
-const PER_PAGE = 5; // Number of nodes per page
+const PER_PAGE = 100; // Number of nodes per page
 
 export default function Sitemap() {
   // XML content will be generated in getServerSideProps
