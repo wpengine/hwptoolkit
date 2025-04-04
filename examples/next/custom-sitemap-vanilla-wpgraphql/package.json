@@ -1,7 +1,7 @@
 {
-  "name": "custom-sitemap-apollo",
+  "name": "custom-sitemap-vanilla-wpgraphql",
   "version": "1.0.0",
-  "description": "An example demonstrating how to fetch and display a custom sitemap using Apollo Client in a Next.js application.",
+  "description": "An example demonstrating how to fetch and display a custom sitemap using Apollo Client and WPGraphQL in a Next.js application.",
   "scripts": {
     "example:build": "pnpm run wp:images:unzip && pnpm run example:dev:install && pnpm run wp:start && pnpm run wp:db:import && pnpm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
@@ -16,8 +16,7 @@
     "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
     "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
     "wp:images:unzip": "rm -rf wp-env/uploads/ && unzip wp-env/uploads.zip -d wp-env;",
-    "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads",
-    "plugin:build": "zip -r hwpt-wpgraphql-sitemap.zip hwpt-wpgraphql-sitemap"
+    "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads"
   },
   "keywords": [
     "headless",
