@@ -42,6 +42,14 @@ body:
       required: true
 
   - type: textarea
+    id: minimal-reproduction
+    attributes:
+      label: Please provide a [minimal reproduction example](https://stackoverflow.com/help/minimal-reproducible-example)
+      description: Add any code snippets or links to a repository that can help us reproduce the issue. This is crucial for us to understand and fix the problem.
+    validations:
+      required: true
+
+  - type: textarea
     id: additional-context
     attributes:
       label: Additional context (Optional)
@@ -51,8 +59,8 @@ body:
     id: toolkit-version
     attributes:
       label: Toolkit Version
-      description: Which version of the toolkit are you using?
-      placeholder: "e.g., v1.2.3"
+      description: Which version/branch of the toolkit are you using?
+      placeholder: "e.g., v1.2.3 OR main"
     validations:
       required: true
 
@@ -60,7 +68,7 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com).
+      description: By submitting this issue, you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true
