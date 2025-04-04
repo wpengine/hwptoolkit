@@ -54,7 +54,6 @@ After following the installation steps, you should have the example sitemap page
 ### Prerequisites
 
 - Node.js (v18+ recommended)
-- [pnpm](https://pnpm.io/)
 - [Docker](https://www.docker.com/) (if you plan on running the example see details below)
 
 **Note** Please make sure you have all prerequisites installed as mentioned above and Docker running (`docker ps`)
@@ -62,7 +61,7 @@ After following the installation steps, you should have the example sitemap page
 ### Setup Repository and Packages
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
-- Install packages `cd hwptoolkit && pnpm install`
+- Install packages `cd hwptoolkit && npm install`
 - Setup a .env file under `examples/next/custom-sitemap-vanilla-wpgraphql/example-app` and add these values inside:
 
 ```
@@ -79,7 +78,7 @@ echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888\\nNEXT_PUBLIC_URL=http://l
 ### Build and start the application
 
 - `cd examples/next/custom-sitemap-vanilla-wpgraphql`
-- Then run `pnpm example:build` will build and start your application.
+- Then run `npm run example:build` will build and start your application.
 - This does the following:
   - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
   - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
@@ -114,7 +113,7 @@ Congratulations, WordPress should now be fully set up.
 | `wp:images:unzip`     | Extracts the WordPress uploads directory.                                                                               |
 | `wp:images:zip`       | Compresses the WordPress uploads directory.                                                                             |
 
-> **Note** You can run `pnpm wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
+> **Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
 
 ### Database access
 
