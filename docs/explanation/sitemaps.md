@@ -26,38 +26,68 @@ To address those, there are some proposed solutions for headless sitemap impleme
 
 1. **Proxying Sitemaps from Backend to Frontend**
 
-Approach: This approach maintains WordPress's native sitemap generation capabilities while ensuring proper frontend URLs are used. It involves creating a route in your frontend application that proxies requests to the WordPress backend sitemap.
+Approach: This approach maintains WordPress's native sitemap generation capabilities while ensuring proper frontend URLs are used. It involves creating API routes in your Next.js application that proxy requests to the WordPress backend sitemap.
 
 Example Code:
 
 ```javascript
-// pages/[...sitemap].js
-export async function GET(request, { params }) {
-  const { sitemap } = params;
-  const sitemapFile = Array.isArray(sitemap) ? sitemap.join('/') : sitemap;
-  
-  const wpSitemapUrl = `${process.env.WORDPRESS_URL}/wp-sitemap${sitemapFile ? `-${sitemapFile}` : ''}.xml`;
-  
+// /pages/api/proxy-sitemap/[...slug].js
+const wordpressUrl = (
+  process.env.NEXT_PUBLIC_WORDPRESS_URL || "http://localhost:8888"
+).trim();
+
+export default async function handler(req, res) {
+  const slug = req.query.slug || [];
+
+  // Reconstruct the original WordPress sitemap path
+  let wpUrl;
+  if (slug.length === 0 || slug[0] === "sitemap.xml") {
+    wpUrl = `${wordpressUrl}/sitemap.xml`;
+  } else {
+    const wpPath = slug.join("/");
+    wpUrl = `${wordpressUrl}/${wpPath}.xml`;
+  }
+
+  console.debug("Fetching sitemap", wpUrl);
   try {
-    const response = await fetch(wpSitemapUrl);
-    const sitemapContent = await response.text();
-    
-    const transformedContent = sitemapContent.replace(
-      new RegExp(process.env.WORDPRESS_URL, 'g'),
-      process.env.FRONTEND_URL
-    );
-    
-    return new Response(transformedContent, {
-      headers: {
-        'Content-Type': 'application/xml',
-      },
-    });
-  } catch (error) {
-    console.error('Error fetching sitemap:', error);
-    return new Response('Sitemap not found', { status: 404 });
+    const wpRes = await fetch(wpUrl);
+    console.debug("Fetching sitemap", wpRes);
+    if (!wpRes.ok) {
+      return res.status(wpRes.status).send("Error fetching original sitemap");
+    }
+
+    const contentType = wpRes.headers.get("content-type") || "application/xml";
+    let body = await wpRes.text();
+    // Remove XML stylesheets if present
+    body = body.replace(/<\?xml-stylesheet[^>]*\?>\s*/g, "");
+
+    res.setHeader("Content-Type", contentType);
+    res.status(200).send(body);
+  } catch (err) {
+    res.status(500).send("Internal Proxy Error");
   }
 }
 ```
+
+Then add the necessary rewrites in your `next.config.js`:
+```javascript
+module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: "/:path(wp-sitemap-.*).xml",
+        destination: "/api/proxy-sitemap/:path",
+      },
+      {
+        source: "/sitemap.xml",
+        destination: "/api/proxy-sitemap/sitemap.xml",
+      },
+    ];
+  },
+  // other Next.js configuration
+};
+```
+This implementation ensures that when visitors access `/sitemap.xml` on your headless frontend, they'll see the WordPress sitemap content.
 
 This route will serve the WordPress `sitemap.xml` in your Next.js application dynamically.
 
@@ -71,7 +101,7 @@ This route will serve the WordPress `sitemap.xml` in your Next.js application dy
     * Limited flexibility for custom frontend routes not defined in WordPress
     * Requires proper URL transformation to replace backend URLs with frontend URLs
     * May require additional handling for caching and performance 
-    * May propagate any errors experienced in WordPress when proxying the sitemap.xml
+    * May propagate any errors experienced in WordPress when proxying the `sitemap.xml`
 
 2. **Generating a Sitemap from GraphQL Content**
 
