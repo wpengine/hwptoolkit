@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+// Add a small bit of styling to the content
+.wp-content {
+  font-size: 1rem;
+}
+.wp-content p {
+  margin: 1.5rem 0;
+}
+.wp-content h1 {
+  @apply text-4xl font-bold my-4;
+}
+.wp-content h2 {
+  @apply text-3xl font-semibold my-3;
+}
+.wp-content h3 {
+  @apply text-2xl font-medium my-2;
+}
+.wp-content h4 {
+  @apply text-xl font-medium my-2;
+}
+.wp-content h5 {
+  @apply text-lg font-medium my-1;
+}
+.wp-content h6 {
+  @apply text-base font-medium my-1;
+}
