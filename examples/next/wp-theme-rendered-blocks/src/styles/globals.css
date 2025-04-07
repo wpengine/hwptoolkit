@@ -1,0 +1,9 @@
+.wp-element-caption {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.is-layout-flex {
+  display: flex;
+  gap: 1.2rem;
+}
