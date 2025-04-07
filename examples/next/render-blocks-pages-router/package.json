@@ -9,10 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@babel/runtime": "^7.27.0",
-    "@wordpress/base-styles": "^5.21.0",
-    "@wordpress/style-engine": "^2.21.0",
-    "next": "15.2.4",
+    "@wordpress/style-engine": "^2.20.0",
+    "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "water.css": "^2.1.1"
