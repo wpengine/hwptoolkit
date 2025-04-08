@@ -2,6 +2,16 @@
 
 This is a [Next.js](https://nextjs.org) project integrated with **WPGraphQL** and **WPGraphQL for ACF** to build a headless WordPress-powered site.
 
+## Screenshots
+
+After following the installation steps, you should have the example pages as shown in the screenshots below:
+
+|                                                           |                                                             |
+| :-------------------------------------------------------: | :---------------------------------------------------------: |
+|     ![homepage](./screenshots/home.png)<br>Home page      |         ![posts](./screenshots/posts.png)<br>Posts          |
+| ![categories](./screenshots/categories.png)<br>Categories | ![category](./screenshots/category.png)<br>Category archive |
+| ![cpt](./screenshots/single-cpt.png)<br>Custom post type  |    ![post](./screenshots/single-post.png)<br>Single post    |
+
 ## Project Structure
 
 This project follows Next.js file-based routing. Based on the WordPress permalink structure, the key pages are:
