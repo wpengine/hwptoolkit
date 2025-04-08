@@ -1,0 +1,31 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "start": "nuxt start",
+    "generateDocs": "node llm-docs/generate-docs.js",
+    "generateWPGraphQLDocs": "curl -L https://github.com/wp-graphql/wp-graphql/archive/refs/heads/master.zip -o wp-graphql-master.zip && unzip wp-graphql-master.zip 'wp-graphql-master/docs/*' && rm -rf llm-docs/wpgraphql-docs && mkdir -p llm-docs/wpgraphql-docs && mv wp-graphql-master/docs/* llm-docs/wpgraphql-docs/ && rm -rf wp-graphql-master wp-graphql-master.zip",
+    "generateWPGraphQLGravityFormsDocs": "curl -L https://github.com/harness-software/wp-graphql-gravity-forms/archive/refs/heads/master.zip -o wp-graphql-gravity-forms-master.zip && unzip wp-graphql-gravity-forms-master.zip && rm -rf llm-docs/wpgraphql-gravity-forms && mkdir -p llm-docs/wpgraphql-gravity-forms && cp -r wp-graphql-gravity-forms-master/docs/* llm-docs/wpgraphql-gravity-forms/ && rm -rf wp-graphql-gravity-forms-master wp-graphql-gravity-forms-master.zip",
+    "generateNuxtDocs": "mkdir -p llm-docs/nuxt && curl -o llm-docs/nuxt/getting-started.md https://raw.githubusercontent.com/nuxt/nuxt/main/docs/content/1.getting-started/1.introduction.md && curl -o llm-docs/nuxt/concepts.md https://raw.githubusercontent.com/nuxt/nuxt/main/docs/content/2.concepts/1.rendering.md && curl -o llm-docs/nuxt/data-fetching.md https://raw.githubusercontent.com/nuxt/nuxt/main/docs/content/2.concepts/10.data-fetching.md && curl -o llm-docs/nuxt/state-management.md https://raw.githubusercontent.com/nuxt/nuxt/main/docs/content/2.concepts/11.state-management.md && curl -o llm-docs/nuxt/routing.md https://raw.githubusercontent.com/nuxt/nuxt/main/docs/content/2.concepts/12.routing.md",
+    "generateIntrospectionResult": "bash -c \"curl -X POST -H 'Content-Type: application/json' --data @<(jq -Rs '{query: .}' < llm-docs/introspection-query.graphql) https://smartcache.wpenginepowered.com/graphql -o llm-docs/introspection-result.json\"",
+    "generateLLMDocs": "npm run generateWPGraphQLDocs && npm run generateWPGraphQLGravityFormsDocs && npm run generateNuxtDocs && npm run generateIntrospectionResult"
+  },
+  "dependencies": {
+    "graphql": "^16.10.0",
+    "nuxt": "^3.16.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.13.2"
+  },
+  "engines": {
+    "node": ">=18.19.0"
+  }
+}
