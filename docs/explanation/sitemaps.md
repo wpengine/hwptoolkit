@@ -68,7 +68,6 @@ export default async function handler(req, res) {
   }
 }
 ```
-
 Then add the necessary rewrites in your `next.config.js`:
 ```javascript
 module.exports = {
@@ -87,6 +86,10 @@ module.exports = {
   // other Next.js configuration
 };
 ```
+To ensure that the sitemap URLs in your headless WordPress setup correctly point to your frontend application, it's essential to configure the WordPress Site Address (URL) setting to match your frontend's URL. This is done in the WordPress settings page.
+
+**Note**: The WordPress Address (URL) should remain set to the URL where your WordPress backend is hosted. Only the Site Address (URL) needs to be updated to reflect your frontend's URL.
+
 This implementation ensures that when visitors access `/sitemap.xml` on your headless frontend, they'll see the WordPress sitemap content.
 
 This route will serve the WordPress `sitemap.xml` in your Next.js application dynamically.
