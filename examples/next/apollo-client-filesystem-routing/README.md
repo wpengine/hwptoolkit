@@ -2,72 +2,8 @@
 
 This is a [Next.js](https://nextjs.org) project integrated with **WPGraphQL** and **WPGraphQL for ACF** to build a headless WordPress-powered site.
 
-## Prerequisites
-
-Before running this project, ensure you have the following:
-
-- **Node.js** (version 18 or higher recommended)
-- **npm**, **yarn**, **pnpm**, or **bun** package manager
-- A **WordPress** instance with the following plugins installed and configured:
-  - **WPGraphQL** ([wpgraphql.com](https://www.wpgraphql.com/))
-  - **WPGraphQL for ACF** ([acf.wpgraphql.com](https://acf.wpgraphql.com/))
-
-## WordPress Setup
-
-### Required Plugins
-1. **Install WPGraphQL**: This exposes your WordPress data via a GraphQL API.
-2. **Install WPGraphQL for ACF**: This allows custom fields from ACF to be queried via GraphQL.
-
-### Permalink Structure
-This project follows a **custom permalink structure** to match Next.js file-based routing:
-
-```
-/posts/%postname%/
-```
-
-To set this, go to **Settings > Permalinks** in WordPress and choose **Custom Structure**, then enter the pattern.
-
-### Custom Post Types (CPT)
-With ACF installed you can create a new Custom Post type called **Movies**. 
-
-The **rewrite structure** for custom post types should be set to:
-```php
-'rewrite' => array('slug' => 'movies', 'with_front' => false),
-```
-
-This ensures URLs for movies follow:
-
-```
-/movies/movie-title/
-```
-And not:
-
-```
-/posts/movies/movie-title/
-```
-As a last step go to the `GraphQL` tab in the Advanced Settings and enable the `Show in GraphQL` toggle.
-
-## Categories
-Categories are structured as:
-
-```bash
-/category/category-name/
-```
-
-To achieve this category structure make sure the `Category base` in the Settings -> Permalinks page has the value of `category`. 
-
-The rest is handled dynamically through Next.js.
-
-## Environment Variables
-Create a `.env.local` file in the root of your project and add:
-
-```ini
-NEXT_PUBLIC_WORDPRESS_URL=<your_wordpress_url>
-```
-Replace <your_wordpress_url> with the actual WordPress site URL (e.g., https://your-wordpress-site.com).
-**Do not include a trailing slash.**
-
 ## Project Structure
+
 This project follows Next.js file-based routing. Based on the WordPress permalink structure, the key pages are:
 
 ```bash
@@ -88,29 +24,74 @@ src/pages
     ├── [slug].js     # Dynamic page for individual posts
     └── index.js      # Posts listing page
 ```
-## Getting Started
-1. Install Dependencies:
 
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
+## Running the example with wp-env
+
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- [Docker](https://www.docker.com/) (if you plan on running the example see details below)
+
+**Note** Please make sure you have all prerequisites installed as mentioned above and Docker running (`docker ps`)
+
+### Setup Repository and Packages
+
+- Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
+- Install packages `cd hwptoolkit && npm install`
+- Setup a .env file under `examples/next/apollo-client-filesystem-routing/example-app` and add these values inside:
+
 ```
-2. Run the Development Server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
 ```
 
-3. Access the Application: Open http://localhost:3000 in your browser.
+or run the command below:
 
+```bash
+echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/apollo-client-filesystem-routing/example-app/.env
+```
+
+### Build and start the application
+
+- `cd examples/next/apollo-client-filesystem-routing`
+- Then run `npm run example:build` will build and start your application.
+- This does the following:
+  - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
+  - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
+  - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
+  - Install Next.js dependencies for `example-app`
+  - Runs the Next.js dev script
+
+Congratulations, WordPress should now be fully set up.
+
+| Frontend                                         | Admin                                                              |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| [http://localhost:3000/](http://localhost:3000/) | [http://localhost:8888/wp-admin/](http://localhost:8888/wp-admin/) |
+
+> **Note:** The login details for the admin is username "admin" and password "password"
+
+### Command Reference
+
+| Command               | Description                                                                                                             |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `example:build`       | Prepares the environment by unzipping images, starting WordPress, importing the database, and starting the application. |
+| `example:dev`         | Runs the Next.js development server.                                                                                    |
+| `example:dev:install` | Installs the required Next.js packages.                                                                                 |
+| `example:start`       | Starts WordPress and the Next.js development server.                                                                    |
+| `example:stop`        | Stops the WordPress environment.                                                                                        |
+| `example:prune`       | Rebuilds and restarts the application by destroying and recreating the WordPress environment.                           |
+| `wp:start`            | Starts the WordPress environment.                                                                                       |
+| `wp:stop`             | Stops the WordPress environment.                                                                                        |
+| `wp:destroy`          | Completely removes the WordPress environment.                                                                           |
+| `wp:db:query`         | Executes a database query within the WordPress environment.                                                             |
+| `wp:db:export`        | Exports the WordPress database to `wp-env/db/database.sql`.                                                             |
+| `wp:db:import`        | Imports the WordPress database from `wp-env/db/database.sql`.                                                           |
+| `wp:images:unzip`     | Extracts the WordPress uploads directory.                                                                               |
+| `wp:images:zip`       | Compresses the WordPress uploads directory.                                                                             |
+
+> **Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
+
+### Database access
+
+If you need database access add the following to your wp-env `"phpmyadminPort": 11111,` (where port 11111 is not allocated).
+
+You can check if a port is free by running `lsof -i :11111`
