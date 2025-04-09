@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An example demonstrating how to fetch and display a custom sitemap using Apollo Client in a Next.js application.",
   "scripts": {
-    "example:build": "npm run example:dev:install && npm run wp:start && npm run example:start",
+    "example:build": "npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
     "example:start": "npm run wp:start && npm run example:dev",
     "example:stop": "npm run wp:stop",
