@@ -1,0 +1,25 @@
+{
+  "phpVersion": "7.4",
+  "plugins": [
+    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "https://github.com/AxeWP/wp-graphql-headless-login/releases/latest/download/wp-graphql-headless-login.zip"
+  ],
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": false,
+    "GRAPHQL_DEBUG": true,
+    "WP_DEBUG_LOG": true,
+    "WP_DEBUG_DISPLAY": false,
+    "SAVEQUERIES": false,
+    "WP_SITEURL": "http://127.0.0.1",
+    "WP_HOME": "http://127.0.0.1"
+  },
+  "mappings": {
+    "db": "./wp-env/db",
+    "wp-content/uploads": "./wp-env/uploads",
+    ".htaccess": "./wp-env/setup/.htaccess"
+  },
+  "lifecycleScripts": {
+    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+  }
+}
