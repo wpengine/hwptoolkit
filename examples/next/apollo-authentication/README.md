@@ -95,3 +95,62 @@ Congratulations, WordPress should now be fully set up.
 If you need database access add the following to your wp-env `"phpmyadminPort": 11111,` (where port 11111 is not allocated).
 
 You can check if a port is free by running `lsof -i :11111`
+
+## Running the example with custom WordPress setup
+
+### Prerequisites
+
+Before running this project, ensure you have the following:
+
+- **Node.js** (version 18 or higher recommended)
+- **npm**, **yarn**, **pnpm**, or **bun** package manager
+- A **WordPress** instance with the following plugins installed and configured:
+  - **WPGraphQL**
+  - **WPGraphQL Headless Login**
+
+### WordPress Setup
+
+1.  **Install Plugins:** In your WordPress admin dashboard, navigate to "Plugins" and install the following plugins:
+
+    - **WPGraphQL**: This plugin exposes your WordPress data via GraphQL.
+    - **WPGraphQL Headless Login**: This plugin enables authentication for headless WordPress setups.
+
+2.  **Configure Headless Login:** After installing WPGraphQL Headless Login, go to the plugin's settings page (usually found under the "GraphQL" menu in your WordPress admin dashboard). **Enable Credentials Authentication**.
+
+    ![Enable Credentials Authentication](./screenshots/enable-credentials-auth.png)
+
+## Environment Variables
+
+Create a `.env` file in the root of your project with the following variable:
+
+```
+NEXT_PUBLIC_WORDPRESS_URL=<your_wordpress_url>
+```
+
+Replace `<your_wordpress_url>` with the URL of your WordPress instance (e.g., `https://your-wordpress-site.com`). **Do not include a trailing slash.**
+
+## Getting Started
+
+1.  **Install Dependencies:**
+
+    ```
+    npm install
+    # or
+    yarn install
+    # or
+    pnpm install
+    # or
+    bun install
+    ```
+
+2.  **Run the Development Server:**
+
+    ```
+    npm run dev
+    # or
+    yarn dev
+    # or
+    pnpm dev
+    # or
+    bun dev
+    ```
