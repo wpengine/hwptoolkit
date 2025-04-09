@@ -119,7 +119,7 @@ Before running this project, ensure you have the following:
 
     ![Enable Credentials Authentication](./screenshots/enable-credentials-auth.png)
 
-## Environment Variables
+### Environment Variables
 
 Create a `.env` file in the root of your project with the following variable:
 
@@ -129,7 +129,7 @@ NEXT_PUBLIC_WORDPRESS_URL=<your_wordpress_url>
 
 Replace `<your_wordpress_url>` with the URL of your WordPress instance (e.g., `https://your-wordpress-site.com`). **Do not include a trailing slash.**
 
-## Getting Started
+### Getting Started
 
 1.  **Install Dependencies:**
 
