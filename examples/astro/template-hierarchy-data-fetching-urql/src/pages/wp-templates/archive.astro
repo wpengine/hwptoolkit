@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { client, gql } from "../../lib/client";
+/**
+ * This is a template for the WordPress template hierarchy.
+ * It will be used to render the WordPress templates.
+ * It should never be used directly.
+ * This check confirms that the template is being used in the correct context.
+ * If the template is being used directly, it will redirect to the 404 page.
+ *
+ * Once https://github.com/withastro/astro/issues/13555 is fixed, this check can be changed to:
+ *  if (Astro.url.pathname === Astro.originPathname)
+ *
+ */
+if (!Astro.locals.uri) {
+  return Astro.rewrite("/404");
+}
+
+const { data, error } = await client.query(
+  gql`
+    query ArchiveTemplateNodeQuery($uri: String!) {
+      nodeByUri(uri: $uri) {
+        __typename
+        ... on TermNode {
+          name
+          description
+        }
+        ... on Tag {
+          contentNodes {
+            nodes {
+              ... on NodeWithTitle {
+                title
+              }
+              uri
+            }
+          }
+        }
+        ... on Category {
+          contentNodes {
+            nodes {
+              ... on NodeWithTitle {
+                title
+              }
+              uri
+            }
+          }
+        }
+      }
+      terms {
+        nodes {
+          uri
+        }
+      }
+    }
+  `,
+  {
+    uri: Astro.locals.uri,
+  }
+);
+
+if (error) {
+  console.error("Error fetching data:", error);
+  return Astro.rewrite("/500");
+}
+---
+
+<Layout>
+  <main>
+    <h1>{data.nodeByUri.name}</h1>
+    <p set:html={data.nodeByUri.description} />
+    <ol>
+      {
+        data.nodeByUri.contentNodes.nodes.map((content) => (
+          <li>
+            <a href={content.uri} set:text={content.title} />
+          </li>
+        ))
+      }
+    </ol>
+  </main>
+</Layout>

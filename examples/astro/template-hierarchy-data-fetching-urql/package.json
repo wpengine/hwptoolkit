@@ -1,0 +1,26 @@
+{
+  "name": "",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "wp:start": "wp-env start",
+    "wp:stop": "wp-env stop",
+    "wp:destroy": "wp-env destroy --config ./wp-env/wp-env.json",
+    "wp:db:query": "wp-env run cli -- wp db query",
+    "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
+    "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
+    "wp:images:unzip": "rm -rf wp-env/uploads/ && unzip wp-env/uploads.zip -d wp-env;",
+    "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads"
+  },
+  "dependencies": {
+    "@urql/core": "^5.1.1",
+    "astro": "^5.6.1"
+  },
+  "devDependencies": {
+    "@wordpress/env": "^10.21.0"
+  }
+}

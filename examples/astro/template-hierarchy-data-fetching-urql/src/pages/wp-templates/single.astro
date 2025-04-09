@@ -1,0 +1,117 @@
+---
+import { imageConfig } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import { client, gql } from "../../lib/client";
+/**
+ * This is a template for the WordPress template hierarchy.
+ * It will be used to render the WordPress templates.
+ * It should never be used directly.
+ * This check confirms that the template is being used in the correct context.
+ * If the template is being used directly, it will redirect to the 404 page.
+ *
+ * Once https://github.com/withastro/astro/issues/13555 is fixed, this check can be changed to:
+ *  if (Astro.url.pathname === Astro.originPathname)
+ *
+ */
+if (!Astro.locals.uri) {
+  return Astro.rewrite("/404");
+}
+
+const { data, error } = await client.query(
+  gql`
+    query singleTemplatePageQuery($uri: String!) {
+      post: nodeByUri(uri: $uri) {
+        id
+        uri
+        ... on NodeWithTitle {
+          title
+        }
+        ... on NodeWithContentEditor {
+          content
+        }
+        content
+        ... on Post {
+          categories {
+            nodes {
+              name
+              uri
+            }
+          }
+          tags {
+            nodes {
+              name
+              uri
+            }
+          }
+        }
+      }
+    }
+  `,
+  {
+    uri: Astro.locals.uri,
+  }
+);
+
+if (error) {
+  console.error("Error fetching data:", error);
+  return Astro.rewrite("/500");
+}
+---
+
+<Layout>
+  <main>
+    <article>
+      <h1 set:html={data.post.title} />
+      <div set:html={data.post.content} />
+      <footer>
+        <span class="term-section">
+          <strong>Categories:</strong>
+          <span class="term-list">
+            {
+              data.post.categories.nodes?.length > 0 ? (
+                data.post.categories.nodes?.map((category) => (
+                  <span>
+                    <a href={category.uri} set:text={category.name} />
+                  </span>
+                ))
+              ) : (
+                <span>None.</span>
+              )
+            }
+          </span>
+        </span>
+        <span class="term-section">
+          <strong>Tags: </strong>
+          <span class="term-list">
+            {
+              data.post.tags.nodes?.length > 0 ? (
+                data.post.tags?.nodes?.map((category) => (
+                  <span>
+                    <a href={category.uri} set:html={category.name} />
+                  </span>
+                ))
+              ) : (
+                <span>None.</span>
+              )
+            }
+          </span>
+        </span>
+      </footer>
+    </article>
+  </main>
+</Layout>
+
+<style>
+  .term-list {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .term-section {
+    margin: 0.5rem 0;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+</style>
