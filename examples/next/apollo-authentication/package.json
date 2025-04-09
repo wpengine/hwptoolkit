@@ -1,7 +1,7 @@
 {
-  "name": "custom-sitemap-apollo",
+  "name": "apollo-authentication",
   "version": "1.0.0",
-  "description": "An example demonstrating how to fetch and display a custom sitemap using Apollo Client in a Next.js application.",
+  "description": "An example demonstrating authentication with username and password in a headless WordPress setup, running Next.js as a frontend framework.",
   "scripts": {
     "example:build": "npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
@@ -31,9 +31,12 @@
     "nextjs-pages-router",
     "wp-env-configuration",
     "fullstack-example",
-    "sitemap",
-    "wordpress-sitemap",
-    "wpgraphql-sitemap"
+    "authentication",
+    "wordpress-authentication",
+    "graphql-authentication",
+    "headless-wordpress-authentication",
+    "nextjs-authentication",
+    "apollo-authentication"
   ],
   "author": "hwptoolkit",
   "license": "BSD-0-Clause",
