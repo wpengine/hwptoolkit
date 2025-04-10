@@ -7,7 +7,7 @@
     "example:start": "pnpm run wp:start && npm run app:dev",
     "example:setup": "npm run example:bootstrap && npm run wp:start && npm run wp:db:import && npm run example:stop",
     "example:stop": "npm run wp:stop",
-    "example:prune": "wp-env destroy && npm run example:setup && npm run example:start",
+    "example:prune": "npm run wp:destroy && npm run example:setup && npm run example:start",
     "app:dev": "cd example-app  && pwd &&  npm run dev && cd ..",
     "app:install": "cd ./example-app && npm install && cd ..",
     "wp:start": "wp-env start",
