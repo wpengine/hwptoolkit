@@ -1,0 +1,98 @@
+---
+import type { GetStaticPaths, InferGetStaticParamsType } from "astro";
+import Layout from "../layouts/Layout.astro";
+import { uriToTemplate } from "../lib/templateHierarchy";
+import { fetchAllPaginated, gql } from "../lib/client";
+
+export const getStaticPaths = (async () => {
+  const wpCategories = await fetchAllPaginated(
+    gql`
+      query AllStaticPaths($fist: Int = 5, $after: String) {
+        terms(
+          first: $fist
+          after: $after
+          where: { taxonomies: [CATEGORY, TAG], hideEmpty: true }
+        ) {
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+          nodes {
+            ... on UniformResourceIdentifiable {
+              uri
+            }
+          }
+        }
+      }
+    `,
+    (data) => data.terms.nodes,
+    (data) => data.terms.pageInfo
+  );
+
+  const wpContent = await fetchAllPaginated(
+    gql`
+      query AllStaticPaths($fist: Int = 5, $after: String) {
+        contentNodes(
+          first: $fist
+          after: $after
+          where: { contentTypes: [POST, PAGE] }
+        ) {
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+          nodes {
+            ... on UniformResourceIdentifiable {
+              uri
+            }
+          }
+        }
+      }
+    `,
+    (data) => data.contentNodes.nodes,
+    (data) => data.contentNodes.pageInfo
+  );
+
+  return [...wpContent, ...wpCategories, "/"].map((nodeWithUri) => {
+    return {
+      params: { uri: nodeWithUri.uri },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+type Params = InferGetStaticParamsType<typeof getStaticPaths>;
+
+const { uri = "/" } = Astro.params as Params;
+// const uri = Astro.url.pathname || "/";
+
+/**
+ * This is a workaround to pass the original to the component
+ *
+ * Astro.orignPathname should work but it doesn't due to a bug in Astro
+ * https://github.com/withastro/astro/issues/13555
+ */
+Astro.locals.uri = uri;
+
+const results = await uriToTemplate({ uri });
+
+Astro.locals.templateData = results;
+
+if (results.template) {
+  return Astro.rewrite(results.template.path);
+}
+---
+
+<Layout>
+  <h1 style="color: red;">
+    Oops! You shouldn't be here, something went wrong!
+  </h1>
+  <pre>
+	<code>
+	  {JSON.stringify(
+		results,
+		null,
+		2
+	  )}
+	</code>
+  </pre>
+</Layout>
