@@ -1,7 +1,7 @@
 {
-  "name": "wp-theme-styles-nextjs",
+  "name": "hwptoolkit-example-wp-theme-styles-nextjs",
   "version": "0.1.0",
-  "desciption": "",
+  "description": "An example headless WordPress application using Global Styles from WordPress using WPGraphQL.",
   "scripts": {
     "example:build": "pnpm run wp:images:unzip && pnpm run example:dev:install && pnpm run wp:start && pnpm run wp:db:import && pnpm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
@@ -40,10 +40,6 @@
   "author": "hwptoolkit",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@wordpress/base-styles": "^5.21.0",
-    "next": "15.2.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "@wordpress/env": "^10.20.0"
   }
 }
