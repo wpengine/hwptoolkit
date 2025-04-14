@@ -53,7 +53,7 @@ Proxying Sitemap Requests:
 e.g.
 
 ```bash
-echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/hybrid-sitemap-apollo/example-app/.env
+echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888\\nNEXT_PUBLIC_FRONTEND_URL=http://localhost:3000" > examples/next/proxied-sitemap-apollo/example-app/.env
 ```
 
 ## FRONTEND_URL (Optional Customization)
