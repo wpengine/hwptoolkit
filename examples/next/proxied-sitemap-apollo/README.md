@@ -49,7 +49,7 @@ Proxying Sitemap Requests:
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && pnpm install`
-- Setup a .env file under `examples/next/hybrid-sitemap-apollo/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
+- Setup a .env file under `examples/next/proxied-sitemap-apollo/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
 e.g.
 
 ```bash
