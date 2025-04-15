@@ -36,7 +36,7 @@ Considering those limitations, it's clear that rendering raw HTML Content is not
 
 ### 2. Rendering Block Editor (Gutenberg) Content
 #### Overview
-WordPress Block Editor (Gutenberg) stores content as HTML with special comments and structured JSON properties in the comments representing blocks, offering more flexibility for headless implementations. However exposing them in a Headless enviroment is tricky. Thats why with the help of the [wp-graphql-content-blocks](https://github.com/wpengine/wp-graphql-content-blocks) plugin, you can query (Gutenberg) Blocks as data using graphql.
+WordPress Block Editor (Gutenberg) stores content as HTML with special comments and structured JSON properties in the comments representing blocks, offering more flexibility for headless implementations. However exposing them in a Headless enviroment is tricky. That's why with the help of the [wp-graphql-content-blocks](https://github.com/wpengine/wp-graphql-content-blocks) plugin, you can query (Gutenberg) Blocks as data using graphql.
 
 This gives you more controls and ability to manipulate or enhance specific content elements or blocks compared to the previous approach. Here is how to do it:
 
