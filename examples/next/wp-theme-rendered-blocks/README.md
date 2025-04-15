@@ -72,10 +72,20 @@ cd examples/next/render-blocks-pages-router
 npm install
 ```
 
-### Start the development server
+### Build and start the application
 
-```bash
-npm run dev
-```
+- `cd examples/next/wp-theme-rendered-blocks`
+- Then run `npm run example:build` will build and start your application.
+- This does the following:
+    - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
+    - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
+    - Install Next.js dependencies for `example-app`
+    - Runs the Next.js dev script
 
-http://localhost:3000/ should render the blocks as shown below.
+Congratulations, WordPress should now be fully set up.
+
+| Frontend                                         | Admin                                                              |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| [http://localhost:3000/](http://localhost:3000/) | [http://localhost:8888/wp-admin/](http://localhost:8888/wp-admin/) |
+
+> **Note:** The login details for the admin is username "admin" and password "password"
