@@ -32,7 +32,7 @@ function PostContent({ content }) {
 * Styling Challenges: Global CSS styles needed to match WordPress styling which is usually not available
 * Limited Control: Limited ability to manipulate or enhance specific content elements.
 
-Considering those limitations, it's clear that rendering raw HTML Content is not suitable for most use cases. Hopefully there are better altenatives.
+Considering those limitations, it's clear that rendering raw HTML Content is not suitable for most use cases. Hopefully there are better alternatives.
 
 ### 2. Rendering Block Editor (Gutenberg) Content
 #### Overview
