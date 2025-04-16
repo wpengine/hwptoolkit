@@ -82,9 +82,13 @@ Congratulations, WordPress should now be fully set up.
 | Frontend | Admin                        |
 |----------|------------------------------|
 | [http://localhost:3000/](http://localhost:3000/) | [http://localhost:8888/wp-admin/](http://localhost:8888/wp-admin/) |
-
+http://localhost:3000/sitemap.xml
 
 > **Note:** The login details for the admin is username "admin" and password "password"
+
+| Sitemap access | Description                        |
+|----------|------------------------------|
+| [http://localhost:3000/sitemap.xml](http://localhost:3000/sitemap.xml) | Base sitemap index |
 
 
 ## Command Reference
