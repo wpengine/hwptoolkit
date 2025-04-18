@@ -35,11 +35,12 @@ An example headless WordPress application using Next.js App Router and the fetch
 │   ├── components/         # Reusable UI components
 │   ├── lib/                # Utility functions and libraries and WP GraphQL Fragments
 |
+|-- screenshots/            # Example screenshots for this README
+|
 ├── wp-env/                 # WordPress local environment setup
 │   ├── wp-env.json
 │   ├── db/                 # Example database export to be imported for the example setup
 │   ├── setup/              # .htaccess file to fix a CORS issue
-|   |-- screenshots/        # Example screenshots for this README
 │   ├── uploads.zip         # Zipped wp-content/uploads directory for the example application
 │   ├── uploads/            # Unzipped wp-content/uploads directory when the example application is run.
 ├── package.json            # Scripts for running the example application
@@ -74,18 +75,18 @@ An example headless WordPress application using Next.js App Router and the fetch
 Here are some screenshots of the application:
 
 ### Blog Listings
-![Listing](wp-env/screenshots/blog-listing.png)
-![Pagination](wp-env/screenshots/blog-listing-pagination.png)
+![Listing](screenshots/blog-listing.png)
+![Pagination](screenshots/blog-listing-pagination.png)
 
 ### Blog Post
-![Blog Post](wp-env/screenshots/blog-single.png)
-![Comments](wp-env/screenshots/blog-comments.png)
-![Comment Form](wp-env/screenshots/blog-comment-form.png)
-![Comment Form Submitted](wp-env/screenshots/blog-comment-form-submitted.png)
+![Blog Post](screenshots/blog-single.png)
+![Comments](screenshots/blog-comments.png)
+![Comment Form](screenshots/blog-comment-form.png)
+![Comment Form Submitted](screenshots/blog-comment-form-submitted.png)
 
 ### CPT
-![Event Listings](wp-env/screenshots/cpt-event-listing.png)
-![Event Single](wp-env/screenshots/cpt-event-single.png)
+![Event Listings](screenshots/cpt-event-listing.png)
+![Event Single](screenshots/cpt-event-single.png)
 
 
 # Running the example with wp-env
