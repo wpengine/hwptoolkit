@@ -14,7 +14,7 @@ Headless WordPress Toolkit
 
 ## Community
 
-To chat with other Faust.js users and the headless community as a whole, you can join the [WP Engine Developers Discord](https://discord.gg/J2khkF9XYK).
+To chat with other headless WordPress users and the headless community as a whole, you can join the [WP Engine Developers Discord](https://discord.gg/J2khkF9XYK).
 
 > **Note**: We also have a fortnightly Headless WordPress Community Meeting [here](https://discord.gg/fdWjcTt8?event=1351712352155992075).
 
