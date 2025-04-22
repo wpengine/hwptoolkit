@@ -35,12 +35,13 @@ An example mulitsite headless WordPress application using Next.js App Router and
 │   ├── components/         # Reusable UI components
 │   ├── lib/                # Utility functions and libraries and WP GraphQL Fragments
 |
+|-- screenshots/            # Example screenshots for this README
+|
 ├── wp-env/                 # WordPress local environment setup
 │   ├── wp-env.json
 │   ├── db/                 # Example database export to be imported for the example setup
 │   ├── setup/              # .htaccess file to fix a CORS issue
 |   |── log/                # Log file for wp-content/debug.log
-|   |-- screenshots/        # Example screenshots for this README
 │   ├── uploads.zip         # Zipped wp-content/uploads directory for the example application
 │   ├── uploads/            # Unzipped wp-content/uploads directory when the example application is run.
 ├── package.json            # Scripts for running the example application
@@ -84,15 +85,15 @@ An example mulitsite headless WordPress application using Next.js App Router and
 
 ## Screenshots
 
-![Home](wp-env/screenshots/Home.png)
-![Blog Listing](wp-env/screenshots/Blog_listing.png)
-![Blog Listing Pagination](wp-env/screenshots/Blog_listing_pagination.png)
-![Single Blog Page](wp-env/screenshots/Single_blog.png)
-![Comments](wp-env/screenshots/Comments.png)
-![Comment Form](wp-env/screenshots/Comment_form.png)
-![Catch All](wp-env/screenshots/Catch_all.png)
-![Catch All second site](wp-env/screenshots/Catch_all_second_site.png)
-![CPT Second site](wp-env/screenshots/cpt.png)
+![Home](screenshots/Home.png)
+![Blog Listing](screenshots/Blog_listing.png)
+![Blog Listing Pagination](screenshots/Blog_listing_pagination.png)
+![Single Blog Page](screenshots/Single_blog.png)
+![Comments](screenshots/Comments.png)
+![Comment Form](screenshots/Comment_form.png)
+![Catch All](screenshots/Catch_all.png)
+![Catch All second site](screenshots/Catch_all_second_site.png)
+![CPT Second site](screenshots/cpt.png)
 
 # Running the example with wp-env
 
