@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write .",
-    "styles:fetch": "node scripts/fetchWpGlobalStyles.js"
-
+    "styles:fetch": "node scripts/fetchWpGlobalStyles.mjs"
   },
   "dependencies": {
     "@wordpress/base-styles": "^5.21.0",
