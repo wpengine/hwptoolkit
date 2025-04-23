@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const fetch = require('node-fetch'); // make sure node-fetch is installed
 
 async function fetchWpGlobalStyles(endpoint, outputPath = 'styles/hwp-global-styles.css', types = ['variables', 'presets', 'styles', 'base-layout-styles']) {
     const typeEnums = types.map(type => type.toUpperCase().replace(/-/g, '_'));
@@ -41,3 +40,5 @@ async function fetchWpGlobalStyles(endpoint, outputPath = 'styles/hwp-global-sty
         console.error('Error fetching global styles:', error.message);
     }
 }
+
+fetchWpGlobalStyles("http://localhost:8888/graphql")

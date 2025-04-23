@@ -56,20 +56,22 @@ import '@/styles/globals.css';           // Optional custom app styles
 
 1. Node.js 18.18 or later
 2. npm or another package manager
-3. WPGraphql
-4. HWP Global Stylesheet Plugin
+3. WPGraphql (included in wp-env setup)
+4. HWP Global Stylesheet Plugin (included in wp-env setup)
+5. [Docker](https://www.docker.com/) (if you plan on running the example see details below)
+
+**Note** Please make sure you have all prerequisites installed as mentioned above and Docker running (`docker ps`)
 
 ### Clone the repository
 
 ```bash
 git clone https://github.com/wpengine/hwptoolkit.git
-cd examples/next/render-blocks-pages-router
 ```
 
 ### Install dependencies
 
 ```bash
-npm install
+`cd hwptoolkit && npm install`
 ```
 
 ### Build and start the application

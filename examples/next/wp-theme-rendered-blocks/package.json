@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "An example headless WordPress application using Global Styles from WordPress using WPGraphQL.",
   "scripts": {
-    "example:build": "pnpm run wp:images:unzip && pnpm run example:dev:install && pnpm run wp:start && pnpm run wp:db:import && pnpm run example:start",
+    "example:build": "pnpm run example:dev:install && pnpm run wp:start && pnpm run wp:db:import && pnpm run example:start && pnpm run example:styles:fetch",
+    "example:styles:fetch": "cd example-app && pnpm run styles:fetch",
     "example:dev:install": "cd example-app && npm install && cd ..",
     "example:start": "pnpm run wp:start && pnpm run example:dev",
     "example:stop": "pnpm run wp:stop",

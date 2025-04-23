@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "styles:fetch": "node scripts/fetchWpGlobalStyles.js"
+
   },
   "dependencies": {
     "@wordpress/base-styles": "^5.21.0",
