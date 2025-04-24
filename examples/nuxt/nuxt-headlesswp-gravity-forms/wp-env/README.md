@@ -41,7 +41,7 @@ This example shows you how to wire up a full headless WordPress backend—comple
 ### Prerequisites
 
 - Node.js (v18+ recommended)
-- pnpm or npm/yarn
+- npm
 - Docker (so that @wordpress/env can spin up the WP container)
 
 ### Setup Repository and Install

@@ -2,7 +2,7 @@
   "phpVersion": "7.4",
   "plugins": [
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
-    "https://github.com/AxeWP/wp-graphql-gravity-forms/releases/download/v0.13.0.1/wp-graphql-gravity-forms.zip"
+    "https://github.com/AxeWP/wp-graphql-gravity-forms/releases/latest/download/wp-graphql-gravity-forms.zip"
   ],
   "config": {
     "WP_DEBUG": true,
