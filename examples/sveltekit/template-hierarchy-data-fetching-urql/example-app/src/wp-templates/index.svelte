@@ -19,13 +19,15 @@
           }
         }
       `,
-      variables: (event: LoadEvent) => ({ uri: event.params.uri }),
+      variables: (event: LoadEvent) => ({ uri: event.params.uri || "/" }),
     },
   ];
 </script>
 
 <script>
   const { data } = $props();
+
+  const node = $derived(data.indexTemplateNodeQuery.response.data.nodeByUri);
 </script>
 
 <p>
@@ -35,15 +37,17 @@
   be used directly.
 </p>
 
-{#if data.nodeByUri?.title}
-  <h1>{@html data.nodeByUri.title}</h1>
+<hr />
+
+{#if node?.title}
+  <h1>{@html node.title}</h1>
 {/if}
-{#if data.nodeByUri.content}
-  <div>{@html data.nodeByUri.content}</div>
+{#if node?.content}
+  <div>{@html node.content}</div>
 {/if}
-{#if !data.nodeByUri.content && !data.nodeByUri.title}
+{#if !node?.content && !node?.title}
   <pre>
-    <code>{JSON.stringify(data ?? {}, null, 2)}</code>
+    <code>{JSON.stringify(node, null, 2)}</code>
 	</pre>
 {/if}
 

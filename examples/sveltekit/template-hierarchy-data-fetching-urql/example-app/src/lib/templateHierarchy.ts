@@ -4,7 +4,7 @@ import {
   type WordPressTemplate,
 } from "./templates";
 import { SEED_QUERY } from "./seedQuery";
-import { createClient } from "./client";
+import { client } from "./client";
 
 export type TemplateData = {
   uri: string;
@@ -21,7 +21,7 @@ export async function uriToTemplate({
   fetch,
   uri,
 }: {
-  fetch: (input: RequestInfo, init?: RequestInit) => Promise<Response>;
+  fetch: typeof globalThis.fetch;
   uri: string;
 }): Promise<TemplateData> {
   const returnData: TemplateData = {
@@ -32,9 +32,7 @@ export async function uriToTemplate({
     template: undefined,
   };
 
-  const client = createClient(fetch);
-
-  const { data, error } = await client.query(SEED_QUERY, { uri });
+  const { data, error } = await client.query(SEED_QUERY, { uri }, { fetch });
 
   returnData.seedQuery = { data, error };
 
@@ -45,9 +43,7 @@ export async function uriToTemplate({
 
   if (!data.nodeByUri) {
     console.error("HTTP/404 - Not Found in WordPress:", uri);
-
-    returnData.template = { id: "404 Not Found", path: "/404" };
-
+    returnData.template = { id: "404", path: "/404" };
     return returnData;
   }
 

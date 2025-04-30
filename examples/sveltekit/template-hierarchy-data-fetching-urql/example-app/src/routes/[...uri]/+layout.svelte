@@ -1,12 +1,20 @@
 <script lang="ts">
+  // import { setContextClient } from "@urql/svelte";
+  // import { client } from "$lib/client";
   import TemplateHierarchyInfo from "$components/TemplateHierarchyInfo.svelte";
   import Nav from "$components/Nav.svelte";
+  import type { LayoutProps } from "./$types";
 
-  let { children } = $props();
+  // setContextClient(client);
+
+  const { children }: LayoutProps = $props();
 </script>
 
-<TemplateHierarchyInfo />
-<Nav />
+<header>
+  <TemplateHierarchyInfo />
+
+  <Nav />
+</header>
 
 <div class="container">
   {@render children()}

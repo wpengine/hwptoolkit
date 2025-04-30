@@ -4,12 +4,22 @@
 
   export const queries = [
     {
-      name: "ArchiveTemplateNodeQuery",
+      name: "archiveQuery",
       stream: false,
       query: gql`
         query ArchiveTemplateNodeQuery($uri: String!) {
           archive: nodeByUri(uri: $uri) {
             __typename
+            ... on User {
+              contentNodes: posts {
+                nodes {
+                  id
+                  uri
+                  title
+                  excerpt
+                }
+              }
+            }
             ... on TermNode {
               name
               description
@@ -17,8 +27,12 @@
             ... on Tag {
               contentNodes {
                 nodes {
+                  id
                   ... on NodeWithTitle {
                     title
+                  }
+                  ... on NodeWithExcerpt {
+                    excerpt
                   }
                   uri
                 }
@@ -27,8 +41,13 @@
             ... on Category {
               contentNodes {
                 nodes {
+                  id
+
                   ... on NodeWithTitle {
                     title
+                  }
+                  ... on NodeWithExcerpt {
+                    excerpt
                   }
                   uri
                 }
@@ -44,15 +63,21 @@
 
 <script>
   const { data } = $props();
+
+  const archive = $derived(data.archiveQuery.response.data.archive);
 </script>
 
 <main>
-  <h1>{data.archive.name}</h1>
-  <p>{@html data.archive.description}</p>
+  <h1>{archive.name}</h1>
+  <p>{@html archive.description}</p>
   <ol>
-    {#each data.archive.contentNodes.nodes as content}
+    {#each archive.contentNodes?.nodes as content (content.id)}
       <li>
         <a href={content.uri}>{@html content.title}</a>
+
+        <p class="excerpt">
+          {@html content.excerpt}
+        </p>
       </li>
     {/each}
   </ol>

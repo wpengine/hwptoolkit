@@ -1,11 +1,11 @@
 <script lang="ts" module>
   import { gql } from "$lib/client";
-  import type { LoadEvent } from "@sveltejs/kit";
+  import type { TemplateQueries } from "$lib/queryHandler";
 
-  export const queries = [
+  export const queries: TemplateQueries = [
     {
       query: gql`
-        query {
+        query homeTemplatePostQuery {
           posts(first: 6) {
             nodes {
               id
@@ -16,13 +16,14 @@
           }
         }
       `,
-      variables: (event: LoadEvent) => null,
     },
   ];
 </script>
 
 <script>
   const { data } = $props();
+
+  const posts = $derived(data.homeTemplatePostQuery.response.data.posts.nodes);
 </script>
 
 <main id="home">
@@ -33,7 +34,7 @@
   <section id="recent-posts">
     <h2>Recent Posts</h2>
     <div class="post-grid">
-      {#each data.posts.nodes as post}
+      {#each posts as post (post.id)}
         <div data-key={post.id} class="post">
           <h3 class="post-title">{post.title}</h3>
           <div class="post-excerpt">{@html post.excerpt}</div>
