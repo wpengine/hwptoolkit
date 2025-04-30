@@ -5,7 +5,9 @@
     "https://downloads.wordpress.org/plugin/classic-editor.latest-stable.zip",
     "https://downloads.wordpress.org/plugin/wpgraphql-ide.latest-stable.zip"
   ],
-  "themes": ["https://downloads.wordpress.org/theme/nude.latest-stable.zip"],
+  "themes": [
+    "https://downloads.wordpress.org/theme/twentytwentyone.latest-stable.zip"
+  ],
   "config": {
     "WP_DEBUG": true,
     "SCRIPT_DEBUG": false,
@@ -20,6 +22,6 @@
     ".htaccess": "./wp-env/setup/.htaccess"
   },
   "lifecycleScripts": {
-    "afterStart": "wp-env run cli -- wp theme activate nude && wp-env run cli -- wp theme delete --all -- wp plugin delete hello-dolly && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+    "afterStart": "wp-env run cli -- wp theme activate twentytwentyone && wp-env run cli -- wp theme delete --all -- wp plugin delete hello-dolly && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }
 }

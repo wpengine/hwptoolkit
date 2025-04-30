@@ -1,4 +1,4 @@
-import type { LoadEvent } from "@sveltejs/kit";
+import type { ServerLoadEvent } from "@sveltejs/kit";
 import { client, fetchAllPaginated } from "./client";
 import type { OperationResult, TypedDocumentNode } from "@urql/core";
 
@@ -7,7 +7,7 @@ export interface TemplateQuery {
   stream?: boolean;
   query: TypedDocumentNode;
   paginate?: (responseData: any) => boolean;
-  variables?: (event: LoadEvent) => Record<string, any>;
+  variables?: (event: ServerLoadEvent) => Record<string, any>;
 }
 
 export interface QueryResults {
@@ -22,7 +22,7 @@ export async function fetchQueries({
   event,
 }: {
   queries?: TemplateQueries;
-  event: LoadEvent;
+  event: ServerLoadEvent;
 }) {
   if (!queries || queries.length === 0) {
     console.error("No queries provided");

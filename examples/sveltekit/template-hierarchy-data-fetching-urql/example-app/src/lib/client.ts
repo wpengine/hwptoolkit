@@ -12,7 +12,7 @@ import { browser } from "$app/environment";
 export { gql } from "@urql/core";
 
 const GRAPHQL_URL = "index.php?graphql";
-const graphqlApi = new URL(GRAPHQL_URL, "https://testing.wpdecoupled.dev").href;
+const graphqlApi = new URL(GRAPHQL_URL, "http://localhost:8888").href;
 
 export const ssr = ssrExchange({
   isClient: browser,

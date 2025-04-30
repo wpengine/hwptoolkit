@@ -1,10 +1,6 @@
 <script>
   import { page } from "$app/state";
 
-  $inspect({
-    data: page.data,
-  });
-
   const template = page.data.templateData;
 </script>
 
