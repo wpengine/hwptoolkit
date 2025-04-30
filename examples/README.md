@@ -23,6 +23,7 @@ This directory contains examples demonstrating how to use various features of th
 | [hybrid-sitemap-apollo](next/hybrid-sitemap-apollo)                                       | Fetches and transforms WordPress sitemaps for clean URL formatting with Next.js.               |
 | [proxied-sitemap-apollo](next/proxied-sitemap-apollo)                                     | Provides a proxied sitemap by transforming WordPress XML sitemaps for SEO-friendly frontend URLs.|
 | [render-blocks-pages-router](next/render-blocks-pages-router)                             | Renders WordPress Blocks with JSX in Next.js, including utilities for hierarchical block data.  |
+| [wp-theme-rendered-blocks](next/wp-theme-rendered-blocks)                             | Demonstrates how to fetch and apply WordPress Global Styles in a Next.js project using the `globalStylesheet` GraphQL field.  |
 
 ## Contributing
 
