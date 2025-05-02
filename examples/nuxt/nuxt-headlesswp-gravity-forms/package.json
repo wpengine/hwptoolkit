@@ -1,25 +1,18 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "type": "module",
+  "name": "headlesswp-gravity-forms-nuxt-env",
+  "version": "1.0.0",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "start": "nuxt start"
-  },
-  "dependencies": {
-    "graphql": "^16.10.0",
-    "nuxt": "^3.16.0",
-    "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "example:build": "pnpm run frontend:install && pnpm run frontend:dev && pnpm run wp:start && pnpm run wp:db:import && pnpm run frontend:dev",
+    "wp:start": "wp-env start",
+    "wp:stop": "wp-env stop",
+    "wp:destroy": "wp-env destroy --config .wp-env.json",
+    "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
+    "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
+    "frontend:install": "pnpm --prefix example-app/ install",
+    "frontend:dev": "pnpm --prefix example-app/ dev",
+    "start": "npm run wp:start && npm run frontend:dev"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.13.2"
-  },
-  "engines": {
-    "node": ">=18.19.0"
+    "@wordpress/env": "^10.20.0"
   }
 }

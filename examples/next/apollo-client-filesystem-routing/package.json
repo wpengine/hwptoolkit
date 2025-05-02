@@ -1,0 +1,40 @@
+{
+  "name": "apollo-client-filesystem-routing",
+  "version": "1.0.0",
+  "description": "A Next.js project integrated with WPGraphQL and WPGraphQL for ACF to build a headless WordPress-powered site.",
+  "scripts": {
+    "example:build": "npm run wp:images:unzip && npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:start",
+    "example:dev:install": "cd example-app && npm install && cd ..",
+    "example:start": "npm run wp:start && npm run example:dev",
+    "example:stop": "npm run wp:stop",
+    "example:prune": "wp-env destroy && npm run example:build && npm run example:start",
+    "example:dev": "npm --prefix ./example-app run dev",
+    "wp:start": "npm install && wp-env start",
+    "wp:stop": "wp-env stop",
+    "wp:destroy": "wp-env destroy --config ./wp-env/wp-env.json",
+    "wp:db:query": "wp-env run cli -- wp db query",
+    "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
+    "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
+    "wp:images:unzip": "rm -rf wp-env/uploads/ && unzip wp-env/uploads.zip -d wp-env;",
+    "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads",
+    "wp-env": "wp-env"
+  },
+  "keywords": [
+    "headless",
+    "wordpress",
+    "nextjs",
+    "apollo-client",
+    "fullstack",
+    "headless-cms",
+    "wpgraphql",
+    "headless-wordpress",
+    "nextjs-pages-router",
+    "wp-env-configuration",
+    "fullstack-example"
+  ],
+  "author": "hwptoolkit",
+  "license": "BSD-0-Clause",
+  "dependencies": {
+    "@wordpress/env": "^10.20.0"
+  }
+}
