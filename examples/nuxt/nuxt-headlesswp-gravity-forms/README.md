@@ -22,18 +22,20 @@ This example shows you how to wire up a full headless WordPress backend—comple
 ## Project Structure
 
 ```
+```
+example-app/
 ├── components/           # Vue form-field components & barrel file
-├── composables/         # useGravityForm.js & useFormFields.js
-├── pages/              # Nuxt page (index.vue) that renders the form
-├── wp-env/
+├── composables/          # useGravityForm.js & useFormFields.js
+├── pages/                # Nuxt page (index.vue) that renders the form
+└── nuxt.config.ts        # Nuxt application config
+wp-env/
 │   ├── db/
-│   │   └── database.sql # WordPress + Gravity Forms schema & data
+│   │   └── database.sql  # WordPress + Gravity Forms schema & data
 │   ├── setup/
-│   │   └── .htaccess   # CORS + pretty-permalinks for wp-env
-│   └── uploads.zip     # wp-content/uploads media files
-├── .wp-env.json        # @wordpress/env configuration
-├── package.json        # wp-env + Nuxt dev scripts
-└── nuxt.config.ts      # Nuxt application config
+│   │   └── .htaccess     # CORS + pretty-permalinks for wp-env
+│   └── uploads.zip       # wp-content/uploads media files
+├── .wp-env.json          # @wordpress/env configuration
+├── package.json          # wp-env + Nuxt dev scripts
 ```
 
 ## Running the Example with wp-env
@@ -51,7 +53,7 @@ git clone https://github.com/your-org/nuxt-gravityforms-example.git
 cd nuxt-gravityforms-example
 pnpm install
 
-echo "NUXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > .env
+echo "NUXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > example-app/.env
 ```
 
 ### Quick Start
