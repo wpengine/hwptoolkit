@@ -24,3 +24,6 @@ debug.log
 .DS_Store
 .idea
 .vscode
+
+## Examples
+examples/**/package-lock.json

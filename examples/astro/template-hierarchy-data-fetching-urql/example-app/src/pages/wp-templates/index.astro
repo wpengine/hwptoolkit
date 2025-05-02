@@ -1,0 +1,70 @@
+---
+/**
+ * This is a template for the WordPress template hierarchy.
+ * It will be used to render the WordPress templates.
+ * It should never be used directly.
+ * This check confirms that the template is being used in the correct context.
+ * If the template is being used directly, it will redirect to the 404 page.
+ *
+ * Once https://github.com/withastro/astro/issues/13555 is fixed, this check can be changed to:
+ *  if (Astro.url.pathname === Astro.originPathname)
+ *
+ */
+if (!Astro.locals.uri) {
+  return Astro.rewrite("/404");
+}
+
+import Layout from "../../layouts/Layout.astro";
+import { client, gql } from "../../lib/client";
+
+const query = gql`
+  query indexTemplateNodeQuery($uri: String!) {
+    nodeByUri(uri: $uri) {
+      __typename
+      uri
+      id
+      ... on NodeWithTitle {
+        title
+      }
+      ... on NodeWithContentEditor {
+        content
+      }
+    }
+  }
+`;
+
+const { data, error } = await client.query(query, {
+  uri: Astro.locals.uri,
+});
+
+if (error) {
+  console.error("Error fetching data:", error);
+  return Astro.rewrite("/500");
+}
+---
+
+<Layout>
+  <p>
+    This is the <strong>index</strong> template for the WordPress template hierarchy.
+    It will be used to render the WordPress content if no more appropriate template
+    is provided (e.g. front-page, single, singular, archive, etc). It should never
+    be used directly.
+  </p>
+
+  {data.nodeByUri.title && <h1 set:html={data.nodeByUri.title} />}
+  {data.nodeByUri.content && <div set:html={data.nodeByUri.content} />}
+  {
+    !data.nodeByUri.content && !data.nodeByUri.title && (
+      <pre>
+        <code>{JSON.stringify(data ?? {}, null, 2)}</code>
+      </pre>
+    )
+  }
+</Layout>
+
+<style>
+  pre {
+    margin: 0;
+    padding: 0;
+  }
+</style>
