@@ -8,7 +8,7 @@
     query: gql`
       query headerNavQuery($after: String = null) {
         menu(id: "primary", idType: LOCATION) {
-          menuItems(after: $after) {
+          menuItems(first: 10, after: $after) {
             pageInfo {
               hasNextPage
               endCursor

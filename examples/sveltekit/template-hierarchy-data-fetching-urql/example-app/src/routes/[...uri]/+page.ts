@@ -1,6 +1,6 @@
 import type { PageLoad } from "./$types";
 import type { Component } from "svelte";
-import { type TemplateQueries } from "$lib/queryHandler";
+import { fetchQueries, type TemplateQueries } from "$lib/queryHandler";
 
 type WordPressTemplate = {
   default: Component;
@@ -14,8 +14,11 @@ export const load: PageLoad = async (event) => {
     `$wp/${data.templateData.template.id}.svelte`
   );
 
+  const queryResults = await fetchQueries({ queries: template.queries, event });
+
   return {
     ...data,
     template: template.default,
+    graphqlData: queryResults,
   };
 };

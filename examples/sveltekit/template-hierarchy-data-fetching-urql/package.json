@@ -1,5 +1,5 @@
 {
-  "name": "template-hierarchy-data-fetching-urql",
+  "name": "sveltekit-template-hierarchy-data-fetching-urql",
   "type": "module",
   "version": "0.0.1",
   "scripts": {

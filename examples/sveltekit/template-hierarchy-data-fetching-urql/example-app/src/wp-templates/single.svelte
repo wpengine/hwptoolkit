@@ -1,5 +1,5 @@
 <script module lang="ts">
-  import { gql } from "@urql/svelte";
+  import { gql } from "$lib/client";
   import type { LoadEvent } from "@sveltejs/kit";
 
   export const queries = [

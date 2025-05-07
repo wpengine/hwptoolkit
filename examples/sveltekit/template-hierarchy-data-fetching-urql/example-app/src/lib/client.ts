@@ -7,7 +7,7 @@ import {
   type TypedDocumentNode,
 } from "@urql/core";
 // import { persistedExchange } from "@urql/exchange-persisted";
-import merge from "just-merge";
+import merge from "deepmerge";
 import { browser } from "$app/environment";
 export { gql } from "@urql/core";
 
