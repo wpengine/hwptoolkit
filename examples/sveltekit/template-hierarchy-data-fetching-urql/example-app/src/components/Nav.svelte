@@ -4,9 +4,7 @@
   import NavStructure from "./NavStructure.svelte";
 
   export const query: TemplateQuery = {
-    stream: false,
     paginate: (data) => data.menu.menuItems.pageInfo,
-
     query: gql`
       query headerNavQuery($after: String = null) {
         menu(id: "primary", idType: LOCATION) {

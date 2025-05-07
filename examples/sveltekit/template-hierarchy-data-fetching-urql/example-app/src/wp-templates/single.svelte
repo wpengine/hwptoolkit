@@ -1,5 +1,5 @@
 <script module lang="ts">
-  import { gql } from "$lib/client";
+  import { gql } from "@urql/svelte";
   import type { LoadEvent } from "@sveltejs/kit";
 
   export const queries = [
@@ -80,7 +80,6 @@
       {#await authorPromise}
         <p>Loading author data...</p>
       {:then { data: { post: { author: { node: author } } } }}
-        {console.log(author)}
         <p>
           <strong>Author:</strong>
           <a href={author.uri}>{author.name}</a>
