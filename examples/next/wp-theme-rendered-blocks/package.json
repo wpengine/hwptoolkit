@@ -1,0 +1,47 @@
+{
+  "name": "hwptoolkit-example-wp-theme-styles-nextjs",
+  "version": "0.1.0",
+  "description": "An example headless WordPress application using Global Styles from WordPress using WPGraphQL.",
+  "scripts": {
+    "example:build": "npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:styles:fetch && npm run example:start",
+    "example:styles:fetch": "npm --prefix ./example-app run styles:fetch",
+    "example:dev:install": "cd example-app && npm install && cd ..",
+    "example:start": "npm run wp:start && npm run example:dev",
+    "example:stop": "npm run wp:stop",
+    "example:prune": "wp-env destroy && npm run example:build && npm run example:start",
+    "example:dev": "npm --prefix ./example-app run dev",
+    "wp:start": "npm install && wp-env start",
+    "wp:stop": "wp-env stop",
+    "wp:destroy": "wp-env destroy --config ./wp-env/wp-env.json",
+    "wp:db:query": "wp-env run cli -- wp db query",
+    "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
+    "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
+    "wp:images:unzip": "rm -rf wp-env/uploads/ && unzip wp-env/uploads.zip -d wp-env;",
+    "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads",
+    "wp-env": "wp-env"
+  },
+  "keywords": [
+    "headless",
+    "wordpress",
+    "nextjs",
+    "fetch",
+    "fullstack",
+    "headless-cms",
+    "wpgraphql",
+    "rest-api",
+    "headless-wordpress",
+    "nextjs-app-router",
+    "nextjs-data-fetching",
+    "wordpress-headless-starter",
+    "wp-env-configuration",
+    "local-development",
+    "fullstack-example",
+    "wordpress-api",
+    "wordpress-database"
+  ],
+  "author": "hwptoolkit",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@wordpress/env": "^10.20.0"
+  }
+}

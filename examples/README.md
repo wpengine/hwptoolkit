@@ -27,9 +27,10 @@ This directory contains examples demonstrating how to use various features of th
 
 ## SvelteKit Examples
 
-| Title                                                                                    | Description                                                                                     |
-| ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [template-hierarchy-data-fetching-urql](sveltekit/template-hierarchy-data-fetching-urql) | Demonstrates template hierarchy and data fetching with SvelteKit, URQL, and Headless WordPress. |
+| Title                                                                                    | Description                                                                                                                  |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| [template-hierarchy-data-fetching-urql](sveltekit/template-hierarchy-data-fetching-urql) | Demonstrates template hierarchy and data fetching with SvelteKit, URQL, and Headless WordPress.                              |
+| [wp-theme-rendered-blocks](next/wp-theme-rendered-blocks)                                | Demonstrates how to fetch and apply WordPress Global Styles in a Next.js project using the `globalStylesheet` GraphQL field. |
 
 ## Contributing
 
