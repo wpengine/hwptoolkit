@@ -22,6 +22,6 @@
     ".htaccess": "./wp-env/setup/.htaccess"
   },
   "lifecycleScripts": {
-    "afterStart": "wp-env run cli -- wp theme activate twentytwentyone && wp-env run cli -- wp theme delete --all -- wp plugin delete hello-dolly && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+    "afterStart": "wp-env run cli -- wp theme activate twentytwentyone && wp-env run cli -- wp theme delete --all && wp-env run cli -- wp plugin delete hello-dolly && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }
 }
