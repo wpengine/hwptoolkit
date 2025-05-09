@@ -1,0 +1,125 @@
+<?php
+
+declare(strict_types=1);
+
+namespace HWP\Previews\Settings\Menu;
+
+use HWP\Previews\Settings\Contracts\Menu_Page_Interface;
+
+class Menu_Page implements Menu_Page_Interface {
+
+	/**
+	 * The title of the page.
+	 *
+	 * @var string
+	 */
+	protected string $page_title;
+
+	/**
+	 * The title of the menu.
+	 *
+	 * @var string
+	 */
+	protected string $menu_title;
+
+	/**
+	 * The slug name to refer to this menu by (should be unique for this menu).
+	 *
+	 * @var string
+	 */
+	protected string $menu_slug;
+
+	/**
+	 * The path of a template file to be used to display the page content.
+	 *
+	 * @var string
+	 */
+	protected string $template;
+
+	/**
+	 * The array of arguments that will be passed to the template.
+	 * The key is the name of the query var for the arguments, and the value is the array of a key value arguments to set into the query var.
+	 *
+	 * @var array<string, array<string, mixed>>
+	 */
+	protected array $args;
+
+	/**
+	 * The name of a Dashicons helper class to use a font icon.
+	 *
+	 * @var string
+	 */
+	protected string $icon;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string                              $page_title The text to be displayed in the title tags of the page when the menu is selected.
+	 * @param string                              $menu_title The text to be used for the menu.
+	 * @param string                              $menu_slug The slug name to refer to this menu by. Should be unique for this menu and only include lowercase alphanumeric, dashes, and underscores characters to be compatible with sanitize_key().
+	 * @param string                              $template The template that will be included in the callback.
+	 * @param array<string, array<string, mixed>> $args The args array for the template.
+	 * @param string                              $icon The name of a Dashicons helper class to use a font icon.
+	 */
+	public function __construct(
+		string $page_title,
+		string $menu_title,
+		string $menu_slug,
+		string $template,
+		array $args = [],
+		string $icon = 'dashicons-admin-generic'
+	) {
+		$this->page_title = $page_title;
+		$this->menu_title = $menu_title;
+		$this->menu_slug  = $menu_slug;
+		$this->template   = $template;
+		$this->args       = $args;
+		$this->icon       = $icon;
+	}
+
+	/**
+	 * Registers the menu page in the WordPress admin.
+	 *
+	 * @return void
+	 */
+	public function register_page(): void {
+		add_menu_page(
+			$this->page_title,
+			$this->menu_title,
+			'manage_options',
+			$this->menu_slug,
+			[ $this, 'registration_callback' ],
+			$this->icon
+		);
+	}
+
+	/**
+	 * Callback function to display the content of the menu page.
+	 *
+	 * @return void
+	 */
+	public function registration_callback(): void {
+		if ( empty( $this->template ) || ! file_exists( $this->template ) ) {
+			printf(
+				'<div class="notice notice-error"><p>%s</p></div>',
+				__( 'The HWP Previews Settings template does not exist.', 'hwp-previews' )
+			);
+
+			return;
+		}
+		$this->set_query_vars();
+		include_once $this->template;
+	}
+
+	/**
+	 * Sets the query vars for the template.
+	 *
+	 * @return void
+	 */
+	protected function set_query_vars(): void {
+		foreach ( $this->args as $query_var => $args ) {
+			set_query_var( $query_var, $args );
+		}
+	}
+
+}

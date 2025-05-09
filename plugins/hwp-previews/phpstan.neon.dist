@@ -1,0 +1,35 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
+services:
+    -
+        class: HWP\Previews\PHPStan\Rules\ClassConstantVarAnnotationRule
+        tags: [phpstan.rules.rule]
+
+parameters:
+    # Analysis Rules
+    treatPhpDocTypesAsCertain: false
+    inferPrivatePropertyTypeFromConstructor: true
+    checkExplicitMixedMissingReturn: true
+    checkMissingTypehints: true
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    polluteScopeWithAlwaysIterableForeach: false
+    polluteScopeWithLoopInitialAssignments: false
+    reportAlwaysTrueInLastCondition: true
+    reportStaticMethodSignatures: true
+    reportWrongPhpDocTypeInVarTag: true
+
+    # Configuration
+    level: 8
+    phpVersion:
+          min: 70400
+          max: 80400
+    paths:
+        - hwp-previews.php
+        - src/
+    ignoreErrors:
+        -
+            identifier: empty.notAllowed

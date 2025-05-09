@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<psalm
+	errorLevel="1"
+	resolveFromConfigFile="true"
+	xmlns="https://getpsalm.org/schema/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+	findUnusedBaselineEntry="true"
+	findUnusedCode="false"
+>
+	<projectFiles>
+		<directory name="src" />
+		<file name="hwp-previews.php" />
+	</projectFiles>
+
+	<plugins>
+		<pluginClass class="PsalmWordPress\Plugin" />
+	</plugins>
+</psalm>
