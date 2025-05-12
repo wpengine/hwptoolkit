@@ -72,7 +72,10 @@ class Settings_Section {
 		);
 
 		foreach ( $this->fields as $field ) {
-			$field->register_settings_field( $settings_key, $this->id, $post_type, $page );
+			$field->set_settings_key( $settings_key );
+			$field->set_post_type( $post_type );
+
+			$field->register_settings_field( $this->id, $page );
 		}
 	}
 

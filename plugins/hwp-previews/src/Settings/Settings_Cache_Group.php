@@ -104,7 +104,7 @@ class Settings_Cache_Group {
 	 * @param string $name The name of a setting.
 	 * @param string $type The type of the setting.
 	 *
-	 * @return mixed
+	 * @return bool
 	 */
 	private function is_setting_of_type( string $name, string $type ): bool {
 		return array_key_exists( $name, $this->settings_config ) && $this->settings_config[ $name ] === $type;

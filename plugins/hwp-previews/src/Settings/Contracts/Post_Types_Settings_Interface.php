@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Settings\Contracts;
 
-interface CPT_Settings_Interface {
+interface Post_Types_Settings_Interface {
 
 	/**
 	 * Gets all enabled for the preview functionality post types.
@@ -21,7 +21,7 @@ interface CPT_Settings_Interface {
 	 * @param string $post_type Post type slug.
 	 * @param string $default_value Default URL template.
 	 *
-	 * @return string<string>
+	 * @return string
 	 */
 	public function url_template( string $post_type, string $default_value = '' ): string;
 

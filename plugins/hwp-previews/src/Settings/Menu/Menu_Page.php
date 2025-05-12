@@ -102,12 +102,14 @@ class Menu_Page implements Menu_Page_Interface {
 		if ( empty( $this->template ) || ! file_exists( $this->template ) ) {
 			printf(
 				'<div class="notice notice-error"><p>%s</p></div>',
-				__( 'The HWP Previews Settings template does not exist.', 'hwp-previews' )
+				esc_html__( 'The HWP Previews Settings template does not exist.', 'hwp-previews' )
 			);
 
 			return;
 		}
 		$this->set_query_vars();
+
+		// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable -- $this->template is validated and defined within the class
 		include_once $this->template;
 	}
 

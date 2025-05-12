@@ -28,6 +28,20 @@ abstract class Abstract_Settings_Field {
 	private string $title;
 
 	/**
+	 * The settings field settings key.
+	 *
+	 * @var string
+	 */
+	private string $settings_key;
+
+	/**
+	 * The settings field post type.
+	 *
+	 * @var string
+	 */
+	private string $post_type;
+
+	/**
 	 * Render the settings field.
 	 *
 	 * @param array<string, mixed> $option_value Settings value.
@@ -56,42 +70,61 @@ abstract class Abstract_Settings_Field {
 	}
 
 	/**
-	 * Register the settings field.
+	 * Set the settings key.
 	 *
 	 * @param string $settings_key The settings key.
-	 * @param string $section The settings section.
+	 *
+	 * @return $this
+	 */
+	public function set_settings_key( string $settings_key ): self {
+		$this->settings_key = $settings_key;
+
+		return $this;
+	}
+
+	/**
+	 * Set the post type.
+	 *
 	 * @param string $post_type The post type.
+	 *
+	 * @return $this
+	 */
+	public function set_post_type( string $post_type ): self {
+		$this->post_type = $post_type;
+
+		return $this;
+	}
+
+	/**
+	 * Register the settings field.
+	 *
+	 * @param string $section The settings section.
 	 * @param string $page The settings page.
 	 *
 	 * @return void
 	 */
-	public function register_settings_field( string $settings_key, string $section, string $post_type, string $page ): void {
+	public function register_settings_field( string $section, string $page ): void {
+
 		add_settings_field(
 			$this->id,
 			$this->title,
 			[ $this, 'settings_field_callback' ],
 			$page,
-			$section,
-			[
-				'settings_key' => $settings_key,
-				'post_type'    => $post_type,
-			]
+			$section
 		);
 	}
 
 	/**
 	 * Callback for the settings field.
 	 *
-	 * @param array<string, mixed> $args The settings field arguments.
-	 *
 	 * @return void
 	 */
-	public function settings_field_callback( array $args ): void {
-		$settings_key = (string) ( $args['settings_key'] ?? '' );
-		$post_type    = (string) ( $args['post_type'] ?? '' );
-		$value        = $this->get_setting_value( $settings_key, $post_type );
-
-		$this->render_field( $value, $settings_key, $post_type );
+	public function settings_field_callback(): void {
+		$this->render_field(
+			$this->get_setting_value( $this->settings_key, $this->post_type ),
+			$this->settings_key,
+			$this->post_type
+		);
 	}
 
 	/**

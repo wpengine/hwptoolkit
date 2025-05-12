@@ -49,7 +49,7 @@ class Preview_Link_Placeholder_Resolver {
 	 * @return string
 	 */
 	public function resolve_placeholders(string $template, WP_Post $post ): string {
-		return preg_replace_callback(
+		return (string) preg_replace_callback(
 			self::PLACEHOLDER_REGEX,
 			fn(array $matches): string => rawurlencode( $this->resolve_token( $matches[1], $post ) ),
 			$template

@@ -12,10 +12,6 @@ $params	     = (array) ( $tabs_config['params'] ?? [] );
 <div class="wrap">
 	<h1><?php esc_html_e( 'HWP Previews Settings', 'hwp-previews' ) ?></h1>
 	<form method="post" action="options.php">
-		<h2>Just more text here</h2>
-
-		<h2><?php esc_html_e( 'Post Type Settings HWP Previews Plugin', 'hwp-previews' ) ?></h2>
-
 		<h2 class="nav-tab-wrapper">
 			<?php foreach ( $tabs as $tab_key => $tab_label ) {
 				$url = admin_url( 'admin.php?page=hwp-previews&tab=' . $tab_key );

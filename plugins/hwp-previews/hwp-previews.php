@@ -25,7 +25,8 @@ require __DIR__ . '/autoload.php';
 
 define( 'HWP_PREVIEWS_BASENAME', plugin_basename( __FILE__ ) );
 
-add_action( 'plugins_loaded', static fn() => HWP\Previews\Plugin::get_instance()->init(
+add_action( 'plugins_loaded', static fn() => HWP\Previews\Plugin::get_instance(
 	'0.0.1',
 	plugin_dir_path( __FILE__ ),
-), 5, 0 );
+	plugin_dir_url( __FILE__ )
+)->init(), 5, 0 );

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings;
 
 use HWP\Previews\Plugin;
-use HWP\Previews\Settings\Contracts\CPT_Settings_Interface;
+use HWP\Previews\Settings\Contracts\Post_Types_Settings_Interface;
 
-class Preview_Settings implements CPT_Settings_Interface {
+class Preview_Settings implements Post_Types_Settings_Interface {
 
 	/**
 	 * The settings cache group.

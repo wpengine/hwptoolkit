@@ -9,7 +9,7 @@ use WP_Post_Type;
 interface Post_Types_Config_Interface {
 
 	/**
-	 * Get the post types that are applicable for previews.
+	 * Set the post types that are applicable for previews.
 	 *
 	 * @param array<string> $post_types The post type to check.
 	 */
@@ -48,6 +48,6 @@ interface Post_Types_Config_Interface {
 	 *
 	 * @return array<string, string>
 	 */
-	public function get_publicly_available_post_types(): array;
+	public function get_public_post_types(): array;
 
 }

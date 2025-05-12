@@ -199,6 +199,7 @@
 	<!-- Return type hints -->
 	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
 		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.UselessAnnotation"/>
+		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint"/>
 	</rule>
 	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">
 		<properties>

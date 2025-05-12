@@ -98,10 +98,15 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	 *
 	 * @return array<string, string>
 	 */
-	public function get_publicly_available_post_types(): array {
-		$post_type_objects = get_post_types( [ 'public' => true ], 'objects' );
+	public function get_public_post_types(): array {
+		$post_types = get_post_types( [ 'public' => true ], 'objects' );
+		$result     = [];
 
-		return wp_list_pluck( $post_type_objects, 'label', 'name' );
+		foreach ( $post_types as $post_type ) {
+			$result[ $post_type->name ] = $post_type->label;
+		}
+
+		return $result;
 	}
 
 }

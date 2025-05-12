@@ -97,11 +97,11 @@ class Tabbed_Settings {
 		// Sanitize the fields in the tab.
 		$sanitized_fields = [];
 		foreach ( $new_input[ $tab_to_sanitize ] as $key => $value ) {
-			if ( ! isset( $this->sanitization_options[ $key ] ) ) {
+			if ( ! isset( $this->sanitization_options[ (string) $key ] ) ) {
 				continue;
 			}
 
-			$sanitized_fields[ $key ] = $this->sanitize_field( $key, $value );
+			$sanitized_fields[ $key ] = $this->sanitize_field( (string) $key, $value );
 		}
 
 		// Merge the sanitized fields with the old input.
@@ -118,7 +118,7 @@ class Tabbed_Settings {
 	 *
 	 * @return bool|int|string
 	 */
-	private function sanitize_field( string $key, $value ): bool|int|string {
+	private function sanitize_field( string $key, $value ) {
 		$type = $this->sanitization_options[ $key ];
 
 		switch ( $type ) {
