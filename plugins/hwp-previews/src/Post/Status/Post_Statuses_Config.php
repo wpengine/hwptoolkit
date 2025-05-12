@@ -41,7 +41,7 @@ class Post_Statuses_Config implements Post_Statuses_Config_Interface {
 	}
 
 	/**
-	 * TODO: add post status verification to support custom post types in future. Or anything else.
+	 * Verifies if the post status is applicable according to the configuration.
 	 *
 	 * @param string $post_status Post status to check.
 	 *

@@ -7,7 +7,7 @@ namespace HWP\Previews\Post\Slug;
 use HWP\Previews\Post\Slug\Contracts\Post_Slug_Repository_Interface;
 
 /**
- * Todo: review and improve.
+ * Post Slug Repository functionality.
  */
 class Post_Slug_Repository implements Post_Slug_Repository_Interface {
 

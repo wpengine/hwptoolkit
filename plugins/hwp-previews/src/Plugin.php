@@ -321,7 +321,6 @@ class Plugin {
 
 	/**
 	 * Replace the preview link in the REST response.
-	 * Todo: check when new draft created.
 	 *
 	 * @param \WP_REST_Response $response The REST response object.
 	 * @param \WP_Post          $post    The post object.
