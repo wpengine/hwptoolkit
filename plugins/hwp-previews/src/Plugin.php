@@ -11,6 +11,7 @@ use HWP\Previews\Post\Slug\Post_Slug_Repository;
 use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
 use HWP\Previews\Post\Status\Post_Statuses_Config;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
+use HWP\Previews\Post\Type\Post_Type_Inspector;
 use HWP\Previews\Post\Type\Post_Types_Config;
 use HWP\Previews\Preview\Link\Preview_Link_Placeholder_Resolver;
 use HWP\Previews\Preview\Link\Preview_Link_Service;
@@ -26,7 +27,6 @@ use HWP\Previews\Settings\Settings_Cache_Group;
 use HWP\Previews\Settings\Settings_Section;
 use HWP\Previews\Settings\Tabbed_Settings;
 use WP_Post;
-use WP_Post_Type;
 use WP_REST_Response;
 
 /**
@@ -223,7 +223,7 @@ class Plugin {
 		);
 
 		// Initialize the post types and statuses configurations.
-		$this->types_config    = ( new Post_Types_Config() )->set_post_types( $this->settings->post_types_enabled() );
+		$this->types_config    = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( $this->settings->post_types_enabled() );
 		$this->statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::POST_STATUSES );
 
 		// Initialize the preview parameter registry.
@@ -455,14 +455,16 @@ class Plugin {
 				return $args;
 			}
 
+			$post_type = (string) $args['post_type'];
+
 			// Check if the correspondent setting is enabled.
-			if ( ! $this->settings->post_statuses_as_parent( (string) $args['post_type'] ) ) {
+			if ( ! $this->settings->post_statuses_as_parent( $post_type ) ) {
 				return $args;
 			}
 
-			$post_type = get_post_type_object( (string) $args['post_type'] );
-			if ( $post_type instanceof WP_Post_Type ) {
-				$args['post_status'] = $post_parent_manager->get_post_statuses_as_parent( $post_type );
+			$post_statuses = $post_parent_manager->get_post_statuses_as_parent( $post_type );
+			if ( ! empty( $post_statuses ) ) {
+				$args['post_status'] = $post_statuses;
 			}
 
 			return $args;
@@ -473,8 +475,7 @@ class Plugin {
 
 		// And for Gutenberg.
 		foreach ( $this->types_config->get_post_types() as $post_type ) {
-			$post_type_object = get_post_type_object( $post_type );
-			if ( ! $post_type_object instanceof WP_Post_Type || ! $this->types_config->supports_gutenberg( $post_type_object ) ) {
+			if ( ! $this->types_config->gutenberg_editor_enabled( $post_type ) ) {
 				continue;
 			}
 			add_filter( 'rest_' . $post_type . '_query', $post_parent_manager_callback );
@@ -559,17 +560,14 @@ class Plugin {
 	 * @return string The generated preview URL.
 	 */
 	private function generate_preview_url( WP_Post $post ): string {
+		// Check if the correspondent setting is enabled.
 		$url = $this->settings->url_template( $post->post_type );
 
 		if ( empty( $url ) ) {
 			return '';
 		}
 
-		return ( new Preview_Link_Service(
-			$this->types_config,
-			$this->statuses_config,
-			new Preview_Link_Placeholder_Resolver( $this->parameters )
-		) )->generate_preview_post_link( $url, $post );
+		return $this->link_service->generate_preview_post_link( $url, $post );
 	}
 
 	/**

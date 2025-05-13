@@ -7,7 +7,6 @@ namespace HWP\Previews\Post\Parent;
 use HWP\Previews\Post\Parent\Contracts\Post_Parent_Manager_Interface;
 use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
-use WP_Post_Type;
 
 /**
  * Class Post_Parent_Manager.
@@ -51,13 +50,13 @@ class Post_Parent_Manager implements Post_Parent_Manager_Interface {
 	/**
 	 * Get the post statuses that can be used as parent for a given post type.
 	 *
-	 * @param \WP_Post_Type $post_type The post type object.
+	 * @param string $post_type Post Type slug.
 	 *
 	 * @return array<string>
 	 */
-	public function get_post_statuses_as_parent( WP_Post_Type $post_type ): array {
+	public function get_post_statuses_as_parent( string $post_type ): array {
 		if (
-			! $this->post_types->is_post_type_applicable( $post_type->name ) ||
+			! $this->post_types->is_post_type_applicable( $post_type ) ||
 			! $this->post_types->is_hierarchical( $post_type )
 		) {
 			return [];

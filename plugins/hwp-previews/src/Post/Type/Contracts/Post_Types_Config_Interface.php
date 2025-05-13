@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Post\Type\Contracts;
 
-use WP_Post_Type;
-
 interface Post_Types_Config_Interface {
 
 	/**
@@ -32,16 +30,16 @@ interface Post_Types_Config_Interface {
 	/**
 	 * Check if a post type is hierarchical.
 	 *
-	 * @param \WP_Post_Type $post_type The post type object.
+	 * @param string $post_type The post type.
 	 */
-	public function is_hierarchical( WP_Post_Type $post_type ): bool;
+	public function is_hierarchical( string $post_type ): bool;
 
 	/**
 	 * Check if a post type supports Gutenberg.
 	 *
-	 * @param \WP_Post_Type $post_type The post type object.
+	 * @param string $post_type Post Type slug.
 	 */
-	public function supports_gutenberg( WP_Post_Type $post_type ): bool;
+	public function gutenberg_editor_enabled( string $post_type ): bool;
 
 	/**
 	 * Gets all publicly available post types as key value array, where key is a post type slug and value is a label.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Post\Type;
 
+use HWP\Previews\Post\Type\Contracts\Post_Type_Inspector_Interface;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
 use WP_Post_Type;
 
@@ -18,6 +19,22 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	 * @var array<string>
 	 */
 	private array $post_types = [];
+
+	/**
+	 * Post type inspector.
+	 *
+	 * @var \HWP\Previews\Post\Type\Contracts\Post_Type_Inspector_Interface
+	 */
+	private Post_Type_Inspector_Interface $inspector;
+
+	/**
+	 * Class constructor.
+	 *
+	 * @param \HWP\Previews\Post\Type\Contracts\Post_Type_Inspector_Interface $inspector Post Type inspector.
+	 */
+	public function __construct( Post_Type_Inspector_Interface $inspector ) {
+		$this->inspector = $inspector;
+	}
 
 	/**
 	 * Sets the post types that are applicable for preview links.
@@ -44,7 +61,7 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	/**
 	 * Check if the post type is applicable for preview links.
 	 *
-	 * @param string $post_type Post type to check.
+	 * @param string $post_type Post Type slug.
 	 *
 	 * @return bool
 	 */
@@ -55,42 +72,29 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	/**
 	 * Check if the post type is hierarchical.
 	 *
-	 * @param \WP_Post_Type $post_type Post type object.
+	 * @param string $post_type Post Type slug.
 	 *
 	 * @return bool
 	 */
-	public function is_hierarchical( WP_Post_Type $post_type ): bool {
-		return $post_type->hierarchical;
+	public function is_hierarchical( string $post_type ): bool {
+		return is_post_type_hierarchical( $post_type );
 	}
 
 	/**
-	 * Check if the post type supports Gutenberg editor.
+	 * Check if the post type supports Gutenberg editor and if the classic editor is not being forced.
 	 *
-	 * @param \WP_Post_Type $post_type Post type object.
+	 * @param string $post_type Post Type slug.
 	 *
 	 * @return bool
 	 */
-	public function supports_gutenberg( WP_Post_Type $post_type ): bool {
-		if (
-			empty( $post_type->show_in_rest ) ||
-			empty( $post_type->supports ) ||
-			! is_array( $post_type->supports ) ||
-			! in_array( 'editor', $post_type->supports, true )
-		) {
+	public function gutenberg_editor_enabled( string $post_type ): bool {
+		$post_type_object = get_post_type_object( $post_type );
+		if ( ! $post_type_object instanceof WP_Post_Type ) {
 			return false;
 		}
 
-		if ( ! is_plugin_active( 'classic-editor/classic-editor.php' ) ) {
-			return true;
-		}
-
-		$classic_editor_settings = (array) get_option( 'classic-editor-settings', [] );
-
-		return ! (
-			! empty( $classic_editor_settings['post_types'] ) &&
-			is_array( $classic_editor_settings['post_types'] ) &&
-			in_array( $post_type->name, $classic_editor_settings['post_types'], true )
-		);
+		return $this->inspector->is_gutenberg_supported( $post_type_object ) &&
+				! $this->inspector->is_classic_editor_forced( $post_type );
 	}
 
 	/**
