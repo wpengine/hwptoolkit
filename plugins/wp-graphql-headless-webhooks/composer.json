@@ -1,0 +1,88 @@
+{
+  "name": "wpengine/wp-graphql-headless-webhooks",
+  "description": "Headless webhooks for WPGraphQL",
+  "type": "library",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "WP Engine"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "axepress/wp-graphql-cs": "^2.0.0",
+    "axepress/wp-graphql-stubs": "^2.3.0",
+    "phpcompatibility/php-compatibility": "dev-develop as 9.9.9",
+    "phpstan/extension-installer": "^1.1",
+    "phpstan/phpstan-deprecation-rules": "^2.0.1",
+    "phpstan/phpstan": "^2.0",
+    "php-coveralls/php-coveralls": "^2.5",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "wp-cli/wp-cli-bundle": "^2.8.1",
+    "wp-graphql/wp-graphql-testcase": "^3.0.1",
+    "codeception/lib-innerbrowser": "^1.0",
+		"codeception/module-asserts": "^1.0",
+		"codeception/module-cli": "^1.0",
+		"codeception/module-db": "^1.0",
+		"codeception/module-filesystem": "^1.0",
+		"codeception/module-phpbrowser": "^1.0",
+		"codeception/module-rest": "^2.0",
+		"codeception/module-webdriver": "^1.0",
+		"codeception/phpunit-wrapper": "^9.0",
+		"codeception/util-universalframework": "^1.0",
+    "lucatume/wp-browser": "^3.5",
+    "mockery/mockery": "^1.5"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
+    },
+    "optimize-autoloader": true,
+    "process-timeout": 0,
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "AxeWP\\GraphQL\\": "src/"
+    },
+    "files": [
+      "access-functions.php"
+    ]
+  },
+  "scripts": {
+    "install-test-env": "bash bin/install-test-env.sh",
+    "delete-vendor-files": "rm -rf composer.lock vendor",
+    "docker:build": "bash bin/build-docker.sh",
+		"docker:start": "@docker:build && @docker:up",
+		"docker:stop": "docker compose down --volumes",
+		"docker:up": " sh -c 'composer docker:stop' && docker compose --env-file .env up --detach",
+    "lint": "vendor/bin/phpcs",
+		"phpcs-i": [
+			"php ./vendor/bin/phpcs -i"
+		],
+		"check-cs": [
+			"php ./vendor/bin/phpcs"
+		],
+		"fix-cs": [
+			"php ./vendor/bin/phpcbf"
+		],
+		"phpstan": [
+			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
+		],
+  },
+  "archive": {
+    "name": "wp-graphql-headless-webhooks",
+    "exclude": [
+      "/.*",
+      "/assets",
+      "/bin",
+      "/wp-graphql-headless-webhooks",
+      "/composer.lock",
+      "/phpstan.neon.dist",
+      "/README.md"
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+parameters:
+		level: 8
+		checkExplicitMixedMissingReturn: true
+		checkFunctionNameCase: true
+		checkInternalClassCaseSensitivity: true
+		checkTooWideReturnTypesInProtectedAndPublicMethods: true
+		inferPrivatePropertyTypeFromConstructor: true
+		polluteScopeWithAlwaysIterableForeach: false
+		polluteScopeWithLoopInitialAssignments: false
+		reportAlwaysTrueInLastCondition: true
+		reportStaticMethodSignatures: true
+		reportWrongPhpDocTypeInVarTag: true
+		treatPhpDocTypesAsCertain: false
+		stubFiles:
+			# Simulate added properties
+			- phpstan/class-wp-post-type.stub
+			- phpstan/class-wp-taxonomy.stub
+		bootstrapFiles:
+			- wp-graphql-headless-webhooks/phpstan/constants.php
+			- wp-graphql-headless-webhooks/activation.php
+			- wp-graphql-headless-webhooks/deactivation.php
+			- wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php
+			- wp-graphql-headless-webhooks/access-functions.php
+		paths:
+			- wp-graphql-headless-webhooks/activation.php
+			- wp-graphql-headless-webhooks/deactivation.php
+			- wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php
+			- wp-graphql-headless-webhooks/access-functions.php
+			- wp-graphql-headless-webhooks/src/
+			- src/
+		scanFiles:
+			- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
+		excludePaths:
+			analyseAndScan:
+				- vendor/*
