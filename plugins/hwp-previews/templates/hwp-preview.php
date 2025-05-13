@@ -3,27 +3,38 @@
  * Custom Preview Template
  *
  * This template will be used for all post/page previews
+ *
+ * @package HWP\Previews
  */
+
+declare(strict_types=1);
 
 use HWP\Previews\Preview\Template\Preview_Template_Resolver;
 
-$preview_url = (string) get_query_var( Preview_Template_Resolver::HWP_PREVIEWS_IFRAME_PREVIEW_URL );
-
-get_header();
+$hwp_previews_url_template = (string) get_query_var( Preview_Template_Resolver::HWP_PREVIEWS_IFRAME_PREVIEW_URL );
 
 ?>
 
-    <div style="position: relative; min-height: 100vh;">
-        <iframe
-                src="<?php echo esc_url( $preview_url ); ?>"
-                class="headless-preview-frame"
-                sandbox="allow-scripts allow-same-origin allow-forms"
-                referrerpolicy="no-referrer-when-downgrade"
-                title="Content Preview"
-                style="width: 100%; height: 100vh; border: none;">
-        </iframe>
-    </div>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+	<head>
+		<?php wp_head(); ?>
+	</head>
 
-<?php
+	<body style="overflow: hidden;">
+		<?php wp_body_open(); ?>
 
-get_footer();
+			<div style="position: relative;">
+				<iframe
+						src="<?php echo esc_url( $hwp_previews_url_template ); ?>"
+						class="headless-preview-frame"
+						sandbox="allow-scripts allow-same-origin allow-forms"
+						referrerpolicy="no-referrer-when-downgrade"
+						title="Content Preview"
+						style="width: 100%; height: calc(100vh - var(--wp-admin--admin-bar--height)); border: none;">
+				</iframe>
+			</div>
+
+		<?php wp_footer(); ?>
+	</body>
+</html>
