@@ -277,6 +277,7 @@ class Plugin {
 
 	/**
 	 * Enqueues the JavaScript file for the plugin admin area.
+	 * Todo: if more complexity is added, consider using a separate class Sript_Enqueue.
 	 *
 	 * @return void
 	 */
@@ -302,13 +303,7 @@ class Plugin {
 	 * @return void
 	 */
 	public function enable_unique_post_slug(): void {
-		$post_slug_manger = new Post_Slug_Manager(
-			$this->types_config,
-			$this->statuses_config,
-			new Post_Slug_Repository()
-		);
-
-		add_filter( 'wp_insert_post_data', function ( $data, $postarr ) use ( $post_slug_manger ) {
+		add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
 			$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
 
 			// Check if the correspondent setting is enabled.
@@ -316,7 +311,11 @@ class Plugin {
 				return $data;
 			}
 
-			$post_slug = $post_slug_manger->force_unique_post_slug( $post );
+			$post_slug = ( new Post_Slug_Manager(
+				$this->types_config,
+				$this->statuses_config,
+				new Post_Slug_Repository()
+			) )->force_unique_post_slug( $post );
 
 			if ( ! empty( $post_slug ) ) {
 				$data['post_name'] = $post_slug;
