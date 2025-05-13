@@ -17,17 +17,17 @@ $preview_url = (string) get_query_var( Preview_Template_Resolver::HWP_PREVIEWS_I
         <?php wp_head(); ?>
     </head>
 
-    <body>
+    <body style="overflow: hidden;">
         <?php wp_body_open(); ?>
 
-            <div style="position: relative; min-height: 100vh;">
+            <div style="position: relative;">
                 <iframe
                         src="<?php echo esc_url( $preview_url ); ?>"
                         class="headless-preview-frame"
                         sandbox="allow-scripts allow-same-origin allow-forms"
                         referrerpolicy="no-referrer-when-downgrade"
                         title="Content Preview"
-                        style="width: 100%; height: 100vh; border: none;">
+                        style="width: 100%; height: calc(100vh - var(--wp-admin--admin-bar--height)); border: none;">
                 </iframe>
             </div>
 
