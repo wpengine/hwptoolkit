@@ -8,6 +8,7 @@ import {
   Kind,
   specifiedRules,
   GraphQLSchema,
+  print,
 } from "graphql";
 import { schema } from "@/lib/graphql/getSchema";
 import zlib from "node:zlib";
@@ -82,7 +83,6 @@ const handleProxyInit: NextHttpProxyMiddlewareOptions["onProxyInit"] = (
 ) => {
   proxy.on("proxyRes", (proxyRes, req, res) => {
     let responseData: Buffer[] = [];
-
     proxyRes.on("data", (chunk) => {
       responseData.push(chunk);
     });
@@ -109,10 +109,14 @@ const handleProxyInit: NextHttpProxyMiddlewareOptions["onProxyInit"] = (
           if (body && body.query) {
             const ast = parse(body.query);
             const errors = validate(schema, ast, specifiedRules);
+            const prettyQuery = print(ast);
+            console.log(chalk.cyan.bold("📦 Incoming GraphQL Query:"));
+            console.log(prettyQuery);
+            console.log(chalk.cyan.bold("🛠️ Variables:"), body?.variables);
 
             if (errors.length === 0) {
               try {
-                const cost = estimateComplexity(body.query, {schema});
+                const cost = estimateComplexity(body.query, { schema });
                 console.log("Estimated query cost:", cost);
                 complexityValue = cost;
               } catch (e) {
@@ -198,8 +202,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
   if (!isDevelopment) {
     return res.status(404).send(null);
   }
-
-  return httpProxyMiddleware(req, res, {
+  httpProxyMiddleware(req, res, {
     target: getGraphqlPath(),
     changeOrigin: true,
     pathRewrite: [
