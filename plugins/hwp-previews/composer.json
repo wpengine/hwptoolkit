@@ -73,8 +73,7 @@
 		"php:stan": [
 			"phpstan analyze --ansi --memory-limit=2G -v"
 		],
-		"psalm": "psalm",
-		"psalm:fix": "psalm --alter --issues=all"
+		"php:psalm": "psalm"
 	},
 	"scripts-descriptions": {
 	},
