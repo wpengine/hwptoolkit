@@ -303,18 +303,14 @@
 
 	<rule ref="Generic.Metrics.CyclomaticComplexity">
 		<properties>
-			<!-- warn if >10 -->
 			<property name="complexity" value="7"/>
-			<!-- error if >20 (optional) -->
 			<property name="absoluteComplexity" value="10"/>
 		</properties>
 	</rule>
 
 	<rule ref="SlevomatCodingStandard.Complexity.Cognitive">
 		<properties>
-			<!-- warn if cognitive complexity >15 -->
 			<property name="warningThreshold" value="7"/>
-			<!-- error if >20 -->
 			<property name="errorThreshold"  value="10"/>
 		</properties>
 	</rule>
