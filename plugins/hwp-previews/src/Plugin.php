@@ -129,6 +129,20 @@ class Plugin {
 	];
 
 	/**
+	 * Post statuses that are applicable for previews.
+	 *
+	 * @var array<string>
+	 */
+	public const POST_STATUSES = [
+		'publish',
+		'future',
+		'draft',
+		'pending',
+		'private',
+		'auto-draft',
+	];
+
+	/**
 	 * Settings object used for value retrieving.
 	 *
 	 * @var \HWP\Previews\Settings\Preview_Settings
@@ -209,15 +223,8 @@ class Plugin {
 		);
 
 		// Initialize the post types and statuses configurations.
-		$this->types_config = ( new Post_Types_Config() )->set_post_types( $this->settings->post_types_enabled() );
-		$this->statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( [
-			'publish',
-			'future',
-			'draft',
-			'pending',
-			'private',
-			'auto-draft'
-		] );
+		$this->types_config    = ( new Post_Types_Config() )->set_post_types( $this->settings->post_types_enabled() );
+		$this->statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::POST_STATUSES );
 
 		// Initialize the preview parameter registry.
 		$this->parameters = new Preview_Parameter_Registry();
@@ -558,11 +565,11 @@ class Plugin {
 			return '';
 		}
 
-		return (new Preview_Link_Service(
+		return ( new Preview_Link_Service(
 			$this->types_config,
 			$this->statuses_config,
 			new Preview_Link_Placeholder_Resolver( $this->parameters )
-		))->generate_preview_post_link( $url, $post );
+		) )->generate_preview_post_link( $url, $post );
 	}
 
 	/**
