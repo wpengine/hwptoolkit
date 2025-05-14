@@ -23,6 +23,7 @@ This directory contains examples demonstrating how to use various features of th
 | [custom-sitemap-vanilla-wpgraphql](next/custom-sitemap-vanilla-wpgraphql)             | Creates a custom sitemap using Next.js and WPGraphQL without extending its endpoints.                        |
 | [hybrid-sitemap-apollo](next/hybrid-sitemap-apollo)                                   | Fetches and transforms WordPress sitemaps for clean URL formatting with Next.js.                             |
 | [proxied-sitemap-apollo](next/proxied-sitemap-apollo)                                 | Provides a proxied sitemap by transforming WordPress XML sitemaps for SEO-friendly frontend URLs.            |
+| [proxied-graphql-debug](next/proxied-graphql-debug)                                 | Provides a proxied GraphQL API for development, enabling response inspection and query complexity analysis.            |
 | [render-blocks-pages-router](next/render-blocks-pages-router)                         | Renders WordPress Blocks with JSX in Next.js, including utilities for hierarchical block data.               |
 
 ## SvelteKit Examples
