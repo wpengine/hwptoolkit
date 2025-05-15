@@ -30,6 +30,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Load the autoloader.
+require_once __DIR__ . '/src/Autoloader.php';
+if ( ! \WPGraphQL\Webhooks\Autoloader::autoload() ) {
+	return;
+}
+
 // Run this function when the plugin is activated.
 if ( file_exists( __DIR__ . '/activation.php' ) ) {
 	require_once __DIR__ . '/activation.php';
