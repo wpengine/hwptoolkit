@@ -16,7 +16,7 @@ A WordPress plugin that extends [WPGraphQL](https://www.wpgraphql.com/) to suppo
 ## Requirements
 
 - WordPress 6.0+
-- WPGraphQL 1.8.0+
+- WPGraphQL 2.0.0+
 - PHP 7.4+
 
 ## Installation
@@ -24,4 +24,4 @@ A WordPress plugin that extends [WPGraphQL](https://www.wpgraphql.com/) to suppo
 Clone the repository or download the latest release and place it in your WordPress `plugins` directory:
 
 ## License
-BSD-0-Clause
+WP GPL 2
