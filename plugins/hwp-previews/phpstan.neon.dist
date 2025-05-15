@@ -29,6 +29,8 @@ parameters:
           max: 80400
     paths:
         - hwp-previews.php
+        - autoload.php
+        - templates/
         - src/
     ignoreErrors:
         -

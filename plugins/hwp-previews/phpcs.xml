@@ -7,6 +7,7 @@
 
 	<description>Coding standards for the HWP Previews plugin</description>
 	<file>./hwp-previews.php</file>
+	<file>./autoload.php</file>
 	<file>./src/</file>
 	<file>./templates/</file>
 	<exclude-pattern>*/languages/*</exclude-pattern>

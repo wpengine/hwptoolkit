@@ -12,6 +12,7 @@
 		<directory name="src" />
 		<directory name="templates" />
 		<file name="hwp-previews.php" />
+		<file name="autoload.php" />
 	</projectFiles>
 
 	<plugins>
