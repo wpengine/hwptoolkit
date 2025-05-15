@@ -51,6 +51,20 @@
 			]
 		}
 	},
+	"archive": {
+		"exclude": [
+			"vendor/",
+			"phpcs/",
+			"phpstan/",
+			".gitignore",
+			".editorconfig",
+			"composer.json",
+			"composer.lock",
+			"*.xml",
+			"*.dist",
+			"*.md"
+		]
+	},
 	"autoload": {
 		"psr-4": {
 			"HWP\\Previews\\": "src/"
@@ -65,6 +79,11 @@
 		}
 	},
 	"scripts": {
+		"build": [
+			"rm -f my-plugin.zip",
+			"composer install --no-dev --optimize-autoloader",
+			"composer archive --format=zip --file=hwp-previews"
+		],
 		"php:lint": "vendor/bin/phpcs",
 		"php:lint:i": [
 			"php ./vendor/bin/phpcs -i"
