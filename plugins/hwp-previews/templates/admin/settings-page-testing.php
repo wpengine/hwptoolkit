@@ -1,13 +1,9 @@
 <?php
 
-$title = (string) ( $args['title'] ?? '' );
-$description = (string) ( $args['description'] ?? '' );
-$content = (string) ( $args['content'] ?? '' );
+declare(strict_types=1);
 
 ?>
 
 <div class="wrap">
-	<h1><?php echo esc_html($title); ?></h1>
-	<h2><?php echo esc_html($description); ?></h2>
-	<?php echo $content; ?>
+	<h1>Testing Tool for HWP Previews</h1>
 </div>
