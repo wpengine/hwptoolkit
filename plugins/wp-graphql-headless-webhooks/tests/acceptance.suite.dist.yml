@@ -1,0 +1,25 @@
+# Codeception Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WPWebDriver or WPBrowser.
+# Use WPDb to set up your initial database fixture.
+# If you need both WPWebDriver and WPBrowser tests - create a separate suite.
+
+actor: AcceptanceTester
+modules:
+    enabled:
+        - Asserts
+        - lucatume\WPBrowser\Module\WPBrowser
+        - lucatume\WPBrowser\Module\WPDb
+        - lucatume\WPBrowser\Module\WPFilesystem
+        - lucatume\WPBrowser\Module\WPLoader
+        - REST
+    config:
+        lucatume\WPBrowser\Module\WPLoader:
+            loadOnly: true
+            plugins:
+                - wp-graphql/wp-graphql.php
+                - wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php
+            activatePlugins:
+                - wp-graphql/wp-graphql.php
+                - wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php
