@@ -2,7 +2,7 @@
 /**
  * Includes the composer Autoloader used for packages and classes in the src/ directory.
  *
- * @package WPGraphQL\Login
+ * @package WPGraphQL\Webhooks
  * @since 0.1.4
  */
 

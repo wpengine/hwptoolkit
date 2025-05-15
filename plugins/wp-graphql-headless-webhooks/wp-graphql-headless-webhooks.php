@@ -78,7 +78,7 @@ function graphql_headless_webhooks_constants(): void {
 
 	// Whether to autoload the files or not.
 	if ( ! defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_AUTOLOAD' ) ) {
-		define( 'WPGRAPHQL_HEADLESS_WEBHOOKS_AUTOLOAD', true );
+		define( 'WPGRAPHQL_HEADELSS_WEBHOOKS_AUTOLOAD', true );
 	}
 }
 
@@ -107,6 +107,7 @@ function graphql_headless_webhooks_init(): void {
 
 	if ( empty( $not_ready ) && defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' ) ) {
 		require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'src/Main.php';
+		\WPGraphQL\Webhooks\Main::instance();
 		return;
 	}
 
