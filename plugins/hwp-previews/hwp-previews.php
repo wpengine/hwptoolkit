@@ -11,7 +11,7 @@
  * Tested up to: 6.8.1
  * Version: 0.0.1
  * Requires PHP: 7.4
- * Requires at least: 5.3
+ * Requires at least: 6.0
  *
  * @package HWP\Previews
  */
