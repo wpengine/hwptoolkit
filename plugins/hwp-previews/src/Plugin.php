@@ -655,7 +655,7 @@ class Plugin {
 			'preview_url',
 			// translators: %s is the label of the post type.
 			sprintf( __( 'Preview URL for %s', 'hwp-previews' ), $label ),
-			"https://example.com/{$post_type}?preview=true&post_id={ID}&name={slug}",
+			"https://localhost:3000/{$post_type}?preview=true&post_id={ID}&name={slug}",
 			'large-text code hwp-previews-url' // The class is being used as a query for the JS.
 		);
 

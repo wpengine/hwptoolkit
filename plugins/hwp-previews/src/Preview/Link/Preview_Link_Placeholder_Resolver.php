@@ -10,7 +10,7 @@ use WP_Post;
 
 class Preview_Link_Placeholder_Resolver {
 	/**
-	 * Placeholder pattern in curly brackets - https://example.com/preview={example}.
+	 * Placeholder pattern in curly brackets - https://localhost:3000/preview={example}.
 	 *
 	 * @var string
 	 */
