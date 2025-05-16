@@ -59,7 +59,6 @@
 		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
 		<exclude name="Universal.Operators.DisallowShortTernary.Found"/>
 		<exclude name="WordPress.Files.FileName"/>
-		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
 	</rule>
 
 	<rule ref="WordPress-Docs">
@@ -137,8 +136,8 @@
 	<rule ref="Squiz.WhiteSpace.FunctionSpacing">
 		<properties>
 			<property name="spacing" value="1" />
-			<property name="spacingBeforeFirst" value="1" />
-			<property name="spacingAfterLast" value="1" />
+			<property name="spacingBeforeFirst" value="0" />
+			<property name="spacingAfterLast" value="0" />
 		</properties>
 	</rule>
 	<rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
@@ -151,7 +150,12 @@
 	<rule ref="SlevomatCodingStandard.Classes.ClassStructure"/>
 	<rule ref="SlevomatCodingStandard.Classes.ClassMemberSpacing"/>
 	<rule ref="SlevomatCodingStandard.Classes.PropertySpacing"/>
-	<rule ref="SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces"/>
+	<rule ref="SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces">
+		<properties>
+			<property name="linesCountAfterOpeningBrace" value="0"/>
+			<property name="linesCountBeforeClosingBrace" value="0"/>
+		</properties>
+	</rule>
 	<rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility">
 		<properties>
 			<property name="fixable" value="true"/>
@@ -198,8 +202,18 @@
 
 	<!-- Return type hints -->
 	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
-		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.UselessAnnotation"/>
-		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint"/>
+		<properties>
+			<property name="enableObjectTypeHint" value="true"/>
+			<property name="traversableTypeHints" type="array">
+				<element value="Traversable"/>
+				<element value="Iterator"/>
+				<element value="Generator"/>
+			</property>
+			<!-- PHP 7.4 specific settings -->
+			<property name="enableMixedTypeHint" value="false"/>
+			<property name="enableUnionTypeHint" value="false"/>
+			<property name="enableIntersectionTypeHint" value="false"/>
+		</properties>
 	</rule>
 	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">
 		<properties>
