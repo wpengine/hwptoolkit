@@ -393,7 +393,9 @@ class Plugin {
 			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', $this->types_config->get_public_post_types() );
 
 			$this->create_settings_page( $post_types )->register_page();
-			$this->create_settings_subpage()->register_page();
+
+			// Todo: Register the settings subpage.
+			// $this->create_settings_subpage()->register_page();  .
 		} );
 	}
 
