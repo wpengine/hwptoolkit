@@ -4,6 +4,9 @@
 
 [![Version](https://img.shields.io/badge/version-0.0.1-blue)]() [![License](https://img.shields.io/badge/license-GPLv2%2B-lightgrey)]()
 
+> [!CAUTION]
+> This plugin is currently in an alpha state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible.
+
 ---
 
 ## Table of Contents
