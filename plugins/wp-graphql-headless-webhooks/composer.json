@@ -21,11 +21,11 @@
 		"phpstan/extension-installer": "^1.1",
 		"phpstan/phpstan-deprecation-rules": "^2.0.1",
 		"phpstan/phpstan": "^2.0",
-    "slevomat/coding-standard": "^8.0",
-    "phpstan/phpstan-strict-rules": "^2.0",
+		"slevomat/coding-standard": "^8.0",
+		"phpstan/phpstan-strict-rules": "^2.0",
 		"php-coveralls/php-coveralls": "^2.5",
 		"szepeviktor/phpstan-wordpress": "^2.0",
-    "humanmade/psalm-plugin-wordpress": "^3.1",
+		"humanmade/psalm-plugin-wordpress": "^3.1",
 		"wp-cli/wp-cli-bundle": "^2.8.1",
 		"wp-graphql/wp-graphql-testcase": "^3.0.1",
 		"codeception/lib-innerbrowser": "^1.0",
@@ -58,12 +58,13 @@
 			"access-functions.php"
 		]
 	},
-  "autoload-dev": {
+	"autoload-dev": {
 		"psr-4": {
-			"HWPStandard\\": "phpcs/HWPStandard"
+			"HWPStandard\\": "phpcs/HWPStandard",
+			"WPGraphQL\\Webhooks\\Rules\\": "phpstan/Rules/"
 		}
 	},
-  "extra": {
+	"extra": {
 		"phpstan": {
 			"includes": [
 				"phpstan/rules.neon"
@@ -90,9 +91,9 @@
 		"phpstan": [
 			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
 		],
-    "php:psalm": "psalm",
+		"php:psalm": "psalm",
 		"php:psalm:info": "psalm --show-info=true",
-    "php:psalm:fix": "psalm --alter"
+		"php:psalm:fix": "psalm --alter"
 	},
 	"archive": {
 		"name": "wp-graphql-headless-webhooks",

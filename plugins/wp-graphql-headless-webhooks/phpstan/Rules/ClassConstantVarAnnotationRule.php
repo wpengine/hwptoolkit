@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\PHPStan\Rules;
+namespace WPGraphQL\Webhooks\Rules;
 
 use PhpParser\Node;
 use PhpParser\Comment\Doc;

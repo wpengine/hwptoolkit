@@ -1,11 +1,8 @@
-includes:
-    - vendor/szepeviktor/phpstan-wordpress/extension.neon
-    - vendor/phpstan/phpstan-strict-rules/rules.neon
-
 services:
-    -
+     -
         class: WPGraphQL\Webhooks\Rules\ClassConstantVarAnnotationRule
-        tags: [phpstan.rules.rule]
+        tags:
+            - phpstan.rules.rule
 parameters:
 		level: 8
 		checkExplicitMixedMissingReturn: true
@@ -24,17 +21,16 @@ parameters:
 			- phpstan/class-wp-post-type.stub
 			- phpstan/class-wp-taxonomy.stub
 		bootstrapFiles:
-			- wp-graphql-headless-webhooks/phpstan/constants.php
-			- wp-graphql-headless-webhooks/activation.php
-			- wp-graphql-headless-webhooks/deactivation.php
-			- wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php
-			- wp-graphql-headless-webhooks/access-functions.php
+			- phpstan/constants.php
+			- activation.php
+			- deactivation.php
+			- wp-graphql-headless-webhooks.php
+			- access-functions.php
 		paths:
-			- wp-graphql-headless-webhooks/activation.php
-			- wp-graphql-headless-webhooks/deactivation.php
-			- wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php
-			- wp-graphql-headless-webhooks/access-functions.php
-			- wp-graphql-headless-webhooks/src/
+			- activation.php
+			- deactivation.php
+			- wp-graphql-headless-webhooks.php
+			- access-functions.php
 			- src/
 		scanFiles:
 			- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php

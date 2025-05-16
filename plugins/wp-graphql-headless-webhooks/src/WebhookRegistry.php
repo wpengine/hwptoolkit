@@ -15,23 +15,23 @@ class WebhookRegistry {
 	/**
 	 * Registered webhook types
 	 *
-	 * @var array
+	 * @var array<string, array<string, mixed>> Array of webhook types keyed by type identifier.
 	 */
-	private $webhook_types = [];
+	private array $webhook_types = [];
 
 	/**
 	 * Instance of the registry
 	 *
-	 * @var WebhookRegistry
+	 * @var WebhookRegistry|null
 	 */
-	private static $instance;
+	private static ?WebhookRegistry $instance = null;
 
 	/**
 	 * Get registry instance
 	 *
 	 * @return WebhookRegistry
 	 */
-	public static function instance() {
+	public static function instance(): WebhookRegistry {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
@@ -90,35 +90,37 @@ class WebhookRegistry {
 
 		register_post_type( 'graphql_webhook', $args );
 	}
+
 	/**
 	 * Register a webhook type
 	 *
 	 * @param string $type Type identifier for the webhook.
-	 * @param array  $args {
+	 * @param array<string, mixed> $args {
 	 *     Args for the webhook type.
 	 *
 	 *     @type string $label       Human-readable label for the webhook type (default: $type).
 	 *     @type string $description Description of the webhook type (default: '').
-	 *     @type array  $config      Optional. Additional configuration for the webhook.
+	 *     @type array<string, mixed>  $config      Optional. Additional configuration for the webhook.
 	 * }
 	 * @return bool Whether the webhook type was registered successfully.
 	 */
-	public function register_webhook_type( $type, $args = [] ) {
-		if ( empty( $type ) ) {
+	public function register_webhook_type(string $type, array $args = []): bool {
+		if ($type === '') {
 			return false;
 		}
 
-		if ( isset( $this->webhook_types[ $type ] ) ) {
+		if (isset($this->webhook_types[$type])) {
 			return false;
 		}
+
 		$defaults = [ 
 			'label' => $type,
 			'description' => '',
 			'config' => [],
 		];
 
-		$args = wp_parse_args( $args, $defaults );
-		$this->webhook_types[ $type ] = $args;
+		$args = wp_parse_args($args, $defaults);
+		$this->webhook_types[$type] = $args;
 
 		return true;
 	}
@@ -126,9 +128,9 @@ class WebhookRegistry {
 	/**
 	 * Get all registered webhook types
 	 *
-	 * @return array
+	 * @return array<string, array<string, mixed>>
 	 */
-	public function get_webhook_types() {
+	public function get_webhook_types(): array {
 		return $this->webhook_types;
 	}
 
@@ -136,10 +138,10 @@ class WebhookRegistry {
 	 * Get a specific webhook type
 	 *
 	 * @param string $type The webhook type.
-	 * @return array|null
+	 * @return array<string, mixed>|null
 	 */
-	public function get_webhook_type( $type ) {
-		return isset( $this->webhook_types[ $type ] ) ? $this->webhook_types[ $type ] : null;
+	public function get_webhook_type(string $type): ?array {
+		return $this->webhook_types[$type] ?? null;
 	}
 
 	/**
@@ -147,12 +149,12 @@ class WebhookRegistry {
 	 *
 	 * @param string $type    Webhook type identifier.
 	 * @param string $name    Webhook name/title.
-	 * @param array  $config  Webhook configuration.
+	 * @param array<string, mixed> $config  Webhook configuration.
 	 * @return int|\WP_Error Post ID of the new webhook or error.
 	 */
-	public function create_webhook( $type, $name, $config = [] ) {
-		if ( ! isset( $this->webhook_types[ $type ] ) ) {
-			return new \WP_Error( 'invalid_webhook_type', __( 'Invalid webhook type.', 'wp-graphql-headless-webhooks' ) );
+	public function create_webhook(string $type, string $name, array $config = []) {
+		if (!isset($this->webhook_types[$type])) {
+			return new \WP_Error('invalid_webhook_type', __('Invalid webhook type.', 'wp-graphql-headless-webhooks'));
 		}
 
 		$post_id = wp_insert_post(
@@ -164,13 +166,15 @@ class WebhookRegistry {
 			true
 		);
 
-		if ( is_wp_error( $post_id ) ) {
+		if (is_wp_error($post_id)) {
 			return $post_id;
 		}
 
-		update_post_meta( $post_id, '_webhook_type', $type );
-		if ( ! empty( $config ) ) {
-			update_post_meta( $post_id, '_webhook_config', $config );
+		update_post_meta($post_id, '_webhook_type', $type);
+
+		// Replace empty() with count check for strictness
+		if (count($config) > 0) {
+			update_post_meta($post_id, '_webhook_config', $config);
 		}
 
 		return $post_id;

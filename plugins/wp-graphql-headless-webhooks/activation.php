@@ -7,8 +7,6 @@
 
 declare( strict_types = 1 );
 
-namespace WPGraphQL\Webhooks;
-
 /**
  * Runs when the plugin is activated.
  *
