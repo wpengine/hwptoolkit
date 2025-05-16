@@ -1,47 +1,44 @@
-# Example: Create a custom WordPress sitemap with vanilla WPGraphQL and Apollo Client
+# Example: Headless WordPress Previews with Nextjs Draft Mode
 
 ## Overview
 
-This example demonstrates how to generate a custom sitemap in a headless WordPress application using the Next.js framework. The example app fetches data from WordPress using Apollo Client and WPGraphQL. This example is using only the existing WPGraphQL endpoints, without extending it.
+This example shows the HWP Previews plugin in action. Example implements the [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode) of Nextjs. It uses WordPress [Application Passwords](https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/) for the authentication and WPGraphQL for data fetching.
 
 The example includes a wp-env setup, which will allow you to build and start this example quickly. With this wp-env setup, you don't need to have a separate WordPress instance or demo data to inspect the example.
 
-## Features
+> [!CAUTION]
+> The HWP Previews plugin is currently in an alpha state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible.
 
-1. Fetching sitemap data with the API allows maximum customizability
-2. An identical WordPress sitemap structure in the headless setup
-3. Custom XSLT styles
-4. Configured WordPress instance with demo data and required plugins, using wp-env
-5. Sitemaps for custom post and taxonomy types
+## What does this example do
+
+1. `/api/preview/` route to enable Nextjs Draft Mode
+2. `/api/disable-preview` route to disable Nextjs Draft Mode
+3. Preview posts, pages and custom post types
+4. Use WordPress Application Password as an authentication method
+5. Configured WordPress instance with demo data and required plugins, using wp-env
 
 ## Screenshots
 
-After following the installation steps, you should have the example sitemap pages as shown in the screenshots below:
-
-|                                                                              |                                                                              |
-| :--------------------------------------------------------------------------: | :--------------------------------------------------------------------------: |
-|  ![index](./screenshots/sitemap-index.png "Sitemap index")<br>Sitemap index  |          ![posts](./screenshots/sitemap-post.png "Posts")<br>Posts           |
-| ![categories](./screenshots/sitemap-category.png "Categories")<br>Categories |            ![tags](./screenshots/sitemap-tag.png "Tags")<br>Tags             |
-|           ![page](./screenshots/sitemap-page.png "Pages")<br>Pages           | ![cpt](./screenshots/sitemap-cpt.png "Custom post type")<br>Custom post type |
+|                                                                   |                                                                                              |                                                                                          |
+| :---------------------------------------------------------------: | :------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: |
+| ![Post preview](./screenshots/post_preview.png) <br> Post preview | ![Post preview in iframe](./screenshots/post_preview_iframe.png) <br> Post preview in iframe | ![Custom post type preview](./screenshots/cpt_preview.png) <br> Custom post type preview |
 
 ## Project Structure
 
 ```
-├── example-app                                # Next.js application root
-│   ├── public
-│   │   └── sitemap.xsl                        # XSLT style file for the sitemap
+├── example-app
 │   └── src
-│       ├── queries.js                         # Supported queries to fetch the nodes
-│       ├── components
+│       ├── components                         # Reusable React components
 │       ├── lib
-│       │   ├── client.js                      # Apollo Client instance
-│       │   ├── renderEntries.js               # Turn query data into XML entries
-│       │   ├── getPaginatedQuery.js           # Function to get and merge paginated queries recursively
-│       │   └── generateSiteMap.js             # Helper function that generates the XML content
-│       └── pages
-│           ├── sitemap                        # Base path for sitemap subpages
-│           │   └── index.js                   # Catch-all route for sitemap subpages
-│           └── sitemap.xml.js                 # Index sitemap.xml page
+│       │   └── client.js                      # Apollo client instance
+│       ├── pages
+│       │   ├── [identifier].js                # Dynamic route to handle standard routes and previews
+│       │   ├── api
+│       │   │   ├── disable-preview.js         # Api route to disable Draft Mode
+│       │   │   └── preview.js                 # Api route to enable Draft mode
+│       │   └── index.js                       # Home page
+│       └── utils
+│           └── getAuthString.js               # Get Authorization string based on .env variables
 ├── .wp-env.json                               # wp-env configuration file
 └── wp-env
     ├── db
@@ -62,22 +59,10 @@ After following the installation steps, you should have the example sitemap page
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && npm install`
-- Setup a .env file under `examples/next/custom-sitemap-vanilla-wpgraphql/example-app` and add these values inside:
-
-```
-NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
-NEXT_PUBLIC_URL=http://localhost:3000
-```
-
-or run the command below:
-
-```bash
-echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888\\nNEXT_PUBLIC_URL=http://localhost:3000" > examples/next/custom-sitemap-vanilla-wpgraphql/example-app/.env
-```
 
 ### Build and start the application
 
-- `cd examples/next/custom-sitemap-vanilla-wpgraphql`
+- `cd examples/next/hwp-preview-wpgraphql`
 - Then run `npm run example:build` will build and start your application.
 - This does the following:
   - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
@@ -88,11 +73,43 @@ echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888\\nNEXT_PUBLIC_URL=http://l
 
 Congratulations, WordPress should now be fully set up.
 
-| Frontend                                         | Admin                                                              |
-| ------------------------------------------------ | ------------------------------------------------------------------ |
-| [http://localhost:3000/](http://localhost:3000/) | [http://localhost:8888/wp-admin/](http://localhost:8888/wp-admin/) |
+| Frontend               | Admin                           |
+| ---------------------- | ------------------------------- |
+| http://localhost:3000/ | http://localhost:8888/wp-admin/ |
 
 > **Note:** The login details for the admin is username "admin" and password "password"
+
+### Add environment variables to the Nextjs
+
+In this step we will create an Application Password and a secret preview token for the previews. At the end we'll prepare a .env file for the Nextjs application and put it inside `examples/next/hwp-preview-wpgraphql/example-app` folder. Below are the step by step guide to achieve this.
+
+1. Login to your newly created [wp-env instance](http://localhost:8888/wp-admin/). You can find the credentials above
+2. a. Follow [these instructions](https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/) to create an Application Password. At the end it should look like this:
+
+![index](./screenshots/app_password.png "Application Password created")
+
+2. b. Keep the password, we'll need it later.
+
+3. Go to the HWP Previews settings and change the secret preview token.
+
+![index](./screenshots/preview_token.png "Change secret preview token")
+
+4. Create a .env file under `examples/next/hwp-preview-wpgraphql/example-app` and add these values inside:
+
+```bash
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
+
+WP_USERNAME=admin
+WP_APP_PASSWORD=YOUR-APPLICATION-PASSWORD
+WP_PREVIEW_SECRET=YOUR-SECRET-PREVIEW-TOKEN
+```
+
+> [!CAUTION]
+> This setup is intended for demonstration purposes only. For production use, you should consider the security implications and implement appropriate measures based on your project’s specific needs.
+
+After completing this step, clicking the preview button in wp-admin should open the preview in your front-end app.
+
+If you want to learn more about the preview plugin, check out [the documentation](/plugins/hwp-previews/README.md).
 
 ### Command Reference
 
