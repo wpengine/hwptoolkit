@@ -72,6 +72,7 @@ class Autoloader {
 		];
 
 		foreach ( $hooks as $hook ) {
+			/** @psalm-suppress HookNotFound */
 			add_action(
 				$hook,
 				static function () use ( $error_message ) {

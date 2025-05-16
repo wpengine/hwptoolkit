@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Deactivation Hook
  *
@@ -13,7 +16,6 @@
 function graphql_headless_webhooks_deactivation_callback(): callable {
 	return static function (): void {
 		// Fire an action when WPGraphQL is de-activating.
-		do_action( 'graphql_headless_webhooks_deactivate' );
-
+		do_action( 'graphql_webhooks_deactivate' );
 	};
 }

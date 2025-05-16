@@ -1,3 +1,11 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
+services:
+    -
+        class: WPGraphQL\Webhooks\Rules\ClassConstantVarAnnotationRule
+        tags: [phpstan.rules.rule]
 parameters:
 		level: 8
 		checkExplicitMixedMissingReturn: true

@@ -3,14 +3,15 @@
 	<description>Sniffs for the WPGraphQL plugin ecosystem </description>
 
 	<!-- What to scan: include any root-level PHP files, and the /src folder -->
-	<file>./wp-graphql-headless-webhooks/access-functions.php</file>
-	<file>./wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php</file>
-	<file>./wp-graphql-headless-webhooks/activation.php</file>
-	<file>./wp-graphql-headless-webhooks/deactivation.php</file>
-	<file>./wp-graphql-headless-webhooks/src/</file>
+	<file>./access-functions.php</file>
+	<file>./wp-graphql-headless-webhooks.php</file>
+	<file>./activation.php</file>
+	<file>./deactivation.php</file>
 	<file>./src/</file>
-	<exclude-pattern>/vendor/</exclude-pattern>
-	<exclude-pattern>/node_modules/</exclude-pattern>
+	<exclude-pattern>*/languages/*</exclude-pattern>
+	<exclude-pattern>*/phpunit.xml*</exclude-pattern>
+	<exclude-pattern>**/tests/**</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
 
 	<!-- How to scan: include CLI args so you don't need to pass them manually -->
 	<!-- Usage instructions: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage -->
@@ -46,17 +47,275 @@
 	<!-- https://github.com/AxeWP/WPGraphQL-Coding-Standards/WPGraphQL/ruleset.xml -->
 	<rule ref="WPGraphQL" />
 
-	<!-- Individual rule configuration -->
+	<!-- ===================================== -->
+	<!-- Generic & Squiz Formatting Rules      -->
+	<!-- ===================================== -->
+
+	<rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+	<rule ref="Generic.Classes.OpeningBraceSameLine"/>
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
+	<rule ref="Generic.Formatting.MultipleStatementAlignment"/>
+	<rule ref="Generic.Files.ByteOrderMark"/>
+	<rule ref="Generic.Files.EndFileNewline"/>
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<properties>
+			<property name="indent" value="4"/>
+			<property name="tabIndent" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="Generic.VersionControl.GitMergeConflict"/>
+	<rule ref="Generic.Formatting.SpaceAfterCast">
+		<properties>
+			<property name="spacing" value="1"/>
+		</properties>
+	</rule>
+	<rule ref="Generic.Formatting.SpaceAfterNot"/>
+	<rule ref="Generic.NamingConventions.ConstructorName"/>
+	<rule ref="Generic.PHP.DeprecatedFunctions"/>
+	<rule ref="Generic.PHP.DisallowShortOpenTag.EchoFound">
+		<severity>4</severity>
+		<type>warning</type>
+	</rule>
+	<rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
+	<rule ref="Squiz.WhiteSpace.FunctionSpacing">
+		<properties>
+			<property name="spacing" value="1" />
+			<property name="spacingBeforeFirst" value="1" />
+			<property name="spacingAfterLast" value="1" />
+		</properties>
+	</rule>
+	<rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
+	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing"/>
+
+	<!-- ===================================== -->
+	<!-- Base Standards                        -->
+	<!-- ===================================== -->
+
+	<rule ref="PSR2">
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+		<exclude name="Generic.Files.LineLength.TooLong"/>
+		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
+		<exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.SpaceAfterOpenBracket"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
+		<exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
+		<exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
+		<exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpaceBeforeCloseBrace"/>
+		<exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
+		<exclude name="Squiz.ControlStructures.ForEachLoopDeclaration.SpaceAfterOpen"/>
+		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
+		<exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterOpen"/>
+		<exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingBeforeClose"/>
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
+	</rule>
+	<rule ref="PSR12.Files.DeclareStatement"/>
+	<rule ref="PEAR.NamingConventions.ValidClassName"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress">
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+		<exclude name="Universal.Operators.DisallowShortTernary.Found"/>
+		<exclude name="WordPress.Files.FileName"/>
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+	</rule>
+
+	<rule ref="WordPress-Docs">
+		<exclude name="Squiz.Commenting.FileComment.Missing"/>
+		<exclude name="Squiz.Commenting.ClassComment.Missing" />
+	</rule>
+
+	<!-- ===================================== -->
+	<!-- Prefix & Text Domain Enforcements     -->
+	<!-- ===================================== -->
+
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
-			<!-- Value: replace the function, class, and variable prefixes used. Separate multiple prefixes with a comma. -->
-			<property name="prefixes" type="array" value=" AxeWP\GraphQL, wp_graphql, WPGraphQL\PluginName, graphql_pb, WPGRAPHQL_PB, AXEWP_PB" />
+			<property name="prefixes" type="array" value="WPGraphQL\Webhooks, graphql_webhooks"/>
 		</properties>
 	</rule>
+
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<!-- Value: replace the text domain used. -->
-			<property name="text_domain" type="array" value="wp-graphql-headless-webhooks"/>
+			<property name="text_domain" type="array">
+				<element value="graphql-webhooks"/>
+			</property>
 		</properties>
 	</rule>
+
+	<!-- ===================================== -->
+	<!-- Function Call Formatting              -->
+	<!-- ===================================== -->
+
+	<rule ref="PEAR.Functions.FunctionCallSignature">
+		<properties>
+			<property name="requiredSpacesAfterOpen" value="1"/>
+			<property name="requiredSpacesBeforeClose" value="1"/>
+		</properties>
+		<severity>0</severity>
+	</rule>
+	<rule ref="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket"/>
+	<rule ref="PEAR.Functions.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Class Layout & Formatting   -->
+	<!-- ===================================== -->
+
+	<rule ref="SlevomatCodingStandard.Classes.ClassStructure"/>
+	<rule ref="SlevomatCodingStandard.Classes.ClassMemberSpacing"/>
+	<rule ref="SlevomatCodingStandard.Classes.PropertySpacing"/>
+	<rule ref="SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces"/>
+	<rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility">
+		<properties>
+			<property name="fixable" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference"/>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Type Hints & Typing         -->
+	<!-- ===================================== -->
+
+	<!-- Type hinting & strict typing -->
+	<rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+		<properties>
+			<property name="spacesCountAroundEqualsSign" value="0"/>
+			<property name="declareOnFirstLine" value="false"/>
+			<property name="linesCountAfterDeclare" value="1"/>
+		</properties>
+	</rule>
+
+	<!-- Return type hints -->
+	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
+		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.UselessAnnotation"/>
+		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint"/>
+	</rule>
+	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">
+		<properties>
+			<property name="spacesCountBeforeColon" value="0"/>
+		</properties>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint">
+		<exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessAnnotation"/>
+		<exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint" />
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
+		<exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.UselessAnnotation"/>
+	</rule>
+	<rule ref="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition"/>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Arrays                      -->
+	<!-- ===================================== -->
+
+	<rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation"/>
+	<rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
+	<rule ref="SlevomatCodingStandard.Arrays.SingleLineArrayWhitespace">
+		<properties>
+			<property name="spacesAroundBrackets" value="1"/>
+		</properties>
+	</rule>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Functions                   -->
+	<!-- ===================================== -->
+
+	<rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
+	<rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/>
+	<rule ref="SlevomatCodingStandard.Functions.RequireSingleLineCall"/>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Commenting                  -->
+	<!-- ===================================== -->
+
+	<rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
+		<properties>
+			<property name="linesCountBetweenDifferentAnnotationsTypes" value="1"/>
+			<property name="linesCountAfterLastContent" value="0"/>
+		</properties>
+	</rule>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Control Structures          -->
+	<!-- ===================================== -->
+
+	<rule ref="SlevomatCodingStandard.ControlStructures.EarlyExit">
+		<properties>
+			<property name="ignoreStandaloneIfInScope" value="true"/>
+			<property name="ignoreOneLineTrailingIf" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.ControlStructures.UselessIfConditionWithReturn"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.UselessTernaryOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.AssignmentInCondition"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.DisallowContinueWithoutIntegerOperandInSwitch"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.LanguageConstructWithParentheses"/>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Exceptions                  -->
+	<!-- ===================================== -->
+
+	<rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
+	<rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
+	<rule ref="SlevomatCodingStandard.Exceptions.DisallowNonCapturingCatch"/>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Variables                   -->
+	<!-- ===================================== -->
+
+	<rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
+	<rule ref="SlevomatCodingStandard.Variables.UnusedVariable">
+		<properties>
+			<property name="ignoreUnusedValuesWhenOnlyKeysAreUsedInForeach" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>
+
+	<!-- ===================================== -->
+	<!-- Slevomat: Misc / Operators            -->
+	<!-- ===================================== -->
+
+	<rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
+	<rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
+	<rule ref="SlevomatCodingStandard.Operators.DisallowEqualOperators"/>
+
+	<rule ref="Squiz.Commenting.FunctionComment">
+		<properties>
+			<property name="skipIfInheritdoc" value="true" />
+		</properties>
+	</rule>
+
+	<!-- ===================================== -->
+	<!-- Complexity Metrics                   -->
+	<!-- ===================================== -->
+
+	<rule ref="Generic.Metrics.CyclomaticComplexity">
+		<properties>
+			<property name="complexity" value="7"/>
+			<property name="absoluteComplexity" value="10"/>
+		</properties>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.Complexity.Cognitive">
+		<properties>
+			<property name="warningThreshold" value="7"/>
+			<property name="errorThreshold"  value="10"/>
+		</properties>
+	</rule>
+
+	<rule ref="Generic.Metrics.NestingLevel">
+		<properties>
+			<property name="nestingLevel" value="2"/>
+			<property name="absoluteNestingLevel" value="true"/>
+		</properties>
+	</rule>
+
+	<rule ref="./phpcs/HWPStandard"/>
 </ruleset>

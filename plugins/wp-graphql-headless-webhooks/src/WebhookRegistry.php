@@ -42,18 +42,16 @@ class WebhookRegistry {
 	/**
 	 * Initialize the registry
 	 */
-	public static function init() {
+	public static function init(): void {
 		// Register the CPT on initialization.
-		add_action( 'init', [ self::instance(), 'register_webhook_cpt' ], 5 );
-
-		// Register webhook types.
+		add_action( 'init', [ self::instance(), 'register_webhook_cpt' ], 5, 0 );
 		do_action( 'graphql_register_webhooks', self::instance() );
 	}
 
 	/**
 	 * Register the webhook CPT
 	 */
-	public function register_webhook_cpt() {
+	public function register_webhook_cpt(): void {
 		$labels = [ 
 			'name' => __( 'Webhooks', 'wp-graphql-headless-webhooks' ),
 			'singular_name' => __( 'Webhook', 'wp-graphql-headless-webhooks' ),
@@ -71,6 +69,7 @@ class WebhookRegistry {
 
 		$args = [ 
 			'labels' => $labels,
+			'publicly_queryable' => false,
 			'hierarchical' => false,
 			'description' => 'Manages GraphQL Webhooks',
 			'taxonomies' => [],
@@ -78,10 +77,8 @@ class WebhookRegistry {
 			'show_ui' => true,
 			'show_in_menu' => true,
 			'show_in_admin_bar' => false,
-			'menu_position' => null,
 			'menu_icon' => 'dashicons-share-alt',
 			'show_in_nav_menus' => false,
-			'publicly_queryable' => false,
 			'exclude_from_search' => true,
 			'has_archive' => false,
 			'query_var' => true,
@@ -93,7 +90,6 @@ class WebhookRegistry {
 
 		register_post_type( 'graphql_webhook', $args );
 	}
-
 	/**
 	 * Register a webhook type
 	 *
@@ -108,7 +104,7 @@ class WebhookRegistry {
 	 * @return bool Whether the webhook type was registered successfully.
 	 */
 	public function register_webhook_type( $type, $args = [] ) {
-		if ( empty( $type ) || ! is_string( $type ) ) {
+		if ( empty( $type ) ) {
 			return false;
 		}
 
@@ -155,12 +151,10 @@ class WebhookRegistry {
 	 * @return int|\WP_Error Post ID of the new webhook or error.
 	 */
 	public function create_webhook( $type, $name, $config = [] ) {
-		// Validate type.
 		if ( ! isset( $this->webhook_types[ $type ] ) ) {
 			return new \WP_Error( 'invalid_webhook_type', __( 'Invalid webhook type.', 'wp-graphql-headless-webhooks' ) );
 		}
 
-		// Create the webhook post.
 		$post_id = wp_insert_post(
 			[ 
 				'post_title' => $name,
@@ -174,10 +168,7 @@ class WebhookRegistry {
 			return $post_id;
 		}
 
-		// Save webhook type.
 		update_post_meta( $post_id, '_webhook_type', $type );
-
-		// Save webhook config.
 		if ( ! empty( $config ) ) {
 			update_post_meta( $post_id, '_webhook_config', $config );
 		}
