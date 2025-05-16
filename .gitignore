@@ -27,3 +27,4 @@ debug.log
 
 ## Examples
 examples/**/package-lock.json
+examples/**/__MACOSX
