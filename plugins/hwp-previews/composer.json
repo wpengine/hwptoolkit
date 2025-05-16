@@ -1,0 +1,107 @@
+{
+	"name": "hwp/previews",
+	"version": "1.0.0",
+	"type": "wordpress-plugin",
+	"description": "This is a WordPress plugin that provides a preview....",
+	"keywords": [
+		"package",
+		"dependency",
+		"autoload"
+	],
+	"homepage": "https://wpengine.com/",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "WP Engine Headless OSS Development Team",
+			"email": "headless-oss@wpengine.com",
+			"homepage": "https://wpengine.com/"
+		}
+	],
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"require": {
+		"php": "^7.4 || ^8.0"
+	},
+	"require-dev": {
+		"automattic/vipwpcs": "^3.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"humanmade/psalm-plugin-wordpress": "^3.1",
+		"johnpbloch/wordpress-core": "^6.8",
+		"phpcompatibility/phpcompatibility-wp": "^2.0",
+		"phpstan/phpstan-strict-rules": "^2.0",
+		"slevomat/coding-standard": "^8.0",
+		"szepeviktor/phpstan-wordpress": "^2.0"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		},
+		"optimize-autoloader": true,
+		"platform": {
+			"php": "7.4"
+		},
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
+	"extra": {
+		"phpstan": {
+			"includes": [
+				"phpstan/rules.neon"
+			]
+		}
+	},
+	"archive": {
+		"exclude": [
+			"vendor/",
+			"phpcs/",
+			"phpstan/",
+			".gitignore",
+			".editorconfig",
+			"composer.json",
+			"composer.lock",
+			"*.xml",
+			"*.dist",
+			"*.md"
+		]
+	},
+	"autoload": {
+		"psr-4": {
+			"HWP\\Previews\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"HWP\\Previews\\Unit\\": "tests/unit/",
+			"HWP\\Previews\\Integration\\": "tests/integration/",
+			"HWP\\Previews\\PHPStan\\": "phpstan/",
+			"HWPStandard\\": "phpcs/HWPStandard"
+		}
+	},
+	"scripts": {
+		"build": [
+			"rm -f my-plugin.zip",
+			"composer install --no-dev --optimize-autoloader",
+			"composer archive --format=zip --file=hwp-previews"
+		],
+		"php:lint": "vendor/bin/phpcs",
+		"php:lint:i": [
+			"php ./vendor/bin/phpcs -i"
+		],
+		"php:lint:fix": "vendor/bin/phpcbf",
+		"php:stan": [
+			"phpstan analyze --ansi --memory-limit=2G -v"
+		],
+		"php:psalm": "psalm",
+		"php:psalm:info": "psalm --show-info=true"
+	},
+	"scripts-descriptions": {
+	},
+	"support": {
+		"docs": "https://github.com/composer/composer/docs",
+		"email": "headless-oss@wpengine.com",
+		"forum": "https://github.com/composer/composer/forum",
+		"issues": "https://github.com/composer/composer/issues",
+		"security": "https://github.com/composer/composer/security/policy"
+	}
+}
