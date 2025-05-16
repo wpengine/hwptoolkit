@@ -63,8 +63,12 @@
 	</rule>
 
 	<rule ref="WordPress-Docs">
+		<exclude name="Generic.Commenting.DocComment.MissingShort"/>
 		<exclude name="Squiz.Commenting.FileComment.Missing"/>
 		<exclude name="Squiz.Commenting.ClassComment.Missing" />
+		<exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment" />
+		<exclude name="Squiz.Commenting.VariableComment.MissingVar" />
 	</rule>
 
 	<!-- ===================================== -->
