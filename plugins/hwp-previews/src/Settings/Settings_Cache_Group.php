@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings;
 
 class Settings_Cache_Group {
-
 	/**
 	 * Settings option name.
 	 *
@@ -52,7 +51,7 @@ class Settings_Cache_Group {
 
 		$value = wp_cache_get( $this->option, $this->group );
 
-		if ( $value === false ) {
+		if ( false === $value ) {
 			$value = (array) get_option( $this->option, [] );
 			wp_cache_set( $this->option, $value, $this->group );
 		}
@@ -66,8 +65,6 @@ class Settings_Cache_Group {
 	 * @param string $name The name of a bool setting.
 	 * @param string $post_type The post type slug.
 	 * @param bool   $default_value The default value to return if the setting is not found.
-	 *
-	 * @return bool
 	 */
 	public function get_bool( string $name, string $post_type, bool $default_value = false ): bool {
 		$value = $this->get_cache_settings();
@@ -85,8 +82,6 @@ class Settings_Cache_Group {
 	 * @param string $name The name of a string setting.
 	 * @param string $post_type The post type slug.
 	 * @param string $default_value The default value to return if the setting is not found.
-	 *
-	 * @return string
 	 */
 	public function get_string( string $name, string $post_type, string $default_value = '' ): string {
 		$value = $this->get_cache_settings();
@@ -103,11 +98,8 @@ class Settings_Cache_Group {
 	 *
 	 * @param string $name The name of a setting.
 	 * @param string $type The type of the setting.
-	 *
-	 * @return bool
 	 */
 	private function is_setting_of_type( string $name, string $type ): bool {
 		return array_key_exists( $name, $this->settings_config ) && $this->settings_config[ $name ] === $type;
 	}
-
 }

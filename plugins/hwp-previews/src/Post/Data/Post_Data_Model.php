@@ -10,7 +10,6 @@ use HWP\Previews\Shared\Abstract_Model;
  * Class Post_Data_Model.
  */
 final class Post_Data_Model extends Abstract_Model {
-
 	/**
 	 * Post ID.
 	 *
@@ -59,5 +58,4 @@ final class Post_Data_Model extends Abstract_Model {
 		$this->post_name   = (string) ( $data['post_name'] ?? '' );
 		$this->post_title  = (string) ( $data['post_title'] ?? '' );
 	}
-
 }

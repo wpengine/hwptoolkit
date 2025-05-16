@@ -14,7 +14,6 @@ use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
  * Manages the parent post status for a given post type.
  */
 class Post_Parent_Manager implements Post_Parent_Manager_Interface {
-
 	/**
 	 * All statuses that can be used as parent for a post type.
 	 *
@@ -64,5 +63,4 @@ class Post_Parent_Manager implements Post_Parent_Manager_Interface {
 
 		return array_intersect( self::POST_STATUSES, $this->post_statuses->get_post_statuses() );
 	}
-
 }

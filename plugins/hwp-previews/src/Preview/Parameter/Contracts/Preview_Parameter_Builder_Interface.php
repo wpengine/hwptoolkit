@@ -12,7 +12,6 @@ use WP_Post;
  * This interface defines the methods that all preview parameters must implement.
  */
 interface Preview_Parameter_Builder_Interface {
-
 	/**
 	 * .
 	 *
@@ -23,5 +22,4 @@ interface Preview_Parameter_Builder_Interface {
 	 * @return array<string, string>
 	 */
 	public function build_preview_args( WP_Post $post, string $page_uri, string $token ): array;
-
 }

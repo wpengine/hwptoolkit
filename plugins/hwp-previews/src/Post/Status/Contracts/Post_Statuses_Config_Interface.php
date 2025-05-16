@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Post\Status\Contracts;
 
 interface Post_Statuses_Config_Interface {
-
 	/**
 	 * Set the post statuses that are applicable for the plugin.
 	 *
@@ -26,5 +25,4 @@ interface Post_Statuses_Config_Interface {
 	 * @param string $post_status Post status slug.
 	 */
 	public function is_post_status_applicable( string $post_status ): bool;
-
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings\Fields;
 
 abstract class Abstract_Settings_Field {
-
 	/**
 	 * The settings field ID.
 	 *
@@ -47,8 +46,6 @@ abstract class Abstract_Settings_Field {
 	 * @param array<string, mixed> $option_value Settings value.
 	 * @param string               $setting_key The settings key.
 	 * @param string               $post_type The post type.
-	 *
-	 * @return void
 	 */
 	abstract protected function render_field( array $option_value, string $setting_key, string $post_type ): void;
 
@@ -100,8 +97,6 @@ abstract class Abstract_Settings_Field {
 	 *
 	 * @param string $section The settings section.
 	 * @param string $page The settings page.
-	 *
-	 * @return void
 	 */
 	public function register_settings_field( string $section, string $page ): void {
 
@@ -116,8 +111,6 @@ abstract class Abstract_Settings_Field {
 
 	/**
 	 * Callback for the settings field.
-	 *
-	 * @return void
 	 */
 	public function settings_field_callback(): void {
 		$this->render_field(
@@ -148,5 +141,4 @@ abstract class Abstract_Settings_Field {
 
 		return $value[ $post_type ];
 	}
-
 }

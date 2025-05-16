@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings\Fields;
 
 class Text_Input_Field extends Abstract_Settings_Field {
-
 	/**
 	 * The default value for the field.
 	 *
@@ -33,8 +32,6 @@ class Text_Input_Field extends Abstract_Settings_Field {
 	 * @param array<string, mixed> $option_value The value of the field.
 	 * @param string               $setting_key The settings key.
 	 * @param string               $post_type The post type.
-	 *
-	 * @return void
 	 */
 	protected function render_field( array $option_value, string $setting_key, string $post_type ): void {
 		printf(
@@ -47,5 +44,4 @@ class Text_Input_Field extends Abstract_Settings_Field {
 			esc_attr( $this->class )
 		);
 	}
-
 }

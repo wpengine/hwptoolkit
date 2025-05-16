@@ -10,15 +10,12 @@ use HWP\Previews\Post\Slug\Contracts\Post_Slug_Repository_Interface;
  * Post Slug Repository functionality.
  */
 class Post_Slug_Repository implements Post_Slug_Repository_Interface {
-
 	/**
 	 * .
 	 *
 	 * @param string $slug .
 	 * @param string $post_type .
 	 * @param int    $post_id .
-	 *
-	 * @return bool
 	 */
 	public function is_slug_taken( string $slug, string $post_type, int $post_id ): bool {
 		/**
@@ -37,5 +34,4 @@ class Post_Slug_Repository implements Post_Slug_Repository_Interface {
 			)
 		);
 	}
-
 }

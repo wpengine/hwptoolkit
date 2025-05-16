@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings;
 
 class Tabbed_Settings {
-
 	/**
 	 * Settings option group.
 	 *
@@ -56,8 +55,6 @@ class Tabbed_Settings {
 
 	/**
 	 * Register settings.
-	 *
-	 * @return void
 	 */
 	public function register_settings(): void {
 		register_setting(
@@ -131,5 +128,4 @@ class Tabbed_Settings {
 				return sanitize_text_field( (string) $value );
 		}
 	}
-
 }

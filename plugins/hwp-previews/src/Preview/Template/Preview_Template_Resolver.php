@@ -10,7 +10,6 @@ use HWP\Previews\Preview\Template\Contracts\Preview_Template_Resolver_Interface;
 use WP_Post;
 
 class Preview_Template_Resolver implements Preview_Template_Resolver_Interface {
-
 	/**
 	 * .
 	 *
@@ -63,5 +62,4 @@ class Preview_Template_Resolver implements Preview_Template_Resolver_Interface {
 
 		return file_exists( $template_path ) ? $template_path : '';
 	}
-
 }

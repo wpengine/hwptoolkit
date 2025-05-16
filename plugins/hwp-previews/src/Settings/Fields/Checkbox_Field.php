@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings\Fields;
 
 class Checkbox_Field extends Abstract_Settings_Field {
-
 	/**
 	 * The default value for the field.
 	 *
@@ -33,8 +32,6 @@ class Checkbox_Field extends Abstract_Settings_Field {
 	 * @param array<string, mixed> $option_value Settings value.
 	 * @param string               $setting_key The settings key.
 	 * @param string               $post_type The post type.
-	 *
-	 * @return void
 	 */
 	protected function render_field( $option_value, $setting_key, $post_type ): void {
 		$enabled = isset( $option_value[ $this->id ] )
@@ -50,5 +47,4 @@ class Checkbox_Field extends Abstract_Settings_Field {
 			sanitize_html_class( $this->class )
 		);
 	}
-
 }

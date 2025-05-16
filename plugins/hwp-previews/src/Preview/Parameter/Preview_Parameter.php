@@ -11,7 +11,6 @@ use WP_Post;
  * Class Callable_Preview_Parameter.
  */
 class Preview_Parameter implements Preview_Parameter_Interface {
-
 	/**
 	 * The name of the parameter.
 	 *
@@ -69,11 +68,8 @@ class Preview_Parameter implements Preview_Parameter_Interface {
 	 * No need to URL-encode here.
 	 *
 	 * @param \WP_Post $post The post object.
-	 *
-	 * @return string
 	 */
 	public function get_value( WP_Post $post ): string {
 		return call_user_func( $this->callback, $post );
 	}
-
 }

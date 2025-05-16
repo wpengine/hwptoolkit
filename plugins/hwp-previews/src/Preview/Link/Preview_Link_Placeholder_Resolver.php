@@ -9,7 +9,6 @@ use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 use WP_Post;
 
 class Preview_Link_Placeholder_Resolver {
-
 	/**
 	 * Placeholder pattern in curly brackets - https://example.com/preview={example}.
 	 *
@@ -45,8 +44,6 @@ class Preview_Link_Placeholder_Resolver {
 	 *
 	 * @param string   $template The string containing {KEY} placeholders.
 	 * @param \WP_Post $post   The post object to resolve the tokens against.
-	 *
-	 * @return string
 	 */
 	public function resolve_placeholders(string $template, WP_Post $post ): string {
 		return (string) preg_replace_callback(
@@ -61,8 +58,6 @@ class Preview_Link_Placeholder_Resolver {
 	 *
 	 * @param string   $key The token key without braces.
 	 * @param \WP_Post $post Post object to resolve the token against.
-	 *
-	 * @return string
 	 */
 	private function resolve_token( string $key, WP_Post $post ): string {
 		$parameter = $this->registry->get( $key );
@@ -72,5 +67,4 @@ class Preview_Link_Placeholder_Resolver {
 
 		return $parameter->get_value( $post );
 	}
-
 }

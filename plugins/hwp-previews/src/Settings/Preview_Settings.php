@@ -8,7 +8,6 @@ use HWP\Previews\Plugin;
 use HWP\Previews\Settings\Contracts\Post_Types_Settings_Interface;
 
 class Preview_Settings implements Post_Types_Settings_Interface {
-
 	/**
 	 * The settings cache group.
 	 *
@@ -35,7 +34,7 @@ class Preview_Settings implements Post_Types_Settings_Interface {
 	public function post_types_enabled( array $default_value = [] ): array {
 		$value = $this->group->get_cache_settings();
 
-		$post_types = array_filter( $value, static fn( $item ) => isset( $item[ Plugin::ENABLED_FIELD ] ) && $item[ Plugin::ENABLED_FIELD ] === true );
+		$post_types = array_filter( $value, static fn( $item ) => isset( $item[ Plugin::ENABLED_FIELD ] ) && true === $item[ Plugin::ENABLED_FIELD ] );
 
 		return ! empty( $post_types ) ? array_keys( $post_types ) : $default_value;
 	}
@@ -45,8 +44,6 @@ class Preview_Settings implements Post_Types_Settings_Interface {
 	 *
 	 * @param string $post_type The post type to get the setting for.
 	 * @param bool   $default_value   The default value to return if the setting is not set.
-	 *
-	 * @return bool
 	 */
 	public function unique_post_slugs( string $post_type, bool $default_value = false ): bool {
 		return $this->group->get_bool( Plugin::UNIQUE_POST_SLUGS_FIELD, $post_type, $default_value );
@@ -57,8 +54,6 @@ class Preview_Settings implements Post_Types_Settings_Interface {
 	 *
 	 * @param string $post_type The post type to get the setting for.
 	 * @param bool   $default_value   The default value to return if the setting is not set.
-	 *
-	 * @return bool
 	 */
 	public function post_statuses_as_parent( string $post_type, bool $default_value = false ): bool {
 		return $this->group->get_bool( Plugin::POST_STATUSES_AS_PARENT_FIELD, $post_type, $default_value );
@@ -69,8 +64,6 @@ class Preview_Settings implements Post_Types_Settings_Interface {
 	 *
 	 * @param string $post_type The post type to get the setting for.
 	 * @param bool   $default_value   The default value to return if the setting is not set.
-	 *
-	 * @return bool
 	 */
 	public function in_iframe( string $post_type, bool $default_value = false ): bool {
 		return $this->group->get_bool( Plugin::IN_IFRAME_FIELD, $post_type, $default_value );
@@ -81,11 +74,8 @@ class Preview_Settings implements Post_Types_Settings_Interface {
 	 *
 	 * @param string $post_type The post type to get the setting for.
 	 * @param string $default_value   The default value to return if the setting is not set.
-	 *
-	 * @return string
 	 */
 	public function url_template( string $post_type, string $default_value = '' ): string {
 		return $this->group->get_string( Plugin::PREVIEW_URL_FIELD, $post_type, $default_value );
 	}
-
 }

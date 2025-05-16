@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Post\Parent\Contracts;
 
 interface Post_Parent_Manager_Interface {
-
 	/**
 	 * Get the post statuses that are applicable as hierarchical for the plugin.
 	 *
@@ -14,5 +13,4 @@ interface Post_Parent_Manager_Interface {
 	 * @return array<string>
 	 */
 	public function get_post_statuses_as_parent( string $post_type ): array;
-
 }

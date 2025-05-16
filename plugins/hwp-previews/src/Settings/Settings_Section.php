@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings;
 
 class Settings_Section {
-
 	/**
 	 * Slug-name to identify the section. Used in the 'id' attribute of tags.
 	 *
@@ -60,8 +59,6 @@ class Settings_Section {
 	 * @param string $settings_key The settings key.
 	 * @param string $post_type    The post type.
 	 * @param string $page         The page slug.
-	 *
-	 * @return void
 	 */
 	public function register_section( string $settings_key, string $post_type, string $page ): void {
 		add_settings_section(
@@ -78,5 +75,4 @@ class Settings_Section {
 			$field->register_settings_field( $this->id, $page );
 		}
 	}
-
 }

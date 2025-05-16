@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings\Menu;
 
 class Submenu_Page extends Menu_Page {
-
 	/**
 	 * The slug name for the parent menu (or the file name of a standard WordPress admin page).
 	 *
@@ -37,8 +36,6 @@ class Submenu_Page extends Menu_Page {
 
 	/**
 	 * Register the submenu page. Should be called on the 'admin_menu' action.
-	 *
-	 * @return void
 	 */
 	public function register_page(): void {
 		add_submenu_page(
@@ -50,5 +47,4 @@ class Submenu_Page extends Menu_Page {
 			[ $this, 'registration_callback' ]
 		);
 	}
-
 }

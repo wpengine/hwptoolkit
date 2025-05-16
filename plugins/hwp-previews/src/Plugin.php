@@ -37,7 +37,6 @@ use WP_REST_Response;
  * @package HWP\Previews
  */
 class Plugin {
-
 	/**
 	 * The slug for the plugin menu.
 	 *
@@ -243,11 +242,9 @@ class Plugin {
 	 * @param string $version The version of the plugin.
 	 * @param string $dir_path The directory path of the plugin.
 	 * @param string $plugin_url The URL of the plugin.
-	 *
-	 * @return \HWP\Previews\Plugin
 	 */
 	public static function get_instance( string $version, string $dir_path, string $plugin_url ): Plugin {
-		if ( self::$instance === null ) {
+		if ( null === self::$instance ) {
 			self::$instance = new self( $version, $dir_path, $plugin_url );
 		}
 
@@ -278,12 +275,10 @@ class Plugin {
 	/**
 	 * Enqueues the JavaScript file for the plugin admin area.
 	 * Todo: if more complexity is added, consider using a separate class Sript_Enqueue.
-	 *
-	 * @return void
 	 */
 	public function enqueue_plugin_js(): void {
-		add_action( 'admin_enqueue_scripts', function ( string $hook ) {
-			if ( $hook !== 'toplevel_page_' . self::PLUGIN_MENU_SLUG ) {
+		add_action( 'admin_enqueue_scripts', function ( string $hook ): void {
+			if ( 'toplevel_page_' . self::PLUGIN_MENU_SLUG !== $hook ) {
 				return;
 			}
 
@@ -299,8 +294,6 @@ class Plugin {
 
 	/**
 	 * Enable unique post slugs for post statuses specified in the post statuses config.
-	 *
-	 * @return void
 	 */
 	public function enable_unique_post_slug(): void {
 		add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
@@ -330,8 +323,6 @@ class Plugin {
 	 *
 	 * @param \WP_REST_Response $response The REST response object.
 	 * @param \WP_Post          $post    The post object.
-	 *
-	 * @return \WP_REST_Response
 	 */
 	public function filter_rest_prepare_link( WP_REST_Response $response, WP_Post $post ): WP_REST_Response {
 		if ( $this->settings->in_iframe( $post->post_type ) ) {
@@ -349,8 +340,6 @@ class Plugin {
 	/**
 	 * Setups default preview parameters on the 'init' hook.
 	 * Creates custom action hook 'hwp_previews_core'.
-	 *
-	 * @return void
 	 */
 	private function init_core_functionality(): void {
 		add_action( 'init', function (): void {
@@ -369,8 +358,6 @@ class Plugin {
 	/**
 	 * Registers default preview parameters on the init hook.
 	 * Uses 'hwp_previews_parameters_registry' action to allow modification of the parameters registry.
-	 *
-	 * @return void
 	 */
 	private function setup_default_preview_parameters(): void {
 		$this->parameters
@@ -395,8 +382,6 @@ class Plugin {
 
 	/**
 	 * Registers settings pages and subpages.
-	 *
-	 * @return void
 	 */
 	private function register_settings_pages(): void {
 		add_action( 'admin_menu', function (): void {
@@ -414,8 +399,6 @@ class Plugin {
 
 	/**
 	 * Registers settings fields.
-	 *
-	 * @return void
 	 */
 	private function register_settings_fields(): void {
 		add_action( 'admin_init', function (): void {
@@ -443,8 +426,6 @@ class Plugin {
 
 	/**
 	 * Enable post statuses specified in the post statuses config as parent for the post types specified in the post types config.
-	 *
-	 * @return void
 	 */
 	private function enable_post_statuses_as_parent(): void {
 		$post_parent_manager = new Post_Parent_Manager( $this->types_config, $this->statuses_config );
@@ -483,8 +464,6 @@ class Plugin {
 
 	/**
 	 * Enable preview functionality in iframe.
-	 *
-	 * @return void
 	 */
 	private function enable_preview_in_iframe(): void {
 		$template_resolver = new Preview_Template_Resolver( $this->types_config, $this->statuses_config );
@@ -527,8 +506,6 @@ class Plugin {
 	/**
 	 * Swaps the preview link for the post types specified in the post types config.
 	 * Is being enabled only if the preview is not in iframe. Otherwise preview functionality is resolved on the template redirect level.
-	 *
-	 * @return void
 	 */
 	private function enable_preview_functionality(): void {
 		add_filter( 'preview_post_link', function ( $link, $post ) {
@@ -573,8 +550,6 @@ class Plugin {
 	 * Creates the settings page.
 	 *
 	 * @param array<string> $post_types The post types to be used in the settings page.
-	 *
-	 * @return \HWP\Previews\Settings\Menu\Menu_Page
 	 */
 	private function create_settings_page( array $post_types ): Menu_Page {
 		return new Menu_Page(
@@ -598,8 +573,6 @@ class Plugin {
 	 *
 	 * @param array<string> $post_types The post types to be used in the settings page.
 	 * @param string        $tab The name of the tab.
-	 *
-	 * @return string
 	 */
 	private function get_current_tab( $post_types, string $tab = 'tab' ): string {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended
@@ -612,8 +585,6 @@ class Plugin {
 
 	/**
 	 * Creates the settings subpage.
-	 *
-	 * @return \HWP\Previews\Settings\Menu\Submenu_Page
 	 */
 	private function create_settings_subpage(): Submenu_Page {
 		return new Submenu_Page(
@@ -629,8 +600,6 @@ class Plugin {
 	 * Creates the tabbed settings object.
 	 *
 	 * @param array<string> $post_types Post Types as a tabs.
-	 *
-	 * @return \HWP\Previews\Settings\Tabbed_Settings
 	 */
 	private function create_tabbed_settings( array $post_types ): Tabbed_Settings {
 		return new Tabbed_Settings(
@@ -646,8 +615,6 @@ class Plugin {
 	 *
 	 * @param string $post_type The post type slug.
 	 * @param string $label     The label for the post type.
-	 *
-	 * @return \HWP\Previews\Settings\Settings_Section
 	 */
 	private function create_setting_section( string $post_type, string $label ): Settings_Section {
 		return new Settings_Section(
@@ -692,5 +659,4 @@ class Plugin {
 
 		return $fields;
 	}
-
 }

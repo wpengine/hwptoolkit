@@ -8,13 +8,10 @@ use HWP\Previews\Post\Type\Contracts\Post_Type_Inspector_Interface;
 use WP_Post_Type;
 
 class Post_Type_Inspector implements Post_Type_Inspector_Interface {
-
 	/**
 	 * Checks if the post type supports Gutenberg.
 	 *
 	 * @param \WP_Post_Type $post_type Post Type object.
-	 *
-	 * @return bool
 	 */
 	public function is_gutenberg_supported( WP_Post_Type $post_type ): bool {
 		if (
@@ -33,8 +30,6 @@ class Post_Type_Inspector implements Post_Type_Inspector_Interface {
 	 * Checks if the post type is supported by Classic Editor.
 	 *
 	 * @param string $post_type Post Type slug.
-	 *
-	 * @return bool
 	 */
 	public function is_classic_editor_forced( string $post_type ): bool {
 		if (
@@ -51,5 +46,4 @@ class Post_Type_Inspector implements Post_Type_Inspector_Interface {
 				is_array( $settings['post_types'] ) &&
 				in_array( $post_type, $settings['post_types'], true );
 	}
-
 }

@@ -11,7 +11,6 @@ use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
 use WP_Post;
 
 class Post_Slug_Manager implements Post_Slug_Manager_Interface {
-
 	/**
 	 * Post Types Config.
 	 *
@@ -83,8 +82,6 @@ class Post_Slug_Manager implements Post_Slug_Manager_Interface {
 	 * @param string        $post_type .
 	 * @param int           $post_id .
 	 * @param array<string> $reserved_slugs .
-	 *
-	 * @return string
 	 */
 	public function generate_unique_slug( string $slug, string $post_type, int $post_id, array $reserved_slugs ): string {
 		if ( empty( $slug ) ) {
@@ -103,5 +100,4 @@ class Post_Slug_Manager implements Post_Slug_Manager_Interface {
 
 		return $new_slug;
 	}
-
 }

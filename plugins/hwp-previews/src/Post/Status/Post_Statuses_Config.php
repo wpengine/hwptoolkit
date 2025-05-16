@@ -10,7 +10,6 @@ use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
  * Class Post_Statuses_Config.
  */
 class Post_Statuses_Config implements Post_Statuses_Config_Interface {
-
 	/**
 	 * The post statuses that are applicable for the plugin.
 	 *
@@ -44,11 +43,8 @@ class Post_Statuses_Config implements Post_Statuses_Config_Interface {
 	 * Verifies if the post status is applicable according to the configuration.
 	 *
 	 * @param string $post_status Post status to check.
-	 *
-	 * @return bool
 	 */
 	public function is_post_status_applicable( string $post_status ): bool {
 		return in_array( $post_status, $this->post_statuses, true );
 	}
-
 }

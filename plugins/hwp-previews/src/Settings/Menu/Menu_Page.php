@@ -7,7 +7,6 @@ namespace HWP\Previews\Settings\Menu;
 use HWP\Previews\Settings\Contracts\Menu_Page_Interface;
 
 class Menu_Page implements Menu_Page_Interface {
-
 	/**
 	 * The title of the page.
 	 *
@@ -79,8 +78,6 @@ class Menu_Page implements Menu_Page_Interface {
 
 	/**
 	 * Registers the menu page in the WordPress admin.
-	 *
-	 * @return void
 	 */
 	public function register_page(): void {
 		add_menu_page(
@@ -95,8 +92,6 @@ class Menu_Page implements Menu_Page_Interface {
 
 	/**
 	 * Callback function to display the content of the menu page.
-	 *
-	 * @return void
 	 */
 	public function registration_callback(): void {
 		if ( empty( $this->template ) || ! file_exists( $this->template ) ) {
@@ -115,13 +110,10 @@ class Menu_Page implements Menu_Page_Interface {
 
 	/**
 	 * Sets the query vars for the template.
-	 *
-	 * @return void
 	 */
 	protected function set_query_vars(): void {
 		foreach ( $this->args as $query_var => $args ) {
 			set_query_var( $query_var, $args );
 		}
 	}
-
 }

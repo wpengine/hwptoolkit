@@ -12,7 +12,6 @@ use WP_Post;
  * Doc Comment.
  */
 class Preview_Link_Service {
-
 	/**
 	 * Post types config.
 	 *
@@ -56,8 +55,6 @@ class Preview_Link_Service {
 	 *
 	 * @param string   $preview_url_template Preview URL template.
 	 * @param \WP_Post $post The post object.
-	 *
-	 * @return string
 	 */
 	public function generate_preview_post_link( string $preview_url_template, WP_Post $post ): string {
 		if (
@@ -70,5 +67,4 @@ class Preview_Link_Service {
 
 		return $this->resolver->resolve_placeholders( $preview_url_template, $post );
 	}
-
 }

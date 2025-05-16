@@ -16,7 +16,7 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	return;
 }
 
-spl_autoload_register( static function ( $hwp_class ) {
+spl_autoload_register( static function ( $hwp_class ): void {
 	// Define namespace prefix for your plugin.
 	$prefix   = 'HWP\\Previews\\';
 	$base_dir = __DIR__ . '/src/';

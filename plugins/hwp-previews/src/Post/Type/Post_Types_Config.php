@@ -12,7 +12,6 @@ use WP_Post_Type;
  * Class Post_Types_Config.
  */
 class Post_Types_Config implements Post_Types_Config_Interface {
-
 	/**
 	 * Post types that are applicable for preview links.
 	 *
@@ -62,8 +61,6 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	 * Check if the post type is applicable for preview links.
 	 *
 	 * @param string $post_type Post Type slug.
-	 *
-	 * @return bool
 	 */
 	public function is_post_type_applicable( string $post_type ): bool {
 		return in_array( $post_type, $this->post_types, true ) && post_type_exists( $post_type );
@@ -73,8 +70,6 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	 * Check if the post type is hierarchical.
 	 *
 	 * @param string $post_type Post Type slug.
-	 *
-	 * @return bool
 	 */
 	public function is_hierarchical( string $post_type ): bool {
 		return is_post_type_hierarchical( $post_type );
@@ -84,8 +79,6 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	 * Check if the post type supports Gutenberg editor and if the classic editor is not being forced.
 	 *
 	 * @param string $post_type Post Type slug.
-	 *
-	 * @return bool
 	 */
 	public function gutenberg_editor_enabled( string $post_type ): bool {
 		$post_type_object = get_post_type_object( $post_type );
@@ -112,5 +105,4 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 
 		return $result;
 	}
-
 }

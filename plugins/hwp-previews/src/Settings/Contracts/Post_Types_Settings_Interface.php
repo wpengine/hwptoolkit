@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Settings\Contracts;
 
 interface Post_Types_Settings_Interface {
-
 	/**
 	 * Gets all enabled for the preview functionality post types.
 	 *
@@ -20,8 +19,6 @@ interface Post_Types_Settings_Interface {
 	 *
 	 * @param string $post_type Post type slug.
 	 * @param string $default_value Default URL template.
-	 *
-	 * @return string
 	 */
 	public function url_template( string $post_type, string $default_value = '' ): string;
 
@@ -30,8 +27,6 @@ interface Post_Types_Settings_Interface {
 	 *
 	 * @param string $post_type Post type slug.
 	 * @param bool   $default_value Default value.
-	 *
-	 * @return bool
 	 */
 	public function unique_post_slugs( string $post_type, bool $default_value = false ): bool;
 
@@ -40,8 +35,6 @@ interface Post_Types_Settings_Interface {
 		 *
 		 * @param string $post_type Post type slug.
 		 * @param bool   $default_value Default value.
-		 *
-		 * @return bool
 		 */
 	public function post_statuses_as_parent( string $post_type, bool $default_value = false ): bool;
 
@@ -50,9 +43,6 @@ interface Post_Types_Settings_Interface {
 	 *
 	 * @param string $post_type Post type slug.
 	 * @param bool   $default_value Default value.
-	 *
-	 * @return bool
 	 */
 	public function in_iframe( string $post_type, bool $default_value = false ): bool;
-
 }

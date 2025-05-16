@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace HWP\Previews\Post\Type\Contracts;
 
 interface Post_Types_Config_Interface {
-
 	/**
 	 * Set the post types that are applicable for previews.
 	 *
@@ -47,5 +46,4 @@ interface Post_Types_Config_Interface {
 	 * @return array<string, string>
 	 */
 	public function get_public_post_types(): array;
-
 }

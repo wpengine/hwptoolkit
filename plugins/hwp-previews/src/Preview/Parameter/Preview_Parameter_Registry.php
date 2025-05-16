@@ -12,7 +12,6 @@ use HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface;
  * This class is responsible for registering and managing preview parameters.
  */
 class Preview_Parameter_Registry {
-
 	/**
 	 * Registered parameters.
 	 *
@@ -24,8 +23,6 @@ class Preview_Parameter_Registry {
 	 * Register a parameter.
 	 *
 	 * @param \HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface $parameter The parameter object.
-	 *
-	 * @return self
 	 */
 	public function register( Preview_Parameter_Interface $parameter ): self {
 		$this->parameters[ $parameter->get_name() ] = $parameter;
@@ -37,8 +34,6 @@ class Preview_Parameter_Registry {
 	 * Unregister a parameter.
 	 *
 	 * @param string $name The parameter name.
-	 *
-	 * @return self
 	 */
 	public function unregister( string $name ): self {
 		if ( isset( $this->parameters[ $name ] ) ) {
@@ -75,11 +70,8 @@ class Preview_Parameter_Registry {
 	 * Get a specific parameter by name. Returns null if not found.
 	 *
 	 * @param string $name The parameter name.
-	 *
-	 * @return \HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface|null
 	 */
 	public function get( string $name ): ?Preview_Parameter_Interface {
 		return $this->parameters[ $name ] ?? null;
 	}
-
 }
