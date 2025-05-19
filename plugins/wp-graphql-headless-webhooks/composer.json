@@ -46,7 +46,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"AxeWP\\GraphQL\\": "src/"
+			"WPGraphQL\\Webhooks\\": "src/"
 		},
 		"files": [
 			"access-functions.php"
