@@ -137,6 +137,15 @@ add_filter( 'hwp_previews_template_path', function( $default_path ) {
 
 ## Integration
 
-<!-- TODO: Add integration instructions for headless frameworks, GraphQL, or external systems. -->
+HWP Previews is framework and API agnostic, meaning you can integrate it with any front-end application and with any data-fetching method (WPGraphQL, REST).
+
+To get started quickly you can use our [example based on Next.js and WPGraphQL](https://github.com/wpengine/hwptoolkit/examples/next/hwp-preview-wpgraphql). This example uses the Draft Mode feature of Next.js.
+
+To implement your own approach from scratch you can refer to the appropriate documentation pages for each framework. HWP Previews relies on custom preview URLs, allowing you to integrate any method. Below you can find the guides to implement framework-specific preview mode.
+
+- [Next.js Draft Mode with Pages Router](https://nextjs.org/docs/pages/guides/draft-mode)
+- [Next.js Draft Mode with App router](https://nextjs.org/docs/app/guides/draft-mode)
+- [Nuxt usePreviewMode](https://nuxt.com/docs/api/composables/use-preview-mode)
+
 
 ---
