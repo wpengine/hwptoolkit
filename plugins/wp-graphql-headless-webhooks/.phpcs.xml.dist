@@ -50,7 +50,7 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<!-- Value: replace the function, class, and variable prefixes used. Separate multiple prefixes with a comma. -->
-			<property name="prefixes" type="array" value=" AxeWP\GraphQL, wp_graphql, WPGraphQL\PluginName, graphql_pb, WPGRAPHQL_PB, AXEWP_PB" />
+			<property name="prefixes" type="array" value="WPGraphQL\Webhooks, graphql_webhooks" />
 		</properties>
 	</rule>
 	<rule ref="WordPress.WP.I18n">
