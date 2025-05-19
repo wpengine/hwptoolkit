@@ -1,7 +1,7 @@
 <?php
 namespace WPGraphQL\Webhooks\Events\Interfaces;
 
-interface EventRegistration {
+interface EventRegistry {
     /**
      * Register a GraphQL event.
      *
@@ -11,5 +11,5 @@ interface EventRegistration {
      * @param int      $priority  Optional priority.
      * @param int      $arg_count Optional number of callback args.
      */
-    public function registerEvent(string $name, string $hook_name, ?callable $callback, int $priority = 10, int $arg_count = 1): void;
+    public function registerEvent(string $name, string $hook_name, ?callable $callback, int $priority = 10, int $arg_count = 1): bool;
 }

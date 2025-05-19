@@ -13,7 +13,7 @@ use AxeWP\GraphQL\Helper\Helper;
 use WPGraphQL\Webhooks\Events\GraphQLEventRegistry;
 use WPGraphQL\Webhooks\Events\GraphQLEventSubscriber;
 use WPGraphQL\Webhooks\WebhookRegistry;
-use WPGraphQL\Webhooks\Events\Interfaces\EventRegistration;
+use WPGraphQL\Webhooks\Events\Interfaces\EventRegistry;
 use WPGraphQL\Webhooks\Events\Interfaces\EventSubscriber;
 
 if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
@@ -28,7 +28,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 * @var WebhookRegistry|null
 		 */
 		private ?WebhookRegistry $webhookRegistry = null;
-		private ?EventRegistration $eventRegisty = null;
+		private ?EventRegistry $eventRegistry = null;
 
 		/**
 		 * List of subscriber class names or instances.
@@ -46,7 +46,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 
 			// Instantiate the webhook registry here
 			$this->webhookRegistry = new WebhookRegistry();
-			$this->eventRegisty = new GraphQLEventRegistry();
+			$this->eventRegistry = new GraphQLEventRegistry();
 			$this->setup();
 
 			/**
@@ -55,6 +55,22 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			 * @param Plugin $this Instance of the Main plugin class.
 			 */
 			do_action( 'graphql_webhooks_init', $this );
+		}
+
+		/**
+		 * Sets up the schema.
+		 *
+		 * @codeCoverageIgnore
+		 */
+		private function setup(): void {
+			// Setup boilerplate hook prefix.
+			Helper::set_hook_prefix( 'graphql_webhooks' );
+
+			$this->webhookRegistry::init();
+			$this->webhookRegistry->setEventRegistry( $this->eventRegistry );
+			$this->registerEvents();
+			$this->init_subscribers();
+		
 		}
 
 		/**
@@ -77,7 +93,6 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 				error_log( 'WebhookRegistry not initialized.' );
 				return;
 			}
-
 			foreach ( $this->getSubscribers() as $subscriber ) {
 				// Instantiate subscriber if class-string
 				if ( is_string( $subscriber ) && class_exists( $subscriber ) ) {
@@ -95,8 +110,6 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 						'events' => $events,
 						'config' => [],
 					];
-
-					// Register webhook type and its events via webhookRegistry
 					$this->webhookRegistry->register_webhook_type( $webhookType, $args );
 				}
 			}
@@ -106,12 +119,12 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 * Instantiate and subscribe all subscribers.
 		 */
 		private function init_subscribers(): void {
+			
 			foreach ( $this->getSubscribers() as $subscriber ) {
 				if ( is_string( $subscriber ) && class_exists( $subscriber ) ) {
 					$subscriber = new $subscriber();
 				}
-
-				if ( $subscriber instanceof SubscriberInterface ) {
+				if ( $subscriber instanceof EventSubscriber ) {
 					$subscriber->subscribe();
 				}
 			}
@@ -128,19 +141,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			}
 		}
 
-		/**
-		 * Sets up the schema.
-		 *
-		 * @codeCoverageIgnore
-		 */
-		private function setup(): void {
-			// Setup boilerplate hook prefix.
-			Helper::set_hook_prefix( 'graphql_webhooks' );
-
-			$this->webhookRegistry::init();
-			$this->init_subscribers();
-			$this->registerEvents();
-		}
+		
 
 		/**
 		 * Throw error on object clone.

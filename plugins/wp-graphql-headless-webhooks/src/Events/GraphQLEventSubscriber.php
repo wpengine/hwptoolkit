@@ -42,7 +42,19 @@ abstract class GraphQLEventSubscriber implements EventSubscriber {
      * @return array<int, array<string, mixed>>
      */
     public function getEventRegistrations(): array {
-        return $this->events;
+        $registrations = [];
+        
+        foreach ($this->events as $event) {
+            $registrations[] = [
+                'name' => $event['name'],
+                'hook_name' => $event['hook'],
+                'callback' => [$this, $event['callback']],
+                'priority' => $event['priority'] ?? 10,
+                'arg_count' => $event['arg_count'] ?? 1,
+            ];
+        }
+        
+        return $registrations;
     }
 
     /**
@@ -51,31 +63,15 @@ abstract class GraphQLEventSubscriber implements EventSubscriber {
      * Hooks into wpgraphql_event_tracked_{eventName} actions and dispatches to handler methods.
      */
     public function subscribe(): void {
-        foreach ($this->events as $event) {
-            if (!isset($event['name'])) {
-                continue;
+        foreach ($this->events as $event) {    
+            // Register the event for tracking
+            $handlerMethodName = $this->getHandlerMethodName($event['name']);
+            if (method_exists($this, $handlerMethodName)) {
+                add_action(
+                    "wpgraphql_event_tracked_{$event['name']}",
+                    [$this, $handlerMethodName]
+                );
             }
-
-            $eventName = $event['name'];
-            add_action("wpgraphql_event_tracked_{$eventName}", function ($payload) use ($eventName) {
-                $this->handleEvent($eventName, $payload);
-            });
-        }
-    }
-
-    /**
-     * Dispatch the tracked event payload to the corresponding handler method.
-     *
-     * Handler methods are named `handle{StudlyEventName}`, e.g. 'handlePostSaved'.
-     *
-     * @param string $eventName Name of the event.
-     * @param mixed  $payload   Payload passed from the event callback.
-     */
-    protected function handleEvent(string $eventName, $payload): void {
-        $handlerMethod = $this->getHandlerMethodName($eventName);
-        var_dump($handlerMethod);
-        if (method_exists($this, $handlerMethod)) {
-            $this->{$handlerMethod}($payload);
         }
     }
 
@@ -86,7 +82,10 @@ abstract class GraphQLEventSubscriber implements EventSubscriber {
      * @return string
      */
     protected function getHandlerMethodName(string $eventName): string {
-        $studly = str_replace(' ', '', ucwords(str_replace('_', ' ', $eventName)));
-        return 'handle' . $studly . 'Event';
+        $parts = explode('_', $eventName);
+        $camelCase = array_map('ucfirst', $parts);
+        $eventNameCamel = implode('', $camelCase);
+        
+        return 'handle' . $eventNameCamel . 'Event';
     }
 }

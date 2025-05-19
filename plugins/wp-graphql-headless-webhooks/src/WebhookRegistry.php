@@ -7,7 +7,7 @@
 
 namespace WPGraphQL\Webhooks;
 
-use WPGraphQL\Webhooks\Events\Interfaces\EventRegistration;
+use WPGraphQL\Webhooks\Events\Interfaces\EventRegistry;
 
 /**
  * Class WebhookRegistry
@@ -21,7 +21,7 @@ class WebhookRegistry {
 	 */
 	private array $webhook_types = [];
 
-	private ?EventRegistration $eventRegistration = null;
+	private ?EventRegistry $eventRegistry = null;
 
 	/**
 	 * Instance of the registry
@@ -52,8 +52,8 @@ class WebhookRegistry {
 		do_action( 'graphql_register_webhooks', self::instance() );
 	}
 
-	public function setEventRegistrar(EventRegistration $eventRegistation): void {
-        $this->eventRegistrar = $eventRegistation;
+	public function setEventRegistry(EventRegistry $eventRegistry): void {
+        $this->eventRegistry = $eventRegistry;
     }
 
 	/**
@@ -131,12 +131,15 @@ class WebhookRegistry {
 		$args = wp_parse_args($args, $defaults);
 		$this->webhook_types[$type] = $args;
 
-		if ($this->eventRegistration !== null && !empty($args['events'])) {
+		if ($this->eventRegistry !== null && !empty($args['events'])) {
             foreach ($args['events'] as $event) {
-                $this->eventRegistration->registerEvent(
+                if (!isset($event['name']) || !isset($event['hook_name'])) {
+                    continue;
+                }
+                $this->eventRegistry->registerEvent(
                     $event['name'],
                     $event['hook_name'],
-                    $event['callback'],
+                    $event['callback'] ?? null,
                     $event['priority'] ?? 10,
                     $event['arg_count'] ?? 1
                 );
