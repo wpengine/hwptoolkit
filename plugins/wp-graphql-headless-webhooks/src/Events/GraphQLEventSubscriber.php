@@ -85,7 +85,6 @@ abstract class GraphQLEventSubscriber implements EventSubscriber {
         $parts = explode('_', $eventName);
         $camelCase = array_map('ucfirst', $parts);
         $eventNameCamel = implode('', $camelCase);
-        
         return 'handle' . $eventNameCamel . 'Event';
     }
 }

@@ -70,7 +70,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			$this->webhookRegistry->setEventRegistry( $this->eventRegistry );
 			$this->registerEvents();
 			$this->init_subscribers();
-		
+
 		}
 
 		/**
@@ -101,7 +101,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 
 				if ( $subscriber instanceof GraphQLEventSubscriber ) {
 					$events = $subscriber->getEventRegistrations();
-				
+
 					// Prepare webhook type args
 					$webhookType = strtolower( ( new \ReflectionClass( $subscriber ) )->getShortName() ); // e.g. 'postsavedsubscriber'
 					$args = [ 
@@ -119,7 +119,6 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 * Instantiate and subscribe all subscribers.
 		 */
 		private function init_subscribers(): void {
-			
 			foreach ( $this->getSubscribers() as $subscriber ) {
 				if ( is_string( $subscriber ) && class_exists( $subscriber ) ) {
 					$subscriber = new $subscriber();
@@ -141,7 +140,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			}
 		}
 
-		
+
 
 		/**
 		 * Throw error on object clone.
