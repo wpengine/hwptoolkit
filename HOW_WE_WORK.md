@@ -34,12 +34,15 @@ We believe in transparent, collaborative development. These guidelines document 
 
 ## Code Review Standards
 
-- Pull requests require 2 approving reviews before merging
+- Pull requests require 1 approving reviews before merging 
 - Reviewers: specify what aspects were reviewed
 - Submitters: indicate which parts need focused attention
 - Provide constructive feedback with supporting evidence
 - Request changes considerately, noting their importance
 - Leverage automation for routine checks ([PR Lint Example](https://github.com/wp-graphql/wp-graphql/blob/develop/.github/workflows/lint-pr.yml))
+
+  >[!NOTE]
+  >A developer should use their own discretion on how many reviews they would like before merging.
 
 ## Community Commitments
 
