@@ -57,6 +57,7 @@ class WebhookRegistry {
 
 	public function setEventRegistry(EventRegistry $eventRegistry): void {
         $this->eventRegistry = $eventRegistry;
+		$this->eventRegistry->init();
     }
 
 	/**
@@ -79,6 +80,7 @@ class WebhookRegistry {
 		if ( isset( $this->webhook_types[ $type ] ) ) {
 			return false;
 		}
+		
 
 		$defaults = [ 
 			'label' => $type,
@@ -89,7 +91,6 @@ class WebhookRegistry {
 
 		$args = wp_parse_args( $args, $defaults );
 		$this->webhook_types[ $type ] = $args;
-
 		if ($this->eventRegistry !== null && !empty($args['events'])) {
             foreach ($args['events'] as $event) {
                 if (!isset($event['name']) || !isset($event['hook_name'])) {

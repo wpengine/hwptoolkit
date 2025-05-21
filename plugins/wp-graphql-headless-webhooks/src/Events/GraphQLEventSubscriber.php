@@ -60,15 +60,16 @@ abstract class GraphQLEventSubscriber implements EventSubscriber {
     /**
      * Subscribes to WPGraphQL tracked events.
      *
-     * Hooks into wpgraphql_event_tracked_{eventName} actions and dispatches to handler methods.
+     * Hooks into graphql_webhooks_event_tracked_{eventName} actions and dispatches to handler methods.
      */
     public function subscribe(): void {
         foreach ($this->events as $event) {    
             // Register the event for tracking
             $handlerMethodName = $this->getHandlerMethodName($event['name']);
             if (method_exists($this, $handlerMethodName)) {
+                
                 add_action(
-                    "wpgraphql_event_tracked_{$event['name']}",
+                    "graphql_webhooks_event_tracked_{$event['name']}",
                     [$this, $handlerMethodName]
                 );
             }

@@ -66,10 +66,16 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			// Setup boilerplate hook prefix.
 			Helper::set_hook_prefix( 'graphql_webhooks' );
 
+			// Phase 1: Setup core registries
 			$this->webhookRegistry::init();
 			$this->webhookRegistry->setEventRegistry( $this->eventRegistry );
+
+			// Phase 2: Register events (via core + subscribers)
 			$this->registerEvents();
 			$this->init_subscribers();
+
+			// Phase 3: Finalize event system (fire graphql_register_events and attach events)
+			$this->eventRegistry->init();
 
 		}
 
@@ -93,6 +99,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 				error_log( 'WebhookRegistry not initialized.' );
 				return;
 			}
+
 			foreach ( $this->getSubscribers() as $subscriber ) {
 				// Instantiate subscriber if class-string
 				if ( is_string( $subscriber ) && class_exists( $subscriber ) ) {
@@ -101,7 +108,6 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 
 				if ( $subscriber instanceof GraphQLEventSubscriber ) {
 					$events = $subscriber->getEventRegistrations();
-
 					// Prepare webhook type args
 					$webhookType = strtolower( ( new \ReflectionClass( $subscriber ) )->getShortName() ); // e.g. 'postsavedsubscriber'
 					$args = [ 
