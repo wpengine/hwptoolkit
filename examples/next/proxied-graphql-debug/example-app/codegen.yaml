@@ -1,0 +1,5 @@
+schema: "http://mysite.local/graphql"
+generates:
+  ./src/lib/graphql/schema.json:
+    plugins:
+      - introspection
