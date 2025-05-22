@@ -49,20 +49,14 @@ class GraphQLEventDispatcher implements EventDispatcher {
         if ($shouldHandle === false) {
             return;
         }
-
-        // Execute the event callback if provided, else null payload
         $payload = null;
         if (is_callable($event->callback)) {
             $payload = call_user_func($event->callback, ...$args);
         }
-
-        // Handle errors returned from callback
         if (is_wp_error($payload)) {
             do_action("graphql_webhooks_event_error_{$event->name}", $payload, $args);
             return;
         }
-
-        // Allow filtering of the payload before tracking
         $payload = apply_filters("graphql_webhooks_event_payload_{$event->name}", $payload, $args);
 
         // Track the event payload via the EventMonitor
