@@ -68,14 +68,16 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 
 			// Phase 1: Setup core registries
 			$this->webhookRegistry::init();
-			$this->webhookRegistry->setEventRegistry( $this->eventRegistry );
+			$this->webhookRegistry->set_event_registry( $this->eventRegistry );
 
 			// Phase 2: Register events (via core + subscribers)
-			$this->registerEvents();
+			$this->register_events();
 			$this->init_subscribers();
 
 			// Phase 3: Finalize event system (fire graphql_register_events and attach events)
 			$this->eventRegistry->init();
+
+			add_action( get_graphql_register_action(), [ TypeRegistry::class, 'init' ] );
 
 		}
 
@@ -84,7 +86,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 *
 		 * @return array<class-string|EventSubscriber>
 		 */
-		public function getSubscribers(): array {
+		public function get_subscribers(): array {
 			return apply_filters( 'graphql_webhooks_active_subscribers', $this->subscribers );
 		}
 
@@ -94,20 +96,20 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 * This method is hooked to 'graphql_register_events' and will be called
 		 * during the WPGraphQL lifecycle to register events dynamically.
 		 */
-		private function registerEvents(): void {
+		private function register_events(): void {
 			if ( ! $this->webhookRegistry ) {
 				error_log( 'WebhookRegistry not initialized.' );
 				return;
 			}
 
-			foreach ( $this->getSubscribers() as $subscriber ) {
+			foreach ( $this->get_subscribers() as $subscriber ) {
 				// Instantiate subscriber if class-string
 				if ( is_string( $subscriber ) && class_exists( $subscriber ) ) {
 					$subscriber = new $subscriber();
 				}
 
 				if ( $subscriber instanceof GraphQLEventSubscriber ) {
-					$events = $subscriber->getEventRegistrations();
+					$events = $subscriber->get_event_registrations();
 					// Prepare webhook type args
 					$webhookType = strtolower( ( new \ReflectionClass( $subscriber ) )->getShortName() ); // e.g. 'postsavedsubscriber'
 					$args = [ 
@@ -125,7 +127,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 * Instantiate and subscribe all subscribers.
 		 */
 		private function init_subscribers(): void {
-			foreach ( $this->getSubscribers() as $subscriber ) {
+			foreach ( $this->get_subscribers() as $subscriber ) {
 				if ( is_string( $subscriber ) && class_exists( $subscriber ) ) {
 					$subscriber = new $subscriber();
 				}

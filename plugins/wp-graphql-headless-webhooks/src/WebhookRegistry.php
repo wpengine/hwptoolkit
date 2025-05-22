@@ -55,7 +55,7 @@ class WebhookRegistry {
 		do_action( 'graphql_register_webhooks', self::instance() );
 	}
 
-	public function setEventRegistry(EventRegistry $eventRegistry): void {
+	public function set_event_registry(EventRegistry $eventRegistry): void {
         $this->eventRegistry = $eventRegistry;
 		$this->eventRegistry->init();
     }
@@ -96,7 +96,7 @@ class WebhookRegistry {
                 if (!isset($event['name']) || !isset($event['hook_name'])) {
                     continue;
                 }
-                $this->eventRegistry->registerEvent(
+                $this->eventRegistry->register_event(
                     $event['name'],
                     $event['hook_name'],
                     $event['callback'] ?? null,

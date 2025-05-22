@@ -127,7 +127,7 @@ function register_graphql_event( ...$args ) {
 	add_action(
 		'graphql_register_events', 
 		static function (GraphQLEventRegistry $event_registry) use ($args) {
-			$event_registry->registerEvent( ...$args );
+			$event_registry->register_event( ...$args );
 		}
 	);
 }

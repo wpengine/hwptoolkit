@@ -17,5 +17,5 @@ interface EventRegistry {
 	 * @param int      $priority  Optional priority.
 	 * @param int      $arg_count Optional number of callback args.
 	 */
-	public function registerEvent( string $name, string $hook_name, ?callable $callback, int $priority = 10, int $arg_count = 1 ): bool;
+	public function register_event( string $name, string $hook_name, ?callable $callback, int $priority = 10, int $arg_count = 1 ): bool;
 }

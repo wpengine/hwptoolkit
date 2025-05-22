@@ -23,7 +23,7 @@ class GraphQLEventRegistry implements EventRegistry {
 	public function init(): void {
 		do_action( 'graphql_webhooks_register_events', $this );
 		$this->events = apply_filters( 'graphql_webhooks_registered_events', $this->events, $this );
-		$this->attachEvents();	
+		$this->attach_events();	
 	}
 
 	/**
@@ -37,7 +37,7 @@ class GraphQLEventRegistry implements EventRegistry {
 	 *
 	 * @return bool
 	 */
-	public function registerEvent( string $name, string $hook_name, ?callable $callback = null, int $priority = 10, int $arg_count = 1 ): bool {
+	public function register_event(string $name, string $hook_name, callable|null $callback, int $priority = 10, int $arg_count = 1): bool {
 		if ( isset( $this->events[ $name ] ) ) {
 			return false;
 		}
@@ -55,7 +55,7 @@ class GraphQLEventRegistry implements EventRegistry {
 	/**
 	 * Attach registered event callbacks to WordPress actions.
 	 */
-	public function attachEvents(): void {
+	public function attach_events(): void {
 		foreach ( $this->events as $config ) {
 			// Use provided callback, or default noop if none
 			$callback = $config['callback'] ?? fn() => null;
@@ -90,7 +90,7 @@ class GraphQLEventRegistry implements EventRegistry {
 	 *
 	 * @return array<string, array<string, mixed>>
 	 */
-	public function getEvents(): array {
+	public function get_events(): array {
 		return $this->events;
 	}
 
@@ -101,7 +101,7 @@ class GraphQLEventRegistry implements EventRegistry {
 	 *
 	 * @return array<string, mixed>|null
 	 */
-	public function getEvent( string $eventName ): ?array {
+	public function get_event( string $eventName ): ?array {
 		return $this->events[ $eventName ] ?? null;
 	}
 }

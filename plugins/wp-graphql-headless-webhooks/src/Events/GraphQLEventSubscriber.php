@@ -41,7 +41,7 @@ abstract class GraphQLEventSubscriber implements EventSubscriber {
      *
      * @return array<int, array<string, mixed>>
      */
-    public function getEventRegistrations(): array {
+    public function get_event_registrations(): array {
         $registrations = [];
         
         foreach ($this->events as $event) {
@@ -65,8 +65,8 @@ abstract class GraphQLEventSubscriber implements EventSubscriber {
     public function subscribe(): void {
         foreach ($this->events as $event) {    
             // Register the event for tracking
-            $handlerMethodName = $this->getHandlerMethodName($event['name']);
-            if (method_exists($this, $handlerMethodName)) {
+            $handlerMethodName = $this->get_handler_method_name($event['name']);
+            if (method_exists($this, method: $handlerMethodName)) {
                 
                 add_action(
                     "graphql_webhooks_event_tracked_{$event['name']}",
@@ -82,7 +82,7 @@ abstract class GraphQLEventSubscriber implements EventSubscriber {
      * @param string $eventName
      * @return string
      */
-    protected function getHandlerMethodName(string $eventName): string {
+    protected function get_handler_method_name(string $eventName): string {
         $parts = explode('_', $eventName);
         $camelCase = array_map('ucfirst', $parts);
         $eventNameCamel = implode('', $camelCase);
