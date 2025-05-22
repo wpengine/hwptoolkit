@@ -1,7 +1,7 @@
 import { XMLParser } from 'fast-xml-parser';
 
 const wordpressUrl =
-  (process.env.NEXT_PUBLIC_WORDPRESS_URL || "http://localhost:8888").trim();
+  (process.env.NEXT_PUBLIC_WORDPRESS_URL || "http://localhost:8886").trim();
 const frontEndUrl =
   (process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000").trim();
 
@@ -55,7 +55,7 @@ export async function getServerSideProps({ req, res }) {
   const wpSitemapUrl = sitemapParam
     ? `${trimSlashes(wordpressUrl)}/${sitemapParam.replace(/^\/+/, '')}`
     : `${trimSlashes(wordpressUrl)}/sitemap.xml`;
-  
+
   console.debug("Fetching sitemap", wpSitemapUrl);
   const response = await fetch(wpSitemapUrl);
 
