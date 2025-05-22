@@ -5,7 +5,12 @@
  * @package WPGraphQL\Webhooks
  */
 
+declare( strict_types = 1 );
+
 namespace WPGraphQL\Webhooks;
+
+use AxeWP\GraphQL\Helper\Helper;
+use WPGraphQL\Webhooks\WebhookRegistry;
 
 if ( ! class_exists( 'WPGraphQL\Webhooks\Main' ) ) :
 
@@ -38,7 +43,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Main' ) ) :
 			 *
 			 * @param self $instance the instance of the plugin class.
 			 */
-			do_action( 'graphql_headless_webhooks_init', self::$instance );
+			do_action( 'graphql_webhooks_init', self::$instance );
 
 			return self::$instance;
 		}
@@ -60,6 +65,10 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Main' ) ) :
 		 * @codeCoverageIgnore
 		 */
 		private function setup(): void {
+			// Setup boilerplate hook prefix.
+			Helper::set_hook_prefix( 'graphql_webhooks' );
+
+			WebhookRegistry::init();
 		}
 
 		/**

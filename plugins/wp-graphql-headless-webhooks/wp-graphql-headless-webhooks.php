@@ -30,20 +30,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Load the autoloader.
+require_once __DIR__ . '/src/Autoloader.php';
+if ( ! \WPGraphQL\Webhooks\Autoloader::autoload() ) {
+	return;
+}
+
 // Run this function when the plugin is activated.
 if ( file_exists( __DIR__ . '/activation.php' ) ) {
 	require_once __DIR__ . '/activation.php';
-	register_activation_hook( __FILE__, function (): void {
-		graphql_headless_webhooks_activation_callback();
-	} );
+	register_activation_hook( __FILE__, 'graphql_headless_webhooks_activation_callback' );
 }
 
 // Run this function when the plugin is deactivated.
 if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
 	require_once __DIR__ . '/deactivation.php';
-	register_activation_hook( __FILE__, function (): void {
-		graphql_headless_webhooks_deactivation_callback();
-	} );
+	register_deactivation_hook( __FILE__, 'graphql_headless_webhooks_deactivation_callback' );
 }
 
 /**
@@ -79,7 +81,7 @@ function graphql_headless_webhooks_constants(): void {
 /**
  * Checks if all the the required plugins are installed and activated.
  *
- * @return string[]
+ * @return array<string>
  */
 function graphql_headless_webhooks_dependencies_not_ready(): array {
 	$deps = [];
@@ -99,8 +101,9 @@ function graphql_headless_webhooks_init(): void {
 
 	$not_ready = graphql_headless_webhooks_dependencies_not_ready();
 
-	if ( empty( $not_ready ) && defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' ) ) {
+	if ( $not_ready === [] && defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' ) ) {
 		require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'src/Main.php';
+		\WPGraphQL\Webhooks\Main::instance();
 		return;
 	}
 
@@ -121,9 +124,11 @@ function graphql_headless_webhooks_init(): void {
 				</p>
 			</div>
 			<?php
-			}
+			},
+			10,
+			0
 		);
 	}
 }
-
+/** @psalm-suppress HookNotFound */
 add_action( 'graphql_init', 'WPGraphQL\Webhooks\graphql_headless_webhooks_init' );
