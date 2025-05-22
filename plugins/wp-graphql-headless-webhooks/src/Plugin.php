@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace WPGraphQL\Webhooks;
 
 use AxeWP\GraphQL\Helper\Helper;
+use WPGraphQL\Webhooks\Events\EventMonitor;
+use WPGraphQL\Webhooks\Events\GraphQLEventDispatcher;
 use WPGraphQL\Webhooks\Events\GraphQLEventRegistry;
 use WPGraphQL\Webhooks\Events\GraphQLEventSubscriber;
 use WPGraphQL\Webhooks\WebhookRegistry;
@@ -44,9 +46,15 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		public function init(): void {
 			$this->includes();
 
+			// Instantiate the EventMonitor (implement your own or use existing)
+			$eventMonitor = new EventMonitor();
+
+			// Instantiate the GraphQLEventDispatcher with the monitor
+			$eventDispatcher = new GraphQLEventDispatcher( $eventMonitor );
+			
 			// Instantiate the webhook registry here
 			$this->webhookRegistry = new WebhookRegistry();
-			$this->eventRegistry = new GraphQLEventRegistry();
+			$this->eventRegistry = new GraphQLEventRegistry( $eventDispatcher );
 			$this->setup();
 
 			/**

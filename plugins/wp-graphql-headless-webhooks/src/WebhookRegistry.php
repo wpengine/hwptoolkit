@@ -7,6 +7,7 @@
 
 namespace WPGraphQL\Webhooks;
 
+use WPGraphQL\Webhooks\Events\Event;
 use WPGraphQL\Webhooks\Events\Interfaces\EventRegistry;
 use WPGraphQL\Webhooks\PostTypes\WebhookPostType;
 
@@ -55,10 +56,10 @@ class WebhookRegistry {
 		do_action( 'graphql_register_webhooks', self::instance() );
 	}
 
-	public function set_event_registry(EventRegistry $eventRegistry): void {
-        $this->eventRegistry = $eventRegistry;
+	public function set_event_registry( EventRegistry $eventRegistry ): void {
+		$this->eventRegistry = $eventRegistry;
 		$this->eventRegistry->init();
-    }
+	}
 
 	/**
 	 * Register a webhook type
@@ -77,10 +78,9 @@ class WebhookRegistry {
 		if ( $type === '' ) {
 			return false;
 		}
-		if ( isset( $this->webhook_types[ $type ] ) ) {
+		if ( isset( $this->webhookTypes[ $type ] ) ) {
 			return false;
 		}
-		
 
 		$defaults = [ 
 			'label' => $type,
@@ -91,20 +91,27 @@ class WebhookRegistry {
 
 		$args = wp_parse_args( $args, $defaults );
 		$this->webhook_types[ $type ] = $args;
-		if ($this->eventRegistry !== null && !empty($args['events'])) {
-            foreach ($args['events'] as $event) {
-                if (!isset($event['name']) || !isset($event['hook_name'])) {
-                    continue;
-                }
-                $this->eventRegistry->register_event(
-                    $event['name'],
-                    $event['hook_name'],
-                    $event['callback'] ?? null,
-                    $event['priority'] ?? 10,
-                    $event['arg_count'] ?? 1
-                );
-            }
-        }
+
+		// Register associated events if event registry is set
+		if ( $this->eventRegistry !== null && ! empty( $args['events'] ) ) {
+			foreach ( $args['events'] as $eventData ) {
+				// Validate required keys for event registration
+				if ( ! isset( $eventData['name'], $eventData['hook_name'] ) ) {
+					continue;
+				}
+
+				// Create Event DTO instance
+				$event = new Event(
+					$eventData['name'],
+					$eventData['hook_name'],
+					$eventData['callback'] ?? null,
+					$eventData['priority'] ?? 10,
+					$eventData['arg_count'] ?? 1
+				);
+
+				$this->eventRegistry->register_event( $event );
+			}
+		}
 
 		return true;
 	}

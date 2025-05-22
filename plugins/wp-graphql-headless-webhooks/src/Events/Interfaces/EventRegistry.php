@@ -1,21 +1,46 @@
 <?php
 namespace WPGraphQL\Webhooks\Events\Interfaces;
 
+use WPGraphQL\Webhooks\Events\Event;
+
+/**
+ * Interface EventRegistry
+ *
+ * Defines the contract for event registries managing webhook events.
+ */
 interface EventRegistry {
-	/**
-	 * Initialize the event registry.
-	 *
-	 * @return void
-	 */
-	public function init(): void;
-	/**
-	 * Register a GraphQL event.
-	 *
-	 * @param string   $name      Unique event name.
-	 * @param string   $hook_name WordPress hook to listen to.
-	 * @param ?callable $callback  Callback to execute on event.
-	 * @param int      $priority  Optional priority.
-	 * @param int      $arg_count Optional number of callback args.
-	 */
-	public function register_event( string $name, string $hook_name, ?callable $callback, int $priority = 10, int $arg_count = 1 ): bool;
+
+    /**
+     * Initialize the event registry.
+     *
+     * Typically triggers event registration and attaches events to WordPress hooks.
+     *
+     * @return void
+     */
+    public function init(): void;
+
+    /**
+     * Register a GraphQL event.
+     *
+     * @param Event $event The event object containing metadata and callback.
+     *
+     * @return bool True if registration succeeded, false if event already exists.
+     */
+    public function register_event(Event $event): bool;
+
+    /**
+     * Get all registered events.
+     *
+     * @return Event[]
+     */
+    public function get_events(): array;
+
+    /**
+     * Get a specific event by name.
+     *
+     * @param string $eventName The unique name of the event.
+     *
+     * @return Event|null The event object if found, or null.
+     */
+    public function get_event(string $eventName): ?Event;
 }

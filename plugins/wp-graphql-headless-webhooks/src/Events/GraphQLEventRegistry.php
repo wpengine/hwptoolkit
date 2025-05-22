@@ -2,6 +2,8 @@
 namespace WPGraphQL\Webhooks\Events;
 
 use WPGraphQL\Webhooks\Events\Interfaces\EventRegistry;
+use WPGraphQL\Webhooks\Events\Interfaces\EventDispatcher;
+
 
 /**
  * Class GraphQLEventRegistry
@@ -11,11 +13,27 @@ use WPGraphQL\Webhooks\Events\Interfaces\EventRegistry;
 class GraphQLEventRegistry implements EventRegistry {
 
 	/**
-	 * Registered events.
+     * Registered events keyed by event name.
+     *
+     * @var Event[]
+     */
+    private array $events = [];
+
+	/**
+	 * Event dispatcher instance.
 	 *
-	 * @var array<string, array<string, mixed>>
+	 * @var EventDispatcher
 	 */
-	private array $events = [];
+	private EventDispatcher $dispatcher;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param EventDispatcher $dispatcher Event dispatcher to handle event execution.
+	 */
+	public function __construct( EventDispatcher $dispatcher ) {
+		$this->dispatcher = $dispatcher;
+	}
 
 	/**
 	 * Initialize the registry — triggers the registration action and attaches events.
@@ -23,32 +41,22 @@ class GraphQLEventRegistry implements EventRegistry {
 	public function init(): void {
 		do_action( 'graphql_webhooks_register_events', $this );
 		$this->events = apply_filters( 'graphql_webhooks_registered_events', $this->events, $this );
-		$this->attach_events();	
+		$this->attach_events();
 	}
 
 	/**
 	 * Register an event with the registry.
 	 *
-	 * @param string        $name
-	 * @param string        $hook_name
-	 * @param callable|null $callback
-	 * @param int           $priority
-	 * @param int           $arg_count
+	 * @param Event $event Event object containing event metadata.
 	 *
-	 * @return bool
+	 * @return bool True if event was registered; false if event with same name exists.
 	 */
-	public function register_event(string $name, string $hook_name, callable|null $callback, int $priority = 10, int $arg_count = 1): bool {
-		if ( isset( $this->events[ $name ] ) ) {
+	public function register_event( Event $event ): bool {
+		if ( isset( $this->events[ $event->name ] ) ) {
 			return false;
 		}
 
-		$this->events[ $name ] = [ 
-			'name' => $name,
-			'hook_name' => $hook_name,
-			'callback' => $callback,
-			'priority' => $priority,
-			'arg_count' => $arg_count,
-		];
+		$this->events[ $event->name ] = $event;
 		return true;
 	}
 
@@ -56,33 +64,16 @@ class GraphQLEventRegistry implements EventRegistry {
 	 * Attach registered event callbacks to WordPress actions.
 	 */
 	public function attach_events(): void {
-		foreach ( $this->events as $config ) {
-			// Use provided callback, or default noop if none
-			$callback = $config['callback'] ?? fn() => null;
-
-			add_action( $config['hook_name'], function (...$hook_args) use ($config, $callback) {
-				// Allow skipping via filter
-				$maybe_skip = apply_filters( "graphql_webhooks_event_should_handle_{$config['name']}", null, ...$hook_args );
-				if ( null !== $maybe_skip && false === $maybe_skip ) {
-					return;
-				}
-
-				// Execute callback
-				$payload = call_user_func( $callback, ...$hook_args );
-
-				if ( is_wp_error( $payload ) ) {
-					do_action( "graphql_webhooks_event_error_{$config['name']}", $payload, $hook_args );
-					return;
-				}
-
-				// Filter payload before tracking
-				$payload = apply_filters( "graphql_webhooks_event_payload_{$config['name']}", $payload, $hook_args );
-
-				// Track via EventMonitor
-				EventMonitor::track( $config['name'], $payload );
-
-			}, $config['priority'], $config['arg_count'] );
-		}
+		foreach ($this->events as $event) {
+            add_action(
+                $event->hookName,
+                function (...$args) use ($event) {
+                    $this->dispatcher->dispatch($event, $args);
+                },
+                $event->priority,
+                $event->argCount
+            );
+        }
 	}
 
 	/**
@@ -101,7 +92,7 @@ class GraphQLEventRegistry implements EventRegistry {
 	 *
 	 * @return array<string, mixed>|null
 	 */
-	public function get_event( string $eventName ): ?array {
+	public function get_event( string $eventName ): ?Event {
 		return $this->events[ $eventName ] ?? null;
 	}
 }
