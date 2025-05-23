@@ -1,4 +1,4 @@
-=== WPGraphQL Plugin Name ===
+=== HWP Previews ===
 Contributors: wpengine
 Tags: GraphQL, Headless, Previews, WPGraphQL, React, Rest
 Requires at least: 6.0
