@@ -31,7 +31,6 @@ if ( ! \HWP\Previews\Autoloader::autoload() ) {
 	return;
 }
 
-// @TODO: https://github.com/wpengine/hwptoolkit/issues/183
 if ( file_exists( __DIR__ . '/activation.php' ) ) {
 	require_once __DIR__ . '/activation.php';
 	register_activation_hook( __FILE__, 'hwp_previews_activation_callback' );
