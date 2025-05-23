@@ -1,0 +1,52 @@
+.form-table td input.hwp-previews-url {
+	width: calc(99% - 24px);
+	display: inline-block;
+}
+
+.hwp-previews-tooltip {
+	position: relative;
+	vertical-align: middle;
+	display: inline-block;
+	margin-right: 0.25rem;
+}
+
+.hwp-previews-tooltip .dashicons {
+	color: #787c82;
+	vertical-align: middle;
+}
+
+.hwp-previews-tooltip .tooltip-text.description {
+	opacity: 0;
+	visibility: hidden;
+	text-align: center;
+	color: #fff;
+	background-color: #1d2327;
+	border-radius: 4px;
+	position: absolute;
+	z-index: 1;
+	width: 180px;
+	padding: 0.5rem;
+	top: 50%;
+	transform: translateY(-50%);
+	vertical-align: middle;
+	margin-left: 0.25rem;
+	transition: opacity 0.12s ease;
+}
+
+.hwp-previews-tooltip .tooltip-text::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -10px;
+	border-width: 6px;
+	border-style: solid;
+	border-color: transparent #1d2327 transparent transparent;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.hwp-previews-tooltip:hover .tooltip-text,
+.hwp-previews-tooltip:focus-within .tooltip-text {
+	visibility: visible;
+	opacity: 1;
+}
