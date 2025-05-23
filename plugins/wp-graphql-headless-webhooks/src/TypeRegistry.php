@@ -70,6 +70,8 @@ class TypeRegistry {
     private static function mutations(): array {
         return [
             Mutation\CreateWebhook::class,
+            Mutation\DeleteWebhook::class,
+            Mutation\UpdateWebhook::class,
         ];
     }
 

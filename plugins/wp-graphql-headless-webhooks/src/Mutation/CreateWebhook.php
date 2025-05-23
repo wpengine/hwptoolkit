@@ -69,7 +69,7 @@ class CreateWebhook {
 			],
 			'mutateAndGetPayload' => function ($input, $context, $info) {
 				// Check user capabilities
-				if ( ! current_user_can( 'edit_posts' ) ) {
+				if ( ! current_user_can( 'manage_options' ) ) {
 					throw new UserError( __( 'You do not have permission to create webhooks.', 'wp-graphql-headless-webhooks' ) );
 				}
 
@@ -80,15 +80,11 @@ class CreateWebhook {
 					'post_content' => sanitize_textarea_field( $input['content'] ?? '' ),
 					'post_status' => sanitize_text_field( $input['status'] ?? 'publish' ),
 				];
-
-				// Insert the post
 				$post_id = wp_insert_post( $post_data );
 
 				if ( is_wp_error( $post_id ) ) {
 					throw new UserError( __( 'Failed to create webhook.', 'wp-graphql-headless-webhooks' ) );
 				}
-
-				// Save meta fields
 				if ( isset( $input['eventTrigger'] ) ) {
 					update_post_meta( $post_id, '_event_trigger', sanitize_text_field( $input['eventTrigger'] ) );
 				}
