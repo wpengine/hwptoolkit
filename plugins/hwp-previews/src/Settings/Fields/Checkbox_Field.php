@@ -20,8 +20,8 @@ class Checkbox_Field extends Abstract_Settings_Field {
 	 * @param bool   $default_value The default value for the field.
 	 * @param string $css_class The settings field class.
 	 */
-	public function __construct( string $id, string $title, bool $default_value = false, string $css_class = '' ) {
-		parent::__construct( $id, $title, $css_class );
+	public function __construct( string $id, string $title, string $description = '', bool $default_value = false, string $css_class = '' ) {
+		parent::__construct( $id, $title, $css_class, $description );
 
 		$this->default = $default_value;
 	}

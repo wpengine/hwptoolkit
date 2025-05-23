@@ -41,6 +41,13 @@ abstract class Abstract_Settings_Field {
 	private string $post_type;
 
 	/**
+	 * The description field to show in the tooltip.
+	 *
+	 * @var string
+	 */
+	private string $description;
+
+	/**
 	 * Render the settings field.
 	 *
 	 * @param array<string, mixed> $option_value Settings value.
@@ -59,11 +66,13 @@ abstract class Abstract_Settings_Field {
 	public function __construct(
 		string $id,
 		string $title,
-		string $css_class = ''
+		string $css_class = '',
+		string $description = ''
 	) {
 		$this->id    = $id;
 		$this->title = $title;
 		$this->class = $css_class;
+		$this->description = $description;
 	}
 
 	/**
@@ -113,6 +122,15 @@ abstract class Abstract_Settings_Field {
 	 * Callback for the settings field.
 	 */
 	public function settings_field_callback(): void {
+		printf(
+			'<div tabindex="0" aria-describedby="%2$s-tooltip" class="hwp-previews-tooltip">
+				<span class="dashicons dashicons-editor-help"></span>
+				<span id="%2$s-tooltip" class="tooltip-text description">%1$s</span>
+			</div>',
+			esc_attr( $this->description ),
+			esc_attr( $this->settings_key )
+		);
+
 		$this->render_field(
 			$this->get_setting_value( $this->settings_key, $this->post_type ),
 			$this->settings_key,

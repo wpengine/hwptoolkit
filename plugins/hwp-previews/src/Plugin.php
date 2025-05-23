@@ -59,6 +59,21 @@ class Plugin {
 	public const PLUGIN_JS_SRC = 'assets/js/hwp-previews.js';
 
 	/**
+	 * The slug for the plugin settings page StyleSheet.
+	 *
+	 * @var string
+	 */
+	public const PLUGIN_CSS_HANDLE = 'hwp-previews-css';
+
+
+	/**
+	 * The path to the CSS file for the plugin.
+	 *
+	 * @var string
+	 */
+	public const PLUGIN_CSS_SRC = 'assets/css/hwp-previews.css';
+
+	/**
 	 * Settings group name used for the plugin.
 	 *
 	 * @var string
@@ -273,7 +288,7 @@ class Plugin {
 	}
 
 	/**
-	 * Enqueues the JavaScript file for the plugin admin area.
+	 * Enqueues the JavaScript and the CSS file for the plugin admin area.
 	 * Todo: if more complexity is added, consider using a separate class Sript_Enqueue.
 	 */
 	public function enqueue_plugin_js(): void {
@@ -289,6 +304,13 @@ class Plugin {
 				$this->version,
 				true
 			);
+
+        	wp_enqueue_style(
+				self::PLUGIN_CSS_HANDLE,
+				trailingslashit( $this->plugin_url ) . self::PLUGIN_CSS_SRC,
+				[],
+				$this->version
+        	);
 		} );
 	}
 
@@ -642,21 +664,35 @@ class Plugin {
 		$fields[] = new Checkbox_Field(
 			'enabled',
 			// translators: %s is the label of the post type.
-			sprintf( __( 'Enable HWP Previews for %s', 'hwp-previews' ), $label )
+			sprintf( __( 'Enable HWP Previews for %s', 'hwp-previews' ), $label ),
+			__( 'Turn preview functionality on or off for this public post type.', 'hwp-previews' )
 		);
-		$fields[] = new Checkbox_Field( 'unique_post_slugs', __( 'Enable unique post slugs for all post statuses', 'hwp-previews' ) );
+		$fields[] = new Checkbox_Field( 
+			'unique_post_slugs', 
+			__( 'Enable unique post slugs for all post statuses', 'hwp-previews' ),
+			__( 'By default WordPress adds unique post slugs to the published posts. This option enforces unique slugs for all post statuses.', 'hwp-previews' ) 
+		);
 
 		if ( $is_hierarchical ) {
-			$fields[] = new Checkbox_Field( 'post_statuses_as_parent', __( 'Allow all post statuses in parents option', 'hwp-previews' ) );
+			$fields[] = new Checkbox_Field( 
+				'post_statuses_as_parent', 
+				__( 'Allow all post statuses in parents option', 'hwp-previews' ), 
+				__( 'By default WordPress only allows published posts to be parents. This option allows posts of all statuses to be used as parent within hierarchical post types.', 'hwp-previews' ) 
+			);
 		}
 
-		$fields[] = new Checkbox_Field( 'in_iframe', sprintf( __( 'Load previews in iframe', 'hwp-previews' ), $label ) );
+		$fields[] = new Checkbox_Field( 
+			'in_iframe', 
+			sprintf( __( 'Load previews in iframe', 'hwp-previews' ), $label ),
+			__( 'With this option enabled, headless previews will be displayed inside an iframe on the preview page, without leaving WordPress.', 'hwp-previews' ) 
+		);
 		$fields[] = new Text_Input_Field(
 			'preview_url',
 			// translators: %s is the label of the post type.
 			sprintf( __( 'Preview URL for %s', 'hwp-previews' ), $label ),
+			__( 'Construct your preview URL using the tags on the right. You can add any parameters needed to support headless previews.', 'hwp-previews' ) ,
 			"https://localhost:3000/{$post_type}?preview=true&post_id={ID}&name={slug}",
-			'large-text code hwp-previews-url' // The class is being used as a query for the JS.
+			'code hwp-previews-url' // The class is being used as a query for the JS.
 		);
 
 		return $fields;
