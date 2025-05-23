@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace HWP\Previews;
 
+use HWP\Previews\Admin\Settings\Fields\Checkbox_Field;
+use HWP\Previews\Admin\Settings\Fields\Text_Input_Field;
+use HWP\Previews\Admin\Settings\Menu\Menu_Page;
+use HWP\Previews\Admin\Settings\Preview_Settings;
+use HWP\Previews\Admin\Settings\Settings_Cache_Group;
+use HWP\Previews\Admin\Settings\Settings_Section;
+use HWP\Previews\Admin\Settings\Tabbed_Settings;
 use HWP\Previews\Post\Data\Post_Data_Model;
 use HWP\Previews\Post\Parent\Post_Parent_Manager;
 use HWP\Previews\Post\Slug\Post_Slug_Manager;
@@ -18,14 +25,6 @@ use HWP\Previews\Preview\Link\Preview_Link_Service;
 use HWP\Previews\Preview\Parameter\Preview_Parameter;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 use HWP\Previews\Preview\Template\Preview_Template_Resolver;
-use HWP\Previews\Settings\Fields\Checkbox_Field;
-use HWP\Previews\Settings\Fields\Text_Input_Field;
-use HWP\Previews\Settings\Menu\Menu_Page;
-use HWP\Previews\Settings\Menu\Submenu_Page;
-use HWP\Previews\Settings\Preview_Settings;
-use HWP\Previews\Settings\Settings_Cache_Group;
-use HWP\Previews\Settings\Settings_Section;
-use HWP\Previews\Settings\Tabbed_Settings;
 use WP_Post;
 use WP_REST_Response;
 
@@ -162,7 +161,7 @@ final class Plugin {
 	/**
 	 * Settings object used for value retrieving.
 	 *
-	 * @var \HWP\Previews\Settings\Preview_Settings
+	 * @var \HWP\Previews\Admin\Settings\Preview_Settings
 	 */
 	private Preview_Settings $settings;
 
@@ -233,27 +232,6 @@ final class Plugin {
 		$this->version    = $version;
 		$this->dir_path   = $dir_path;
 		$this->plugin_url = $plugin_url;
-
-		// @TODO Refactor
-
-		// Initialize the settings object with a cache group.
-		$this->settings = new Preview_Settings(
-			new Settings_Cache_Group( self::SETTINGS_KEY, self::SETTINGS_GROUP, self::SETTINGS_FIELDS )
-		);
-
-		// Initialize the post types and statuses configurations.
-		$this->types_config    = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( $this->settings->post_types_enabled() );
-		$this->statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::POST_STATUSES );
-
-		// Initialize the preview parameter registry.
-		$this->parameters = new Preview_Parameter_Registry();
-
-		// Initialize the preview link service.
-		$this->link_service = new Preview_Link_Service(
-			$this->types_config,
-			$this->statuses_config,
-			new Preview_Link_Placeholder_Resolver( $this->parameters )
-		);
 	}
 
 	/**
@@ -279,14 +257,35 @@ final class Plugin {
 	 * Initialize the plugin functionality.
 	 */
 	public function setup(): void {
+
+		// @TODO Refactor
+
+		// Initialize the settings object with a cache group.
+		$this->settings = new Preview_Settings(
+			new Settings_Cache_Group( self::SETTINGS_KEY, self::SETTINGS_GROUP, self::SETTINGS_FIELDS )
+		);
+
+		// Initialize the post types and statuses configurations.
+		$this->types_config    = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( $this->settings->post_types_enabled() );
+		$this->statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::POST_STATUSES );
+
+		// Initialize the preview parameter registry.
+		$this->parameters = new Preview_Parameter_Registry();
+
+		// Initialize the preview link service.
+		$this->link_service = new Preview_Link_Service(
+			$this->types_config,
+			$this->statuses_config,
+			new Preview_Link_Placeholder_Resolver( $this->parameters )
+		);
+
+
 		// Init core functionality.
 		$this->init_core_functionality();
 
 		// Settings.
 		$this->register_settings_pages();
 		$this->register_settings_fields();
-
-		// JS.
 		$this->enqueue_plugin_js();
 
 		// Functionality.
@@ -298,7 +297,6 @@ final class Plugin {
 
 	/**
 	 * Enqueues the JavaScript and the CSS file for the plugin admin area.
-	 * Todo: if more complexity is added, consider using a separate class Sript_Enqueue.
 	 */
 	public function enqueue_plugin_js(): void {
 		// @TODO Move its own class for actions and filters
@@ -656,7 +654,7 @@ final class Plugin {
 	 * @param string $label    The label for the post type.
 	 * @param bool   $is_hierarchical Whether the post type is hierarchical.
 	 *
-	 * @return array<\HWP\Previews\Settings\Fields\Abstract_Settings_Field>
+	 * @return array<\HWP\Previews\Admin\Settings\Fields\Abstract_Settings_Field>
 	 */
 	private function create_settings_fields( string $post_type, string $label, bool $is_hierarchical ): array {
 		$fields = [];

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings\Contracts;
+namespace HWP\Previews\Admin\Settings\Contracts;
 
 interface General_Settings_Interface {
 	/**

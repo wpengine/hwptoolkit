@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings\Fields;
+namespace HWP\Previews\Admin\Settings\Fields;
 
 class Text_Input_Field extends Abstract_Settings_Field {
 	/**

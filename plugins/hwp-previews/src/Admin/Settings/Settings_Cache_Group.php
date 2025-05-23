@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings;
+namespace HWP\Previews\Admin\Settings;
 
 class Settings_Cache_Group {
 	/**

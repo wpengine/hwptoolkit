@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings;
+namespace HWP\Previews\Admin\Settings;
 
+use HWP\Previews\Admin\Settings\Contracts\Post_Types_Settings_Interface;
 use HWP\Previews\Plugin;
-use HWP\Previews\Settings\Contracts\Post_Types_Settings_Interface;
 
 class Preview_Settings implements Post_Types_Settings_Interface {
 	/**
 	 * The settings cache group.
 	 *
-	 * @var \HWP\Previews\Settings\Settings_Cache_Group
+	 * @var \HWP\Previews\Admin\Settings\Settings_Cache_Group
 	 */
 	private Settings_Cache_Group $group;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param \HWP\Previews\Settings\Settings_Cache_Group $group The settings cache group.
+	 * @param \HWP\Previews\Admin\Settings\Settings_Cache_Group $group The settings cache group.
 	 */
 	public function __construct( Settings_Cache_Group $group ) {
 		$this->group = $group;

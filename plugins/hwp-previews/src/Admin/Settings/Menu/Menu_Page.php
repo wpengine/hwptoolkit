@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings\Menu;
+namespace HWP\Previews\Admin\Settings\Menu;
 
-use HWP\Previews\Settings\Contracts\Menu_Page_Interface;
+use HWP\Previews\Admin\Settings\Contracts\Menu_Page_Interface;
 
 class Menu_Page implements Menu_Page_Interface {
 	/**

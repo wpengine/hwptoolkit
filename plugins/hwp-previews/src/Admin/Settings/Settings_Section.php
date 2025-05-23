@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings;
+namespace HWP\Previews\Admin\Settings;
 
 class Settings_Section {
 	/**
@@ -29,7 +29,7 @@ class Settings_Section {
 	/**
 	 * Array of fields to be registered in the section.
 	 *
-	 * @var array<\HWP\Previews\Settings\Fields\Abstract_Settings_Field>
+	 * @var array<\HWP\Previews\Admin\Settings\Fields\Abstract_Settings_Field>
 	 */
 	private array $fields;
 
@@ -39,7 +39,7 @@ class Settings_Section {
 	 * @param string                                                       $id Page slug.
 	 * @param string                                                       $title Settings section title.
 	 * @param string                                                       $page The slug of the settings page.
-	 * @param array<\HWP\Previews\Settings\Fields\Abstract_Settings_Field> $fields Array of fields to be registered in the section.
+	 * @param array<\HWP\Previews\Admin\Settings\Fields\Abstract_Settings_Field> $fields Array of fields to be registered in the section.
 	 */
 	public function __construct(
 		string $id,
