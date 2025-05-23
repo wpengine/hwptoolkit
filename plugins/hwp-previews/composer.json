@@ -1,15 +1,8 @@
 {
 	"name": "hwp/previews",
-	"version": "1.0.0",
 	"type": "wordpress-plugin",
-	"description": "This is a WordPress plugin that provides a preview....",
-	"keywords": [
-		"package",
-		"dependency",
-		"autoload"
-	],
-	"homepage": "https://wpengine.com/",
-	"license": "GPL-2.0-or-later",
+	"description": "A WordPress plugin for headless previews.",
+	"license": "GPL-3.0-or-later",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
@@ -17,11 +10,16 @@
 			"homepage": "https://wpengine.com/"
 		}
 	],
-	"minimum-stability": "dev",
-	"prefer-stable": true,
+	"keywords": [
+		"package",
+		"dependency",
+		"autoload"
+	],
 	"require": {
 		"php": "^7.4 || ^8.0"
 	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"require-dev": {
 		"automattic/vipwpcs": "^3.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
@@ -98,10 +96,10 @@
 	"scripts-descriptions": {
 	},
 	"support": {
-		"docs": "https://github.com/composer/composer/docs",
+		"docs": "https://github.com/wpengine/hwptoolkit/tree/main/docs",
 		"email": "headless-oss@wpengine.com",
-		"forum": "https://github.com/composer/composer/forum",
-		"issues": "https://github.com/composer/composer/issues",
-		"security": "https://github.com/composer/composer/security/policy"
+		"forum": "https://github.com/wpengine/hwptoolkit/discussions",
+		"issues": "https://github.com/wpengine/hwptoolkit/issues?q=is%3Aissue%20state%3Aopen%20label%3Atopic%3Apreviews",
+		"security": "https://github.com/wpengine/hwptoolkit/blob/main/SECURITY.md"
 	}
 }
