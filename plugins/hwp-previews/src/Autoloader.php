@@ -2,8 +2,8 @@
 /**
  * Includes the composer Autoloader used for packages and classes in the src/ directory.
  *
- * @package WPGraphQL\Webhooks
- * @since 0.1.4
+ * @package HWP\Previews
+ * @since 0.0.1
  */
 
 declare( strict_types = 1 );
