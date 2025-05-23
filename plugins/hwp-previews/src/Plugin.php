@@ -29,6 +29,9 @@ use HWP\Previews\Settings\Tabbed_Settings;
 use WP_Post;
 use WP_REST_Response;
 
+
+if ( ! class_exists( 'HWP\Previews\Plugin' ) ) :
+
 /**
  * Plugin class for HWP Previews.
  *
@@ -36,7 +39,7 @@ use WP_REST_Response;
  *
  * @package HWP\Previews
  */
-class Plugin {
+final class Plugin {
 	/**
 	 * The slug for the plugin menu.
 	 *
@@ -231,6 +234,8 @@ class Plugin {
 		$this->dir_path   = $dir_path;
 		$this->plugin_url = $plugin_url;
 
+		// @TODO Refactor
+
 		// Initialize the settings object with a cache group.
 		$this->settings = new Preview_Settings(
 			new Settings_Cache_Group( self::SETTINGS_KEY, self::SETTINGS_GROUP, self::SETTINGS_FIELDS )
@@ -252,16 +257,20 @@ class Plugin {
 	}
 
 	/**
-	 * Get the instance of this class. Passes the version, directory path, and plugin URL to the constructor.
-	 *
-	 * @param string $version The version of the plugin.
-	 * @param string $dir_path The directory path of the plugin.
-	 * @param string $plugin_url The URL of the plugin.
+	 * Constructor
 	 */
-	public static function get_instance( string $version, string $dir_path, string $plugin_url ): Plugin {
-		if ( null === self::$instance ) {
-			self::$instance = new self( $version, $dir_path, $plugin_url );
+	public static function instance(): self {
+		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
+			self::$instance = new self(HWP_PREVIEWS_VERSION, HWP_PREVIEWS_PLUGIN_DIR, HWP_PREVIEWS_PLUGIN_URL);
+			self::$instance->setup();
 		}
+
+		/**
+		 * Fire off init action.
+		 *
+		 * @param self $instance the instance of the plugin class.
+		 */
+		do_action( 'hwp_previews_init', self::$instance );
 
 		return self::$instance;
 	}
@@ -269,7 +278,7 @@ class Plugin {
 	/**
 	 * Initialize the plugin functionality.
 	 */
-	public function init(): void {
+	public function setup(): void {
 		// Init core functionality.
 		$this->init_core_functionality();
 
@@ -292,6 +301,7 @@ class Plugin {
 	 * Todo: if more complexity is added, consider using a separate class Sript_Enqueue.
 	 */
 	public function enqueue_plugin_js(): void {
+		// @TODO Move its own class for actions and filters
 		add_action( 'admin_enqueue_scripts', function ( string $hook ): void {
 			if ( 'toplevel_page_' . self::PLUGIN_MENU_SLUG !== $hook ) {
 				return;
@@ -318,6 +328,7 @@ class Plugin {
 	 * Enable unique post slugs for post statuses specified in the post statuses config.
 	 */
 	public function enable_unique_post_slug(): void {
+		// @TODO Move its own class for actions and filters
 		add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
 			$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
 
@@ -347,6 +358,7 @@ class Plugin {
 	 * @param \WP_Post          $post    The post object.
 	 */
 	public function filter_rest_prepare_link( WP_REST_Response $response, WP_Post $post ): WP_REST_Response {
+		// @TODO Move its own class for actions and filters
 		if ( $this->settings->in_iframe( $post->post_type ) ) {
 			return $response;
 		}
@@ -576,6 +588,7 @@ class Plugin {
 	 * @param array<string> $post_types The post types to be used in the settings page.
 	 */
 	private function create_settings_page( array $post_types ): Menu_Page {
+		// @TODO move to its own settings class
 		return new Menu_Page(
 			__( 'HWP Previews Settings', 'hwp-previews' ),
 			'HWP Previews',
@@ -611,6 +624,7 @@ class Plugin {
 	 * Creates the settings subpage.
 	 */
 	private function create_settings_subpage(): Submenu_Page {
+		// @TODO move to its own settings class
 		return new Submenu_Page(
 			self::PLUGIN_MENU_SLUG,
 			__( 'Testing Tool', 'hwp-previews' ),
@@ -626,6 +640,7 @@ class Plugin {
 	 * @param array<string> $post_types Post Types as a tabs.
 	 */
 	private function create_tabbed_settings( array $post_types ): Tabbed_Settings {
+		// @TODO move to its own settings class
 		return new Tabbed_Settings(
 			self::SETTINGS_GROUP,
 			self::SETTINGS_KEY,
@@ -641,6 +656,7 @@ class Plugin {
 	 * @param string $label     The label for the post type.
 	 */
 	private function create_setting_section( string $post_type, string $label ): Settings_Section {
+		// @TODO move to its own settings class
 		return new Settings_Section(
 			'hwp_previews_section_' . $post_type,
 			'',
@@ -661,30 +677,32 @@ class Plugin {
 	private function create_settings_fields( string $post_type, string $label, bool $is_hierarchical ): array {
 		$fields = [];
 
+		// @TODO move to its own settings class
+
 		$fields[] = new Checkbox_Field(
 			'enabled',
 			// translators: %s is the label of the post type.
 			sprintf( __( 'Enable HWP Previews for %s', 'hwp-previews' ), $label ),
 			__( 'Turn preview functionality on or off for this public post type.', 'hwp-previews' )
 		);
-		$fields[] = new Checkbox_Field( 
-			'unique_post_slugs', 
+		$fields[] = new Checkbox_Field(
+			'unique_post_slugs',
 			__( 'Enable unique post slugs for all post statuses', 'hwp-previews' ),
-			__( 'By default WordPress adds unique post slugs to the published posts. This option enforces unique slugs for all post statuses.', 'hwp-previews' ) 
+			__( 'By default WordPress adds unique post slugs to the published posts. This option enforces unique slugs for all post statuses.', 'hwp-previews' )
 		);
 
 		if ( $is_hierarchical ) {
-			$fields[] = new Checkbox_Field( 
-				'post_statuses_as_parent', 
-				__( 'Allow all post statuses in parents option', 'hwp-previews' ), 
-				__( 'By default WordPress only allows published posts to be parents. This option allows posts of all statuses to be used as parent within hierarchical post types.', 'hwp-previews' ) 
+			$fields[] = new Checkbox_Field(
+				'post_statuses_as_parent',
+				__( 'Allow all post statuses in parents option', 'hwp-previews' ),
+				__( 'By default WordPress only allows published posts to be parents. This option allows posts of all statuses to be used as parent within hierarchical post types.', 'hwp-previews' )
 			);
 		}
 
-		$fields[] = new Checkbox_Field( 
-			'in_iframe', 
+		$fields[] = new Checkbox_Field(
+			'in_iframe',
 			sprintf( __( 'Load previews in iframe', 'hwp-previews' ), $label ),
-			__( 'With this option enabled, headless previews will be displayed inside an iframe on the preview page, without leaving WordPress.', 'hwp-previews' ) 
+			__( 'With this option enabled, headless previews will be displayed inside an iframe on the preview page, without leaving WordPress.', 'hwp-previews' )
 		);
 		$fields[] = new Text_Input_Field(
 			'preview_url',
@@ -697,4 +715,29 @@ class Plugin {
 
 		return $fields;
 	}
+
+	/**
+	 * Throw error on object clone.
+	 * The whole idea of the singleton design pattern is that there is a single object
+	 * therefore, we don't want the object to be cloned.
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @return void
+	 */
+	public function __clone() {
+		// Cloning instances of the class is forbidden.
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'The plugin Plugin class should not be cloned.', 'hwp-previews' ), $this->version );
+	}
+
+	/**
+	 * Disable unserializing of the class.
+	 *
+	 * @codeCoverageIgnore
+	 */
+	public function __wakeup(): void {
+		// De-serializing instances of the class is forbidden.
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the plugin Main class is not allowed.', 'hwp-previews' ),  $this->version);
+	}
 }
+endif;
