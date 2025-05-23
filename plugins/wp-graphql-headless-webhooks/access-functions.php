@@ -7,9 +7,11 @@
 
 declare(strict_types=1);
 
+use WPGraphQL\Webhooks\DTO\WebhookDTO;
 use WPGraphQL\Webhooks\WebhookRegistry;
 use WPGraphQL\Webhooks\Events\Event;
 use WPGraphQL\Webhooks\Events\GraphQLEventRegistry;
+use WPGraphQL\Webhooks\WebhookTypeRegistry;
 
 /**
  * Registers a new webhook type.
@@ -28,32 +30,40 @@ use WPGraphQL\Webhooks\Events\GraphQLEventRegistry;
  * }
  */
 if ( ! function_exists( 'register_webhook_type' ) ) {
-	/** @phpstan-ignore missingType.iterableValue */
-	function register_webhook_type(string $type, array $args = []): void {
+	function register_webhook_type( string $type, array $args = [] ): void {
 		/** @psalm-suppress HookNotFound */
 		if ( did_action( 'graphql_register_webhooks' ) > 0 ) {
-			_doing_it_wrong(
-				'register_webhook_type',
-				esc_html__( 'Call this before WebhookRegistry::init', 'wp-graphql-headless-webhooks' ),
-				'0.1.0'
-			);
+			_doing_it_wrong( 'register_webhook_type', __( 'Call this before WebhookRegistry::init', 'wp-graphql-headless-webhooks' ), '0.1.0' );
+
+			return;
 		}
+
 		/** @psalm-suppress HookNotFound */
 		add_action(
 			'graphql_register_webhooks',
-			static function (WebhookRegistry $webhook_registry) use ($type, $args): void {
-				if ( ! isset( $args['events'] ) || ! is_array( $args['events'] ) ) {
-					$args['events'] = [];
-				}
-				// Use explicit boolean condition
-				if (count($args['events']) > 0) {
-					foreach ( $args['events'] as $event_type ) {
-						if ( function_exists( 'register_graphql_event' ) ) {
-							register_graphql_event( $event_type );
-						}
+			function (WebhookTypeRegistry $registry) use ($type, $args): void {
+				$events = [];
+				if ( ! empty( $args['events'] ) && is_array( $args['events'] ) ) {
+					foreach ( $args['events'] as $eventData ) {
+						$events[] = new Event(
+							$eventData['name'],
+							$eventData['hookName'],
+							$eventData['callback'] ?? null,
+							$eventData['priority'] ?? 10,
+							$eventData['argCount'] ?? 1
+						);
 					}
 				}
-				$webhook_registry->register_webhook_type( $type, $args );
+
+				$webhook = new WebhookDTO(
+					$type,
+					$args['label'] ?? '',
+					$args['description'] ?? '',
+					$args['config'] ?? [],
+					$events
+				);
+
+				$registry->register_webhook_type( $webhook );
 			}
 		);
 	}
@@ -74,7 +84,7 @@ if ( ! function_exists( 'create_webhook' ) ) {
 	/**
 	 * @return \WP_Error|int
 	 */
-	function create_webhook(string $type, string $name, array $config = []) { // @phpstan-ignore missingType.iterableValue
+	function create_webhook( string $type, string $name, array $config = [] ) { // @phpstan-ignore missingType.iterableValue
 		return WebhookRegistry::instance()->create_webhook( $type, $name, $config );
 	}
 
@@ -90,7 +100,7 @@ if ( ! function_exists( 'create_webhook' ) ) {
 if ( ! function_exists( 'get_webhook_type' ) ) {
 
 	/** @phpstan-ignore missingType.iterableValue */
-	function get_webhook_type(string $type): ?array {
+	function get_webhook_type( string $type ): ?array {
 		return WebhookRegistry::instance()->get_webhook_type( $type );
 	}
 
@@ -123,20 +133,20 @@ if ( ! function_exists( 'get_webhook_types' ) ) {
  *
  * @return void
  */
-function register_graphql_event(Event $event): void {
-    if (did_action('graphql_register_events')) {
-        _doing_it_wrong(
-            __FUNCTION__,
-            esc_html__('Call this before EventRegistry::init', 'wp-graphql-webhooks'),
-            '0.0.1'
-        );
-        return;
-    }
+function register_graphql_event( Event $event ): void {
+	if ( did_action( 'graphql_register_events' ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			esc_html__( 'Call this before EventRegistry::init', 'wp-graphql-webhooks' ),
+			'0.0.1'
+		);
+		return;
+	}
 
-    add_action(
-        'graphql_register_events',
-        static function (GraphQLEventRegistry $event_registry) use ($event) {
-            $event_registry->register_event($event);
-        }
-    );
+	add_action(
+		'graphql_register_events',
+		static function (GraphQLEventRegistry $event_registry) use ($event) {
+			$event_registry->register_event( $event );
+		}
+	);
 }
