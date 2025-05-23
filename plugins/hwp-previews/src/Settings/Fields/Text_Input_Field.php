@@ -17,6 +17,7 @@ class Text_Input_Field extends Abstract_Settings_Field {
 	 *
 	 * @param string $id The settings field ID.
 	 * @param string $title The settings field title.
+	 * @param string $description The settings field description.
 	 * @param string $default_value The default value for the field.
 	 * @param string $css_class The settings field class.
 	 */

@@ -305,12 +305,12 @@ class Plugin {
 				true
 			);
 
-        	wp_enqueue_style(
+			wp_enqueue_style(
 				self::PLUGIN_CSS_HANDLE,
 				trailingslashit( $this->plugin_url ) . self::PLUGIN_CSS_SRC,
 				[],
 				$this->version
-        	);
+			);
 		} );
 	}
 
@@ -690,7 +690,7 @@ class Plugin {
 			'preview_url',
 			// translators: %s is the label of the post type.
 			sprintf( __( 'Preview URL for %s', 'hwp-previews' ), $label ),
-			__( 'Construct your preview URL using the tags on the right. You can add any parameters needed to support headless previews.', 'hwp-previews' ) ,
+			__( 'Construct your preview URL using the tags on the right. You can add any parameters needed to support headless previews.', 'hwp-previews' ),
 			"https://localhost:3000/{$post_type}?preview=true&post_id={ID}&name={slug}",
 			'code hwp-previews-url' // The class is being used as a query for the JS.
 		);

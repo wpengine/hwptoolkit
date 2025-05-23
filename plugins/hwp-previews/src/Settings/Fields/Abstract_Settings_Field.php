@@ -69,9 +69,9 @@ abstract class Abstract_Settings_Field {
 		string $css_class = '',
 		string $description = ''
 	) {
-		$this->id    = $id;
-		$this->title = $title;
-		$this->class = $css_class;
+		$this->id          = $id;
+		$this->title       = $title;
+		$this->class       = $css_class;
 		$this->description = $description;
 	}
 
