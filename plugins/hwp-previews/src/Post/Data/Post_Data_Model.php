@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Post\Data;
 
-use HWP\Previews\Shared\Abstract_Model;
+use Exception;
 
 /**
  * Class Post_Data_Model.
  */
-final class Post_Data_Model extends Abstract_Model {
+final class Post_Data_Model {
 	/**
 	 * Post ID.
 	 *
@@ -57,5 +57,17 @@ final class Post_Data_Model extends Abstract_Model {
 		$this->post_type   = (string) ( $data['post_type'] ?? '' );
 		$this->post_name   = (string) ( $data['post_name'] ?? '' );
 		$this->post_title  = (string) ( $data['post_title'] ?? '' );
+	}
+
+	/**
+	 * This is a very good example of the method.
+	 *
+	 * @param string                                         $name The name of the property.
+	 * @param string|int|float|bool|array<mixed>|object|null $value The value to set.
+	 *
+	 * @throws \Exception When attempting to modify a readonly property.
+	 */
+	public function __set( string $name, $value ): void {
+		throw new Exception( 'Cannot modify readonly property: ' . esc_html( $name ) );
 	}
 }
