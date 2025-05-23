@@ -98,12 +98,12 @@ function graphql_headless_webhooks_dependencies_not_ready(): array {
  */
 function graphql_headless_webhooks_init(): void {
 	graphql_headless_webhooks_constants();
-
 	$not_ready = graphql_headless_webhooks_dependencies_not_ready();
 
 	if ( $not_ready === [] && defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' ) ) {
-		require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'src/Main.php';
-		\WPGraphQL\Webhooks\Main::instance();
+		require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'src/Plugin.php';
+		$plugin = new \WPGraphQL\Webhooks\Plugin();
+		$plugin->init();
 		return;
 	}
 
@@ -131,4 +131,5 @@ function graphql_headless_webhooks_init(): void {
 	}
 }
 /** @psalm-suppress HookNotFound */
-add_action( 'graphql_init', 'WPGraphQL\Webhooks\graphql_headless_webhooks_init' );
+add_action( 'plugins_loaded', 'WPGraphQL\Webhooks\graphql_headless_webhooks_init' );
+
