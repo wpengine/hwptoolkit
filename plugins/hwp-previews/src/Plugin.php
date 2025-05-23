@@ -193,26 +193,6 @@ final class Plugin {
 	 */
 	private Preview_Link_Service $link_service;
 
-	/**
-	 * The version of the plugin.
-	 *
-	 * @var string
-	 */
-	private string $version;
-
-	/**
-	 * The directory path of the plugin.
-	 *
-	 * @var string
-	 */
-	private string $dir_path;
-
-	/**
-	 * The URL of the plugin.
-	 *
-	 * @var string
-	 */
-	private string $plugin_url;
 
 	/**
 	 * The instance of the plugin.
@@ -222,24 +202,11 @@ final class Plugin {
 	private static ?Plugin $instance = null;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param string $version The version of the plugin.
-	 * @param string $dir_path The directory path of the plugin.
-	 * @param string $plugin_url The URL of the plugin.
-	 */
-	private function __construct( string $version, string $dir_path, string $plugin_url ) {
-		$this->version    = $version;
-		$this->dir_path   = $dir_path;
-		$this->plugin_url = $plugin_url;
-	}
-
-	/**
 	 * Constructor
 	 */
 	public static function instance(): self {
 		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
-			self::$instance = new self(HWP_PREVIEWS_VERSION, HWP_PREVIEWS_PLUGIN_DIR, HWP_PREVIEWS_PLUGIN_URL);
+			self::$instance = new self();
 			self::$instance->setup();
 		}
 
@@ -307,17 +274,17 @@ final class Plugin {
 
 			wp_enqueue_script(
 				self::PLUGIN_JS_HANDLE,
-				trailingslashit( $this->plugin_url ) . self::PLUGIN_JS_SRC,
+				trailingslashit( HWP_PREVIEWS_PLUGIN_URL ) . self::PLUGIN_JS_SRC,
 				[],
-				$this->version,
+				HWP_PREVIEWS_VERSION,
 				true
 			);
 
 			wp_enqueue_style(
 				self::PLUGIN_CSS_HANDLE,
-				trailingslashit( $this->plugin_url ) . self::PLUGIN_CSS_SRC,
+				trailingslashit( HWP_PREVIEWS_PLUGIN_URL ) . self::PLUGIN_CSS_SRC,
 				[],
-				$this->version
+				HWP_PREVIEWS_VERSION
 			);
 		} );
 	}
@@ -520,7 +487,7 @@ final class Plugin {
 			 */
 			$template_dir_path = (string) apply_filters(
 				'hwp_previews_template_path',
-				$this->dir_path . 'templates/hwp-preview.php'
+				HWP_PREVIEWS_PLUGIN_DIR . 'templates/hwp-preview.php'
 			);
 
 			$preview_template = $template_resolver->resolve_template_path( $post, $template_dir_path );
@@ -589,7 +556,7 @@ final class Plugin {
 			__( 'HWP Previews Settings', 'hwp-previews' ),
 			'HWP Previews',
 			self::PLUGIN_MENU_SLUG,
-			$this->dir_path . 'templates/admin/settings-page-main.php',
+			HWP_PREVIEWS_PLUGIN_DIR . 'templates/admin/settings-page-main.php',
 			[
 				self::SETTINGS_ARGS => [
 					'tabs'        => $post_types,
@@ -709,7 +676,7 @@ final class Plugin {
 	 */
 	public function __clone() {
 		// Cloning instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'The plugin Plugin class should not be cloned.', 'hwp-previews' ), $this->version );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'The plugin Plugin class should not be cloned.', 'hwp-previews' ), HWP_PREVIEWS_VERSION );
 	}
 
 	/**
@@ -719,7 +686,7 @@ final class Plugin {
 	 */
 	public function __wakeup(): void {
 		// De-serializing instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the plugin Main class is not allowed.', 'hwp-previews' ),  $this->version);
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the plugin Main class is not allowed.', 'hwp-previews' ),  HWP_PREVIEWS_VERSION);
 	}
 }
 endif;
