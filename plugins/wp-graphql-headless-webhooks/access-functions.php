@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use WPGraphQL\Webhooks\WebhookRegistry;
+use WPGraphQL\Webhooks\Events\GraphQLEventRegistry;
 
 /**
  * Registers a new webhook type.
@@ -106,4 +107,27 @@ if ( ! function_exists( 'get_webhook_types' ) ) {
 		return WebhookRegistry::instance()->get_webhook_types();
 	}
 
+}
+
+/**
+ * Registers a GraphQL event configuration to be attached to a WordPress action.
+ *
+ * This function schedules an event registration callback to be executed when
+ * the `graphql_register_events` action is fired (during `EventRegistry::init()`).
+ *
+ * The registered event will listen to a specified WordPress action (e.g. 'publish_post'),
+ * and execute a qualifying callback to potentially dispatch notifications or other side effects.
+ *
+ */
+function register_graphql_event( ...$args ) {
+	if ( did_action ( 'graphql_register_events' ) ) {
+		_doing_it_wrong( 'register_graphql_event', esc_html__( 'Call this before EventRegistry::init', 'wp-graphql-webhooks' ), '0.0.1' );
+	}
+
+	add_action(
+		'graphql_register_events', 
+		static function (GraphQLEventRegistry $event_registry) use ($args) {
+			$event_registry->registerEvent( ...$args );
+		}
+	);
 }
