@@ -428,8 +428,6 @@ final class Plugin {
 
 			$this->create_settings_page( $post_types )->register_page();
 
-			// Todo: Register the settings subpage.
-			// $this->create_settings_subpage()->register_page();  .
 		} );
 	}
 
@@ -618,20 +616,6 @@ final class Plugin {
 		}
 
 		return ! empty( $post_types ) ? (string) key( $post_types ) : '';
-	}
-
-	/**
-	 * Creates the settings subpage.
-	 */
-	private function create_settings_subpage(): Submenu_Page {
-		// @TODO move to its own settings class
-		return new Submenu_Page(
-			self::PLUGIN_MENU_SLUG,
-			__( 'Testing Tool', 'hwp-previews' ),
-			'Testing Tool',
-			'hwp-previews-testing-tool',
-			$this->dir_path . 'templates/admin/settings-page-testing-tool.php'
-		);
 	}
 
 	/**
