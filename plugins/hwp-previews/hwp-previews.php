@@ -19,7 +19,7 @@
  * @package HWP\Previews
  */
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -69,18 +69,36 @@ function hwp_previews_constants(): void {
 	if ( ! defined( 'HWP_PREVIEWS_AUTOLOAD' ) ) {
 		define( 'HWP_PREVIEWS_AUTOLOAD', true );
 	}
+
+	// Text Domain
+	if ( ! defined( 'HWP_PREVIEWS_TEXT_DOMAIN' ) ) {
+		define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
+	}
+
+	// @TODO - Remove
+
+	// Plugin config settings group
+	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
+		define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
+	}
+
+	// Plugin config settings key.
+	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_KEY' ) ) {
+		define( 'HWP_PREVIEWS_SETTINGS_KEY', 'hwp_previews_settings' );
+	}
 }
 
 /**
  * Initializes plugin.
  */
-function hwp_previews_init() : void {
+function hwp_previews_init(): void {
 	hwp_previews_constants();
 
 
 	if ( defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
 		require_once HWP_PREVIEWS_PLUGIN_DIR . 'src/Plugin.php';
 		\HWP\Previews\Plugin::instance();
+
 		return;
 	}
 
@@ -104,5 +122,6 @@ function hwp_previews_init() : void {
 		0
 	);
 }
+
 /** @psalm-suppress HookNotFound */
 add_action( 'plugins_loaded', 'hwp_previews_init', 15 );

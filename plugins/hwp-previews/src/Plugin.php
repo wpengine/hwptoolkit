@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace HWP\Previews;
 
-use HWP\Previews\Admin\Settings\Fields\Checkbox_Field;
-use HWP\Previews\Admin\Settings\Fields\Text_Input_Field;
-use HWP\Previews\Admin\Settings\Menu\Menu_Page;
+use HWP\Previews\Admin\Settings;
 use HWP\Previews\Admin\Settings\Preview_Settings;
 use HWP\Previews\Admin\Settings\Settings_Cache_Group;
-use HWP\Previews\Admin\Settings\Settings_Section;
-use HWP\Previews\Admin\Settings\Tabbed_Settings;
 use HWP\Previews\Post\Data\Post_Data_Model;
 use HWP\Previews\Post\Parent\Post_Parent_Manager;
 use HWP\Previews\Post\Slug\Post_Slug_Manager;
@@ -22,7 +18,6 @@ use HWP\Previews\Post\Type\Post_Type_Inspector;
 use HWP\Previews\Post\Type\Post_Types_Config;
 use HWP\Previews\Preview\Link\Preview_Link_Placeholder_Resolver;
 use HWP\Previews\Preview\Link\Preview_Link_Service;
-use HWP\Previews\Preview\Parameter\Preview_Parameter;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 use HWP\Previews\Preview\Template\Preview_Template_Resolver;
 use WP_Post;
@@ -39,62 +34,7 @@ if ( ! class_exists( 'HWP\Previews\Plugin' ) ) :
  * @package HWP\Previews
  */
 final class Plugin {
-	/**
-	 * The slug for the plugin menu.
-	 *
-	 * @var string
-	 */
-	public const PLUGIN_MENU_SLUG = 'hwp-previews';
 
-	/**
-	 * The slug for the plugin settings page.
-	 *
-	 * @var string
-	 */
-	public const PLUGIN_JS_HANDLE = 'hwp-previews-js';
-
-	/**
-	 * The path to the JavaScript file for the plugin.
-	 *
-	 * @var string
-	 */
-	public const PLUGIN_JS_SRC = 'assets/js/hwp-previews.js';
-
-	/**
-	 * The slug for the plugin settings page StyleSheet.
-	 *
-	 * @var string
-	 */
-	public const PLUGIN_CSS_HANDLE = 'hwp-previews-css';
-
-
-	/**
-	 * The path to the CSS file for the plugin.
-	 *
-	 * @var string
-	 */
-	public const PLUGIN_CSS_SRC = 'assets/css/hwp-previews.css';
-
-	/**
-	 * Settings group name used for the plugin.
-	 *
-	 * @var string
-	 */
-	public const SETTINGS_GROUP = 'hwp_previews_settings_group';
-
-	/**
-	 * Settings key used for the plugin.
-	 *
-	 * @var string
-	 */
-	public const SETTINGS_KEY = 'hwp_previews_settings';
-
-	/**
-	 * Settings arguments key used for setting query var when loading the template file.
-	 *
-	 * @var string
-	 */
-	public const SETTINGS_ARGS = 'hwp_previews_main_page_config';
 
 	/**
 	 * Settings field.
@@ -132,6 +72,7 @@ final class Plugin {
 	public const IN_IFRAME_FIELD = 'in_iframe';
 
 	/**
+	 * // @TODO - Remove
 	 * Settings fields and their types.
 	 *
 	 * @var array<string, string>
@@ -145,6 +86,8 @@ final class Plugin {
 	];
 
 	/**
+	 * @TODO get rid of 
+	 *
 	 * Post statuses that are applicable for previews.
 	 *
 	 * @var array<string>
@@ -179,12 +122,6 @@ final class Plugin {
 	 */
 	private Post_Statuses_Config_Interface $statuses_config;
 
-	/**
-	 * Preview parameter registry.
-	 *
-	 * @var \HWP\Previews\Preview\Parameter\Preview_Parameter_Registry
-	 */
-	private Preview_Parameter_Registry $parameters;
 
 	/**
 	 * Preview link service class that handles the generation of preview links.
@@ -229,64 +166,31 @@ final class Plugin {
 
 		// Initialize the settings object with a cache group.
 		$this->settings = new Preview_Settings(
-			new Settings_Cache_Group( self::SETTINGS_KEY, self::SETTINGS_GROUP, self::SETTINGS_FIELDS )
+			new Settings_Cache_Group( HWP_PREVIEWS_SETTINGS_KEY, HWP_PREVIEWS_SETTINGS_GROUP, self::SETTINGS_FIELDS )
 		);
 
 		// Initialize the post types and statuses configurations.
 		$this->types_config    = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( $this->settings->post_types_enabled() );
 		$this->statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::POST_STATUSES );
 
-		// Initialize the preview parameter registry.
-		$this->parameters = new Preview_Parameter_Registry();
 
+		// @TODO - Refactor Parameter Registry
 		// Initialize the preview link service.
 		$this->link_service = new Preview_Link_Service(
 			$this->types_config,
 			$this->statuses_config,
-			new Preview_Link_Placeholder_Resolver( $this->parameters )
+			new Preview_Link_Placeholder_Resolver( new Preview_Parameter_Registry() )
 		);
 
 
-		// Init core functionality.
-		$this->init_core_functionality();
-
 		// Settings.
-		$this->register_settings_pages();
-		$this->register_settings_fields();
-		$this->enqueue_plugin_js();
+		Settings::init($this->types_config);
 
 		// Functionality.
 		$this->enable_unique_post_slug();
 		$this->enable_post_statuses_as_parent();
 		$this->enable_preview_in_iframe();
 		$this->enable_preview_functionality();
-	}
-
-	/**
-	 * Enqueues the JavaScript and the CSS file for the plugin admin area.
-	 */
-	public function enqueue_plugin_js(): void {
-		// @TODO Move its own class for actions and filters
-		add_action( 'admin_enqueue_scripts', function ( string $hook ): void {
-			if ( 'toplevel_page_' . self::PLUGIN_MENU_SLUG !== $hook ) {
-				return;
-			}
-
-			wp_enqueue_script(
-				self::PLUGIN_JS_HANDLE,
-				trailingslashit( HWP_PREVIEWS_PLUGIN_URL ) . self::PLUGIN_JS_SRC,
-				[],
-				HWP_PREVIEWS_VERSION,
-				true
-			);
-
-			wp_enqueue_style(
-				self::PLUGIN_CSS_HANDLE,
-				trailingslashit( HWP_PREVIEWS_PLUGIN_URL ) . self::PLUGIN_CSS_SRC,
-				[],
-				HWP_PREVIEWS_VERSION
-			);
-		} );
 	}
 
 	/**
@@ -343,85 +247,16 @@ final class Plugin {
 	private function init_core_functionality(): void {
 		add_action( 'init', function (): void {
 
-			// Register default preview parameters.
-			$this->setup_default_preview_parameters();
 
+			// @TODO - Add back in.
 
 			/**
 			 * Allows access to the parameters registry, types config, statuses config.
 			 */
-			do_action( 'hwp_previews_core', $this->parameters, $this->types_config, $this->statuses_config );
+//			do_action( 'hwp_previews_core', $this->parameters, $this->types_config, $this->statuses_config );
 		}, 5, 0 );
 	}
 
-	/**
-	 * Registers default preview parameters on the init hook.
-	 * Uses 'hwp_previews_parameters_registry' action to allow modification of the parameters registry.
-	 */
-	private function setup_default_preview_parameters(): void {
-		$this->parameters
-			->register(
-				new Preview_Parameter( 'ID', static fn( WP_Post $post ) => (string) $post->ID, __( 'Post ID.', 'hwp-previews' ) )
-			)->register(
-				new Preview_Parameter( 'author_ID', static fn( WP_Post $post ) => $post->post_author, __( 'ID of post author..', 'hwp-previews' ) )
-			)->register(
-				new Preview_Parameter( 'status', static fn( WP_Post $post ) => $post->post_status, __( 'The post\'s status..', 'hwp-previews' ) )
-			)->register(
-				new Preview_Parameter( 'slug', static fn( WP_Post $post ) => $post->post_name, __( 'The post\'s slug.', 'hwp-previews' ) )
-			)->register(
-				new Preview_Parameter( 'parent_ID', static fn( WP_Post $post ) => (string) $post->post_parent, __( 'ID of a post\'s parent post.', 'hwp-previews' ) )
-			)->register(
-				new Preview_Parameter( 'type', static fn( WP_Post $post ) => $post->post_type, __( 'The post\'s type, like post or page.', 'hwp-previews' ) )
-			)->register(
-				new Preview_Parameter( 'uri', static fn( WP_Post $post ) => (string) get_page_uri( $post ), __( 'The URI path for a page.', 'hwp-previews' ) )
-			)->register(
-				new Preview_Parameter( 'template', static fn( WP_Post $post ) => (string) get_page_template_slug( $post ), __( 'Specific template filename for a given post.', 'hwp-previews' ) )
-			);
-	}
-
-	/**
-	 * Registers settings pages and subpages.
-	 */
-	private function register_settings_pages(): void {
-		add_action( 'admin_menu', function (): void {
-			/**
-			 * Array of post types where key is the post type slug and value is the label.
-			 *
-			 * @var array<string, string> $post_types
-			 */
-			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', $this->types_config->get_public_post_types() );
-
-			$this->create_settings_page( $post_types )->register_page();
-
-		} );
-	}
-
-	/**
-	 * Registers settings fields.
-	 */
-	private function register_settings_fields(): void {
-		add_action( 'admin_init', function (): void {
-
-			/**
-			 * Array of post types where key is the post type slug and value is the label.
-			 *
-			 * @var array<string, string> $post_types
-			 */
-			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', $this->types_config->get_public_post_types() );
-
-			/**
-			 * Register setting itself.
-			 */
-			$this->create_tabbed_settings( $post_types )->register_settings();
-
-			/**
-			 * Register settings sections and fields for each post type.
-			 */
-			foreach ( $post_types as $post_type => $label ) {
-				$this->create_setting_section( $post_type, $label )->register_section( self::SETTINGS_KEY, $post_type, "hwp-previews-{$post_type}" );
-			}
-		}, 10, 0 );
-	}
 
 	/**
 	 * Enable post statuses specified in the post statuses config as parent for the post types specified in the post types config.
@@ -543,126 +378,6 @@ final class Plugin {
 		}
 
 		return $this->link_service->generate_preview_post_link( $url, $post );
-	}
-
-	/**
-	 * Creates the settings page.
-	 *
-	 * @param array<string> $post_types The post types to be used in the settings page.
-	 */
-	private function create_settings_page( array $post_types ): Menu_Page {
-		// @TODO move to its own settings class
-		return new Menu_Page(
-			__( 'HWP Previews Settings', 'hwp-previews' ),
-			'HWP Previews',
-			self::PLUGIN_MENU_SLUG,
-			HWP_PREVIEWS_PLUGIN_DIR . 'templates/admin/settings-page-main.php',
-			[
-				self::SETTINGS_ARGS => [
-					'tabs'        => $post_types,
-					'current_tab' => $this->get_current_tab( $post_types ),
-					'params'      => $this->parameters->get_descriptions(),
-				],
-			],
-			'dashicons-welcome-view-site'
-		);
-	}
-
-	/**
-	 * Get the current tab for the settings page.
-	 *
-	 * @param array<string> $post_types The post types to be used in the settings page.
-	 * @param string        $tab The name of the tab.
-	 */
-	private function get_current_tab( $post_types, string $tab = 'tab' ): string {
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		if ( isset( $_GET[ $tab ] ) && is_string( $_GET[ $tab ] ) ) {
-			return sanitize_key( $_GET[ $tab ] );
-		}
-
-		return ! empty( $post_types ) ? (string) key( $post_types ) : '';
-	}
-
-	/**
-	 * Creates the tabbed settings object.
-	 *
-	 * @param array<string> $post_types Post Types as a tabs.
-	 */
-	private function create_tabbed_settings( array $post_types ): Tabbed_Settings {
-		// @TODO move to its own settings class
-		return new Tabbed_Settings(
-			self::SETTINGS_GROUP,
-			self::SETTINGS_KEY,
-			array_keys( $post_types ),
-			self::SETTINGS_FIELDS
-		);
-	}
-
-	/**
-	 * Creates the settings section for a specific post type.
-	 *
-	 * @param string $post_type The post type slug.
-	 * @param string $label     The label for the post type.
-	 */
-	private function create_setting_section( string $post_type, string $label ): Settings_Section {
-		// @TODO move to its own settings class
-		return new Settings_Section(
-			'hwp_previews_section_' . $post_type,
-			'',
-			'hwp-previews-' . $post_type,
-			$this->create_settings_fields( $post_type, $label, is_post_type_hierarchical( $post_type ) )
-		);
-	}
-
-	/**
-	 * Creates the settings fields for a specific post type.
-	 *
-	 * @param string $post_type The post type slug.
-	 * @param string $label    The label for the post type.
-	 * @param bool   $is_hierarchical Whether the post type is hierarchical.
-	 *
-	 * @return array<\HWP\Previews\Admin\Settings\Fields\Abstract_Settings_Field>
-	 */
-	private function create_settings_fields( string $post_type, string $label, bool $is_hierarchical ): array {
-		$fields = [];
-
-		// @TODO move to its own settings class
-
-		$fields[] = new Checkbox_Field(
-			'enabled',
-			// translators: %s is the label of the post type.
-			sprintf( __( 'Enable HWP Previews for %s', 'hwp-previews' ), $label ),
-			__( 'Turn preview functionality on or off for this public post type.', 'hwp-previews' )
-		);
-		$fields[] = new Checkbox_Field(
-			'unique_post_slugs',
-			__( 'Enable unique post slugs for all post statuses', 'hwp-previews' ),
-			__( 'By default WordPress adds unique post slugs to the published posts. This option enforces unique slugs for all post statuses.', 'hwp-previews' )
-		);
-
-		if ( $is_hierarchical ) {
-			$fields[] = new Checkbox_Field(
-				'post_statuses_as_parent',
-				__( 'Allow all post statuses in parents option', 'hwp-previews' ),
-				__( 'By default WordPress only allows published posts to be parents. This option allows posts of all statuses to be used as parent within hierarchical post types.', 'hwp-previews' )
-			);
-		}
-
-		$fields[] = new Checkbox_Field(
-			'in_iframe',
-			sprintf( __( 'Load previews in iframe', 'hwp-previews' ), $label ),
-			__( 'With this option enabled, headless previews will be displayed inside an iframe on the preview page, without leaving WordPress.', 'hwp-previews' )
-		);
-		$fields[] = new Text_Input_Field(
-			'preview_url',
-			// translators: %s is the label of the post type.
-			sprintf( __( 'Preview URL for %s', 'hwp-previews' ), $label ),
-			__( 'Construct your preview URL using the tags on the right. You can add any parameters needed to support headless previews.', 'hwp-previews' ),
-			"https://localhost:3000/{$post_type}?preview=true&post_id={ID}&name={slug}",
-			'code hwp-previews-url' // The class is being used as a query for the JS.
-		);
-
-		return $fields;
 	}
 
 	/**
