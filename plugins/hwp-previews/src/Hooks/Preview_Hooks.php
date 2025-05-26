@@ -12,6 +12,7 @@ use HWP\Previews\Post\Status\Post_Statuses_Config;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
 use HWP\Previews\Post\Type\Post_Type_Inspector;
 use HWP\Previews\Post\Type\Post_Types_Config;
+use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 use HWP\Previews\Preview\Link\Preview_Link_Placeholder_Resolver;
 use HWP\Previews\Preview\Link\Preview_Link_Service;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
@@ -68,11 +69,9 @@ class Preview_Hooks {
 	public static function init_class_properties(): void {
 
 		// @TODO - Add more filters
-
 		self::$settings_helper = Settings_Helper::get_instance();
 
-		// @TODO - Make easier and remove duplication
-		self::$types_config = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( self::$settings_helper->post_types_enabled() );
+		self::$types_config = Post_Types_Config_Registry::get_post_type_config();
 
 		// Initialize the post types and statuses configurations.
 		self::$statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::get_post_statuses() );

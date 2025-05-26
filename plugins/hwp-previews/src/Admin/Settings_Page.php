@@ -9,26 +9,13 @@ use HWP\Previews\Admin\Settings\Menu\Menu_Page;
 use HWP\Previews\Admin\Settings\Settings_Section;
 use HWP\Previews\Admin\Settings\Tabbed_Settings;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
-use HWP\Previews\Post\Type\Post_Type_Inspector;
-use HWP\Previews\Post\Type\Post_Types_Config;
+use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 
 class Settings_Page {
 
-	/**
-	 * @TODO move along with other functionaligyt into a Settings page class.
-	 *
-	 * Preview parameter registry.
-	 *
-	 * @var Preview_Parameter_Registry
-	 */
 	protected static ?Preview_Parameter_Registry $parameters = null;
 
-	/**
-	 * @TODO - Refactor this dependency injection.
-	 *
-	 * @var Post_Types_Config_Interface|null
-	 */
 	protected static ?Post_Types_Config_Interface $types_config = null;
 
 	/**
@@ -47,15 +34,12 @@ class Settings_Page {
 
 	public static function init_class_properties(): void {
 
-		self::$parameters = Preview_Parameter_Registry::get_instance();
-
-		// @TODO - Make easier and remove duplication
-		$settings           = Settings_Helper::get_instance();
-		self::$types_config = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( $settings->post_types_enabled() );
+		self::$parameters   = Preview_Parameter_Registry::get_instance();
+		self::$types_config = Post_Types_Config_Registry::get_post_type_config();
 	}
 
 	public static function register_settings_pages(): void {
-		// @TODO: Move under settings page class or WPGraphQL - https://github.com/wpengine/hwptoolkit/issues/205
+		// @TODO: Move under settings page - https://github.com/wpengine/hwptoolkit/issues/205
 		// Also see comment for load_scripts_styles
 		add_action( 'admin_menu', function (): void {
 			/**
