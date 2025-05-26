@@ -56,7 +56,7 @@ class Preview_Hooks {
 	public static function init(): void {
 
 		// @TODO - As part of https://github.com/wpengine/hwptoolkit/issues/226 we should
-		// look at moving the WP filters into this init class.  
+		// look at moving the WP filters into this init class.
 		self::init_class_properties();
 		self::enable_unique_post_slug();
 		self::enable_post_statuses_as_parent();
@@ -109,7 +109,6 @@ class Preview_Hooks {
 	 * Enable unique post slugs for post statuses specified in the post statuses config.
 	 */
 	public static function enable_unique_post_slug(): void {
-		// @TODO Move its own class for actions and filters
 		add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
 			$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
 
