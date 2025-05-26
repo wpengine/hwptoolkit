@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HWP\Previews;
 
 use HWP\Previews\Admin\Settings;
+use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
 use HWP\Previews\Admin\Settings\Preview_Settings;
 use HWP\Previews\Admin\Settings\Settings_Cache_Group;
 use HWP\Previews\Post\Data\Post_Data_Model;
@@ -35,56 +36,6 @@ if ( ! class_exists( 'HWP\Previews\Plugin' ) ) :
  */
 final class Plugin {
 
-
-	/**
-	 * Settings field.
-	 *
-	 * @var string
-	 */
-	public const ENABLED_FIELD = 'enabled';
-
-	/**
-	 * Settings field.
-	 *
-	 * @var string
-	 */
-	public const UNIQUE_POST_SLUGS_FIELD = 'unique_post_slugs';
-
-	/**
-	 * Settings field.
-	 *
-	 * @var string
-	 */
-	public const POST_STATUSES_AS_PARENT_FIELD = 'post_statuses_as_parent';
-
-	/**
-	 * Settings field.
-	 *
-	 * @var string
-	 */
-	public const PREVIEW_URL_FIELD = 'preview_url';
-
-	/**
-	 * Settings field.
-	 *
-	 * @var string
-	 */
-	public const IN_IFRAME_FIELD = 'in_iframe';
-
-	/**
-	 * // @TODO - Remove
-	 * Settings fields and their types.
-	 *
-	 * @var array<string, string>
-	 */
-	public const SETTINGS_FIELDS = [
-		self::ENABLED_FIELD                 => 'bool',
-		self::UNIQUE_POST_SLUGS_FIELD       => 'bool',
-		self::POST_STATUSES_AS_PARENT_FIELD => 'bool',
-		self::PREVIEW_URL_FIELD             => 'string',
-		self::IN_IFRAME_FIELD               => 'bool',
-	];
-
 	/**
 	 * @TODO get rid of
 	 *
@@ -102,11 +53,12 @@ final class Plugin {
 	];
 
 	/**
-	 * Settings object used for value retrieving.
+	 * Settings helper instance that provides access to plugin settings.
 	 *
-	 * @var \HWP\Previews\Admin\Settings\Preview_Settings
+	 * @var Settings_Helper
 	 */
-	private Preview_Settings $settings;
+	private Settings_Helper $settings_helper;
+
 
 	/**
 	 * Post types configuration.
@@ -171,15 +123,10 @@ final class Plugin {
 			// registry
 
 
-
-		// @TODO Remove
-		// Initialize the settings object with a cache group.
-		$this->settings = new Preview_Settings(
-			new Settings_Cache_Group( HWP_PREVIEWS_SETTINGS_KEY, HWP_PREVIEWS_SETTINGS_GROUP, self::SETTINGS_FIELDS )
-		);
+		$this->settings_helper = Settings_Helper::get_instance();
 
 		// Initialize the post types and statuses configurations.
-		$this->types_config    = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( $this->settings->post_types_enabled() );
+		$this->types_config    = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( $this->settings_helper->post_types_enabled() );
 		$this->statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::POST_STATUSES );
 
 
@@ -210,7 +157,7 @@ final class Plugin {
 			$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
 
 			// Check if the correspondent setting is enabled.
-			if ( ! $this->settings->unique_post_slugs( $post->post_type ) ) {
+			if ( ! $this->settings_helper->unique_post_slugs( $post->post_type ) ) {
 				return $data;
 			}
 
@@ -236,7 +183,7 @@ final class Plugin {
 	 */
 	public function filter_rest_prepare_link( WP_REST_Response $response, WP_Post $post ): WP_REST_Response {
 		// @TODO Move its own class for actions and filters
-		if ( $this->settings->in_iframe( $post->post_type ) ) {
+		if ( $this->settings_helper->in_iframe( $post->post_type ) ) {
 			return $response;
 		}
 
@@ -280,7 +227,7 @@ final class Plugin {
 			$post_type = (string) $args['post_type'];
 
 			// Check if the correspondent setting is enabled.
-			if ( ! $this->settings->post_statuses_as_parent( $post_type ) ) {
+			if ( ! $this->settings_helper->post_statuses_as_parent( $post_type ) ) {
 				return $args;
 			}
 
@@ -321,7 +268,7 @@ final class Plugin {
 			}
 
 			// Check if the correspondent setting is enabled.
-			if ( ! $this->settings->in_iframe( $post->post_type ) ) {
+			if ( ! $this->settings_helper->in_iframe( $post->post_type ) ) {
 				return $template;
 			}
 
@@ -352,7 +299,7 @@ final class Plugin {
 	private function enable_preview_functionality(): void {
 		add_filter( 'preview_post_link', function ( $link, $post ) {
 			// If iframe option is enabled, we need to resolve preview on the template redirect level.
-			if ( $this->settings->in_iframe( $post->post_type ) ) {
+			if ( $this->settings_helper->in_iframe( $post->post_type ) ) {
 				return $link;
 			}
 
@@ -379,7 +326,7 @@ final class Plugin {
 	 */
 	private function generate_preview_url( WP_Post $post ): string {
 		// Check if the correspondent setting is enabled.
-		$url = $this->settings->url_template( $post->post_type );
+		$url = $this->settings_helper->url_template( $post->post_type );
 
 		if ( empty( $url ) ) {
 			return '';

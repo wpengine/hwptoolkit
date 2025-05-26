@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 namespace HWP\Previews\Preview\Parameter;
 
@@ -19,8 +19,7 @@ class Preview_Parameter_Registry {
 	 *
 	 * @var self|null
 	 */
-	public static $instance = null;
-
+	protected static $instance = null;
 
 	/**
 	 * Registered parameters.
@@ -29,21 +28,21 @@ class Preview_Parameter_Registry {
 	 */
 	private array $parameters = [];
 
-	public static function get_instance() : self {
+	public static function get_instance(): self {
 
 		$instance = self::$instance;
 
-		if ( is_object($instance) && $instance instanceof self ) {
+		if ( $instance instanceof self ) {
 			return $instance;
 		}
 
-		$instance = new self();
-		$instance = self::addInitialParameters( $instance );
-		self::$instance = $instance;
-		return $instance;
+		$instance       = new self();
+		self::$instance = self::addInitialParameters( $instance );
+
+		return self::$instance;
 	}
 
-	public static function addInitialParameters(self $instance): self {
+	public static function addInitialParameters( self $instance ): self {
 		$instance
 			->register(
 				new Preview_Parameter( 'ID', static fn( WP_Post $post ) => (string) $post->ID, __( 'Post ID.', HWP_PREVIEWS_TEXT_DOMAIN ) )
@@ -64,7 +63,7 @@ class Preview_Parameter_Registry {
 			);
 
 		// Allow users to register/unregister parameters.
-		return apply_filters('hwp_previews_register_parameters', $instance);
+		return apply_filters( 'hwp_previews_register_parameters', $instance );
 	}
 
 	/**

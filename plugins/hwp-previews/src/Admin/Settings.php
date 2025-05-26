@@ -4,14 +4,13 @@ namespace HWP\Previews\Admin;
 
 use HWP\Previews\Admin\Settings\Fields\Checkbox_Field;
 use HWP\Previews\Admin\Settings\Fields\Text_Input_Field;
+use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
 use HWP\Previews\Admin\Settings\Menu\Menu_Page;
 use HWP\Previews\Admin\Settings\Settings_Section;
 use HWP\Previews\Admin\Settings\Tabbed_Settings;
 use HWP\Previews\Plugin;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
-use HWP\Previews\Preview\Parameter\Preview_Parameter;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
-use WP_Post;
 
 class Settings {
 
@@ -204,19 +203,13 @@ class Settings {
 	 * @param array<string> $post_types Post Types as a tabs.
 	 */
 	public static function create_tabbed_settings( array $post_types ): Tabbed_Settings {
+		$helper = Settings_Helper::get_instance();
+
 		return new Tabbed_Settings(
 			HWP_PREVIEWS_SETTINGS_GROUP,
 			HWP_PREVIEWS_SETTINGS_KEY,
 			array_keys( $post_types ),
-			// @TODO Refactor as this is not the right approach
-			// We shouldn't have these in a constant array in the Plugin class.
-			[
-				Plugin::ENABLED_FIELD                 => 'bool',
-				Plugin::UNIQUE_POST_SLUGS_FIELD       => 'bool',
-				Plugin::POST_STATUSES_AS_PARENT_FIELD => 'bool',
-				Plugin::PREVIEW_URL_FIELD             => 'string',
-				Plugin::IN_IFRAME_FIELD               => 'bool',
-			]
+			$helper->get_settings_config()
 		);
 	}
 
