@@ -7,6 +7,7 @@
 
 namespace WPGraphQL\Webhooks;
 
+use WPGraphQL\Webhooks\Events\Interfaces\EventRegistry;
 use WPGraphQL\Webhooks\PostTypes\WebhookPostType;
 
 /**
@@ -20,6 +21,8 @@ class WebhookRegistry {
 	 * @var array<string, array<string, mixed>> Array of webhook types keyed by type identifier.
 	 */
 	private array $webhook_types = [];
+
+	private ?EventRegistry $eventRegistry = null;
 
 	/**
 	 * Instance of the registry
@@ -52,48 +55,10 @@ class WebhookRegistry {
 		do_action( 'graphql_register_webhooks', self::instance() );
 	}
 
-	/**
-	 * Register the webhook CPT
-	 */
-	public function register_webhook_cpt(): void {
-		$labels = [ 
-			'name' => __( 'Webhooks', 'wp-graphql-headless-webhooks' ),
-			'singular_name' => __( 'Webhook', 'wp-graphql-headless-webhooks' ),
-			'add_new' => __( 'Add New', 'wp-graphql-headless-webhooks' ),
-			'add_new_item' => __( 'Add New Webhook', 'wp-graphql-headless-webhooks' ),
-			'edit_item' => __( 'Edit Webhook', 'wp-graphql-headless-webhooks' ),
-			'new_item' => __( 'New Webhook', 'wp-graphql-headless-webhooks' ),
-			'view_item' => __( 'View Webhook', 'wp-graphql-headless-webhooks' ),
-			'search_items' => __( 'Search Webhooks', 'wp-graphql-headless-webhooks' ),
-			'not_found' => __( 'No Webhooks found', 'wp-graphql-headless-webhooks' ),
-			'not_found_in_trash' => __( 'No Webhooks found in Trash', 'wp-graphql-headless-webhooks' ),
-			'parent_item_colon' => __( 'Parent Webhook:', 'wp-graphql-headless-webhooks' ),
-			'menu_name' => __( 'Webhooks', 'wp-graphql-headless-webhooks' ),
-		];
-
-		$args = [ 
-			'labels' => $labels,
-			'publicly_queryable' => false,
-			'hierarchical' => false,
-			'description' => 'Manages GraphQL Webhooks',
-			'taxonomies' => [],
-			'public' => false,
-			'show_ui' => true,
-			'show_in_menu' => true,
-			'show_in_admin_bar' => false,
-			'menu_icon' => 'dashicons-share-alt',
-			'show_in_nav_menus' => false,
-			'exclude_from_search' => true,
-			'has_archive' => false,
-			'query_var' => true,
-			'can_export' => true,
-			'rewrite' => false,
-			'capability_type' => 'post',
-			'supports' => [ 'title' ],
-		];
-
-		register_post_type( 'graphql_webhook', $args );
-	}
+	public function setEventRegistry(EventRegistry $eventRegistry): void {
+        $this->eventRegistry = $eventRegistry;
+		$this->eventRegistry->init();
+    }
 
 	/**
 	 * Register a webhook type
@@ -112,19 +77,34 @@ class WebhookRegistry {
 		if ( $type === '' ) {
 			return false;
 		}
-
 		if ( isset( $this->webhook_types[ $type ] ) ) {
 			return false;
 		}
+		
 
 		$defaults = [ 
 			'label' => $type,
 			'description' => '',
 			'config' => [],
+			'events' => [],
 		];
 
 		$args = wp_parse_args( $args, $defaults );
 		$this->webhook_types[ $type ] = $args;
+		if ($this->eventRegistry !== null && !empty($args['events'])) {
+            foreach ($args['events'] as $event) {
+                if (!isset($event['name']) || !isset($event['hook_name'])) {
+                    continue;
+                }
+                $this->eventRegistry->registerEvent(
+                    $event['name'],
+                    $event['hook_name'],
+                    $event['callback'] ?? null,
+                    $event['priority'] ?? 10,
+                    $event['arg_count'] ?? 1
+                );
+            }
+        }
 
 		return true;
 	}

@@ -43,7 +43,8 @@
 	"config": {
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true,
-			"phpstan/extension-installer": true
+			"phpstan/extension-installer": true,
+			"cweagans/composer-patches": true
 		},
 		"optimize-autoloader": true,
 		"classmap-authoritative": true,
