@@ -86,6 +86,11 @@ function hwp_previews_constants(): void {
 	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_KEY' ) ) {
 		define( 'HWP_PREVIEWS_SETTINGS_KEY', 'hwp_previews_settings' );
 	}
+
+	// Plugin Template Directory.
+	if ( ! defined( 'HWP_PREVIEWS_TEMPLATE_DIR' ) ) {
+		define( 'HWP_PREVIEWS_TEMPLATE_DIR', trailingslashit( HWP_PREVIEWS_PLUGIN_DIR ) . '/src/Admin/Settings/Templates/' );
+	}
 }
 
 /**

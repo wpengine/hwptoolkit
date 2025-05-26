@@ -107,7 +107,7 @@ class Settings_Page {
 			__( 'HWP Previews Settings', HWP_PREVIEWS_TEXT_DOMAIN ),
 			'HWP Previews',
 			self::PLUGIN_MENU_SLUG,
-			trailingslashit( HWP_PREVIEWS_PLUGIN_DIR ) . '/src/Admin/Settings/Templates/Admin/settings-page-main.php',
+			trailingslashit( HWP_PREVIEWS_TEMPLATE_DIR ) . 'settings-page-main.php',
 			[
 				'hwp_previews_main_page_config' => [
 					'tabs'        => $post_types,

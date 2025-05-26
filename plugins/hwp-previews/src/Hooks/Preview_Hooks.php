@@ -55,10 +55,39 @@ class Preview_Hooks {
 	 */
 	public static function init(): void {
 		self::init_class_properties();
-		self::enable_unique_post_slug();
-		self::enable_post_statuses_as_parent();
-		self::enable_preview_in_iframe();
-		self::enable_preview_functionality();
+		self::add_filters_actions();
+	}
+
+	public static function add_filters_actions() {
+		// Enable the unique post slug functionality.
+		add_filter( 'wp_insert_post_data', [ self::class, 'enable_unique_post_slug' ], 10, 2 );
+
+		// Enable post statuses as parent for the post types specified in the post-types config.
+		add_filter( 'page_attributes_dropdown_pages_args', [ self::class, 'enable_post_statuses_as_parent' ], 10, 1 );
+		add_filter( 'quick_edit_dropdown_pages_args', [ self::class, 'enable_post_statuses_as_parent' ], 10, 1 );
+
+		foreach ( self::$types_config->get_post_types() as $post_type ) {
+			if ( ! self::$types_config->gutenberg_editor_enabled( $post_type ) ) {
+				continue;
+			}
+			// @TODO - Add unit tests for this filter.
+			add_filter( 'rest_' . $post_type . '_query', [ self::class, 'enable_post_statuses_as_parent' ], 10, 1 );
+		}
+
+		// iframe preview functionality.
+		add_filter( 'template_include', [ self::class, 'add_iframe_preview_template' ], 10, 1 );
+
+		// Preview link functionality.
+		add_filter( 'preview_post_link', [ self::class, 'update_preview_post_link' ], 10, 2 );
+
+
+		/**
+		 * Hack Function that changes the preview link for draft articles,
+		 * this must be removed when properly fixed https://github.com/WordPress/gutenberg/issues/13998.
+		 */
+		foreach ( self::$types_config->get_public_post_types() as $key => $label ) {
+			add_filter( 'rest_prepare_' . $key, [ self::class, 'filter_rest_prepare_link' ], 10, 2 );
+		}
 	}
 
 	public static function init_class_properties(): void {
@@ -101,30 +130,67 @@ class Preview_Hooks {
 	}
 
 	/**
-	 * @TODO - Removed as per https://github.com/wpengine/hwptoolkit/issues/226
-	 * Enable unique post slugs for post statuses specified in the post statuses config.
+	 * @TODO Remove as part of https://github.com/wpengine/hwptoolkit/issues/226
+	 *
+	 * @link https://developer.wordpress.org/reference/hooks/wp_insert_post_data/
+	 *
+	 * @param array $data
+	 * @param array $postarr
+	 *
+	 * @return array
 	 */
-	public static function enable_unique_post_slug(): void {
-		add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
-			$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
+	public static function enable_unique_post_slug( array $data, array $postarr ): array {
+		$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
 
-			// Check if the correspondent setting is enabled.
-			if ( ! self::$settings_helper->unique_post_slugs( $post->post_type ) ) {
-				return $data;
-			}
-
-			$post_slug = ( new Post_Slug_Manager(
-				self::$types_config,
-				self::$statuses_config,
-				new Post_Slug_Repository()
-			) )->force_unique_post_slug( $post );
-
-			if ( ! empty( $post_slug ) ) {
-				$data['post_name'] = $post_slug;
-			}
-
+		// Check if the correspondent setting is enabled.
+		if ( ! self::$settings_helper->unique_post_slugs( $post->post_type ) ) {
 			return $data;
-		}, 10, 2 );
+		}
+
+		$post_slug = ( new Post_Slug_Manager(
+			self::$types_config,
+			self::$statuses_config,
+			new Post_Slug_Repository()
+		) )->force_unique_post_slug( $post );
+
+		if ( ! empty( $post_slug ) ) {
+			$data['post_name'] = $post_slug;
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * Enable post statuses as parent for the post types specified in the post types config.
+	 *
+	 * @param array $args The arguments for the dropdown pages
+	 *
+	 * @return array The modified dropdown arguments with post statuses as parent if applicable.
+	 * @link https://developer.wordpress.org/reference/hooks/page_attributes_dropdown_pages_args/.
+	 *
+	 * @link https://developer.wordpress.org/reference/hooks/quick_edit_dropdown_pages_args/
+	 */
+	public static function enable_post_statuses_as_parent( array $args ): array {
+		$post_parent_manager = new Post_Parent_Manager( self::$types_config, self::$statuses_config );
+
+		if ( empty( $args['post_type'] ) ) {
+			return $args;
+		}
+
+		$post_type = (string) $args['post_type'];
+
+		// Check if the correspondent setting is enabled.
+		if ( ! self::$settings_helper->post_statuses_as_parent( $post_type ) ) {
+			return $args;
+		}
+
+		$post_statuses = $post_parent_manager->get_post_statuses_as_parent( $post_type );
+		if ( ! empty( $post_statuses ) ) {
+			$args['post_status'] = $post_statuses;
+		}
+
+		return $args;
 	}
 
 	/**
@@ -147,107 +213,69 @@ class Preview_Hooks {
 	}
 
 	/**
-	 * Enable post-statuses specified in the post-statuses config as parent for the post types specified in the post-types config.
-	 */
-	public static function enable_post_statuses_as_parent(): void {
-		$post_parent_manager = new Post_Parent_Manager( self::$types_config, self::$statuses_config );
-
-		$post_parent_manager_callback = function ( array $args ) use ( $post_parent_manager ): array {
-			if ( empty( $args['post_type'] ) ) {
-				return $args;
-			}
-
-			$post_type = (string) $args['post_type'];
-
-			// Check if the correspondent setting is enabled.
-			if ( ! self::$settings_helper->post_statuses_as_parent( $post_type ) ) {
-				return $args;
-			}
-
-			$post_statuses = $post_parent_manager->get_post_statuses_as_parent( $post_type );
-			if ( ! empty( $post_statuses ) ) {
-				$args['post_status'] = $post_statuses;
-			}
-
-			return $args;
-		};
-
-		add_filter( 'page_attributes_dropdown_pages_args', $post_parent_manager_callback );
-		add_filter( 'quick_edit_dropdown_pages_args', $post_parent_manager_callback );
-
-		// And for Gutenberg.
-		foreach ( self::$types_config->get_post_types() as $post_type ) {
-			if ( ! self::$types_config->gutenberg_editor_enabled( $post_type ) ) {
-				continue;
-			}
-			add_filter( 'rest_' . $post_type . '_query', $post_parent_manager_callback );
-		}
-	}
-
-	/**
 	 * Enable preview functionality in iframe.
 	 */
-	public static function enable_preview_in_iframe(): void {
+	public static function add_iframe_preview_template( string $template ): string {
+		if ( ! is_preview() ) {
+			return $template;
+		}
+
+		$post = get_post();
+		if ( ! $post instanceof WP_Post ) {
+			return $template;
+		}
+
+		// Check if the correspondent setting is enabled.
+		if ( ! self::$settings_helper->in_iframe( $post->post_type ) ) {
+			return $template;
+		}
+
 		$template_resolver = new Preview_Template_Resolver( self::$types_config, self::$statuses_config );
 
-		add_filter( 'template_include', function ( $template ) use ( $template_resolver ) {
-			if ( ! is_preview() ) {
-				return $template;
-			}
 
-			$post = get_post();
-			if ( ! $post instanceof WP_Post ) {
-				return $template;
-			}
+		/**
+		 * The filter 'hwp_previews_template_path' allows to change the template directory path.
+		 */
+		$template_dir_path = (string) apply_filters(
+			'hwp_previews_template_path',
+			trailingslashit( HWP_PREVIEWS_TEMPLATE_DIR ) . 'hwp-preview.php',
+		);
 
-			// Check if the correspondent setting is enabled.
-			if ( ! self::$settings_helper->in_iframe( $post->post_type ) ) {
-				return $template;
-			}
+		$preview_template = $template_resolver->resolve_template_path( $post, $template_dir_path );
 
-			/**
-			 * The filter 'hwp_previews_template_path' allows to change the template directory path.
-			 */
-			$template_dir_path = (string) apply_filters(
-				'hwp_previews_template_path',
-				HWP_PREVIEWS_PLUGIN_DIR . 'templates/hwp-preview.php'
-			);
+		if ( empty( $preview_template ) ) {
+			error_log( 'Preview template not found for post type' . (string) $post->post_type );
 
-			$preview_template = $template_resolver->resolve_template_path( $post, $template_dir_path );
+			return $template;
+		}
 
-			if ( empty( $preview_template ) ) {
-				return $template;
-			}
+		set_query_var( $template_resolver::HWP_PREVIEWS_IFRAME_PREVIEW_URL, self::generate_preview_url( $post ) );
 
-			set_query_var( $template_resolver::HWP_PREVIEWS_IFRAME_PREVIEW_URL, self::generate_preview_url( $post ) );
-
-			return $preview_template;
-		}, 999 );
+		return $preview_template;
 	}
 
 	/**
-	 * Swaps the preview link for the post types specified in the post types config.
-	 * Is being enabled only if the preview is not in iframe. Otherwise preview functionality is resolved on the template redirect level.
+	 * Enables preview functionality when iframe option is disabled.
+	 *
+	 * @link https://developer.wordpress.org/reference/hooks/preview_post_link/
+	 *
+	 * @return void
 	 */
-	public static function enable_preview_functionality(): void {
-		add_filter( 'preview_post_link', function ( $link, $post ) {
-			// If iframe option is enabled, we need to resolve preview on the template redirect level.
-			if ( self::$settings_helper->in_iframe( $post->post_type ) ) {
-				return $link;
-			}
+	public static function update_preview_post_link( string $preview_link, WP_Post $post ): string {
 
-			$url = self::generate_preview_url( $post );
+		// @TODO - Need to do more testing and add e2e tests for this filter.
 
-			return ! empty( $url ) ? $url : $link;
-		}, 10, 2 );
-
-		/**
-		 * Hack Function that changes the preview link for draft articles,
-		 * this must be removed when properly fixed https://github.com/WordPress/gutenberg/issues/13998.
-		 */
-		foreach ( self::$types_config->get_public_post_types() as $key => $label ) {
-			add_filter( 'rest_prepare_' . $key, [ self::class, 'filter_rest_prepare_link' ], 10, 2 );
+		// If iframe option is enabled, we need to resolve preview on the template redirect level.
+		if ( self::$settings_helper->in_iframe( $post->post_type ) ) {
+			return $preview_link;
 		}
+
+		$url = self::generate_preview_url( $post );
+		if ( empty( $url ) ) {
+			return $preview_link;
+		}
+
+		return $url;
 	}
 
 	/**
