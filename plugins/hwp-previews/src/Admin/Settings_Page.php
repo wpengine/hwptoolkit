@@ -8,11 +8,12 @@ use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
 use HWP\Previews\Admin\Settings\Menu\Menu_Page;
 use HWP\Previews\Admin\Settings\Settings_Section;
 use HWP\Previews\Admin\Settings\Tabbed_Settings;
-use HWP\Previews\Plugin;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
+use HWP\Previews\Post\Type\Post_Type_Inspector;
+use HWP\Previews\Post\Type\Post_Types_Config;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 
-class Settings {
+class Settings_Page {
 
 	/**
 	 * @TODO move along with other functionaligyt into a Settings page class.
@@ -21,14 +22,14 @@ class Settings {
 	 *
 	 * @var Preview_Parameter_Registry
 	 */
-	public static ?Preview_Parameter_Registry $parameters = null;
+	protected static ?Preview_Parameter_Registry $parameters = null;
 
 	/**
 	 * @TODO - Refactor this dependency injection.
 	 *
 	 * @var Post_Types_Config_Interface|null
 	 */
-	public static ?Post_Types_Config_Interface $types_config = null;
+	protected static ?Post_Types_Config_Interface $types_config = null;
 
 	/**
 	 * The slug for the plugin menu.
@@ -37,12 +38,20 @@ class Settings {
 	 */
 	public const PLUGIN_MENU_SLUG = 'hwp-previews';
 
-	public static function init(Post_Types_Config_Interface $types_config): void {
-		self::$types_config = $types_config;
-		self::register_parameters();
+	public static function init(): void {
+		self::init_class_properties();
 		self::register_settings_pages();
 		self::register_settings_fields();
 		self::load_scripts_styles();
+	}
+
+	public static function init_class_properties(): void {
+
+		self::$parameters = Preview_Parameter_Registry::get_instance();
+
+		// @TODO - Make easier and remove duplication
+		$settings           = Settings_Helper::get_instance();
+		self::$types_config = ( new Post_Types_Config( new Post_Type_Inspector() ) )->set_post_types( $settings->post_types_enabled() );
 	}
 
 	public static function register_settings_pages(): void {
@@ -122,7 +131,7 @@ class Settings {
 			__( 'HWP Previews Settings', HWP_PREVIEWS_TEXT_DOMAIN ),
 			'HWP Previews',
 			self::PLUGIN_MENU_SLUG,
-			trailingslashit(HWP_PREVIEWS_PLUGIN_DIR) . '/src/Admin/Settings/Templates/Admin/settings-page-main.php',
+			trailingslashit( HWP_PREVIEWS_PLUGIN_DIR ) . '/src/Admin/Settings/Templates/Admin/settings-page-main.php',
 			[
 				'hwp_previews_main_page_config' => [
 					'tabs'        => $post_types,
@@ -226,14 +235,5 @@ class Settings {
 		}
 
 		return ! empty( $post_types ) ? (string) key( $post_types ) : '';
-	}
-
-	/**
-	 * Register the preview parameters.
-	 *
-	 * @return void
-	 */
-	public static function register_parameters(): void {
-		self::$parameters = Preview_Parameter_Registry::get_instance();
 	}
 }

@@ -1,9 +1,6 @@
 <?php
 
 namespace HWP\Previews\Admin\Settings\Helper;
-
-use HWP\Previews\Plugin;
-
 class Settings_Helper {
 
 	/**
