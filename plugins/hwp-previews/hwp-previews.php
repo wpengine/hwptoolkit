@@ -21,6 +21,8 @@
 
 declare( strict_types=1 );
 
+use HWP\Previews\Plugin;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -75,7 +77,6 @@ function hwp_previews_constants(): void {
 		define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
 	}
 
-	// @TODO - Remove
 	// Plugin config settings group
 	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
 		define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
@@ -96,7 +97,7 @@ function hwp_previews_init(): void {
 
 	if ( defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
 		require_once HWP_PREVIEWS_PLUGIN_DIR . 'src/Plugin.php';
-		\HWP\Previews\Plugin::instance();
+		Plugin::instance();
 
 		return;
 	}

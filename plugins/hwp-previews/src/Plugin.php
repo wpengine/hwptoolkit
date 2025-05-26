@@ -8,7 +8,7 @@ use HWP\Previews\Admin\Settings_Page;
 use HWP\Previews\Hooks\Preview_Hooks;
 
 
-if ( ! class_exists( 'HWP\Previews\Plugin' ) ) :
+if ( ! class_exists( Plugin::class ) ) :
 
 	/**
 	 * Plugin class for HWP Previews.
@@ -23,7 +23,7 @@ if ( ! class_exists( 'HWP\Previews\Plugin' ) ) :
 		/**
 		 * The instance of the plugin.
 		 *
-		 * @var \HWP\Previews\Plugin|null
+		 * @var Plugin|null
 		 */
 		protected static ?Plugin $instance = null;
 
@@ -53,7 +53,6 @@ if ( ! class_exists( 'HWP\Previews\Plugin' ) ) :
 			Settings_Page::init();
 			Preview_Hooks::init();
 		}
-
 
 		/**
 		 * Throw error on object clone.

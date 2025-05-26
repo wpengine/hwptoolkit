@@ -18,11 +18,6 @@ class Settings_Page {
 
 	protected static ?Post_Types_Config_Interface $types_config = null;
 
-	/**
-	 * The slug for the plugin menu.
-	 *
-	 * @var string
-	 */
 	public const PLUGIN_MENU_SLUG = 'hwp-previews';
 
 	public static function init(): void {
@@ -39,8 +34,6 @@ class Settings_Page {
 	}
 
 	public static function register_settings_pages(): void {
-		// @TODO: Move under settings page - https://github.com/wpengine/hwptoolkit/issues/205
-		// Also see comment for load_scripts_styles
 		add_action( 'admin_menu', function (): void {
 			/**
 			 * Array of post types where key is the post type slug and value is the label.
@@ -48,7 +41,6 @@ class Settings_Page {
 			 * @var array<string, string> $post_types
 			 */
 			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', self::$types_config->get_public_post_types() );
-
 			self::create_settings_page( $post_types )->register_page();
 
 		} );
@@ -83,8 +75,8 @@ class Settings_Page {
 	 */
 	public static function load_scripts_styles(): void {
 		add_action( 'admin_enqueue_scripts', function ( string $hook ): void {
-			// @TODO - Change as part of https://github.com/wpengine/hwptoolkit/issues/205
-			if ( 'toplevel_page_' . self::PLUGIN_MENU_SLUG !== $hook ) {
+
+			if ( 'settings_page_' . self::PLUGIN_MENU_SLUG !== $hook ) {
 				return;
 			}
 

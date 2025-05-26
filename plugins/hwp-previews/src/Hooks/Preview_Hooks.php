@@ -54,16 +54,12 @@ class Preview_Hooks {
 	 * Initialize the hooks for the preview functionality.
 	 */
 	public static function init(): void {
-
-		// @TODO - As part of https://github.com/wpengine/hwptoolkit/issues/226 we should
-		// look at moving the WP filters into this init class.
 		self::init_class_properties();
 		self::enable_unique_post_slug();
 		self::enable_post_statuses_as_parent();
 		self::enable_preview_in_iframe();
 		self::enable_preview_functionality();
 	}
-
 
 	public static function init_class_properties(): void {
 
