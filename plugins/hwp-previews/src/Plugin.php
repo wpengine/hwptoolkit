@@ -86,7 +86,7 @@ final class Plugin {
 	];
 
 	/**
-	 * @TODO get rid of 
+	 * @TODO get rid of
 	 *
 	 * Post statuses that are applicable for previews.
 	 *
@@ -163,7 +163,16 @@ final class Plugin {
 	public function setup(): void {
 
 		// @TODO Refactor
+		// Move to Hooks class
+		// Create
+			// parameters
+			// types
+			// statuses
+			// registry
 
+
+
+		// @TODO Remove
 		// Initialize the settings object with a cache group.
 		$this->settings = new Preview_Settings(
 			new Settings_Cache_Group( HWP_PREVIEWS_SETTINGS_KEY, HWP_PREVIEWS_SETTINGS_GROUP, self::SETTINGS_FIELDS )
@@ -174,12 +183,11 @@ final class Plugin {
 		$this->statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::POST_STATUSES );
 
 
-		// @TODO - Refactor Parameter Registry
 		// Initialize the preview link service.
 		$this->link_service = new Preview_Link_Service(
 			$this->types_config,
 			$this->statuses_config,
-			new Preview_Link_Placeholder_Resolver( new Preview_Parameter_Registry() )
+			new Preview_Link_Placeholder_Resolver(Preview_Parameter_Registry::get_instance())
 		);
 
 

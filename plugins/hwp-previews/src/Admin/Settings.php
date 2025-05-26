@@ -236,32 +236,11 @@ class Settings {
 	}
 
 	/**
-	 * @TODO Refactor - Just getting this to work for now.
+	 * Register the preview parameters.
 	 *
-	 * @return Preview_Parameter_Registry
+	 * @return void
 	 */
 	public static function register_parameters(): void {
-
-		$params = new Preview_Parameter_Registry();
-		$params
-			->register(
-				new Preview_Parameter( 'ID', static fn( WP_Post $post ) => (string) $post->ID, __( 'Post ID.', HWP_PREVIEWS_TEXT_DOMAIN ) )
-			)->register(
-				new Preview_Parameter( 'author_ID', static fn( WP_Post $post ) => $post->post_author, __( 'ID of post author..', HWP_PREVIEWS_TEXT_DOMAIN ) )
-			)->register(
-				new Preview_Parameter( 'status', static fn( WP_Post $post ) => $post->post_status, __( 'The post\'s status..', HWP_PREVIEWS_TEXT_DOMAIN ) )
-			)->register(
-				new Preview_Parameter( 'slug', static fn( WP_Post $post ) => $post->post_name, __( 'The post\'s slug.', HWP_PREVIEWS_TEXT_DOMAIN ) )
-			)->register(
-				new Preview_Parameter( 'parent_ID', static fn( WP_Post $post ) => (string) $post->post_parent, __( 'ID of a post\'s parent post.', HWP_PREVIEWS_TEXT_DOMAIN ) )
-			)->register(
-				new Preview_Parameter( 'type', static fn( WP_Post $post ) => $post->post_type, __( 'The post\'s type, like post or page.', HWP_PREVIEWS_TEXT_DOMAIN ) )
-			)->register(
-				new Preview_Parameter( 'uri', static fn( WP_Post $post ) => (string) get_page_uri( $post ), __( 'The URI path for a page.', HWP_PREVIEWS_TEXT_DOMAIN ) )
-			)->register(
-				new Preview_Parameter( 'template', static fn( WP_Post $post ) => (string) get_page_template_slug( $post ), __( 'Specific template filename for a given post.', HWP_PREVIEWS_TEXT_DOMAIN ) )
-			);
-
-		self::$parameters = $params;
+		self::$parameters = Preview_Parameter_Registry::get_instance();
 	}
 }

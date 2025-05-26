@@ -76,7 +76,6 @@ function hwp_previews_constants(): void {
 	}
 
 	// @TODO - Remove
-
 	// Plugin config settings group
 	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
 		define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
