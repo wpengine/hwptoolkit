@@ -10,8 +10,6 @@ use HWP\Previews\Post\Slug\Post_Slug_Repository;
 use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
 use HWP\Previews\Post\Status\Post_Statuses_Config;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
-use HWP\Previews\Post\Type\Post_Type_Inspector;
-use HWP\Previews\Post\Type\Post_Types_Config;
 use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 use HWP\Previews\Preview\Link\Preview_Link_Placeholder_Resolver;
 use HWP\Previews\Preview\Link\Preview_Link_Service;
@@ -57,7 +55,8 @@ class Preview_Hooks {
 	 */
 	public static function init(): void {
 
-		// @TODO - Extract out actions/filters to a method to make it more readable.
+		// @TODO - As part of https://github.com/wpengine/hwptoolkit/issues/226 we should
+		// look at moving the WP filters into this init class.  
 		self::init_class_properties();
 		self::enable_unique_post_slug();
 		self::enable_post_statuses_as_parent();
@@ -68,20 +67,27 @@ class Preview_Hooks {
 
 	public static function init_class_properties(): void {
 
-		// @TODO - Add more filters
 		self::$settings_helper = Settings_Helper::get_instance();
 
-		self::$types_config = Post_Types_Config_Registry::get_post_type_config();
+		self::$types_config = apply_filters(
+			'hwp_previews_hooks_post_type_config',
+			Post_Types_Config_Registry::get_post_type_config()
+		);
 
 		// Initialize the post types and statuses configurations.
-		self::$statuses_config = ( new Post_Statuses_Config() )->set_post_statuses( self::get_post_statuses() );
-
+		self::$statuses_config = apply_filters(
+			'hwp_previews_hooks_post_status_config',
+			( new Post_Statuses_Config() )->set_post_statuses( self::get_post_statuses() )
+		);
 
 		// Initialize the preview link service.
-		self::$link_service = new Preview_Link_Service(
-			self::$types_config,
-			self::$statuses_config,
-			new Preview_Link_Placeholder_Resolver( Preview_Parameter_Registry::get_instance() )
+		self::$link_service = apply_filters(
+			'hwp_previews_hooks_preview_link_service',
+			new Preview_Link_Service(
+				self::$types_config,
+				self::$statuses_config,
+				new Preview_Link_Placeholder_Resolver( Preview_Parameter_Registry::get_instance() )
+			)
 		);
 	}
 
@@ -95,10 +101,11 @@ class Preview_Hooks {
 			'auto-draft'
 		];
 
-		return apply_filters( 'hwp_previews_post_statuses', $post_statuses );
+		return apply_filters( 'hwp_previews_hooks_post_statuses', $post_statuses );
 	}
 
 	/**
+	 * @TODO - Removed as per https://github.com/wpengine/hwptoolkit/issues/226
 	 * Enable unique post slugs for post statuses specified in the post statuses config.
 	 */
 	public static function enable_unique_post_slug(): void {
