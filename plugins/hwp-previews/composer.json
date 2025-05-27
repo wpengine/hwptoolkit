@@ -50,7 +50,7 @@
 		}
 	},
 	"archive": {
-		"name": "hwp-previews",
+      	"name": "hwp-previews-plugin",
 		"exclude": [
 			"/.*",
 			"!.wordpress-org",
