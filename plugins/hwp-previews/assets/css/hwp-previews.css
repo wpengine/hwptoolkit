@@ -1,3 +1,9 @@
+.hwp-previews-tag-cloud {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
 .form-table td input.hwp-previews-url {
 	width: calc(99% - 24px);
 	display: inline-block;
