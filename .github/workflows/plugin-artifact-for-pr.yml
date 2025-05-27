@@ -21,9 +21,11 @@ jobs:
           php-version: '7.4'
 
       - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress
+        working-directory: plugins/hwp-previews
+        run: composer install --no-dev --optimize-autoloader
 
       - name: Create plugin artifact
+        working-directory: plugins/hwp-previews
         run: composer create-artifact
 
       - name: Upload plugin artifact
