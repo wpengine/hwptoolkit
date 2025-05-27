@@ -20,6 +20,10 @@ jobs:
         with:
           php-version: '7.4'
 
+      - name: Clean plugin build directory of any previous artifacts
+        working-directory: plugins/hwp-previews/plugin-build
+        run: rm -f *.zip
+
       - name: Install Composer dependencies
         working-directory: plugins/hwp-previews
         run: composer install --no-dev --optimize-autoloader
@@ -42,7 +46,7 @@ jobs:
             const pr = context.payload.pull_request;
             const runId = context.runId;
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
-            const body = `🔗 [Download the plugin artifact from this workflow run](${artifactUrl}) (see the 'Artifacts' section at the bottom).`;
+            const body = `ℹ️ [Download the plugin artifact from this workflow run](${artifactUrl}) (see the 'Artifacts' section at the bottom).`;
             await github.rest.issues.createComment({
               issue_number: pr.number,
               owner: context.repo.owner,
