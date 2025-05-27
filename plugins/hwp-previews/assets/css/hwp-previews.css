@@ -1,7 +1,7 @@
 .hwp-previews-tag-cloud {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 10px;
+	gap: 8px;
 }
 
 .form-table td input.hwp-previews-url {
