@@ -15,24 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.4'
-
       - name: Create plugin artifact
-        working-directory: plugins/hwp-previews
-        run: |
-          composer install --no-dev --optimize-autoloader
-          echo "${GITHUB_SHA}" > build-sha.txt
-          rm -f plugin-build/hwp-previews-*.zip
-          composer archive -vvv --format=zip --file="plugin-build/hwp-previews" --dir="."
-
-      - name: Upload plugin artifact
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/create-plugin-artifact
         with:
-            name: hwp-previews-${{ github.sha }}
-            path: plugins/hwp-previews/plugin-build/*.zip
+          slug: hwp-previews
 
       - name: Comment with artifact link
         uses: actions/github-script@v7

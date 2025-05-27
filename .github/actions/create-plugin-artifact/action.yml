@@ -1,0 +1,28 @@
+name: 'Create Plugin Artifact'
+description: 'Builds and uploads a plugin artifact for a PR if a plugin directory is modified.'
+inputs:
+  slug:
+    description: 'Plugin slug (directory name under plugins/)'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+
+    - name: Install dependencies and build
+      working-directory: plugins/${{ inputs.slug }}
+      run: |
+        composer install --no-dev --optimize-autoloader
+        echo "${GITHUB_SHA}" > build-sha.txt
+        rm -f plugin-build/${{ inputs.slug }}-*.zip
+        composer archive -vvv --format=zip --file="plugin-build/${{ inputs.slug }}" --dir="."
+      shell: bash
+
+    - name: Upload plugin artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.slug }}-${{ github.sha }}
+        path: plugins/${{ inputs.slug }}/plugin-build/*.zip
