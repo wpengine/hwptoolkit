@@ -26,7 +26,7 @@ jobs:
           composer install --no-dev --optimize-autoloader
           echo "${GITHUB_SHA}" > .build-sha
           rm -f plugin-build/hwp-previews.zip
-          composer archive -vvv --format=zip --file="plugin-build/hwp-previews.zip" --dir=plugin-build
+          composer archive -vvv --format=zip --file="plugin-build/hwp-previews" --dir="hwp-previews"
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
