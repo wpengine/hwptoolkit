@@ -31,7 +31,7 @@ jobs:
           composer archive -vvv --format=zip --file="plugin-build/hwp-previews"
 
       - name: Rename archive with GitHub SHA
-        working-directory: plugins/hwp-previews
+        working-directory: plugins/hwp-previews/plugin-build
         run: |
           ORIGINAL_ZIP=$(ls *.zip | head -n 1)
           mv "$ORIGINAL_ZIP" "test-${GITHUB_SHA}.zip"
