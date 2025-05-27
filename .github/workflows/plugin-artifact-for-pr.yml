@@ -24,7 +24,7 @@ jobs:
         working-directory: plugins/hwp-previews
         run: |
           composer install --no-dev --optimize-autoloader
-          echo "${GITHUB_SHA}" > .build-sha
+          echo "${GITHUB_SHA}" > build-sha.txt
           rm -f plugin-build/hwp-previews.zip
           mkdir -p plugin-build
           composer archive -vvv --format=zip --file="plugin-build/hwp-previews" --dir="."
