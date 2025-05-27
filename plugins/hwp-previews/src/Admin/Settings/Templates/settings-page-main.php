@@ -45,32 +45,12 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 						<div class="postbox">
 							<h2><?php esc_html_e( 'Available Preview URL Parameters', 'hwp-previews' ); ?></h2>
 							<div class="inside">
-								<div class="tag-cloud">
+								<div class="hwp-previews-tag-cloud">
 									<?php foreach ( $hwp_previews_params as $hwp_previews_param_name => $hwp_previews_param_desc ) : ?>
-										<a href="#" class="button button-secondary"
-										   title="<?php echo esc_attr( $hwp_previews_param_desc ); ?>"
-										   style="margin:0 5px 10px 0; font-size: 16px" onclick="
-												const input = document.querySelector('.hwp-previews-url');
-												const linkText = this.textContent.trim();
-
-												// Get cursor position
-												const cursorPos = input.selectionStart;
-
-												// Split text at cursor position
-												const textBefore = input.value.substring(0, cursorPos);
-												const textAfter = input.value.substring(cursorPos);
-
-												// Insert link text at cursor position
-												input.value = textBefore + linkText + textAfter;
-
-												// Set cursor position after inserted text
-												const newCursorPos = cursorPos + linkText.length;
-												input.setSelectionRange(newCursorPos, newCursorPos);
-
-												// Focus the input
-												input.focus();">
+										<button type="button" class="button button-secondary hwp-previews-insert-tag"
+											title="<?php echo esc_attr( $hwp_previews_param_desc ); ?>">
 											<?php echo esc_html( "{{$hwp_previews_param_name}}" ); ?>
-										</a>
+										</button>
 									<?php endforeach; ?>
 								</div>
 							</div>
