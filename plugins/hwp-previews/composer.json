@@ -51,16 +51,25 @@
 	},
 	"archive": {
 		"exclude": [
-			"vendor/",
-			"phpcs/",
-			"phpstan/",
-			".gitignore",
-			".editorconfig",
-			"composer.json",
-			"composer.lock",
-			"*.xml",
-			"*.dist",
-			"*.md"
+			"/.*",
+			"!.wordpress-org",
+			"bin",
+			"docker",
+			"docs",
+			"phpstan",
+			"phpcs",
+			"plugin-build",
+			"tests",
+			"!vendor",
+			"!vendor-prefixed",
+			"/docker-compose.yml",
+			"/phpstan.neon.dist",
+			"/psalm.xml",
+			"/phpcs.xml",
+			"/ACTIONS_AND_FILTERS.md",
+			"/phpcs-cache.json",
+			"/Thumbs.db",
+			"/auth.json"
 		]
 	},
 	"autoload": {
@@ -77,6 +86,9 @@
 		}
 	},
 	"scripts": {
+		"create-artifact": [
+			"composer archive -vvv --format=zip --file=\"plugin-build/hwp-previews\""
+		],
 		"lint": "vendor/bin/phpcs",
 		"phpcs-i": [
 			"php ./vendor/bin/phpcs -i"

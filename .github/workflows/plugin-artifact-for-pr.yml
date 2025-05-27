@@ -1,0 +1,33 @@
+name: Plugin Artifact for PR
+
+on:
+  pull_request:
+    paths:
+      - 'plugins/hwp-previews/**'
+      - 'plugins/hwp-previews-plugin/**'
+
+jobs:
+  create-plugin-artifact:
+    name: Create Plugin Artifact
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Create plugin artifact
+        run: composer create-artifact
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hwp-previews
+          path: plugins/hwp-previews/plugin-builds/*.zip
