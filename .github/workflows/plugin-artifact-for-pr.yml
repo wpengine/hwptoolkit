@@ -20,6 +20,9 @@ jobs:
         with:
           php-version: '7.4'
 
+      - name: Create SHA file
+        run: echo "${GITHUB_SHA}" > .build-sha
+
       - name: Install Composer dependencies
         working-directory: plugins/hwp-previews
         run: composer install --no-dev --optimize-autoloader
@@ -29,10 +32,6 @@ jobs:
         run: |
           rm -f plugin-build/hwp-previews.zip
           composer archive -vvv --format=zip --file="plugin-build/hwp-previews"
-
-      - name: Rename archive with GitHub SHA
-        working-directory: plugins/hwp-previews/plugin-build
-        run: mv "hwp-previews.zip" "hwp-previews-${GITHUB_SHA}.zip"
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
