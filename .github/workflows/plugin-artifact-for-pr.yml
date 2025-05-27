@@ -27,8 +27,14 @@ jobs:
       - name: Create plugin artifact
         working-directory: plugins/hwp-previews
         run: |
-          GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c1-7)
-          composer archive -vvv --format=zip --file="plugin-build/hwp-previews-${GITHUB_SHA_SHORT}"
+          rm -f plugin-build/hwp-previews.zip
+          composer archive -vvv --format=zip --file="plugin-build/hwp-previews"
+
+      - name: Rename archive with GitHub SHA
+        working-directory: plugins/hwp-previews
+        run: |
+          ORIGINAL_ZIP=$(ls *.zip | head -n 1)
+          mv "$ORIGINAL_ZIP" "test-${GITHUB_SHA}.zip"
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
