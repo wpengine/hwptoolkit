@@ -22,7 +22,10 @@ jobs:
 
       - name: Clean plugin build directory of any previous artifacts
         working-directory: plugins/hwp-previews/plugin-build
-        run: rm -f *.zip
+        run: |
+          if ls *.zip 1> /dev/null 2>&1; then
+            rm -f *.zip
+          fi
 
       - name: Install Composer dependencies
         working-directory: plugins/hwp-previews
