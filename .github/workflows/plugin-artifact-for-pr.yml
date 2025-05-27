@@ -26,10 +26,10 @@ jobs:
 
       - name: Create plugin artifact
         working-directory: plugins/hwp-previews
-        run: composer create-artifact
+        run: composer archive -vvv --format=zip --file="plugin-build/hwp-previews"
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
           name: hwp-previews
-          path: plugins/hwp-previews/plugin-builds/*.zip
+          path: plugins/hwp-previews/plugin-build/*.zip
