@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings\Menu;
+namespace HWP\Previews\Admin\Settings\Menu;
 
 class Submenu_Page extends Menu_Page {
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 $hwp_previews_tabs_config = (array) get_query_var( 'hwp_previews_main_page_config' );
 $hwp_previews_current_tab = (string) ( $hwp_previews_tabs_config['current_tab'] ?? '' );
@@ -30,7 +30,7 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 							<div class="inside">
 								<?php
 								// Post Types.
-								settings_fields( \HWP\Previews\Plugin::SETTINGS_GROUP );
+								settings_fields( HWP_PREVIEWS_SETTINGS_GROUP );
 								do_settings_sections( 'hwp-previews-' . $hwp_previews_current_tab );
 								submit_button();
 								?>
@@ -48,8 +48,8 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 								<div class="tag-cloud">
 									<?php foreach ( $hwp_previews_params as $hwp_previews_param_name => $hwp_previews_param_desc ) : ?>
 										<a href="#" class="button button-secondary"
-											title="<?php echo esc_attr( $hwp_previews_param_desc ); ?>"
-											style="margin:0 5px 10px 0; font-size: 16px" onclick="
+										   title="<?php echo esc_attr( $hwp_previews_param_desc ); ?>"
+										   style="margin:0 5px 10px 0; font-size: 16px" onclick="
 												const input = document.querySelector('.hwp-previews-url');
 												const linkText = this.textContent.trim();
 

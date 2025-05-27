@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings\Fields;
+namespace HWP\Previews\Admin\Settings\Fields;
 
 abstract class Abstract_Settings_Field {
 	/**

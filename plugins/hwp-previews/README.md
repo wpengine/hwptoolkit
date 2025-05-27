@@ -47,6 +47,11 @@ With HWP Previews, you can define dynamic URL templates, enforce unique slugs fo
 
 ---
 
+
+## Actions & Filters
+
+See the [Actions & Filters documentation](ACTIONS_AND_FILTERS.md) for a comprehensive list of available hooks and how to use them.
+
 ## Configuration
 
 ### Default Post Types Config: 
@@ -65,73 +70,6 @@ Navigate in WP Admin to **Settings › HWP Previews**. For each public post type
 * **Load Previews in Iframe** – Toggle iframe-based preview rendering
 
 _Note: Retrieving of settings is cached for performance._
-
----
-
-## Hooks & Extensibility
-
-### Filter: Post Types List
-
-Modify which post types appear in the settings UI:
-
-```php
-// Removes attachment post type from the settings page configuration.
-
-add_filter( 'hwp_previews_filter_post_type_setting', 'hwp_previews_filter_post_type_setting_callback' );
-function hwp_previews_filter_post_type_setting_callback( $post_types ) {
-    if ( isset( $post_types['attachment'] ) ) {
-        unset( $post_types['attachment'] );
-    }
-    return $post_types;
-}
-```
-
-### Action: Core Registry
-
-Register or unregister URL parameters, and adjust types/statuses:
-
-```php
-add_action( 'hwp_previews_core', 'modify_preview_url_parameters' );
-function modify_preview_url_parameters( 
-    \HWP\Previews\Preview\Parameter\Preview_Parameter_Registry $registry
-) {
-    // Remove default parameter
-    $registry->unregister( 'author_ID' );
-
-    // Add custom parameter
-    $registry->register( new \HWP\Previews\Preview\Parameter\Preview_Parameter(
-        'current_time',
-        static fn( \WP_Post $post ) => (string) time(),
-        __( 'Current Unix timestamp', 'your-domain' )
-    ) );
-}
-```
-
-Modify post types and statuses:
-
-```php
-add_action( 'hwp_previews_core', 'modify_post_types_and_statuses_configs', 10, 3 );
-function modify_post_types_and_statuses_configs(
-    \HWP\Previews\Preview\Parameter\Preview_Parameter_Registry $registry,
-    \HWP\Previews\Post\Type\Post_Types_Config $types,
-    \HWP\Previews\Post\Status\Post_Statuses_Config $statuses
-) {
-    // Limit to pages only
-    $types->set_post_types( [ 'page' ] );
-    // Only include drafts
-    $statuses->set_post_statuses( [ 'draft' ] );
-}
-```
-
-### Filter: Iframe Template Path
-
-Use your own template for iframe previews:
-
-```php
-add_filter( 'hwp_previews_template_path', function( $default_path ) {
-    return get_stylesheet_directory() . '/my-preview-template.php';
-});
-```
 
 ---
 

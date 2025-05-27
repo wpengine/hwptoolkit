@@ -77,21 +77,22 @@
 		}
 	},
 	"scripts": {
-		"build": [
-			"rm -f my-plugin.zip",
-			"composer install --no-dev --optimize-autoloader",
-			"composer archive --format=zip --file=hwp-previews"
-		],
-		"php:lint": "vendor/bin/phpcs",
-		"php:lint:i": [
+		"lint": "vendor/bin/phpcs",
+		"phpcs-i": [
 			"php ./vendor/bin/phpcs -i"
 		],
-		"php:lint:fix": "vendor/bin/phpcbf",
-		"php:stan": [
-			"phpstan analyze --ansi --memory-limit=2G -v"
+		"check-cs": [
+			"php ./vendor/bin/phpcs"
 		],
-		"php:psalm": "psalm",
-		"php:psalm:info": "psalm --show-info=true"
+		"fix-cs": [
+			"php ./vendor/bin/phpcbf"
+		],
+		"phpstan": [
+			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
+		],
+		"psalm": [
+			"vendor/bin/psalm --no-progress --show-info=false"
+		]
 	},
 	"scripts-descriptions": {
 	},

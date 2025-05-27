@@ -19,7 +19,9 @@
  * @package HWP\Previews
  */
 
-declare(strict_types=1);
+declare( strict_types=1 );
+
+use HWP\Previews\Plugin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -31,7 +33,6 @@ if ( ! \HWP\Previews\Autoloader::autoload() ) {
 	return;
 }
 
-// @TODO: https://github.com/wpengine/hwptoolkit/issues/183
 if ( file_exists( __DIR__ . '/activation.php' ) ) {
 	require_once __DIR__ . '/activation.php';
 	register_activation_hook( __FILE__, 'hwp_previews_activation_callback' );
@@ -70,18 +71,39 @@ function hwp_previews_constants(): void {
 	if ( ! defined( 'HWP_PREVIEWS_AUTOLOAD' ) ) {
 		define( 'HWP_PREVIEWS_AUTOLOAD', true );
 	}
+
+	// Text Domain
+	if ( ! defined( 'HWP_PREVIEWS_TEXT_DOMAIN' ) ) {
+		define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
+	}
+
+	// Plugin config settings group
+	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
+		define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
+	}
+
+	// Plugin config settings key.
+	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_KEY' ) ) {
+		define( 'HWP_PREVIEWS_SETTINGS_KEY', 'hwp_previews_settings' );
+	}
+
+	// Plugin Template Directory.
+	if ( ! defined( 'HWP_PREVIEWS_TEMPLATE_DIR' ) ) {
+		define( 'HWP_PREVIEWS_TEMPLATE_DIR', trailingslashit( HWP_PREVIEWS_PLUGIN_DIR ) . '/src/Admin/Settings/Templates/' );
+	}
 }
 
 /**
  * Initializes plugin.
  */
-function hwp_previews_init() : void {
+function hwp_previews_init(): void {
 	hwp_previews_constants();
 
 
 	if ( defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
 		require_once HWP_PREVIEWS_PLUGIN_DIR . 'src/Plugin.php';
-		\HWP\Previews\Plugin::instance();
+		Plugin::instance();
+
 		return;
 	}
 
@@ -105,5 +127,6 @@ function hwp_previews_init() : void {
 		0
 	);
 }
+
 /** @psalm-suppress HookNotFound */
 add_action( 'plugins_loaded', 'hwp_previews_init', 15 );

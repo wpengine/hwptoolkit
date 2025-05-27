@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Settings\Menu;
+namespace HWP\Previews\Admin\Settings\Menu;
 
-use HWP\Previews\Settings\Contracts\Menu_Page_Interface;
+use HWP\Previews\Admin\Settings\Contracts\Menu_Page_Interface;
 
 class Menu_Page implements Menu_Page_Interface {
 	/**
@@ -80,13 +80,14 @@ class Menu_Page implements Menu_Page_Interface {
 	 * Registers the menu page in the WordPress admin.
 	 */
 	public function register_page(): void {
-		add_menu_page(
+		add_submenu_page(
+			'options-general.php',
 			$this->page_title,
-			$this->menu_title,
+			__($this->menu_title, HWP_PREVIEWS_TEXT_DOMAIN),
 			'manage_options',
 			$this->menu_slug,
 			[ $this, 'registration_callback' ],
-			$this->icon
+			999
 		);
 	}
 
