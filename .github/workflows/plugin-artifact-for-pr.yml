@@ -24,10 +24,9 @@ jobs:
         working-directory: plugins/hwp-previews
         run: |
           composer install --no-dev --optimize-autoloader
-          echo "${GITHUB_SHA}" > .build-sha
           rm -f plugin-build/hwp-previews.zip
           mkdir -p plugin-build
-          composer archive -vvv --format=zip --file="plugin-build/hwp-previews" --dir="."
+          composer archive -vvv --format=zip --file="plugin-build/hwp-previews-${GITHUB_SHA::8}" --dir="."
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
