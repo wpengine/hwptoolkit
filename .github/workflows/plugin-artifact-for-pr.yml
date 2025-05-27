@@ -25,15 +25,14 @@ jobs:
         run: |
           composer install --no-dev --optimize-autoloader
           echo "${GITHUB_SHA}" > build-sha.txt
-          rm -f plugin-build/hwp-previews.zip
-          mkdir -p plugin-build
+          rm -f plugin-build/hwp-previews-*.zip
           composer archive -vvv --format=zip --file="plugin-build/hwp-previews" --dir="."
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hwp-previews
-          path: plugins/hwp-previews/plugin-build/*.zip
+            name: hwp-previews-${{ github.sha }}
+            path: plugins/hwp-previews/plugin-build/*.zip
 
       - name: Comment with artifact link
         uses: actions/github-script@v7
