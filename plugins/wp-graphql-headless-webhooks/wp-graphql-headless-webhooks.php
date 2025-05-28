@@ -103,7 +103,7 @@ function graphql_headless_webhooks_init(): void {
 	if ( $not_ready === [] && defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' ) ) {
 		require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'src/Plugin.php';
 		$plugin = new \WPGraphQL\Webhooks\Plugin();
-		$plugin->init();
+		$plugin::instance();
 		return;
 	}
 
