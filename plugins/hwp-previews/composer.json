@@ -50,17 +50,27 @@
 		}
 	},
 	"archive": {
+      	"name": "hwp-previews",
 		"exclude": [
-			"vendor/",
-			"phpcs/",
-			"phpstan/",
-			".gitignore",
-			".editorconfig",
-			"composer.json",
-			"composer.lock",
-			"*.xml",
-			"*.dist",
-			"*.md"
+			"/.*",
+			"bin",
+			"docker",
+			"docs",
+			"phpstan",
+			"phpcs",
+			"plugin-build",
+			"tests",
+			"!vendor",
+			"!vendor-prefixed",
+			"/docker-compose.yml",
+			"/phpstan.neon.dist",
+			"/psalm.xml",
+			"/phpcs.xml",
+			"/ACTIONS_AND_FILTERS.md",
+			"/phpcs-cache.json",
+			"/Thumbs.db",
+			"/auth.json",
+			"/.DS_Store"
 		]
 	},
 	"autoload": {

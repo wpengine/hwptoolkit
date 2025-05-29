@@ -1,0 +1,48 @@
+name: Plugin Artifact for PR
+
+on:
+  pull_request:
+    paths:
+      - 'plugins/**'
+
+jobs:
+  create-plugin-artifact:
+    name: Create Plugin Artifact
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          git fetch --prune --unshallow
+          plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
+          echo "slug=$plugin" >> $GITHUB_OUTPUT
+
+      - name: Create plugin artifact
+        uses: ./.github/actions/create-plugin-artifact
+        env:
+          PLUGIN_SLUG: ${{ steps.plugin.outputs.slug }}
+        with:
+            slug: ${{ env.PLUGIN_SLUG }}
+
+      - name: Comment with artifact link
+        uses: actions/github-script@v7
+        env:
+          PLUGIN_SLUG: ${{ steps.plugin.outputs.slug }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const runId = context.runId;
+            const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
+            const slug = process.env.PLUGIN_SLUG;
+            const body = `ℹ️ [Download the ${slug} plugin artifact from this workflow run](${artifactUrl}) (see the 'Artifacts' section at the bottom).`;
+            await github.rest.issues.createComment({
+              issue_number: pr.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
