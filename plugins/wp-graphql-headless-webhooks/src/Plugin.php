@@ -77,7 +77,6 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 */
 		private function setup(): void {
 			Helper::set_hook_prefix( 'graphql_webhooks' );
-
 			WebhookPostType::init();
 
 			$this->repository = new WebhookRepository();
