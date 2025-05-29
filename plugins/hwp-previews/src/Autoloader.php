@@ -13,8 +13,6 @@ namespace HWP\Previews;
 
 /**
  * Class - Autoloader
- *
- * @internal
  */
 class Autoloader {
 	/**

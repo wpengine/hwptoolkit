@@ -21,6 +21,7 @@
 
 declare(strict_types=1);
 
+use HWP\Previews\Autoloader;
 use HWP\Previews\Plugin;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Load the autoloader.
 require_once __DIR__ . '/src/Autoloader.php';
-if ( ! \HWP\Previews\Autoloader::autoload() ) {
+if ( ! Autoloader::autoload() ) {
 	return;
 }
 
@@ -109,9 +110,7 @@ function hwp_previews_init(): void {
 			<div class="error notice">
 				<p>
 					<?php
-					printf(
-						esc_html__( 'Composer vendor directory must be present for HWP Previews to work.', 'hwp-previews' ),
-					);
+					echo esc_html__( 'Composer vendor directory must be present for HWP Previews to work.', 'hwp-previews' );
 					?>
 				</p>
 			</div>
@@ -123,4 +122,4 @@ function hwp_previews_init(): void {
 }
 
 /** @psalm-suppress HookNotFound */
-add_action( 'plugins_loaded', 'hwp_previews_init', 15 );
+add_action( 'plugins_loaded', 'hwp_previews_init', 15, 0 );

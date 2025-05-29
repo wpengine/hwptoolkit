@@ -25,6 +25,7 @@ class Post_Slug_Repository implements Post_Slug_Repository_Interface {
 		 */
 		global $wpdb;
 
+		/** @psalm-suppress TooManyArguments */
 		return (bool) $wpdb->get_var( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
 				"SELECT post_name FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s AND ID != %d LIMIT 1",

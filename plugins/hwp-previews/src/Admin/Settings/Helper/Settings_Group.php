@@ -19,7 +19,9 @@ class Settings_Group {
 	protected string $settings_group;
 
 	/**
-	 * @param array<string, string> $settings_config The settings configuration.
+	 * The settings configuration.
+	 *
+	 * @var array<string, string>
 	 */
 	protected array $settings_config = [];
 

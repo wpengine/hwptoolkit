@@ -9,12 +9,21 @@
 	findUnusedCode="false"
 >
 	<projectFiles>
-		<directory name="src" />
-		<file name="hwp-previews.php" />
-		<file name="vendor/autoload.php" />
+		<file name="hwp-previews.php"/>
+		<file name="vendor/autoload.php"/>
+		<directory name="src"/>
 	</projectFiles>
 
 	<plugins>
-		<pluginClass class="PsalmWordPress\Plugin" />
+		<pluginClass class="PsalmWordPress\Plugin"/>
 	</plugins>
+
+	<issueHandlers>
+		<!-- Noting we had issues with trying to set stubs and also using issueHandlers for particular constants-->
+		<UndefinedConstant errorLevel="suppress">
+			<errorLevel type="suppress">
+				<directory name="src"/>
+			</errorLevel>
+		</UndefinedConstant>
+	</issueHandlers>
 </psalm>

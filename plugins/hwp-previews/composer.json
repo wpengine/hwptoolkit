@@ -50,7 +50,7 @@
 		}
 	},
 	"archive": {
-      	"name": "hwp-previews",
+		"name": "hwp-previews",
 		"exclude": [
 			"/.*",
 			"bin",
@@ -87,22 +87,10 @@
 		}
 	},
 	"scripts": {
-		"lint": "vendor/bin/phpcs",
-		"phpcs-i": [
-			"php ./vendor/bin/phpcs -i"
-		],
-		"check-cs": [
-			"php ./vendor/bin/phpcs"
-		],
-		"fix-cs": [
-			"php ./vendor/bin/phpcbf"
-		],
-		"phpstan": [
-			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
-		],
-		"psalm": [
-			"vendor/bin/psalm --no-progress --show-info=false"
-		]
+		"phpcbf": "./vendor/bin/phpcbf -s",
+		"phpcs": "./vendor/bin/phpcs",
+		"phpstan": "./vendor/bin/phpstan analyse --memory-limit=-1",
+		"psalm": "./vendor/bin/psalm --no-progress --show-info=false"
 	},
 	"scripts-descriptions": {
 	},

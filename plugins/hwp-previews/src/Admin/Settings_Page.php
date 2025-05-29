@@ -51,12 +51,15 @@ class Settings_Page {
 	 */
 	public static function register_settings_pages(): void {
 		add_action( 'admin_menu', static function (): void {
+
+			$post_types = ( null === self::$types_config ) ? [] : self::$types_config->get_post_types();
+
 			/**
 			 * Array of post types where key is the post type slug and value is the label.
 			 *
 			 * @var array<string, string> $post_types
 			 */
-			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', self::$types_config->get_public_post_types() );
+			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', $post_types );
 			self::create_settings_page( $post_types )->register_page();
 		} );
 	}
@@ -67,12 +70,14 @@ class Settings_Page {
 	public static function register_settings_fields(): void {
 		add_action( 'admin_init', static function (): void {
 
+			$post_types = ( null === self::$types_config ) ? [] : self::$types_config->get_public_post_types();
+
 			/**
 			 * Array of post types where key is the post type slug and value is the label.
 			 *
 			 * @var array<string, string> $post_types
 			 */
-			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', self::$types_config->get_public_post_types() );
+			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', $post_types );
 
 			/**
 			 * Register setting itself.
@@ -121,6 +126,10 @@ class Settings_Page {
 	 * @param array<string> $post_types The post types to be used in the settings page.
 	 */
 	public static function create_settings_page( array $post_types ): Menu_Page {
+
+		$descriptions = ( null === self::$parameters ) ? [] : self::$parameters->get_descriptions();
+
+
 		return new Menu_Page(
 			__( 'HWP Previews Settings', 'hwp-previews' ),
 			'HWP Previews',
@@ -130,10 +139,9 @@ class Settings_Page {
 				'hwp_previews_main_page_config' => [
 					'tabs'        => $post_types,
 					'current_tab' => self::get_current_tab( $post_types ),
-					'params'      => self::$parameters->get_descriptions(),
+					'params'      => $descriptions,
 				],
 			],
-			'dashicons-welcome-view-site'
 		);
 	}
 

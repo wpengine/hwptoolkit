@@ -61,6 +61,10 @@ class Preview_Hooks {
 	 * Registers the filters and actions for the preview functionality.
 	 */
 	public static function add_filters_actions(): void {
+		if ( null === self::$types_config ) {
+			return;
+		}
+
 		// Enable the unique post slug functionality.
 		add_filter( 'wp_insert_post_data', [ self::class, 'enable_unique_post_slug' ], 10, 2 );
 
@@ -152,6 +156,10 @@ class Preview_Hooks {
 	public static function enable_unique_post_slug( array $data, array $postarr ): array {
 		$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
 
+		if ( null === self::$settings_helper || null === self::$types_config || null === self::$statuses_config ) {
+			return $data;
+		}
+
 		// Check if the correspondent setting is enabled.
 		if ( ! self::$settings_helper->unique_post_slugs( $post->post_type ) ) {
 			return $data;
@@ -182,6 +190,11 @@ class Preview_Hooks {
 	 * @link https://developer.wordpress.org/reference/hooks/quick_edit_dropdown_pages_args/
 	 */
 	public static function enable_post_statuses_as_parent( array $args ): array {
+
+		if ( null === self::$settings_helper || null === self::$types_config || null === self::$statuses_config ) {
+			return $args;
+		}
+
 		$post_parent_manager = new Post_Parent_Manager( self::$types_config, self::$statuses_config );
 
 		if ( empty( $args['post_type'] ) ) {
@@ -207,6 +220,10 @@ class Preview_Hooks {
 	 * Replace the preview link in the REST response.
 	 */
 	public static function filter_rest_prepare_link( WP_REST_Response $response, WP_Post $post ): WP_REST_Response {
+		if ( null === self::$settings_helper ) {
+			return $response;
+		}
+
 		if ( self::$settings_helper->in_iframe( $post->post_type ) ) {
 			return $response;
 		}
@@ -223,6 +240,12 @@ class Preview_Hooks {
 	 * Enable preview functionality in iframe.
 	 */
 	public static function add_iframe_preview_template( string $template ): string {
+
+		// Bail out if class not initialized or settings helper and link service are not set.
+		if ( null === self::$settings_helper || null === self::$link_service || null === self::$types_config || null === self::$statuses_config ) {
+			return $template;
+		}
+
 		if ( ! is_preview() ) {
 			return $template;
 		}
@@ -266,6 +289,11 @@ class Preview_Hooks {
 	 */
 	public static function update_preview_post_link( string $preview_link, WP_Post $post ): string {
 
+		// Bail out if class not initialized or settings helper and link service are not set.
+		if ( null === self::$settings_helper || null === self::$link_service ) {
+			return $preview_link;
+		}
+
 		// @TODO - Need to do more testing and add e2e tests for this filter.
 
 		// If iframe option is enabled, we need to resolve preview on the template redirect level.
@@ -289,10 +317,14 @@ class Preview_Hooks {
 	 * @return string The generated preview URL.
 	 */
 	public static function generate_preview_url( WP_Post $post ): string {
+		if ( null === self::$settings_helper ) {
+			return '';
+		}
+
 		// Check if the correspondent setting is enabled.
 		$url = self::$settings_helper->url_template( $post->post_type );
 
-		if ( empty( $url ) ) {
+		if ( empty( $url ) || null === self::$link_service ) {
 			return '';
 		}
 
