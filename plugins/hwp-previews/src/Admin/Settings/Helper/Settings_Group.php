@@ -1,22 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HWP\Previews\Admin\Settings\Helper;
 
+/**
+ * Settings_Group class.
+ */
 class Settings_Group {
+	/**
+	 * Settings option key.
+	 */
+	protected string $option_key;
+
+	/**
+	 * Settings group name.
+	 */
+	protected string $settings_group;
+
+	/**
+	 * @param array<string, string> $settings_config The settings configuration.
+	 */
+	protected array $settings_config = [];
 
 	/**
 	 * The settings helper instance.
 	 *
-	 * @var Settings_Group|null
+	 * @var \HWP\Previews\Admin\Settings\Helper\Settings_Group|null
 	 */
 	protected static $instance = null;
 
-	protected string $option_key;
-
-	protected string $settings_group;
-
-	protected array $settings_config = [];
-
+	/**
+	 * Class initializer.
+	 */
 	public function __construct() {
 		$this->option_key      = $this->get_option_key();
 		$this->settings_group  = $this->get_settings_group();
@@ -24,51 +40,9 @@ class Settings_Group {
 		$this->set_cache_group();
 	}
 
-	protected function get_option_key(): string {
-		return apply_filters( 'hwp_previews_settings_group_option_key', HWP_PREVIEWS_SETTINGS_KEY );
-	}
-
-	protected function get_settings_group(): string {
-		return apply_filters( 'hwp_previews_settings_group_settings_group', HWP_PREVIEWS_SETTINGS_GROUP );
-	}
-
-
-	public function get_settings_key_enabled(): string {
-		return 'enabled';
-	}
-
-	public function get_settings_key_unique_post_slugs(): string {
-		return 'unique_post_slugs';
-	}
-
-	public function get_settings_key_post_statuses_as_parent(): string {
-		return 'post_statuses_as_parent';
-	}
-
-	public function get_settings_key_preview_url(): string {
-		return 'preview_url';
-	}
-
-	public function get_settings_key_in_iframe(): string {
-		return 'in_iframe';
-	}
-
-	public function get_settings_config(): array {
-		return apply_filters( 'hwp_previews_settings_group_settings_config', [
-			$this->get_settings_key_enabled()                 => 'bool',
-			$this->get_settings_key_unique_post_slugs()       => 'bool',
-			$this->get_settings_key_post_statuses_as_parent() => 'bool',
-			$this->get_settings_key_preview_url()             => 'string',
-			$this->get_settings_key_in_iframe()               => 'bool',
-		] );
-	}
-
-	protected function set_cache_group(): void {
-		$groups = apply_filters( 'hwp_previews_settings_group_cache_groups', [ $this->settings_group ] );
-		wp_cache_add_non_persistent_groups( $groups );
-	}
-
-
+	/**
+	 * Get Singleton instance of the Settings_Group class.
+	 */
 	public static function get_instance(): self {
 
 		$instance = self::$instance;
@@ -80,6 +54,56 @@ class Settings_Group {
 		self::$instance = new self();
 
 		return self::$instance;
+	}
+
+	/**
+	 * Setting key for the enabled status.
+	 */
+	public function get_settings_key_enabled(): string {
+		return 'enabled';
+	}
+
+	/**
+	 * Setting key for unique post slugs.
+	 */
+	public function get_settings_key_unique_post_slugs(): string {
+		return 'unique_post_slugs';
+	}
+
+	/**
+	 * Setting key for post-statuses as parent.
+	 */
+	public function get_settings_key_post_statuses_as_parent(): string {
+		return 'post_statuses_as_parent';
+	}
+
+	/**
+	 * Setting key for the preview URL.
+	 */
+	public function get_settings_key_preview_url(): string {
+		return 'preview_url';
+	}
+
+	/**
+	 * Setting key for is the preview in an iframe.
+	 */
+	public function get_settings_key_in_iframe(): string {
+		return 'in_iframe';
+	}
+
+	/**
+	 * Gets the settings configuration for the settings group.
+	 *
+	 * @return array<string, string> The settings configuration.
+	 */
+	public function get_settings_config(): array {
+		return apply_filters( 'hwp_previews_settings_group_settings_config', [
+			$this->get_settings_key_enabled()           => 'bool',
+			$this->get_settings_key_unique_post_slugs() => 'bool',
+			$this->get_settings_key_post_statuses_as_parent() => 'bool',
+			$this->get_settings_key_preview_url()       => 'string',
+			$this->get_settings_key_in_iframe()         => 'bool',
+		] );
 	}
 
 	/**
@@ -105,14 +129,12 @@ class Settings_Group {
 	 *
 	 * @param string $name The setting name.
 	 * @param string $post_type The post type slug.
-	 * @param bool $default_value The default value to return if the setting is not found.
-	 *
-	 * @return bool
+	 * @param bool   $default_value The default value to return if the setting is not found.
 	 */
 	public function get_post_type_boolean_value( string $name, string $post_type, bool $default_value = false ): bool {
 		$settings = $this->get_cached_settings();
 		$type     = $this->settings_config[ $name ] ?? null;
-		if ( $type === 'bool' && isset( $settings[ $post_type ][ $name ] ) ) {
+		if ( 'bool' === $type && isset( $settings[ $post_type ][ $name ] ) ) {
 			return (bool) $settings[ $post_type ][ $name ];
 		}
 
@@ -125,17 +147,36 @@ class Settings_Group {
 	 * @param string $name The setting name.
 	 * @param string $post_type The post type slug.
 	 * @param string $default_value The default value to return if the setting is not found.
-	 *
-	 * @return string
 	 */
 	public function get_post_type_string_value( string $name, string $post_type, string $default_value = '' ): string {
 		$settings = $this->get_cached_settings();
 		$type     = $this->settings_config[ $name ] ?? null;
-		if ( $type === 'string' && isset( $settings[ $post_type ][ $name ] ) ) {
+		if ( 'string' === $type && isset( $settings[ $post_type ][ $name ] ) ) {
 			return (string) $settings[ $post_type ][ $name ];
 		}
 
 		return $default_value;
 	}
 
+	/**
+	 * Gets the option key for the settings group.
+	 */
+	protected function get_option_key(): string {
+		return apply_filters( 'hwp_previews_settings_group_option_key', HWP_PREVIEWS_SETTINGS_KEY );
+	}
+
+	/**
+	 * Gets the settings group name.
+	 */
+	protected function get_settings_group(): string {
+		return apply_filters( 'hwp_previews_settings_group_settings_group', HWP_PREVIEWS_SETTINGS_GROUP );
+	}
+
+	/**
+	 * Sets the cache group for the settings.
+	 */
+	protected function set_cache_group(): void {
+		$groups = apply_filters( 'hwp_previews_settings_group_cache_groups', [ $this->settings_group ] );
+		wp_cache_add_non_persistent_groups( $groups );
+	}
 }

@@ -19,7 +19,7 @@
  * @package HWP\Previews
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 use HWP\Previews\Plugin;
 
@@ -72,12 +72,6 @@ function hwp_previews_constants(): void {
 		define( 'HWP_PREVIEWS_AUTOLOAD', true );
 	}
 
-	// Text Domain
-	if ( ! defined( 'HWP_PREVIEWS_TEXT_DOMAIN' ) ) {
-		define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
-	}
-
-	// Plugin config settings group
 	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
 		define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
 	}
@@ -110,7 +104,7 @@ function hwp_previews_init(): void {
 
 	add_action(
 		'admin_notices',
-		static function () {
+		static function (): void {
 			?>
 			<div class="error notice">
 				<p>

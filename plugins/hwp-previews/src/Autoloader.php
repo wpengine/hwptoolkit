@@ -3,10 +3,11 @@
  * Includes the composer Autoloader used for packages and classes in the src/ directory.
  *
  * @package HWP\Previews
+ *
  * @since 0.0.1
  */
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
 namespace HWP\Previews;
 
@@ -75,7 +76,7 @@ class Autoloader {
 			/** @psalm-suppress HookNotFound */
 			add_action(
 				$hook,
-				static function () use ( $error_message ) {
+				static function () use ( $error_message ): void {
 					?>
 					<div class="error notice">
 						<p>

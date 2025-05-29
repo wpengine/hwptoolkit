@@ -1,106 +1,95 @@
 {
-	"name": "hwp/previews",
-	"type": "wordpress-plugin",
-	"description": "A WordPress plugin for headless previews.",
-	"license": "GPL-3.0-or-later",
-	"authors": [
-		{
-			"name": "WP Engine Headless OSS Development Team",
-			"email": "headless-oss@wpengine.com",
-			"homepage": "https://wpengine.com/"
-		}
-	],
-	"keywords": [
-		"package",
-		"dependency",
-		"autoload"
-	],
-	"require": {
-		"php": "^7.4 || ^8.0"
-	},
-	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"require-dev": {
-		"automattic/vipwpcs": "^3.0",
-		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-		"humanmade/psalm-plugin-wordpress": "^3.1",
-		"johnpbloch/wordpress-core": "^6.8",
-		"phpcompatibility/phpcompatibility-wp": "^2.0",
-		"phpstan/phpstan-strict-rules": "^2.0",
-		"slevomat/coding-standard": "^8.0",
-		"szepeviktor/phpstan-wordpress": "^2.0"
-	},
-	"config": {
-		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": true,
-			"phpstan/extension-installer": true
-		},
-		"optimize-autoloader": true,
-		"platform": {
-			"php": "7.4"
-		},
-		"preferred-install": "dist",
-		"sort-packages": true
-	},
-	"extra": {
-		"phpstan": {
-			"includes": [
-				"phpstan/rules.neon"
-			]
-		}
-	},
-	"archive": {
-		"exclude": [
-			"vendor/",
-			"phpcs/",
-			"phpstan/",
-			".gitignore",
-			".editorconfig",
-			"composer.json",
-			"composer.lock",
-			"*.xml",
-			"*.dist",
-			"*.md"
-		]
-	},
-	"autoload": {
-		"psr-4": {
-			"HWP\\Previews\\": "src/"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"HWP\\Previews\\Unit\\": "tests/unit/",
-			"HWP\\Previews\\Integration\\": "tests/integration/",
-			"HWP\\Previews\\PHPStan\\": "phpstan/",
-			"HWPStandard\\": "phpcs/HWPStandard"
-		}
-	},
-	"scripts": {
-		"lint": "vendor/bin/phpcs",
-		"phpcs-i": [
-			"php ./vendor/bin/phpcs -i"
-		],
-		"check-cs": [
-			"php ./vendor/bin/phpcs"
-		],
-		"fix-cs": [
-			"php ./vendor/bin/phpcbf"
-		],
-		"phpstan": [
-			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
-		],
-		"psalm": [
-			"vendor/bin/psalm --no-progress --show-info=false"
-		]
-	},
-	"scripts-descriptions": {
-	},
-	"support": {
-		"docs": "https://github.com/wpengine/hwptoolkit/tree/main/docs",
-		"email": "headless-oss@wpengine.com",
-		"forum": "https://github.com/wpengine/hwptoolkit/discussions",
-		"issues": "https://github.com/wpengine/hwptoolkit/issues?q=is%3Aissue%20state%3Aopen%20label%3Atopic%3Apreviews",
-		"security": "https://github.com/wpengine/hwptoolkit/blob/main/SECURITY.md"
-	}
+  "name": "hwp/previews",
+  "type": "wordpress-plugin",
+  "description": "A WordPress plugin for headless previews.",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "WP Engine Headless OSS Development Team",
+      "email": "headless-oss@wpengine.com",
+      "homepage": "https://wpengine.com/"
+    }
+  ],
+  "keywords": [
+    "package",
+    "dependency",
+    "autoload"
+  ],
+  "require": {
+    "php": "^7.4 || ^8.0"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require-dev": {
+    "automattic/vipwpcs": "^3.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "humanmade/psalm-plugin-wordpress": "^3.1",
+    "johnpbloch/wordpress-core": "^6.8",
+    "phpcompatibility/phpcompatibility-wp": "^2.0",
+    "phpstan/phpstan-strict-rules": "^2.0",
+    "slevomat/coding-standard": "^8.0",
+    "szepeviktor/phpstan-wordpress": "^2.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
+    },
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "7.4"
+    },
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "extra": {
+    "phpstan": {
+      "includes": [
+        "phpstan/rules.neon"
+      ]
+    }
+  },
+  "archive": {
+    "exclude": [
+      "vendor/",
+      "phpcs/",
+      "phpstan/",
+      ".gitignore",
+      ".editorconfig",
+      "composer.json",
+      "composer.lock",
+      "*.xml",
+      "*.dist",
+      "*.md"
+    ]
+  },
+  "autoload": {
+    "psr-4": {
+      "HWP\\Previews\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "HWP\\Previews\\Unit\\": "tests/unit/",
+      "HWP\\Previews\\Integration\\": "tests/integration/",
+      "HWP\\Previews\\PHPStan\\": "phpstan/",
+      "HWPStandard\\": "phpcs/HWPStandard"
+    }
+  },
+  "scripts": {
+    "phpcbf": "./vendor/bin/phpcbf -s",
+    "phpcs": "./vendor/bin/phpcs",
+    "phpstan": "./vendor/bin/phpstan analyse --memory-limit=-1",
+    "phpstan-strict": "./vendor/bin/phpstan analyse --memory-limit=-1 --level=8",
+    "psalm": "vendor/bin/psalm --no-progress --show-info=false"
+  },
+  "scripts-descriptions": {
+  },
+  "support": {
+    "docs": "https://github.com/wpengine/hwptoolkit/tree/main/docs",
+    "email": "headless-oss@wpengine.com",
+    "forum": "https://github.com/wpengine/hwptoolkit/discussions",
+    "issues": "https://github.com/wpengine/hwptoolkit/issues?q=is%3Aissue%20state%3Aopen%20label%3Atopic%3Apreviews",
+    "security": "https://github.com/wpengine/hwptoolkit/blob/main/SECURITY.md"
+  }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HWP\Previews\Hooks;
 
 use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
@@ -19,34 +21,31 @@ use WP_Post;
 use WP_REST_Response;
 
 class Preview_Hooks {
-
 	/**
 	 * Settings helper instance that provides access to plugin settings.
 	 *
-	 * @var Settings_Helper|null
+	 * @var \HWP\Previews\Admin\Settings\Helper\Settings_Helper|null
 	 */
 	protected static ?Settings_Helper $settings_helper = null;
-
 
 	/**
 	 * Post types configuration.
 	 *
-	 * @var Post_Types_Config_Interface|null
+	 * @var \HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface|null
 	 */
 	protected static ?Post_Types_Config_Interface $types_config = null;
 
 	/**
 	 * Post statuses configuration.
 	 *
-	 * @var Post_Statuses_Config_Interface|null
+	 * @var \HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface|null
 	 */
 	protected static ?Post_Statuses_Config_Interface $statuses_config = null;
-
 
 	/**
 	 * Preview link service class that handles the generation of preview links.
 	 *
-	 * @var Preview_Link_Service|null
+	 * @var \HWP\Previews\Preview\Link\Preview_Link_Service|null
 	 */
 	protected static ?Preview_Link_Service $link_service = null;
 
@@ -58,7 +57,10 @@ class Preview_Hooks {
 		self::add_filters_actions();
 	}
 
-	public static function add_filters_actions() {
+	/**
+	 * Registers the filters and actions for the preview functionality.
+	 */
+	public static function add_filters_actions(): void {
 		// Enable the unique post slug functionality.
 		add_filter( 'wp_insert_post_data', [ self::class, 'enable_unique_post_slug' ], 10, 2 );
 
@@ -90,6 +92,9 @@ class Preview_Hooks {
 		}
 	}
 
+	/**
+	 * Initializes the class properties.
+	 */
 	public static function init_class_properties(): void {
 
 		self::$settings_helper = Settings_Helper::get_instance();
@@ -116,6 +121,11 @@ class Preview_Hooks {
 		);
 	}
 
+	/**
+	 * Gets a list of available post statuses for the preview functionality..
+	 *
+	 * @return array<string>
+	 */
 	public static function get_post_statuses(): array {
 		$post_statuses = [
 			'publish',
@@ -123,7 +133,7 @@ class Preview_Hooks {
 			'draft',
 			'pending',
 			'private',
-			'auto-draft'
+			'auto-draft',
 		];
 
 		return apply_filters( 'hwp_previews_hooks_post_statuses', $post_statuses );
@@ -134,10 +144,10 @@ class Preview_Hooks {
 	 *
 	 * @link https://developer.wordpress.org/reference/hooks/wp_insert_post_data/
 	 *
-	 * @param array $data
-	 * @param array $postarr
+	 * @param array<mixed> $data
+	 * @param array<mixed> $postarr
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function enable_unique_post_slug( array $data, array $postarr ): array {
 		$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
@@ -160,13 +170,13 @@ class Preview_Hooks {
 		return $data;
 	}
 
-
 	/**
 	 * Enable post statuses as parent for the post types specified in the post types config.
 	 *
-	 * @param array $args The arguments for the dropdown pages
+	 * @param array<mixed> $args The arguments for the dropdown pages.
 	 *
-	 * @return array The modified dropdown arguments with post statuses as parent if applicable.
+	 * @return array<mixed> The modified dropdown arguments with post statuses as parent if applicable.
+	 *
 	 * @link https://developer.wordpress.org/reference/hooks/page_attributes_dropdown_pages_args/.
 	 *
 	 * @link https://developer.wordpress.org/reference/hooks/quick_edit_dropdown_pages_args/
@@ -195,9 +205,6 @@ class Preview_Hooks {
 
 	/**
 	 * Replace the preview link in the REST response.
-	 *
-	 * @param \WP_REST_Response $response The REST response object.
-	 * @param \WP_Post $post The post object.
 	 */
 	public static function filter_rest_prepare_link( WP_REST_Response $response, WP_Post $post ): WP_REST_Response {
 		if ( self::$settings_helper->in_iframe( $post->post_type ) ) {
@@ -244,8 +251,6 @@ class Preview_Hooks {
 		$preview_template = $template_resolver->resolve_template_path( $post, $template_dir_path );
 
 		if ( empty( $preview_template ) ) {
-			error_log( 'Preview template not found for post type' . (string) $post->post_type );
-
 			return $template;
 		}
 
@@ -258,8 +263,6 @@ class Preview_Hooks {
 	 * Enables preview functionality when iframe option is disabled.
 	 *
 	 * @link https://developer.wordpress.org/reference/hooks/preview_post_link/
-	 *
-	 * @return void
 	 */
 	public static function update_preview_post_link( string $preview_link, WP_Post $post ): string {
 
