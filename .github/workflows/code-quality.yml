@@ -22,6 +22,6 @@ jobs:
           echo "slug=$plugin" >> $GITHUB_OUTPUT
 
       - name: PHP Code Quality
-        uses: ./.github/actions/php-code-quality
+        uses: ./.github/actions/code-quality
         with:
           working-directory: plugins/${{ steps.plugin.outputs.slug }}
