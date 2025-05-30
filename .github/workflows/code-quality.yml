@@ -33,14 +33,14 @@ jobs:
         with:
           composer-options: "--no-progress"
 
-      - name: Run PHP CodeSniffer
-        working-directory: plugins/${{ steps.plugin.outputs.slug }}
-        run: composer run-script phpcs
-
       - name: Run PHPStan
         working-directory: plugins/${{ steps.plugin.outputs.slug }}
         run: composer run-script phpstan
 
       - name: Run Psalm
         working-directory: plugins/${{ steps.plugin.outputs.slug }}
-        run: composer run-script psalm
+        run: composer run-script php:psalm
+
+      - name: Run PHP CodeSniffer
+        working-directory: plugins/${{ steps.plugin.outputs.slug }}
+        run: composer run-script check-cs
