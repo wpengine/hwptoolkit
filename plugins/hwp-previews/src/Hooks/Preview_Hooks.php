@@ -118,7 +118,9 @@ class Preview_Hooks {
 		self::$link_service = apply_filters(
 			'hwp_previews_hooks_preview_link_service',
 			new Preview_Link_Service(
+				// @phpstan-ignore-next-line
 				self::$types_config,
+				// @phpstan-ignore-next-line
 				self::$statuses_config,
 				new Preview_Link_Placeholder_Resolver( Preview_Parameter_Registry::get_instance() )
 			)

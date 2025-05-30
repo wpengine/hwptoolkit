@@ -15,6 +15,9 @@ use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 
 class Settings_Page {
+	/**
+	 * @var string The slug for the plugin menu.
+	 */
 	public const PLUGIN_MENU_SLUG = 'hwp-previews';
 
 	/**

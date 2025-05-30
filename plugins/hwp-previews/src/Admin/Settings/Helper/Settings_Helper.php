@@ -67,12 +67,15 @@ class Settings_Helper {
 
 		$enabled_post_types = [];
 		foreach ( $settings as $key => $item ) {
-			if ( $item[ $enabled_key ] ?? false ) {
+			if ( (bool) ( $item[ $enabled_key ] ?? false ) ) {
 				$enabled_post_types[] = $key;
 			}
 		}
 
-		return $enabled_post_types ?: $default_value;
+		if ( ! empty( $enabled_post_types ) ) {
+			return $enabled_post_types;
+		}
+		return $default_value;
 	}
 
 	/**

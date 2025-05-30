@@ -36,11 +36,13 @@ if ( ! Autoloader::autoload() ) {
 
 if ( file_exists( __DIR__ . '/activation.php' ) ) {
 	require_once __DIR__ . '/activation.php';
+	// @phpstan-ignore-next-line
 	register_activation_hook( __FILE__, 'hwp_previews_activation_callback' );
 }
 
 if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
 	require_once __DIR__ . '/deactivation.php';
+	// @phpstan-ignore-next-line
 	register_deactivation_hook( __FILE__, 'hwp_previews_deactivation_callback' );
 }
 
