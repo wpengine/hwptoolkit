@@ -113,7 +113,8 @@ function hwp_previews_init(): void {
 function hwp_previews_load_textdomain(): void {
 	load_plugin_textdomain( 'hwp-previews', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
-add_action( 'init', 'hwp_previews_load_textdomain', 1, 0);
+
+add_action( 'init', 'hwp_previews_load_textdomain', 1, 0 );
 
 /** @psalm-suppress HookNotFound */
 add_action( 'plugins_loaded', 'hwp_previews_init', 15, 0 );

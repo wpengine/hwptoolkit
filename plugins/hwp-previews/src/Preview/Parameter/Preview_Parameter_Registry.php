@@ -50,9 +50,9 @@ class Preview_Parameter_Registry {
 	public static function add_initial_parameters( self $instance ): self {
 		$instance
 			->register(
-				new Preview_Parameter( 'ID', static fn( WP_Post $post ) => (string) $post->ID,  'Post ID.' )
+				new Preview_Parameter( 'ID', static fn( WP_Post $post ) => (string) $post->ID, 'Post ID.' )
 			)->register(
-				new Preview_Parameter( 'author_ID', static fn( WP_Post $post ) => $post->post_author, 'ID of post author.')
+				new Preview_Parameter( 'author_ID', static fn( WP_Post $post ) => $post->post_author, 'ID of post author.' )
 			)->register(
 				new Preview_Parameter( 'status', static fn( WP_Post $post ) => $post->post_status, 'The post status.' )
 			)->register(
