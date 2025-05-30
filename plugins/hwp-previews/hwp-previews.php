@@ -95,7 +95,7 @@ function hwp_previews_init(): void {
 			<div class="error notice">
 				<p>
 					<?php
-					echo esc_html__( 'Composer vendor directory must be present for HWP Previews to work.', 'hwp-previews' );
+					echo 'Composer vendor directory must be present for HWP Previews to work.'
 					?>
 				</p>
 			</div>

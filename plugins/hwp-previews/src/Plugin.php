@@ -65,7 +65,7 @@ if ( ! class_exists( Plugin::class ) ) :
 		 */
 		public function __clone() {
 			// Cloning instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'The plugin Plugin class should not be cloned.', 'hwp-previews' ), esc_attr( HWP_PREVIEWS_VERSION ) );
+			_doing_it_wrong( __FUNCTION__, 'The plugin Plugin class should not be cloned.', '0.0.1' );
 		}
 
 		/**
@@ -75,7 +75,7 @@ if ( ! class_exists( Plugin::class ) ) :
 		 */
 		public function __wakeup(): void {
 			// De-serializing instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the plugin Main class is not allowed.', 'hwp-previews' ), esc_attr( HWP_PREVIEWS_VERSION ) );
+			_doing_it_wrong( __FUNCTION__, 'De-serializing instances of the plugin Main class is not allowed.', '0.0.1' );
 		}
 	}
 endif;
