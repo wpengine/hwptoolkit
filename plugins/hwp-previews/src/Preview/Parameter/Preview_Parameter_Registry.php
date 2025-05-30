@@ -50,21 +50,21 @@ class Preview_Parameter_Registry {
 	public static function add_initial_parameters( self $instance ): self {
 		$instance
 			->register(
-				new Preview_Parameter( 'ID', static fn( WP_Post $post ) => (string) $post->ID, __( 'Post ID.', 'hwp-previews' ) )
+				new Preview_Parameter( 'ID', static fn( WP_Post $post ) => (string) $post->ID,  'Post ID.' )
 			)->register(
-				new Preview_Parameter( 'author_ID', static fn( WP_Post $post ) => $post->post_author, __( 'ID of post author..', 'hwp-previews' ) )
+				new Preview_Parameter( 'author_ID', static fn( WP_Post $post ) => $post->post_author, 'ID of post author.')
 			)->register(
-				new Preview_Parameter( 'status', static fn( WP_Post $post ) => $post->post_status, __( 'The post\'s status..', 'hwp-previews' ) )
+				new Preview_Parameter( 'status', static fn( WP_Post $post ) => $post->post_status, 'The post status.' )
 			)->register(
-				new Preview_Parameter( 'slug', static fn( WP_Post $post ) => $post->post_name, __( 'The post\'s slug.', 'hwp-previews' ) )
+				new Preview_Parameter( 'slug', static fn( WP_Post $post ) => $post->post_name, 'The post slug.' )
 			)->register(
-				new Preview_Parameter( 'parent_ID', static fn( WP_Post $post ) => (string) $post->post_parent, __( 'ID of a post\'s parent post.', 'hwp-previews' ) )
+				new Preview_Parameter( 'parent_ID', static fn( WP_Post $post ) => (string) $post->post_parent, 'ID of a post parent post.' )
 			)->register(
-				new Preview_Parameter( 'type', static fn( WP_Post $post ) => $post->post_type, __( 'The post\'s type, like post or page.', 'hwp-previews' ) )
+				new Preview_Parameter( 'type', static fn( WP_Post $post ) => $post->post_type, 'The post type, like post or page.' )
 			)->register(
-				new Preview_Parameter( 'uri', static fn( WP_Post $post ) => (string) get_page_uri( $post ), __( 'The URI path for a page.', 'hwp-previews' ) )
+				new Preview_Parameter( 'uri', static fn( WP_Post $post ) => (string) get_page_uri( $post ), 'The URI path for a page.' )
 			)->register(
-				new Preview_Parameter( 'template', static fn( WP_Post $post ) => (string) get_page_template_slug( $post ), __( 'Specific template filename for a given post.', 'hwp-previews' ) )
+				new Preview_Parameter( 'template', static fn( WP_Post $post ) => (string) get_page_template_slug( $post ), 'Specific template filename for a given post.' )
 			);
 
 		// Allow users to register/unregister parameters.

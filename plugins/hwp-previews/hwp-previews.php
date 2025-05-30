@@ -58,6 +58,7 @@ function hwp_previews_constants(): void {
 		'HWP_PREVIEWS_AUTOLOAD'       => true,
 		'HWP_PREVIEWS_SETTINGS_GROUP' => 'hwp_previews_settings_group',
 		'HWP_PREVIEWS_SETTINGS_KEY'   => 'hwp_previews_settings',
+		'HWP_PREVIEWS_TEXT_DOMAIN'    => 'hwp-previews',
 	];
 
 	foreach ( $constants as $name => $value ) {
@@ -105,6 +106,14 @@ function hwp_previews_init(): void {
 		0
 	);
 }
+
+/**
+ * Load plugin textdomain.
+ */
+function hwp_previews_load_textdomain(): void {
+	load_plugin_textdomain( 'hwp-previews', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'init', 'hwp_previews_load_textdomain', 1, 0);
 
 /** @psalm-suppress HookNotFound */
 add_action( 'plugins_loaded', 'hwp_previews_init', 15, 0 );
