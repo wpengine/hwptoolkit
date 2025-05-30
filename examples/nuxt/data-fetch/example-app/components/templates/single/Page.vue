@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useGraphQL, gql } from '../../../lib/client';
+import Comments from '../../Comments.vue';
 
 const props = defineProps({
   slug: {
@@ -13,8 +14,11 @@ const PAGE_QUERY = gql`
   query GetPage($slug: ID!) {
     page(id: $slug, idType: URI) {
       id
+      databaseId
       title
       content
+      commentCount
+      commentStatus
       featuredImage {
         node {
           sourceUrl
@@ -27,6 +31,13 @@ const PAGE_QUERY = gql`
 
 const { data, loading, error } = useGraphQL(PAGE_QUERY, { slug: props.slug });
 const page = computed(() => data.value?.page || null);
+const pageId = computed(() => page.value?.databaseId || null);
+
+// Check if comments are enabled for this page
+const commentsEnabled = computed(() => 
+  page.value?.commentStatus === 'open' || // 'open' means comments are enabled
+  page.value?.commentCount > 0 // Show section if there are existing comments
+);
 </script>
 
 <template>
@@ -59,6 +70,21 @@ const page = computed(() => data.value?.page || null);
       
       <!-- Page content -->
       <div class="prose prose-lg max-w-none" v-html="page.content"></div>
+      
+      <!-- Comments section - only show if comments are enabled -->
+      <Comments 
+        v-if="commentsEnabled && pageId" 
+        :post-id="pageId" 
+        content-type="page"
+      />
+      
+      <!-- Message if comments are closed but exist -->
+      <div 
+        v-else-if="page.commentCount > 0 && page.commentStatus !== 'open'" 
+        class="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500"
+      >
+        <p>Comments are closed for this page.</p>
+      </div>
     </article>
     
     <!-- Not found state -->

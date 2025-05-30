@@ -25,6 +25,10 @@ const HEADER_QUERY = gql`
           label
           uri
           parentId
+          target
+          cssClasses
+          title
+          description
         }
       }
     }

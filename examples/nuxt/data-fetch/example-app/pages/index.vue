@@ -107,11 +107,6 @@ const getPostLink = (post) => {
           </NuxtLink>
         </div>
       </div>
-      
-      <!-- Empty state -->
-      <div v-if="posts.length === 0 && !loading && !error" class="text-center py-8 text-gray-500">
-        <p>No posts found</p>
-      </div>
     </section>
   </main>
 </template>

@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useGraphQL, gql } from '../../../lib/client';
+import Comments from '../../Comments.vue';
 
 const props = defineProps({
   slug: {
@@ -13,9 +14,11 @@ const POST_QUERY = gql`
   query GetPost($slug: ID!) {
     post(id: $slug, idType: SLUG) {
       id
+      databaseId
       title
       date
       content
+      commentCount
       categories {
         nodes {
           name
@@ -49,6 +52,7 @@ const POST_QUERY = gql`
 const { data, loading, error } = useGraphQL(POST_QUERY, { slug: props.slug });
 
 const post = computed(() => data.value?.post || null);
+const postId = computed(() => post.value?.databaseId || null);
 
 const formatDate = (dateString) => {
   if (!dateString) return '';
@@ -135,6 +139,9 @@ const formatDate = (dateString) => {
           </NuxtLink>
         </div>
       </div>
+      
+      <!-- Comments section -->
+      <Comments v-if="postId" :post-id="postId" />
     </article>
     
     <!-- Not found state -->

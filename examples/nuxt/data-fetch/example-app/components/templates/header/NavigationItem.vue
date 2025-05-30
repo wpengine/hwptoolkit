@@ -28,7 +28,7 @@ const formatUrl = (uri) => {
         ? cleanUri.slice(0, -1)
         : cleanUri;
 
-    return `/${cleanUri}`;
+    return `${cleanUri}`;
 };
 
 const url = computed(() => formatUrl(props.item.uri));
@@ -49,8 +49,13 @@ const dropdownClass = computed(() => {
         <!-- Regular menu item -->
         <NuxtLink 
             :to="url" 
-            class="nav-link"
-            :class="{ 'active': isActive }"
+            :class="[
+                'nav-link',
+                { 'active': isActive },
+                ...(item.cssClasses || [])
+            ]"
+            :target="item.target ? item.target : '_self'"
+            :title="item.title ? item.title : ''"
         >
             {{ item.label }}
             <!-- Add dropdown indicator if there are children -->
@@ -68,14 +73,21 @@ const dropdownClass = computed(() => {
                         :item="child" 
                         :is-active="isActive" 
                         :level="level + 1" 
+                        :target="item.target ? item.target : '_self'"
                     />
                 </template>
                 
                 <!-- Base case: if the child has no children, render a simple link -->
                 <template v-else>
                     <NuxtLink 
-                        :to="formatUrl(child.uri)"
+                        :to="child.uri"
                         class="dropdown-item"
+                        :target="child.target ? child.target : '_self'"
+                        :class="[
+                            { 'active': isActive },
+                            ...(child.cssClasses || [])
+                        ]"
+                        :title="child.title ? child.title : ''"
                     >
                         {{ child.label }}
                     </NuxtLink>
@@ -97,7 +109,7 @@ const dropdownClass = computed(() => {
 }
 
 .nav-link:hover {
-    coloR: #222;
+    color: #222;
 }
 
 .nav-link.active {
