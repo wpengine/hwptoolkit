@@ -31,6 +31,7 @@ jobs:
       - name: Install dependencies
         uses: ramsey/composer-install@v2
         with:
+          working-directory: plugins/${{ steps.plugin.outputs.slug }}
           composer-options: "--no-progress"
 
       - name: Run PHPStan
