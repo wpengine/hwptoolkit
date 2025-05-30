@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace HWP\Previews\Hooks;
 
 use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
-use HWP\Previews\Post\Data\Post_Data_Model;
 use HWP\Previews\Post\Parent\Post_Parent_Manager;
-use HWP\Previews\Post\Slug\Post_Slug_Manager;
-use HWP\Previews\Post\Slug\Post_Slug_Repository;
 use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
 use HWP\Previews\Post\Status\Post_Statuses_Config;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
@@ -64,9 +61,6 @@ class Preview_Hooks {
 		if ( null === self::$types_config ) {
 			return;
 		}
-
-		// Enable the unique post slug functionality.
-		add_filter( 'wp_insert_post_data', [ self::class, 'enable_unique_post_slug' ], 10, 2 );
 
 		// Enable post statuses as parent for the post types specified in the post-types config.
 		add_filter( 'page_attributes_dropdown_pages_args', [ self::class, 'enable_post_statuses_as_parent' ], 10, 1 );
@@ -143,41 +137,6 @@ class Preview_Hooks {
 		];
 
 		return apply_filters( 'hwp_previews_hooks_post_statuses', $post_statuses );
-	}
-
-	/**
-	 * @TODO Remove as part of https://github.com/wpengine/hwptoolkit/issues/226
-	 *
-	 * @link https://developer.wordpress.org/reference/hooks/wp_insert_post_data/
-	 *
-	 * @param array<mixed> $data
-	 * @param array<mixed> $postarr
-	 *
-	 * @return array<mixed>
-	 */
-	public static function enable_unique_post_slug( array $data, array $postarr ): array {
-		$post = new WP_Post( new Post_Data_Model( $data, (int) ( $postarr['ID'] ?? 0 ) ) );
-
-		if ( null === self::$settings_helper || null === self::$types_config || null === self::$statuses_config ) {
-			return $data;
-		}
-
-		// Check if the correspondent setting is enabled.
-		if ( ! self::$settings_helper->unique_post_slugs( $post->post_type ) ) {
-			return $data;
-		}
-
-		$post_slug = ( new Post_Slug_Manager(
-			self::$types_config,
-			self::$statuses_config,
-			new Post_Slug_Repository()
-		) )->force_unique_post_slug( $post );
-
-		if ( ! empty( $post_slug ) ) {
-			$data['post_name'] = $post_slug;
-		}
-
-		return $data;
 	}
 
 	/**

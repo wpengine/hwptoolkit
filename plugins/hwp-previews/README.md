@@ -64,7 +64,6 @@ Post statuses are `publish`, `future`, `draft`, `pending`, `private`, `auto-draf
 Navigate in WP Admin to **Settings › HWP Previews**. For each public post type, configure:
 
 * **Enable HWP Previews** – Master switch
-* **Unique Post Slugs** – Force unique slugs for all post statuses in the post status config.
 * **Allow All Statuses as Parent** – (Hierarchical types only)
 * **Preview URL Template** – Custom URL with tokens like `{ID}`, `{slug}`
 * **Load Previews in Iframe** – Toggle iframe-based preview rendering

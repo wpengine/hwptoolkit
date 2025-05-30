@@ -66,13 +66,6 @@ class Settings_Group {
 	}
 
 	/**
-	 * Setting key for unique post slugs.
-	 */
-	public function get_settings_key_unique_post_slugs(): string {
-		return 'unique_post_slugs';
-	}
-
-	/**
 	 * Setting key for post-statuses as parent.
 	 */
 	public function get_settings_key_post_statuses_as_parent(): string {
@@ -101,7 +94,6 @@ class Settings_Group {
 	public function get_settings_config(): array {
 		return apply_filters( 'hwp_previews_settings_group_settings_config', [
 			$this->get_settings_key_enabled()           => 'bool',
-			$this->get_settings_key_unique_post_slugs() => 'bool',
 			$this->get_settings_key_post_statuses_as_parent() => 'bool',
 			$this->get_settings_key_preview_url()       => 'string',
 			$this->get_settings_key_in_iframe()         => 'bool',

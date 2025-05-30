@@ -23,19 +23,11 @@ interface Post_Types_Settings_Interface {
 	public function url_template( string $post_type, string $default_value = '' ): string;
 
 	/**
-	 * If the post type post statuses should have unique slug for the post type.
+	 * It the specified post statuses should be allowed to be used as parent post statuses.
 	 *
 	 * @param string $post_type Post type slug.
 	 * @param bool   $default_value Default value.
 	 */
-	public function unique_post_slugs( string $post_type, bool $default_value = false ): bool;
-
-		/**
-		 * It the specified post statuses should be allowed to be used as parent post statuses.
-		 *
-		 * @param string $post_type Post type slug.
-		 * @param bool   $default_value Default value.
-		 */
 	public function post_statuses_as_parent( string $post_type, bool $default_value = false ): bool;
 
 	/**
