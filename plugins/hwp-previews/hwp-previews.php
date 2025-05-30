@@ -80,7 +80,6 @@ function hwp_previews_constants(): void {
 function hwp_previews_init(): void {
 	hwp_previews_constants();
 
-
 	if ( defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
 		require_once HWP_PREVIEWS_PLUGIN_DIR . 'src/Plugin.php';
 		Plugin::instance();

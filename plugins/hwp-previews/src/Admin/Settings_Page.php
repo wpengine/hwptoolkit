@@ -55,7 +55,7 @@ class Settings_Page {
 	public static function register_settings_pages(): void {
 		add_action( 'admin_menu', static function (): void {
 
-			$post_types = ( null === self::$types_config ) ? [] : self::$types_config->get_post_types();
+			$post_types = ( null === self::$types_config ) ? [] : self::$types_config->get_public_post_types();
 
 			/**
 			 * Array of post types where key is the post type slug and value is the label.
