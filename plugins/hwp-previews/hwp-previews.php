@@ -50,38 +50,22 @@ if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
  * Define plugin constants.
  */
 function hwp_previews_constants(): void {
-	// Plugin version.
-	if ( ! defined( 'HWP_PREVIEWS_VERSION' ) ) {
-		define( 'HWP_PREVIEWS_VERSION', '0.0.1' );
-	}
+	$constants = [
+		'HWP_PREVIEWS_VERSION'        => '0.0.1',
+		'HWP_PREVIEWS_PLUGIN_DIR'     => plugin_dir_path( __FILE__ ),
+		'HWP_PREVIEWS_PLUGIN_URL'     => plugin_dir_url( __FILE__ ),
+		'HWP_PREVIEWS_PLUGIN_FILE'    => __FILE__,
+		'HWP_PREVIEWS_AUTOLOAD'       => true,
+		'HWP_PREVIEWS_SETTINGS_GROUP' => 'hwp_previews_settings_group',
+		'HWP_PREVIEWS_SETTINGS_KEY'   => 'hwp_previews_settings',
+	];
 
-	// Plugin Folder Path.
-	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
-		define( 'HWP_PREVIEWS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-	}
-
-	// Plugin Folder URL.
-	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_URL' ) ) {
-		define( 'HWP_PREVIEWS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-	}
-
-	// Plugin Root File.
-	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_FILE' ) ) {
-		define( 'HWP_PREVIEWS_PLUGIN_FILE', __FILE__ );
-	}
-
-	// Whether to autoload the files or not.
-	if ( ! defined( 'HWP_PREVIEWS_AUTOLOAD' ) ) {
-		define( 'HWP_PREVIEWS_AUTOLOAD', true );
-	}
-
-	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
-		define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
-	}
-
-	// Plugin config settings key.
-	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_KEY' ) ) {
-		define( 'HWP_PREVIEWS_SETTINGS_KEY', 'hwp_previews_settings' );
+	foreach ( $constants as $name => $value ) {
+		if ( ! defined( $name ) ) {
+			// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
+			define( $name, $value );
+			// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
+		}
 	}
 
 	// Plugin Template Directory.
