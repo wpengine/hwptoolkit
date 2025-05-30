@@ -29,8 +29,9 @@ parameters:
           max: 80400
     paths:
         - hwp-previews.php
-        - vendor/autoload.php
         - src/
     ignoreErrors:
+        - identifier: empty.notAllowed
         -
-            identifier: empty.notAllowed
+            message: '#Constant HWP_PREVIEWS.* not found\.#'
+

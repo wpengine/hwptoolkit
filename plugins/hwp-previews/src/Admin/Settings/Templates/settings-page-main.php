@@ -1,6 +1,6 @@
 <?php
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 $hwp_previews_tabs_config = (array) get_query_var( 'hwp_previews_main_page_config' );
 $hwp_previews_current_tab = (string) ( $hwp_previews_tabs_config['current_tab'] ?? '' );

@@ -1,12 +1,11 @@
 <?php
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace HWP\Previews;
 
 use HWP\Previews\Admin\Settings_Page;
 use HWP\Previews\Hooks\Preview_Hooks;
-
 
 if ( ! class_exists( Plugin::class ) ) :
 
@@ -18,12 +17,10 @@ if ( ! class_exists( Plugin::class ) ) :
 	 * @package HWP\Previews
 	 */
 	final class Plugin {
-
-
 		/**
 		 * The instance of the plugin.
 		 *
-		 * @var Plugin|null
+		 * @var \HWP\Previews\Plugin|null
 		 */
 		protected static ?Plugin $instance = null;
 
@@ -47,10 +44,13 @@ if ( ! class_exists( Plugin::class ) ) :
 		}
 
 		/**
-		 * Initialize the plugin functionality.
+		 * Initialize the plugin admin, frontend & api functionality.
 		 */
 		public function setup(): void {
-			Settings_Page::init();
+			if ( is_admin() ) {
+				Settings_Page::init();
+			}
+
 			Preview_Hooks::init();
 		}
 
@@ -65,7 +65,7 @@ if ( ! class_exists( Plugin::class ) ) :
 		 */
 		public function __clone() {
 			// Cloning instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'The plugin Plugin class should not be cloned.', 'hwp-previews' ), HWP_PREVIEWS_VERSION );
+			_doing_it_wrong( __FUNCTION__, 'The plugin Plugin class should not be cloned.', '0.0.1' );
 		}
 
 		/**
@@ -75,7 +75,7 @@ if ( ! class_exists( Plugin::class ) ) :
 		 */
 		public function __wakeup(): void {
 			// De-serializing instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the plugin Main class is not allowed.', 'hwp-previews' ), HWP_PREVIEWS_VERSION );
+			_doing_it_wrong( __FUNCTION__, 'De-serializing instances of the plugin Main class is not allowed.', '0.0.1' );
 		}
 	}
 endif;

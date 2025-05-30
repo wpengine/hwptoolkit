@@ -36,9 +36,9 @@ class Settings_Section {
 	/**
 	 * Constructor.
 	 *
-	 * @param string                                                       $id Page slug.
-	 * @param string                                                       $title Settings section title.
-	 * @param string                                                       $page The slug of the settings page.
+	 * @param string                                                             $id Page slug.
+	 * @param string                                                             $title Settings section title.
+	 * @param string                                                             $page The slug of the settings page.
 	 * @param array<\HWP\Previews\Admin\Settings\Fields\Abstract_Settings_Field> $fields Array of fields to be registered in the section.
 	 */
 	public function __construct(

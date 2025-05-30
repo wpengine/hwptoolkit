@@ -1,0 +1,36 @@
+name: 'PHP Code Quality'
+description: 'Sets up PHP and runs code quality tools'
+inputs:
+  working-directory:
+    description: 'Directory to run composer and quality tools in'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+        tools: composer:v2
+        coverage: none
+
+    - name: Install dependencies
+      uses: ramsey/composer-install@v2
+      with:
+        working-directory: ${{ inputs.working-directory }}
+        composer-options: "--no-progress"
+
+    - name: Run PHPStan
+      working-directory: ${{ inputs.working-directory }}
+      run: composer run-script phpstan
+      shell: bash
+
+    - name: Run Psalm
+      working-directory: ${{ inputs.working-directory }}
+      run: composer run-script php:psalm
+      shell: bash
+
+    - name: Run PHP CodeSniffer
+      working-directory: ${{ inputs.working-directory }}
+      run: composer run-script check-cs
+      shell: bash
