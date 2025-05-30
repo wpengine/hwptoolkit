@@ -93,10 +93,10 @@ class Settings_Group {
 	 */
 	public function get_settings_config(): array {
 		return apply_filters( 'hwp_previews_settings_group_settings_config', [
-			$this->get_settings_key_enabled()           => 'bool',
+			$this->get_settings_key_enabled()     => 'bool',
 			$this->get_settings_key_post_statuses_as_parent() => 'bool',
-			$this->get_settings_key_preview_url()       => 'string',
-			$this->get_settings_key_in_iframe()         => 'bool',
+			$this->get_settings_key_preview_url() => 'string',
+			$this->get_settings_key_in_iframe()   => 'bool',
 		] );
 	}
 
