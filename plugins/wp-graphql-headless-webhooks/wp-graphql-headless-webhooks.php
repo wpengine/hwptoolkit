@@ -30,6 +30,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Define text domain constant to use instead of string literals
+if ( ! defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_TEXT_DOMAIN' ) ) {
+	define( 'WPGRAPHQL_HEADLESS_WEBHOOKS_TEXT_DOMAIN', 'wp-graphql-headless-webhooks' );
+}
+
 // Load the autoloader.
 require_once __DIR__ . '/src/Autoloader.php';
 if ( ! \WPGraphQL\Webhooks\Autoloader::autoload() ) {
@@ -101,9 +106,12 @@ function graphql_headless_webhooks_init(): void {
 	$not_ready = graphql_headless_webhooks_dependencies_not_ready();
 
 	if ( $not_ready === [] && defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' ) ) {
+		// Load text domain at the init hook
+		add_action('init', 'WPGraphQL\Webhooks\graphql_headless_webhooks_load_textdomain');
+		
 		require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'src/Plugin.php';
 		$plugin = new \WPGraphQL\Webhooks\Plugin();
-		$plugin->init();
+		$plugin::instance();
 		return;
 	}
 
@@ -115,9 +123,10 @@ function graphql_headless_webhooks_init(): void {
 			<div class="error notice">
 				<p>
 					<?php
+						// Using plain string to avoid early text domain loading
 						printf(
 							/* translators: dependency not ready error message */
-							esc_html__( '%1$s must be active for WPGraphQL Plugin Name to work.', 'wp-graphql-headless-webhooks' ),
+							'%1$s must be active for WPGraphQL Headless Webhooks to work.',
 							esc_html( $dep )
 						);
 						?>
@@ -130,6 +139,20 @@ function graphql_headless_webhooks_init(): void {
 		);
 	}
 }
+/**
+ * Load plugin text domain.
+ */
+function graphql_headless_webhooks_load_textdomain(): void {
+	load_plugin_textdomain(
+		'wp-graphql-headless-webhooks',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+
+// Load the text domain during init, not earlier
+add_action( 'init', 'WPGraphQL\Webhooks\graphql_headless_webhooks_load_textdomain', 1 );
+
 /** @psalm-suppress HookNotFound */
 add_action( 'plugins_loaded', 'WPGraphQL\Webhooks\graphql_headless_webhooks_init' );
 
