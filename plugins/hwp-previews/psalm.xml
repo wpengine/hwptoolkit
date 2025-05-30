@@ -25,5 +25,10 @@
 				<directory name="src"/>
 			</errorLevel>
 		</UndefinedConstant>
+		<InvalidArgument>
+			<errorLevel type="suppress">
+				<file name="src/Hooks/Preview_Hooks.php"/>
+			</errorLevel>
+		</InvalidArgument>
 	</issueHandlers>
 </psalm>

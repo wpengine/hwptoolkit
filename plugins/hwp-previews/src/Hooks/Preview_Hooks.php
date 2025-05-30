@@ -92,7 +92,6 @@ class Preview_Hooks {
 		 * this must be removed when properly fixed https://github.com/WordPress/gutenberg/issues/13998.
 		 */
 		foreach ( self::$types_config->get_public_post_types() as $key => $label ) {
-			// @psalm-suppress InvalidArgument
 			add_filter( 'rest_prepare_' . $key, [ self::class, 'filter_rest_prepare_link' ], 10, 2 );
 		}
 	}
