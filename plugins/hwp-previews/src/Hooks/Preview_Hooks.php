@@ -54,13 +54,13 @@ class Preview_Hooks {
 	 */
 	public static function init(): void {
 		self::init_class_properties();
-		self::add_filters_actions();
+		self::add_hook_actions();
 	}
 
 	/**
-	 * Registers the filters and actions for the preview functionality.
+	 * Registers the hooks for the preview functionality.
 	 */
-	public static function add_filters_actions(): void {
+	public static function add_hook_actions(): void {
 		if ( null === self::$types_config ) {
 			return;
 		}
