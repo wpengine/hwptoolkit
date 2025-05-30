@@ -60,7 +60,7 @@ class Autoloader {
 	 * Displays a notice if the autoloader is missing.
 	 */
 	protected static function missing_autoloader_notice(): void {
-		$error_message = __( 'Headless Webhooks for WPGraphQL: The Composer autoloader was not found. If you installed the plugin from the GitHub source, make sure to run `composer install`.', 'wp-graphql-headless-webhooks' );
+		$error_message = 'Headless Webhooks for WPGraphQL: The Composer autoloader was not found. If you installed the plugin from the GitHub source, make sure to run `composer install`.';
 
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( esc_html( $error_message ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- This is a development notice.

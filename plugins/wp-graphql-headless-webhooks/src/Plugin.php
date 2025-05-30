@@ -102,14 +102,14 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 * Prevent cloning.
 		 */
 		public function __clone() {
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'The plugin main class should not be cloned.', 'wp-graphql-headless-webhooks' ), '0.0.1' );
+			_doing_it_wrong( __FUNCTION__, 'The plugin main class should not be cloned.', '0.0.1' );
 		}
 
 		/**
 		 * Prevent unserializing.
 		 */
 		public function __wakeup(): void {
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the plugin main class is not allowed.', 'wp-graphql-headless-webhooks' ), '0.0.1' );
+			_doing_it_wrong( __FUNCTION__, 'De-serializing instances of the plugin main class is not allowed.', '0.0.1' );
 		}
 	}
 
