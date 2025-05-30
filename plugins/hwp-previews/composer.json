@@ -50,7 +50,7 @@
 		}
 	},
 	"archive": {
-      	"name": "hwp-previews",
+		"name": "hwp-previews",
 		"exclude": [
 			"/.*",
 			"bin",
@@ -100,9 +100,9 @@
 		"phpstan": [
 			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
 		],
-		"psalm": [
-			"vendor/bin/psalm --no-progress --show-info=false"
-		]
+		"php:psalm": "psalm",
+		"php:psalm:info": "psalm --show-info=true",
+		"php:psalm:fix": "psalm --alter"
 	},
 	"scripts-descriptions": {
 	},
