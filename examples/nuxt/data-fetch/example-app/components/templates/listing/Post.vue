@@ -1,85 +1,93 @@
 <script setup>
-import { computed } from 'vue';
+import { formatWordPressUrl, formatDate } from '../../../lib/utils';
 
 const props = defineProps({
-  post: {
-    type: Object,
+  posts: {
+    type: Array,
     required: true
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  cols: {
+    type: Number,
+    default: 3
   }
 });
 
-// Format date helper
-const formatDate = (dateString) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  return date.toLocaleDateString();
-};
 
-// Format WordPress URL
-const formatWordPressUrl = (uri) => {
-  if (!uri) return '/';
-  
-  // Remove the leading slash if present
-  let cleanUri = uri.startsWith('/') ? uri.substring(1) : uri;
-  
-  // Remove trailing slash if present (except for root)
-  cleanUri = cleanUri.endsWith('/') && cleanUri !== '/' 
-    ? cleanUri.slice(0, -1) 
-    : cleanUri;
-    
-  return `/${cleanUri}`;
-};
-
-// Get post link
-const postLink = computed(() => {
-  if (props.post.uri) return formatWordPressUrl(props.post.uri);
-  if (props.post.slug) return `/posts/${props.post.slug}`;
-  return '/';
-});
-
-// Create a safe excerpt without HTML tags
-const safeExcerpt = computed(() => {
-  if (!props.post.excerpt) return '';
-  // Strip HTML tags and limit length
-  return props.post.excerpt
-    .replace(/<\/?[^>]+(>|$)/g, "") // Remove HTML tags
-    .substring(0, 120) // Limit to 120 chars
-    .trim() + (props.post.excerpt.length > 120 ? '...' : '');
-});
-
-// Get featured image if available
-const featuredImage = computed(() => 
-  props.post.featuredImage?.node?.sourceUrl || null
-);
 </script>
 
 <template>
-  <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-    <!-- Featured Image (if available) -->
-    <div v-if="featuredImage" class="h-48 overflow-hidden">
-      <img :src="featuredImage" :alt="post.title" class="w-full h-full object-cover" />
-    </div>
-    
-    <div class="p-6">
-      <!-- Post Title -->
-      <h3 class="text-xl font-semibold mb-2">
-        <NuxtLink :to="postLink" class="hover:text-blue-600 transition-colors">
-          {{ post.title }}
+
+  <!-- Loading state -->
+  <div v-if="loading && posts.length === 0">
+    <p>Loading posts...</p>
+  </div>
+
+  <!-- Posts listing -->
+  <div class="grid blog-listing" :class="`cols-${cols}`" v-else-if="posts.length > 0">
+    <!-- Individual post -->
+    <article v-for="post in posts" :key="post.id" class="post-card">
+
+      <!-- Featured image -->
+      <div v-if="post.featuredImage?.node" class="featured-image-container">
+        <NuxtLink :to="formatWordPressUrl(post.uri)">
+          <img :src="post.featuredImage.node.sourceUrl" :alt="post.featuredImage.node.altText || post.title"
+            class="feature-img" />
         </NuxtLink>
-      </h3>
-      
-      <!-- Post Date -->
-      <time class="text-sm text-gray-500 block mb-3">{{ formatDate(post.date) }}</time>
-      
-      <!-- Post Excerpt -->
-      <div v-if="post.excerpt" class="text-gray-600 mb-4">
-        {{ safeExcerpt }}
       </div>
-      
-      <!-- Read More Link -->
-      <NuxtLink :to="postLink" class="inline-block text-blue-600 font-medium hover:underline">
-        Read More →
-      </NuxtLink>
-    </div>
-  </article>
+      <div class="post-card-content">
+      <header>
+        <h3 class="post-title">
+          <NuxtLink :to="post.uri">
+            {{ post.title }}
+          </NuxtLink>
+        </h3>
+
+        <div>
+          <div class="post-meta">
+            <div v-if="post.author?.node" class="author">
+              <img v-if="post.author.node.avatar?.url" :src="post.author.node.avatar.url" :alt="post.author.node.name"
+                width="24" height="24" class="author-avatar" />
+              <span class="author-name">{{ post.author.node.name }}</span>
+            </div>
+            <time>{{ formatDate(post.date) }}</time>
+          </div>
+          <!-- Categories -->
+          <div v-if="post.categories?.nodes?.length" class="categories-container">
+            <span>Cats:</span>
+            <div class="post-categories">
+              <span v-for="(category, index) in post.categories.nodes" :key="category.slug">
+                {{ category.name }}{{ index < post.categories.nodes.length - 1 ? ', ' : '' }} </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+
+      <!-- Excerpt -->
+      <div v-html="post.excerpt" class="post-excerpt"></div>
+
+      <!-- Read more link -->
+      <div class="read-more">
+        <NuxtLink :to="formatWordPressUrl(post.uri)" class="button button-primary ">
+          Read more →
+        </NuxtLink>
+      </div>
+
+      </div>
+    </article>
+  </div>
+
+  <!-- Empty state -->
+  <div v-else>
+    <p>No posts found</p>
+  </div>
 </template>
+
+<style lang="scss">
+/* Replace @import with @use */
+@use '@/assets/scss/components/post-card';
+</style>

@@ -1,0 +1,14 @@
+@use "../variables" as *;
+
+.button {
+  padding: $gutter/1.5 $gutter * 1;
+  color: white;
+  &.button-primary {
+    background-color: $primary-color;
+  }
+  &.button-link {
+    background-color: transparent;
+    color: $primary-color;
+    border: 1px solid $primary-color;
+  }
+}

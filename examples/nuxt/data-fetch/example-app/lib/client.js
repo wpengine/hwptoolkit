@@ -1,22 +1,30 @@
 import { ref, onMounted, onServerPrefetch } from 'vue';
 import { useRuntimeConfig } from 'nuxt/app';
 
-// Make sure we're using the correct imports 
-export function useGraphQL(query, variables = {}, options = {}) {
 
+// Make sure we're using the correct imports 
+export function useGraphQL(query, initialVariables = {}, options = {}) {
   const data = ref(null);
   const loading = ref(true);
   const error = ref(null);
+  const currentVariables = ref(initialVariables);
   
-  const fetchData = async () => {
+  const fetchData = async (newVariables) => {
     loading.value = true;
     error.value = null;
+    
+    // Update variables if new ones are provided
+    if (newVariables) {
+      currentVariables.value = newVariables;
+    }
     
     try {
       // Get runtime config
       const config = useRuntimeConfig();
       const wpUrl = config.public.wordpressUrl;
       const graphqlEndpoint = `${wpUrl}/graphql`;
+      
+      //console.log('Executing GraphQL query with variables:', currentVariables.value);
       
       // Make the request
       const response = await fetch(graphqlEndpoint, {
@@ -26,7 +34,7 @@ export function useGraphQL(query, variables = {}, options = {}) {
         },
         body: JSON.stringify({
           query,
-          variables
+          variables: currentVariables.value
         }),
         ...options
       });
@@ -42,16 +50,20 @@ export function useGraphQL(query, variables = {}, options = {}) {
       }
       
       data.value = result.data;
+      
+      // Return the result for refetch operations
+      return result;
     } catch (e) {
       error.value = e;
       console.error('GraphQL error:', e);
+      throw e; // Re-throw to allow handling in the component
     } finally {
       loading.value = false;
     }
   };
   
   // Important: This ensures the data is fetched during SSR
-  onServerPrefetch(fetchData);
+  onServerPrefetch(() => fetchData());
   
   // Also fetch on mount for client-side navigation
   onMounted(() => {
@@ -64,7 +76,8 @@ export function useGraphQL(query, variables = {}, options = {}) {
     data,
     loading,
     error,
-    refetch: fetchData
+    refetch: fetchData,
+    currentVariables
   };
 }
 
