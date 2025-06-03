@@ -83,7 +83,7 @@ class Menu_Page implements Menu_Page_Interface {
 		add_submenu_page(
 			'options-general.php',
 			$this->page_title,
-			__($this->menu_title, HWP_PREVIEWS_TEXT_DOMAIN),
+			$this->menu_title,
 			'manage_options',
 			$this->menu_slug,
 			[ $this, 'registration_callback' ],
