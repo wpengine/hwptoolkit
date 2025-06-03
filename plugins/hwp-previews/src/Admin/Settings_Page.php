@@ -180,11 +180,6 @@ class Settings_Page {
 			sprintf( __( 'Enable HWP Previews for %s', 'hwp-previews' ), $label ),
 			__( 'Turn preview functionality on or off for this public post type.', 'hwp-previews' )
 		);
-		$fields[] = new Checkbox_Field(
-			'unique_post_slugs',
-			__( 'Enable unique post slugs for all post statuses', 'hwp-previews' ),
-			__( 'By default WordPress adds unique post slugs to the published posts. This option enforces unique slugs for all post statuses.', 'hwp-previews' )
-		);
 
 		if ( $is_hierarchical ) {
 			$fields[] = new Checkbox_Field(
