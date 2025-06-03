@@ -34,6 +34,12 @@ importers:
         specifier: ^8.13.0
         version: 8.13.0
 
+  plugins/wp-graphql-headless-webhooks:
+    devDependencies:
+      '@wordpress/env':
+        specifier: ^8.0.0
+        version: 8.13.0
+
 packages:
 
   '@isaacs/cliui@8.0.2':
