@@ -33,7 +33,7 @@ if ( ! function_exists( 'register_webhook_type' ) ) {
 	function register_webhook_type( string $type, array $args = [] ): void {
 		/** @psalm-suppress HookNotFound */
 		if ( did_action( 'graphql_register_webhooks' ) > 0 ) {
-			_doing_it_wrong( 'register_webhook_type', __( 'Call this before WebhookRegistry::init', 'wp-graphql-headless-webhooks' ), '0.1.0' );
+			_doing_it_wrong( 'register_webhook_type', 'Call this before WebhookRegistry::init', '0.1.0' );
 
 			return;
 		}
@@ -137,7 +137,7 @@ function register_graphql_event( Event $event ): void {
 	if ( did_action( 'graphql_register_events' ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,
-			esc_html__( 'Call this before EventRegistry::init', 'wp-graphql-webhooks' ),
+			'Call this before EventRegistry::init',
 			'0.0.1'
 		);
 		return;
