@@ -8,7 +8,9 @@ export default defineNuxtConfig({
       wordpressUrl: process.env.WORDPRESS_URL || "http://localhost:8890",
     },
   },
-  
+   experimental: {
+    componentIslands: true
+  },
   // Add CSS global files
   css: [
     // Add your global SCSS file

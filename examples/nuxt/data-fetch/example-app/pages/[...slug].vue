@@ -5,7 +5,7 @@ import { useGraphQL, gql } from '../lib/client';
 
 // Import your template components
 import HomeTemplate from '../components/templates/Home.vue'; 
-import BlogTemplate from '../components/templates/Blog.vue'; 
+import BlogTemplate from '../components/blog/Blog.server.vue'; 
 import PostTemplate from '../components/templates/single/Post.vue';
 import PageTemplate from '../components/templates/single/Page.vue';
 import NotFoundTemplate from '../components/templates/404.vue';

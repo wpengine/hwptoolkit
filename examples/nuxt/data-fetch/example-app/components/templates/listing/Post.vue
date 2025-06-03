@@ -1,5 +1,5 @@
 <script setup>
-import { formatWordPressUrl, formatDate } from '../../../lib/utils';
+import { formatWordPressUrl, formatDate, createExcerpt } from '../../../lib/utils';
 
 const props = defineProps({
   posts: {
@@ -68,7 +68,7 @@ const props = defineProps({
 
 
       <!-- Excerpt -->
-      <div v-html="post.excerpt" class="post-excerpt"></div>
+      <div v-html="createExcerpt(post.excerpt, 150)" class="post-excerpt"></div>
 
       <!-- Read more link -->
       <div class="read-more">
@@ -80,14 +80,11 @@ const props = defineProps({
       </div>
     </article>
   </div>
-
-  <!-- Empty state -->
   <div v-else>
     <p>No posts found</p>
   </div>
 </template>
 
 <style lang="scss">
-/* Replace @import with @use */
 @use '@/assets/scss/components/post-card';
 </style>

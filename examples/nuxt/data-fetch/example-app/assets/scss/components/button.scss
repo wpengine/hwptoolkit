@@ -1,7 +1,7 @@
 @use "../variables" as *;
 
 .button {
-  padding: $gutter/1.5 $gutter * 1;
+  padding: .5rem $gutter * 1.5;
   color: white;
   &.button-primary {
     background-color: $primary-color;

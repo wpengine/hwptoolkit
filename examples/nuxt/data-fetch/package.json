@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "scripts": {
     "example:bootstrap": "npm install & npm run app:install",
-    "example:start": "pnpm run wp:start && npm run app:dev",
+    "example:start": "npm run wp:start && npm run app:dev",
     "example:setup": "npm run example:bootstrap && npm run wp:uploads:unzip && npm run wp:start && npm run wp:db:import && npm run example:stop",
     "example:stop": "npm run wp:stop",
     "example:prune": "npm run wp:destroy && npm run example:setup && npm run example:start",

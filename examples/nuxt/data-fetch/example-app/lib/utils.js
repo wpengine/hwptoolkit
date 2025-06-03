@@ -1,5 +1,5 @@
-import { useGraphQL, gql } from "./client";
-import { useRuntimeConfig } from 'nuxt/app';
+import { useGraphQL, gql, fetchGraphQL } from "./client";
+import { useRuntimeConfig } from "nuxt/app";
 // Format WordPress URL
 export function formatWordPressUrl(uri) {
   if (!uri) return "/";
@@ -41,14 +41,14 @@ export async function getPosts({
   revalidate = false,
 }) {
   if (!slug) {
-    return await useGraphQL(query, {
+    return await fetchGraphQL(query, {
       first: pageSize,
       after,
     });
   }
 
   const querySlug = typeof slug === "string" ? slug : String(slug);
-  return await useGraphQL(query, {
+  return await fetchGraphQL(query, {
     slug: querySlug,
     first: pageSize,
     after,
@@ -65,13 +65,7 @@ export function createExcerpt(content, length = 150) {
 }
 
 // Define the query using gql
-const POSTS_PER_PAGE_QUERY = gql`
-  query GetPostsPerPage {
-    allSettings {
-      readingSettingsPostsPerPage
-    }
-  }
-`;
+
 
 // Simple in-memory cache
 let cachedPostsPerPage = 10; // Default value
@@ -83,35 +77,53 @@ export async function getPostsPerPage() {
     if (cachedPostsPerPage !== 10) {
       return cachedPostsPerPage;
     }
-    
+
     // Otherwise fetch from server
     const config = useRuntimeConfig();
     const wpUrl = config.public.wordpressUrl;
     const response = await fetch(`${wpUrl}/graphql`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         query: POSTS_PER_PAGE_QUERY, // Use the gql query directly
-        variables: {}
-      })
+        variables: {},
+      }),
     });
-    
+
     if (!response.ok) return cachedPostsPerPage;
-    
+
     const result = await response.json();
-    const serverValue = parseInt(result.data?.allSettings?.readingSettingsPostsPerPage, 10);
-    
+    const serverValue = parseInt(
+      result.data?.allSettings?.readingSettingsPostsPerPage,
+      10
+    );
+
     if (!isNaN(serverValue)) {
       // Update cache with server value
       cachedPostsPerPage = serverValue;
     }
-    
+
     return cachedPostsPerPage;
   } catch (error) {
     return cachedPostsPerPage; // Return default if anything fails
   }
 }
-
+// Fetch the data
+export function blogPostsPerPage() {
+  const POSTS_PER_PAGE_QUERY = gql`
+  query GetPostsPerPage {
+    allSettings {
+      readingSettingsPostsPerPage
+    }
+  }
+`;
+  const { data } = useGraphQL(POSTS_PER_PAGE_QUERY);
+  const blogPostsPerPage = computed(
+    () => data.value?.allSettings?.readingSettingsPostsPerPage || 10
+  );
+  console.log("Blog posts per page:", data._rawValue);
+  return blogPostsPerPage;
+}
 // Synchronous version - just returns whatever is cached
 export function getPostsPerPageSync() {
   return cachedPostsPerPage;

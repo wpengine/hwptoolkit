@@ -1,6 +1,6 @@
 # Nuxt Data fetching
 
-In this example we show how to implement the WP Template Hierarchy in SvelteKit for use with a Headless WordPress backend using WPGraphQL. We use URQL for all routing and fetching page content.
+In this example we show how to implement the WP Template Hierarchy in Nuxt for use with a Headless WordPress backend using WPGraphQL.
 
 ## Getting Started
 
@@ -8,10 +8,10 @@ In this example we show how to implement the WP Template Hierarchy in SvelteKit 
 > Docker Desktop needs to be installed to run WordPress locally.
 
 1. Run `npm run example:setup` to install dependencies and configure the local WP server.
-2. Run `npm run example:start` to start the WP server and SvelteKit development server.
+2. Run `npm run example:start` to start the WP server and Nuxt development server.
 
 > [!NOTE]
-> When you kill the long running process this will not shutdown the local WP instance, only SvelteKit. You must run `npm run example:stop` to kill the local WP server.
+> When you kill the long running process this will not shutdown the local WP instance, only Nuxt. You must run `npm run example:stop` to kill the local WP server.
 
 ## Trouble Shooting
 

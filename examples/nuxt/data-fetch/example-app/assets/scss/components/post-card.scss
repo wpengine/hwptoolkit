@@ -1,5 +1,6 @@
 @use "../variables" as *;
 .post-card {
+        overflow: auto;
   margin-bottom: $gutter * 2;
   .post-card-content {
     border: 1px solid #ddd;
@@ -70,12 +71,22 @@
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
+        overflow-wrap: break-word;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
   }
 
   .post-excerpt {
     font-size: 0.875rem;
     color: #333;
     margin-bottom: 1rem;
+  
+            overflow-wrap: break-word;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    
   }
   .read-more {
     display: flex;

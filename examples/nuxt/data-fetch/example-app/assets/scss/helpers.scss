@@ -1,0 +1,40 @@
+.text-center {
+    text-align: center;
+}
+
+// Margin mixin
+@mixin margin($direction, $size) {
+    margin-#{$direction}: $size;
+}
+
+// Margin sizes
+$spacers: (
+    1: 0.25rem,
+    2: 0.5rem,
+    3: 1rem,
+    4: 1.5rem,
+    5: 2rem
+);
+
+// Generate margin classes
+@each $key, $value in $spacers {
+    // Top margin
+    .mt-#{$key} {
+        @include margin(top, $value);
+    }
+    
+    // Bottom margin
+    .mb-#{$key} {
+        @include margin(bottom, $value);
+    }
+    
+    // Left margin
+    .ml-#{$key} {
+        @include margin(left, $value);
+    }
+    
+    // Right margin
+    .mr-#{$key} {
+        @include margin(right, $value);
+    }
+}

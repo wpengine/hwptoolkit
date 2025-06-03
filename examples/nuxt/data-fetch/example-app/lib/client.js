@@ -1,6 +1,45 @@
 import { ref, onMounted, onServerPrefetch } from 'vue';
 import { useRuntimeConfig } from 'nuxt/app';
 
+export async function fetchGraphQL(query, variables = {}, revalidate = null, customConfig = null) {
+  try {
+    const fetchOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    };
+
+    // Revalidate with ISR if revalidate is set
+    if (revalidate !== null) {
+      fetchOptions.next = {
+        revalidate: revalidate,
+      };
+    }
+
+    const config = useRuntimeConfig();
+    const response = await fetch(
+      `${config.public.wordpressUrl}/graphql`,
+      fetchOptions,
+    );
+
+    const result = await response.json();
+console.log("fetchGraphQL:", result);
+    if (result.errors) {
+      console.error("GraphQL Error:", result.errors);
+      throw new Error("Failed to fetch data from WordPress");
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching from WordPress:", error);
+    throw error;
+  }
+}
 
 // Make sure we're using the correct imports 
 export function useGraphQL(query, initialVariables = {}, options = {}) {
@@ -24,7 +63,7 @@ export function useGraphQL(query, initialVariables = {}, options = {}) {
       const wpUrl = config.public.wordpressUrl;
       const graphqlEndpoint = `${wpUrl}/graphql`;
       
-      //console.log('Executing GraphQL query with variables:', currentVariables.value);
+      console.log('GraphQL:', currentVariables.value);
       
       // Make the request
       const response = await fetch(graphqlEndpoint, {

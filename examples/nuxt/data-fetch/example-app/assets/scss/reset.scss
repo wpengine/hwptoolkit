@@ -22,11 +22,15 @@ body {
 /* Element reset */
 h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 a {
     text-decoration: none;
     color: inherit;
+
 }
 
 img, picture {
