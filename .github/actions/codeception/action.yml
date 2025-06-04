@@ -62,3 +62,20 @@ runs:
       env:
         WP_VERSION: ${{ inputs.wordpress }}
         PHP_VERSION: ${{ inputs.php }}
+
+    - name: Run Acceptance Tests w/ Docker
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        if [ "${{ inputs.extensions }}" = "true" ]; then
+          docker exec \
+            --env DEBUG=${{ env.DEBUG }} \
+            --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
+            --env SUITES=acceptance \
+            $(docker compose ps -q wordpress) \
+            bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
+        fi
+      env:
+        DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
+        SKIP_TESTS_CLEANUP: 'true'
+      continue-on-error: true
