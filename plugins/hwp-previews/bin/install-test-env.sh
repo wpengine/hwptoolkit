@@ -162,12 +162,14 @@ setup_plugin() {
 	echo -e "$(status_message "Installing Composer deps")"
 	composer install
 
-	# Install npm deps
-	echo -e "$(status_message "Installing NPM Deps")"
-	npm install --no-audit --no-fund --no-progress
+	if [ -f "package.json" ]; then
+		# Install npm deps
+		echo -e "$(status_message "Installing NPM Deps")"
+		npm install --no-audit --no-fund --no-progress
 
-	# Build the plugin
-	npm run build
+		# Build the plugin
+		npm run build
+	fi
 }
 
 post_setup() {
