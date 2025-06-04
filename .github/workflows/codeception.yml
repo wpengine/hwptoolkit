@@ -57,6 +57,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          git fetch --prune --unshallow
+          plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
+          echo "slug=$plugin" >> $GITHUB_OUTPUT
+
       - name: Run Codeception Tests
         uses: ./.github/actions/codeception
         with:
