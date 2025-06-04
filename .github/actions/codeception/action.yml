@@ -67,15 +67,42 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        if [ "${{ inputs.extensions }}" = "true" ]; then
-          docker exec \
-            --env DEBUG=${{ env.DEBUG }} \
-            --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
-            --env SUITES=acceptance \
-            $(docker compose ps -q wordpress) \
-            bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
-        fi
+        docker exec \
+          --env DEBUG=${{ env.DEBUG }} \
+          --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
+          --env SUITES=acceptance \
+          $(docker compose ps -q wordpress) \
+          bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
       env:
         DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
         SKIP_TESTS_CLEANUP: 'true'
       continue-on-error: true
+
+    - name: Run Functional Tests w/ Docker
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        docker exec \
+          --env DEBUG=${{ env.DEBUG }} \
+          --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
+          --env SUITES=functional \
+          $(docker compose ps -q wordpress) \
+          bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
+      env:
+        DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
+        SKIP_TESTS_CLEANUP: 'true'
+      continue-on-error: true
+
+    - name: Run WPUnit Tests w/ Docker
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        docker exec \
+          --env COVERAGE=${{ inputs.coverage }} \
+          --env USING_XDEBUG=${{ inputs.coverage }} \
+          --env DEBUG=${{ env.DEBUG }} \
+          --env SUITES=wpunit \
+          $(docker compose ps -q wordpress) \
+          bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
+      env:
+        DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
