@@ -68,7 +68,7 @@ jobs:
         uses: ./.github/actions/codeception
         with:
           working-directory: plugins/${{ steps.plugin.outputs.slug }}
-          extensions: ["json", "mbstring"]
           php: ${{ matrix.php }}
           wordpress: ${{ matrix.wordpress }}
+          extensions: json,mbstring
           coverage: 1
