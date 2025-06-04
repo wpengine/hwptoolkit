@@ -122,6 +122,6 @@ class Faust_Integration {
 			</div>
 
 			<?php
-		});
+		}, 10, 0);
 	}
 }
