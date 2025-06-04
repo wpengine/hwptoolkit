@@ -60,7 +60,7 @@ jobs:
       - name: Run Codeception Tests
         uses: ./.github/actions/codeception
         with:
-          working-directory: plugins/${{ steps.plugin.outputs.slug }}
+          working-directory: ${{ steps.plugin.outputs.slug }}
           php: ${{ matrix.php }}
           wordpress: ${{ matrix.wordpress }}
           coverage: 1
