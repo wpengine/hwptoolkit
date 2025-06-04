@@ -2,33 +2,11 @@
 
 namespace HWP\Previews\Integration;
 
-use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
 use HWP\Previews\Admin\Settings\Helper\Settings_Group;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
 use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 
 class Faust_Integration {
-    /**
-	 * Post types configuration.
-	 *
-	 * @var Post_Types_Config_Interface|null
-	 */
-	protected static ?Post_Types_Config_Interface $types_config = null;
-
-	/**
-	 * Settings helper instance that provides access to plugin settings.
-	 *
-	 * @var Settings_Helper|null
-	 */
-	protected static ?Settings_Helper $settings_helper = null;
-
-	/**
-	 * Settings group instance that provides access to plugin settings.
-	 *
-	 * @var Settings_Group|null
-	 */
-	protected static ?Settings_Group $settings_group = null;
-
 	/**
 	 * Whether Faust is enabled.
 	 */
@@ -38,21 +16,9 @@ class Faust_Integration {
 	 * Initialize the hooks for the preview functionality.
 	 */
 	public static function init(): void {
-		self::init_class_properties();
+		self::$faust_enabled = self::is_faust_enabled();
+
 		self::configure_faust();
-	}
-
-	public static function init_class_properties(): void {
-		self::$settings_helper = Settings_Helper::get_instance();
-
-		self::$settings_group = Settings_Group::get_instance();
-
-        self::$types_config = apply_filters(
-			'hwp_previews_hooks_post_type_config',
-			Post_Types_Config_Registry::get_post_type_config()
-		);
-
-        self::$faust_enabled = self::is_faust_enabled();
 	}
 
 	public static function configure_faust(): void {
@@ -105,15 +71,22 @@ class Faust_Integration {
 	 * Sets default Faust settings if there are no existing settings.
 	 */
 	public static function set_default_faust_settings(): void {
-        $plugin_settings = self::$settings_group->get_cached_settings();
+		$settings_group = Settings_Group::get_instance();
+		$types_config = apply_filters(
+			'hwp_previews_hooks_post_type_config',
+			Post_Types_Config_Registry::get_post_type_config()
+		);
+
+
+        $plugin_settings = $settings_group->get_cached_settings();
 
         if( empty($plugin_settings) ) {
-            $setting_preview_key = self::$settings_group->get_settings_key_preview_url();
-            $setting_enabled_key = self::$settings_group->get_settings_key_enabled();
+            $setting_preview_key = $settings_group->get_settings_key_preview_url();
+            $setting_enabled_key = $settings_group->get_settings_key_enabled();
 
             $default_settings = array();
             
-            foreach ( self::$types_config->get_public_post_types() as $key => $label ) {
+            foreach ( $types_config->get_public_post_types() as $key => $label ) {
                 $default_settings[$key] = array(
 					$setting_enabled_key => true,
                     $setting_preview_key => self::get_faust_preview_url(),
@@ -139,7 +112,7 @@ class Faust_Integration {
 			$screen = get_current_screen();
 
 			// Exit if not this plugin's settings page.
-			if ( 'settings_page_hwp-previews' !== $screen->id ) {
+			if ( ! is_object( $screen ) || 'settings_page_hwp-previews' !== $screen->id ) {
 				return;
 			}
 			?>
