@@ -1,0 +1,115 @@
+# codeception/action.yml
+name: 'Run Codeception Tests'
+description: 'Sets up environment and runs Codeception test suites'
+inputs:
+  working-directory:
+    description: 'Plugin directory to run tests in'
+    required: true
+  php:
+    description: 'PHP version'
+    required: true
+  wordpress:
+    description: 'WordPress version'
+    required: true
+  extensions:
+    description: 'Extensions flag'
+    required: false
+    default: ''
+  coverage:
+    description: 'Enable coverage'
+    required: false
+    default: ''
+runs:
+  using: "composite"
+  steps:
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php }}
+        extensions: json, mbstring
+        tools: composer:v2
+
+    - name: Install Composer dependencies
+      uses: ramsey/composer-install@v3
+      with:
+        working-directory: ${{ inputs.working-directory }}
+        composer-options: "--no-progress"
+
+    - name: Copy .env file
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        cp .docker/.env.ci .env
+        echo "INCLUDE_EXTENSIONS=${{ inputs.extensions }}" >> .env
+        echo "WP_VERSION=${{ inputs.wordpress }}" >> .env
+        echo "PHP_VERSION=${{ inputs.php }}" >> .env
+      env:
+        WP_VERSION: ${{ inputs.wordpress }}
+        PHP_VERSION: ${{ inputs.php }}
+        INCLUDE_EXTENSIONS: ${{ inputs.extensions }}
+
+    - name: Build test environment
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        composer run docker:build
+      env:
+        WP_VERSION: ${{ inputs.wordpress }}
+        PHP_VERSION: ${{ inputs.php }}
+
+    - name: Start test environment
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        docker compose --env-file .env up --detach
+
+        CONTAINER_ID=$(docker compose ps -q wordpress)
+        if [ -n "$CONTAINER_ID" ]; then
+          docker exec $CONTAINER_ID init-docker.sh
+        else
+          echo "Error: WordPress container not found."
+          exit 1
+        fi
+      env:
+        WP_VERSION: ${{ inputs.wordpress }}
+        PHP_VERSION: ${{ inputs.php }}
+
+    - name: Run Acceptance Tests w/ Docker
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        if [ "${{ inputs.extensions }}" = "true" ]; then
+          docker exec \
+            --env DEBUG=${{ env.DEBUG }} \
+            --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
+            --env SUITES=acceptance \
+            $(docker compose ps -q wordpress) \
+            bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
+        fi
+      env:
+        DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
+        SKIP_TESTS_CLEANUP: 'true'
+      continue-on-error: true
+
+    - name: Run Functional Tests w/ Docker
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        docker exec \
+          --env DEBUG=${{ env.DEBUG }} \
+          --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
+          --env SUITES=functional \
+          $(docker compose ps -q wordpress) \
+          bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
+      env:
+        DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
+        SKIP_TESTS_CLEANUP: 'true'
+      continue-on-error: true
+
+    - name: Run WPUnit Tests w/ Docker
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        docker exec \
+          --env COVERAGE=${{ inputs.coverage }} \
+          --env USING_XDEBUG=${{ inputs.coverage }} \
+          --env DEBUG=${{ env.DEBUG }} \
+          --env SUITES=wpunit \
+          $(docker compose ps -q wordpress) \
+          bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
+      env:
+        DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}

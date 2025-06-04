@@ -57,99 +57,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: json, mbstring
-          tools: composer:v2
-
-      - name: Install Composer dependencies
-        uses: ramsey/composer-install@v3
+      - name: Run Codeception Tests
+        uses: ./codeception/action
         with:
           working-directory: plugins/${{ steps.plugin.outputs.slug }}
-          composer-options: "--no-progress"
-
-      - name: Copy .env file
-        working-directory: plugins/${{ steps.plugin.outputs.slug }}
-        run: |
-          cp .docker/.env.ci .env
-          echo "INCLUDE_EXTENSIONS=${{ matrix.extensions }}" >> .env
-          echo "WP_VERSION=${{ matrix.wordpress }}" >> .env
-          echo "PHP_VERSION=${{ matrix.php }}" >> .env
-        env:
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-          INCLUDE_EXTENSIONS: ${{ matrix.extensions }}
-
-      - name: Build test environment
-        working-directory: plugins/${{ steps.plugin.outputs.slug }}
-        run: |
-          composer run docker:build
-        env:
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-
-      - name: Start test environment
-        working-directory: plugins/${{ steps.plugin.outputs.slug }}
-        run: |
-          docker compose --env-file .env up --detach
-
-          CONTAINER_ID=$(docker compose ps -q wordpress)
-          if [ -n "$CONTAINER_ID" ]; then
-            docker exec $CONTAINER_ID init-docker.sh
-          else
-            echo "Error: WordPress container not found."
-            exit 1
-          fi
-        env:
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-
-      - name: Run Acceptance Tests w/ Docker
-        working-directory: plugins/${{ steps.plugin.outputs.slug }}
-        run: |
-          if [ "${{ matrix.extensions }}" = "true" ]; then
-            docker exec \
-              --env DEBUG=${{ env.DEBUG }} \
-              --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
-              --env SUITES=${{ env.SUITES }} \
-              $(docker compose ps -q wordpress) \
-              bash -c "cd wp-content/plugins/${{ steps.plugin.outputs.slug }} && bin/run-codeception.sh"
-          fi
-        env:
-          DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
-          SKIP_TESTS_CLEANUP: 'true'
-          SUITES: acceptance
-        continue-on-error: true
-
-      - name: Run Functional Tests w/ Docker
-        working-directory: plugins/${{ steps.plugin.outputs.slug }}
-        run: |
-          docker exec \
-            --env DEBUG=${{ env.DEBUG }} \
-            --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
-            --env SUITES=${{ env.SUITES }} \
-            $(docker compose ps -q wordpress) \
-            bash -c "cd wp-content/plugins/${{ steps.plugin.outputs.slug }} && bin/run-codeception.sh"
-        env:
-          DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
-          SKIP_TESTS_CLEANUP: 'true'
-          SUITES: functional
-        continue-on-error: true
-
-      - name: Run WPUnit Tests w/ Docker
-        working-directory: plugins/${{ steps.plugin.outputs.slug }}
-        run: |
-          docker exec \
-            --env COVERAGE=${{ env.COVERAGE }} \
-            --env USING_XDEBUG=${{ env.USING_XDEBUG }} \
-            --env DEBUG=${{ env.DEBUG }} \
-            --env SUITES=${{ env.SUITES }} \
-            $(docker compose ps -q wordpress) \
-            bash -c "cd wp-content/plugins/${{ steps.plugin.outputs.slug }} && bin/run-codeception.sh"
-        env:
-          COVERAGE: ${{ matrix.coverage }}
-          USING_XDEBUG: ${{ matrix.coverage }}
-          DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
-          SUITES: wpunit
+          php: ${{ matrix.php }}
+          wordpress: ${{ matrix.wordpress }}
+          extensions: ${{ matrix.extensions }}
+          coverage: ${{ matrix.coverage }}
