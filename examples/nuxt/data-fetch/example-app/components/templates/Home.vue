@@ -10,7 +10,7 @@ const HOME_QUERY = gql`
       title
       description
     }
-    posts(first: 6, where: {status: PUBLISH}) {
+    posts(first: 6) {
       nodes {
         id
         title

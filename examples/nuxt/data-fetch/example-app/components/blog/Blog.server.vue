@@ -95,7 +95,6 @@ const POSTS_QUERY = gql`
 `;
 
 // Server-side fetch initial data (first 5 posts)
-// Note the approach here is to load the first 5 posts on the server,
 // and then use the client-side component to handle pagination after hydrating the initial data.
 const initialCount = 5; // Fetch 5 posts initially like in BlogListingTemplate.js
 const postsPerPage = await blogPostsPerPage() || 10; // Default to 10 if not set

@@ -28,7 +28,7 @@ export async function fetchGraphQL(query, variables = {}, revalidate = null, cus
     );
 
     const result = await response.json();
-console.log("fetchGraphQL:", result);
+    console.log("fetchGraphQL:", result);
     if (result.errors) {
       console.error("GraphQL Error:", result.errors);
       throw new Error("Failed to fetch data from WordPress");
@@ -101,10 +101,10 @@ export function useGraphQL(query, initialVariables = {}, options = {}) {
     }
   };
   
-  // Important: This ensures the data is fetched during SSR
+  // SSR fetch
   onServerPrefetch(() => fetchData());
   
-  // Also fetch on mount for client-side navigation
+  // CSR fetch
   onMounted(() => {
     if (!data.value) {
       fetchData();
@@ -183,9 +183,6 @@ export async function useMutation(mutation, variables = {}) {
     } catch (jsonError) {
       console.error("Failed to parse response as JSON:", jsonError);
       
-      // Log the invalid JSON response to file
-      await logToFile(responseText, 'invalid-json.txt');
-      
       throw new Error(`Invalid JSON response: ${jsonError.message}`);
     }
     
@@ -194,29 +191,3 @@ export async function useMutation(mutation, variables = {}) {
     return { data: null, errors: [error] };
   }
 }
-const logToFile = async (content, filename = 'graphql-error.html') => {
-  // Only works on the server side
-  if (process.server) {
-    try {
-      const logDir = path.resolve(process.cwd(), 'logs');
-      
-      // Create logs directory if it doesn't exist
-      if (!fs.existsSync(logDir)) {
-        fs.mkdirSync(logDir, { recursive: true });
-      }
-      
-      const timestamp = new Date().toISOString().replace(/:/g, '-');
-      const logPath = path.join(logDir, `${timestamp}-${filename}`);
-      
-      // Write the content to file
-      fs.writeFileSync(logPath, content);
-      console.log(`Logged error content to ${logPath}`);
-      return logPath;
-    } catch (err) {
-      console.error('Failed to write log file:', err);
-    }
-  } else {
-    // For client-side, just log to console
-    console.log('HTML Content (client-side):', content.substring(0, 1000) + '...');
-  }
-};

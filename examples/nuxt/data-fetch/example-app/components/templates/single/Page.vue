@@ -12,7 +12,7 @@ const props = defineProps({
 
 const PAGE_QUERY = gql`
   query GetPage($slug: ID!) {
-    page(id: $slug, idType: URI) {
+    page(id: $slug, idType: SLUG) {
       id
       databaseId
       title
