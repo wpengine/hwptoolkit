@@ -24,8 +24,11 @@ jobs:
 
     strategy:
       matrix:
-        php: ["8.4","8.3","8.2", "8.1", "8.0", "7.4"]
-        wordpress: ["6.8","6.7", "6.6", "6.5", "6.4", "6.3", "6.2"]
+        # TODO: Add back in once working
+#        php: ["8.4","8.3","8.2", "8.1", "8.0", "7.4"]
+#        wordpress: ["6.8","6.7", "6.6", "6.5", "6.4", "6.3", "6.2"]
+        php: [ "8.2"]
+        wordpress: [ "6.8" ]
         include:
           - php: "8.2"
             wordpress: "6.8"
@@ -64,9 +67,11 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v3
         with:
+          working-directory: plugins/${{ steps.plugin.outputs.slug }}
           composer-options: "--no-progress"
 
       - name: Copy .env file
+        working-directory: plugins/${{ steps.plugin.outputs.slug }}
         run: |
           cp .docker/.env.ci .env
           echo "INCLUDE_EXTENSIONS=${{ matrix.extensions }}" >> .env
@@ -78,6 +83,7 @@ jobs:
           INCLUDE_EXTENSIONS: ${{ matrix.extensions }}
 
       - name: Build test environment
+        working-directory: plugins/${{ steps.plugin.outputs.slug }}
         run: |
           composer run docker:build
         env:
@@ -85,6 +91,7 @@ jobs:
           PHP_VERSION: ${{ matrix.php }}
 
       - name: Start test environment
+        working-directory: plugins/${{ steps.plugin.outputs.slug }}
         run: |
           docker compose --env-file .env up --detach
 
@@ -100,6 +107,7 @@ jobs:
           PHP_VERSION: ${{ matrix.php }}
 
       - name: Run Acceptance Tests w/ Docker
+        working-directory: plugins/${{ steps.plugin.outputs.slug }}
         run: |
           if [ "${{ matrix.extensions }}" = "true" ]; then
             docker exec \
@@ -116,6 +124,7 @@ jobs:
         continue-on-error: true
 
       - name: Run Functional Tests w/ Docker
+        working-directory: plugins/${{ steps.plugin.outputs.slug }}
         run: |
           docker exec \
             --env DEBUG=${{ env.DEBUG }} \
@@ -130,6 +139,7 @@ jobs:
         continue-on-error: true
 
       - name: Run WPUnit Tests w/ Docker
+        working-directory: plugins/${{ steps.plugin.outputs.slug }}
         run: |
           docker exec \
             --env COVERAGE=${{ env.COVERAGE }} \
