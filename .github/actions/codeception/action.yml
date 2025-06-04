@@ -45,3 +45,20 @@ runs:
       env:
         WP_VERSION: ${{ inputs.wordpress }}
         PHP_VERSION: ${{ inputs.php }}
+
+    - name: Start test environment
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        docker compose --env-file .env up --detach
+        
+        CONTAINER_ID=$(docker compose ps -q wordpress)
+        if [ -n "$CONTAINER_ID" ]; then
+          docker exec $CONTAINER_ID init-docker.sh
+        else
+          echo "Error: WordPress container not found."
+          exit 1
+        fi
+      env:
+        WP_VERSION: ${{ inputs.wordpress }}
+        PHP_VERSION: ${{ inputs.php }}
