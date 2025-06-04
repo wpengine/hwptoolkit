@@ -63,5 +63,4 @@ jobs:
           working-directory: plugins/${{ steps.plugin.outputs.slug }}
           php: ${{ matrix.php }}
           wordpress: ${{ matrix.wordpress }}
-          extensions: ${{ matrix.extensions }}
-          coverage: ${{ matrix.coverage }}
+          coverage: 1
