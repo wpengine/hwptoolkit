@@ -73,9 +73,20 @@ run_tests() {
 		wp maintenance-mode deactivate --allow-root
 	fi
 
+
 	# Suites is the comma separated list of suites/tests to run.
 	echo "Running Test Suite $suites"
 	cd "$PROJECT_DIR"
+
+	# IMPORTANT: Build Codeception classes before running tests
+  echo "Building Codeception test classes"
+  vendor/bin/codecept build -c codeception.dist.yml
+
+  if [ $? -ne 0 ]; then
+      echo "Error: Codeception build failed"
+      exit 1
+  fi
+  
 	XDEBUG_MODE=coverage vendor/bin/codecept run -c codeception.dist.yml ${suites} ${coverage:-} ${debug:-} --no-exit
 	if [ $? -ne 0 ]; then
 			echo "Error: Codeception tests failed with exit code $?"
