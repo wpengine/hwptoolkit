@@ -39,7 +39,7 @@ class Faust_Integration {
 	 */
 	public static function init(): void {
 		self::init_class_properties();
-		self::add_filters_actions();
+		self::configure_faust();
 	}
 
 	public static function init_class_properties(): void {
@@ -55,7 +55,7 @@ class Faust_Integration {
         self::$faust_enabled = self::is_faust_enabled();
 	}
 
-	public static function add_filters_actions() {
+	public static function configure_faust(): void {
         if(self::$faust_enabled) {
 			self::set_default_faust_settings();
 
