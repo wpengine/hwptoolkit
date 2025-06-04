@@ -86,3 +86,8 @@ To implement your own approach from scratch you can refer to the appropriate doc
 
 
 ---
+
+## Testing
+
+See [Testing.md](TESTING.md) for details on how to test the plugin.
+

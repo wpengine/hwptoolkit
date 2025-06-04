@@ -44,6 +44,7 @@ tests/*.suite.yml
 coverage/*
 build/
 .log/
+c3.php
 
 # Cache
 phpcs-cache.json

@@ -70,7 +70,10 @@
 			"/phpcs-cache.json",
 			"/Thumbs.db",
 			"/auth.json",
-			"/.DS_Store"
+			"/.DS_Store",
+			".docker/",
+			".env.dist",
+			"c3.php"
 		]
 	},
 	"autoload": {
@@ -87,6 +90,12 @@
 		}
 	},
 	"scripts": {
+		"install-test-env": "bash bin/install-test-env.sh",
+		"delete-vendor-files": "rm -rf composer.lock vendor src/vendor-prefixed/*",
+		"docker:build": "bash bin/build-docker.sh",
+		"docker:start": "@docker:build && @docker:up",
+		"docker:stop": "docker compose down --volumes",
+		"docker:up": " sh -c 'composer docker:stop' && docker compose --env-file .env up --detach",
 		"lint": "vendor/bin/phpcs",
 		"phpcs-i": [
 			"php ./vendor/bin/phpcs -i"
