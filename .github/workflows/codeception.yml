@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Codeception Tests
-        uses: ./codeception/action
+        uses: ./.github/actions/codeception
         with:
           working-directory: plugins/${{ steps.plugin.outputs.slug }}
           php: ${{ matrix.php }}
