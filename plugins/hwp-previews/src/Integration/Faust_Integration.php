@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HWP\Previews\Integration;
 
 use HWP\Previews\Admin\Settings\Helper\Settings_Group;
-use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
 use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 
 class Faust_Integration {
 	/**
 	 * Whether Faust is enabled.
 	 */
-    protected static bool $faust_enabled = false;
+	protected static bool $faust_enabled = false;
 
 	/**
 	 * Initialize the hooks for the preview functionality.
@@ -21,15 +22,18 @@ class Faust_Integration {
 		self::configure_faust();
 	}
 
+	/**
+	 * Configure Faust settings and remove conflicting filters.
+	 */
 	public static function configure_faust(): void {
-        if(self::$faust_enabled) {
+		if ( self::$faust_enabled ) {
 			self::set_default_faust_settings();
 
 			// Remove FaustWP post preview link filter to avoid conflicts with our custom preview link generation.
-			remove_filter('preview_post_link', 'WPE\FaustWP\Replacement\post_preview_link', 1000);
+			remove_filter( 'preview_post_link', 'WPE\FaustWP\Replacement\post_preview_link', 1000 );
 
 			self::faust_admin_notice();            
-        }     
+		}     
 	}
 
 	/**
@@ -49,8 +53,8 @@ class Faust_Integration {
 	public static function get_faust_frontend_url(): string {
 		$default_value = 'http://localhost:3000';
 
-		if ( self::$faust_enabled && function_exists('\WPE\FaustWP\Settings\faustwp_get_setting') ) {
-			$frontend_uri = \WPE\FaustWP\Settings\faustwp_get_setting('frontend_uri', '');
+		if ( self::$faust_enabled && function_exists( '\WPE\FaustWP\Settings\faustwp_get_setting' ) ) {
+			$frontend_uri = \WPE\FaustWP\Settings\faustwp_get_setting( 'frontend_uri', '' );
 
 			if ( ! empty( $frontend_uri ) ) {
 				return $frontend_uri;
@@ -64,7 +68,7 @@ class Faust_Integration {
 	 * Get default preview URL for Faust.
 	 */
 	public static function get_faust_preview_url(): string {
-		return self::get_faust_frontend_url() . "/preview?p={ID}&preview=true&previewPathname=p{ID}&typeName={type}";
+		return self::get_faust_frontend_url() . '/preview?p={ID}&preview=true&previewPathname=p{ID}&typeName={type}';
 	}
 
 	/**
@@ -72,29 +76,31 @@ class Faust_Integration {
 	 */
 	public static function set_default_faust_settings(): void {
 		$settings_group = Settings_Group::get_instance();
-		$types_config = apply_filters(
+		$types_config   = apply_filters(
 			'hwp_previews_hooks_post_type_config',
 			Post_Types_Config_Registry::get_post_type_config()
 		);
 
 
-        $plugin_settings = $settings_group->get_cached_settings();
+		$plugin_settings = $settings_group->get_cached_settings();
 
-        if( empty($plugin_settings) ) {
-            $setting_preview_key = $settings_group->get_settings_key_preview_url();
-            $setting_enabled_key = $settings_group->get_settings_key_enabled();
+		if ( ! empty( $plugin_settings ) ) {
+			return;
+		}
 
-            $default_settings = array();
-            
-            foreach ( $types_config->get_public_post_types() as $key => $label ) {
-                $default_settings[$key] = array(
-					$setting_enabled_key => true,
-                    $setting_preview_key => self::get_faust_preview_url(),
-                );
-            }
+		$setting_preview_key = $settings_group->get_settings_key_preview_url();
+		$setting_enabled_key = $settings_group->get_settings_key_enabled();
 
-            update_option(HWP_PREVIEWS_SETTINGS_KEY, $default_settings);
-        }
+		$default_settings = [];
+		
+		foreach ( $types_config->get_public_post_types() as $key => $label ) {
+			$default_settings[ $key ] = [
+				$setting_enabled_key => true,
+				$setting_preview_key => self::get_faust_preview_url(),
+			];
+		}
+
+		update_option( HWP_PREVIEWS_SETTINGS_KEY, $default_settings );
 	}
 
 	/**
@@ -104,11 +110,11 @@ class Faust_Integration {
 	public static function faust_admin_notice(): void {
 
 		// Exit if Faust is not enabled.
-		if( ! self::$faust_enabled ) {
+		if ( ! self::$faust_enabled ) {
 			return;
 		}
 
-		add_action( 'admin_notices', function(): void {
+		add_action( 'admin_notices', static function (): void {
 			$screen = get_current_screen();
 
 			// Exit if not this plugin's settings page.
@@ -118,7 +124,7 @@ class Faust_Integration {
 			?>
 
 			<div class="notice notice-info"> 
-				<p><?php esc_html_e( 'HWP Previews is automatically configured to support Faust previews on the front end. However, you can still customize it to fit your needs.', HWP_PREVIEWS_TEXT_DOMAIN ); ?></p>
+				<p><?php esc_html_e( 'HWP Previews is automatically configured to support Faust previews on the front end. However, you can still customize it to fit your needs.', 'hwp-previews' ); ?></p>
 			</div>
 
 			<?php
