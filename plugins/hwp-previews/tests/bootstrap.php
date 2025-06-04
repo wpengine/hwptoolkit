@@ -2,5 +2,5 @@
 /**
  * This is global bootstrap for autoloading.
  *
- * @package Tests\WPGraphQL\Webhooks
+ * @package Tests\HWP\Previews
  */

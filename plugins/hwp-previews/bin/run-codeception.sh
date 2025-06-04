@@ -76,7 +76,11 @@ run_tests() {
 	# Suites is the comma separated list of suites/tests to run.
 	echo "Running Test Suite $suites"
 	cd "$PROJECT_DIR"
-  XDEBUG_MODE=coverage vendor/bin/codecept run -c codeception.dist.yml ${suites} ${coverage:-} ${debug:-} --no-exit
+	XDEBUG_MODE=coverage vendor/bin/codecept run -c codeception.dist.yml ${suites} ${coverage:-} ${debug:-} --no-exit
+	if [ $? -ne 0 ]; then
+			echo "Error: Codeception tests failed with exit code $?"
+			exit 1
+	fi
 }
 
 ##

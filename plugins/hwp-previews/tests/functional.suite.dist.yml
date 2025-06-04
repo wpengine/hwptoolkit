@@ -16,7 +16,7 @@ modules:
             loadOnly: true
             plugins:
                 - wp-graphql/wp-graphql.php
-                - wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php
+                - hwp-previews/hwp-previews.php
             activatePlugins:
                 - wp-graphql/wp-graphql.php
-                - wp-graphql-headless-webhooks/wp-graphql-headless-webhooks.php
+                - hwp-previews/hwp-previews.php
