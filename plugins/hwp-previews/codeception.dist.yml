@@ -1,0 +1,102 @@
+paths:
+    tests: tests
+    output: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+actor_suffix: Tester
+params:
+    - .env
+settings:
+    colors: true
+    memory_limit: 1024M
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+    commands:
+        - lucatume\WPBrowser\Command\DbExport
+        - lucatume\WPBrowser\Command\DbImport
+        - lucatume\WPBrowser\Command\DevInfo
+        - lucatume\WPBrowser\Command\DevRestart
+        - lucatume\WPBrowser\Command\DevStart
+        - lucatume\WPBrowser\Command\DevStop
+        - lucatume\WPBrowser\Command\GenerateWPAjax
+        - lucatume\WPBrowser\Command\GenerateWPCanonical
+        - lucatume\WPBrowser\Command\GenerateWPRestApi
+        - lucatume\WPBrowser\Command\GenerateWPRestController
+        - lucatume\WPBrowser\Command\GenerateWPRestPostTypeController
+        - lucatume\WPBrowser\Command\GenerateWPUnit
+        - lucatume\WPBrowser\Command\GenerateWPXMLRPC
+        - lucatume\WPBrowser\Command\MonkeyCacheClear
+        - lucatume\WPBrowser\Command\MonkeyCachePath
+        - lucatume\WPBrowser\Command\RunAll
+        - lucatume\WPBrowser\Command\RunOriginal
+coverage:
+    enabled: true
+    remote: false
+    c3_url: "%WORDPRESS_URL%/wp-content/plugins/hwp-previews/hwp-previews.php"
+    include:
+        - src/*
+        - /access-functions.php
+        - /activation.php
+        - /deactivation.php
+    exclude:
+        - /bin/*
+        - /docs/*
+        - /node_modules/*
+        - /packages/*
+        - /tests/*
+        - /vendor-prefixed/*
+        - /vendor/*
+    show_only_summary: false
+modules:
+    config:
+        REST:
+            depends: lucatume\WPBrowser\Module\WPBrowser
+            url: "%WORDPRESS_URL%"
+        lucatume\WPBrowser\Module\WPFilesystem:
+            wpRootFolder: '%WORDPRESS_ROOT_DIR%'
+            themes: '/wp-content/themes'
+            plugins: '/wp-content/plugins'
+            mu-plugins: '/wp-content/mu-plugins'
+            uploads: '/wp-content/uploads'
+        lucatume\WPBrowser\Module\WPBrowser:
+            url: '%WORDPRESS_URL%'
+            adminUsername: '%WORDPRESS_ADMIN_USER%'
+            adminPassword: '%WORDPRESS_ADMIN_PASSWORD%'
+            adminPath: '/wp-admin'
+            headers:
+                X_WPBROWSER_REQUEST: 1
+                X_TEST_REQUEST: 1
+                X_APM_REQUEST: 1
+            connect_timeout: 3
+            cookies: false
+        lucatume\WPBrowser\Module\WPDb:
+            dsn: "%TEST_DB_DSN%"
+            user: "%TEST_DB_USER%"
+            password: "%TEST_DB_PASSWORD%"
+            populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
+            dump: 'tests/_data/dump.sql'
+            populate: true
+            cleanup: true
+            waitlock: 0
+            url: "%WORDPRESS_URL%"
+            urlReplacement: true
+            tablePrefix: "%WORDPRESS_TABLE_PREFIX%"
+        lucatume\WPBrowser\Module\WPLoader:
+            wpRootFolder: "%WORDPRESS_ROOT_DIR%"
+            dbName: "%TEST_DB_NAME%"
+            dbHost: "%TEST_DB_HOST%"
+            dbUser: "%TEST_DB_USER%"
+            dbPassword: "%TEST_DB_PASSWORD%"
+            tablePrefix: "%TEST_TABLE_PREFIX%"
+            domain: "%WORDPRESS_DOMAIN%"
+            adminEmail: "%WORDPRESS_ADMIN_EMAIL%"
+            title: 'Test'
+            plugins:
+                - wp-graphql/wp-graphql.php
+                - hwp-previews/hwp-previews.php
+            activatePlugins:
+                - wp-graphql/wp-graphql.php
+                - hwp-previews/hwp-previews.php
+            configFile: 'tests/_data/config.php'
