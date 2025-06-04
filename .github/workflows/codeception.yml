@@ -71,4 +71,3 @@ jobs:
           php: ${{ matrix.php }}
           wordpress: ${{ matrix.wordpress }}
           extensions: json,mbstring
-          coverage: 1

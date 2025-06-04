@@ -22,13 +22,28 @@
 	"prefer-stable": true,
 	"require-dev": {
 		"automattic/vipwpcs": "^3.0",
+		"codeception/lib-innerbrowser": "^1.0",
+		"codeception/module-asserts": "^1.0",
+		"codeception/module-cli": "^1.0",
+		"codeception/module-db": "^1.0",
+		"codeception/module-filesystem": "^1.0",
+		"codeception/module-phpbrowser": "^1.0",
+		"codeception/module-rest": "^2.0",
+		"codeception/module-webdriver": "^1.0",
+		"codeception/phpunit-wrapper": "^9.0",
+		"codeception/util-universalframework": "^1.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"humanmade/psalm-plugin-wordpress": "^3.1",
 		"johnpbloch/wordpress-core": "^6.8",
+		"lucatume/wp-browser": "^3.5",
+		"mockery/mockery": "^1.5",
+		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
 		"phpstan/phpstan-strict-rules": "^2.0",
 		"slevomat/coding-standard": "^8.0",
-		"szepeviktor/phpstan-wordpress": "^2.0"
+		"szepeviktor/phpstan-wordpress": "^2.0",
+		"wp-cli/wp-cli-bundle": "^2.8.1",
+		"wp-graphql/wp-graphql-testcase": "^3.0.1"
 	},
 	"config": {
 		"allow-plugins": {
@@ -73,7 +88,9 @@
 			"/.DS_Store",
 			".docker/",
 			".env.dist",
-			"c3.php"
+			"c3.php",
+			"codeception.dist.yml",
+			"tests"
 		]
 	},
 	"autoload": {
