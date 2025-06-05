@@ -9,9 +9,16 @@ use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 
 class Faust_Integration {
 	/**
+	 * The key for the admin notice.
+	 *
+	 * @var string
+	 */
+	public const FAUST_NOTICE_KEY = 'hwp_previews_faust_notice';
+
+	/**
 	 * Whether Faust is enabled.
 	 */
-	protected static bool $faust_enabled = false;
+	public static bool $faust_enabled = false;
 
 	/**
 	 * Initialize the hooks for the preview functionality.
@@ -32,7 +39,7 @@ class Faust_Integration {
 			// Remove FaustWP post preview link filter to avoid conflicts with our custom preview link generation.
 			remove_filter( 'preview_post_link', 'WPE\FaustWP\Replacement\post_preview_link', 1000 );
 
-			self::faust_admin_notice();            
+			self::display_faust_admin_notice();            
 		}     
 	}
 
@@ -104,16 +111,16 @@ class Faust_Integration {
 	}
 
 	/**
-	 * If Faust is enabled, show an admin notice about the migration on the settings page.
-	 * TODO make the notice dismissible.
+	 * Dismiss the Faust admin notice.
 	 */
-	public static function faust_admin_notice(): void {
+	public static function dismiss_faust_admin_notice(): void {
+		update_user_meta( get_current_user_id(), self::FAUST_NOTICE_KEY, 1 );
+	}
 
-		// Exit if Faust is not enabled.
-		if ( ! self::$faust_enabled ) {
-			return;
-		}
-
+	/**
+	 * Register admin notice to inform users about Faust integration.
+	 */
+	public static function register_faust_admin_notice(): void {
 		add_action( 'admin_notices', static function (): void {
 			$screen = get_current_screen();
 
@@ -121,13 +128,58 @@ class Faust_Integration {
 			if ( ! is_object( $screen ) || 'settings_page_hwp-previews' !== $screen->id ) {
 				return;
 			}
+
+			$ajax_nonce = wp_create_nonce( self::FAUST_NOTICE_KEY );
 			?>
 
-			<div class="notice notice-info"> 
-				<p><?php esc_html_e( 'HWP Previews is automatically configured to support Faust previews on the front end. However, you can still customize it to fit your needs.', 'hwp-previews' ); ?></p>
+			<div id="<?php echo esc_attr( self::FAUST_NOTICE_KEY ); ?>" class="notice notice-info is-dismissible">
+				<p><?php esc_html_e( 'HWP Previews is automatically configured to support Faust previews. However, you can still customize it to fit your needs.', 'hwp-previews' ); ?></p>
 			</div>
+
+			<script>
+				window.addEventListener( 'load', function() {
+					const dismissBtn = document.querySelector( '#<?php echo esc_attr( self::FAUST_NOTICE_KEY ); ?> .notice-dismiss' );
+
+					dismissBtn?.addEventListener( 'click', function( event ) {
+						let postData = new FormData();
+						postData.append('action', '<?php echo esc_attr( self::FAUST_NOTICE_KEY ); ?>');
+						postData.append('_ajax_nonce', '<?php echo esc_html( $ajax_nonce ); ?>');
+
+						window.fetch('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
+							method: 'POST',
+							body: postData,
+						})
+					});
+				});
+			</script>
 
 			<?php
 		}, 10, 0);
+	}
+
+	/**
+	 * If Faust is enabled, show an admin notice about the migration on the settings page.
+	 */
+	public static function display_faust_admin_notice(): void {
+		$is_dismissed = get_user_meta( get_current_user_id(), self::FAUST_NOTICE_KEY, true );
+
+		// Exit if Faust is not enabled or if the notice has been dismissed.
+		if ( ! self::$faust_enabled || (bool) $is_dismissed ) {
+			return;
+		}
+
+		self::register_faust_admin_notice();
+
+		// Register the AJAX action for dismissing the notice.
+		add_action( 'wp_ajax_' . self::FAUST_NOTICE_KEY, static function (): void {
+			// Exit if the action is not set or does not match the expected key.
+			if ( ! isset( $_POST['action'] ) || esc_attr( self::FAUST_NOTICE_KEY ) !== $_POST['action'] ) {
+				return;
+			}
+
+			check_ajax_referer( self::FAUST_NOTICE_KEY );
+
+			self::dismiss_faust_admin_notice();
+		}, 10, 0 );
 	}
 }
