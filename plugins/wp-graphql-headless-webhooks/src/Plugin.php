@@ -10,194 +10,117 @@ declare(strict_types=1);
 namespace WPGraphQL\Webhooks;
 
 use AxeWP\GraphQL\Helper\Helper;
-use WPGraphQL\Webhooks\DTO\WebhookDTO;
-use WPGraphQL\Webhooks\Events\Event;
-use WPGraphQL\Webhooks\Events\EventMonitor;
-use WPGraphQL\Webhooks\Events\GraphQLEventDispatcher;
-use WPGraphQL\Webhooks\Events\GraphQLEventRegistry;
-use WPGraphQL\Webhooks\Events\GraphQLEventSubscriber;
+use WPGraphQL\Webhooks\Handlers\WebhookHandler;
 use WPGraphQL\Webhooks\PostTypes\WebhookPostType;
-use WPGraphQL\Webhooks\Events\Interfaces\EventRegistry;
-use WPGraphQL\Webhooks\Events\Interfaces\EventSubscriber;
+use WPGraphQL\Webhooks\Repository\WebhookRepository;
+use WPGraphQL\Webhooks\Events\WebhookEventManager;
 
+/**
+ * Plugin singleton class.
+ */
 if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 
 	final class Plugin {
 
 		/**
-		 * Instance of the webhook type registry.
+		 * Singleton instance.
 		 *
-		 * @var WebhookTypeRegistry|null
+		 * @var ?self
 		 */
-		private ?WebhookTypeRegistry $webhookTypeRegistry = null;
+		private static ?self $instance = null;
 
 		/**
-		 * Instance of the event registry.
+		 * Webhook repository.
 		 *
-		 * @var EventRegistry|null
+		 * @var WebhookRepository
 		 */
-		private ?EventRegistry $eventRegistry = null;
+		private WebhookRepository $repository;
 
 		/**
-		 * List of subscriber class names or instances.
+		 * Webhook handler.
 		 *
-		 * @var array<class-string|EventSubscriber>
+		 * @var WebhookHandler
 		 */
-		private array $subscribers = [];
+		private WebhookHandler $handler;
 
 		/**
-		 * Bootstraps the plugin.
+		 * Webhook event manager.
 		 *
-		 * This method initializes all components and hooks.
+		 * @var WebhookEventManager
 		 */
-		public function init(): void {
-			$this->includes();
+		private WebhookEventManager $event_manager;
 
-			// Initialize custom post type
-			WebhookPostType::init();
+		/**
+		 * Get singleton instance.
+		 *
+		 * @return self
+		 */
+		public static function instance(): self {
+			if ( ! isset( self::$instance ) ) {
+				self::$instance = new self();
+				self::$instance->includes();
+				self::$instance->setup();
+			}
 
-			// Initialize event system
-			$this->init_events();
+			/**
+			 * Plugin init action.
+			 *
+			 * @param self $instance
+			 */
+			do_action( 'graphql_webhooks_init', self::$instance );
 
-			// Fire action to allow registration of webhook types
-			do_action( 'graphql_register_webhooks', $this->webhookTypeRegistry );
-
-			// Setup hooks and schema
-			$this->setup();
-
-			// Plugin fully initialized
-			do_action( 'graphql_webhooks_init', $this );
+			return self::$instance;
 		}
 
 		/**
-		 * Includes required files via Composer autoload if defined.
-		 *
-		 * @codeCoverageIgnore
+		 * Setup plugin.
+		 */
+		private function setup(): void {
+			Helper::set_hook_prefix( 'graphql_webhooks' );
+			WebhookPostType::init();
+
+			$this->repository = new WebhookRepository();
+			$this->handler = new WebhookHandler();
+			$this->event_manager = new WebhookEventManager( $this->repository, $this->handler );
+			$this->event_manager->register_hooks();
+		}
+
+		/**
+		 * Include required files.
 		 */
 		private function includes(): void {
 			if (
-				defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_AUTOLOAD' ) &&
-				false !== WPGRAPHQL_HEADLESS_WEBHOOKS_AUTOLOAD &&
-				defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' )
+				defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_AUTOLOAD' )
+				&& false !== WPGRAPHQL_HEADLESS_WEBHOOKS_AUTOLOAD
+				&& defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' )
 			) {
 				require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'vendor/autoload.php';
 			}
 		}
-
+		
 		/**
-		 * Initializes the event system components.
-		 */
-		private function init_events(): void {
-			$eventMonitor = new EventMonitor();
-			$eventDispatcher = new GraphQLEventDispatcher( $eventMonitor );
-			$this->eventRegistry = new GraphQLEventRegistry( $eventDispatcher );
-			$this->webhookTypeRegistry = new WebhookTypeRegistry( $this->eventRegistry );
-		}
-
-		/**
-		 * Sets up hooks, registers events, subscribers, and schema.
-		 */
-		private function setup(): void {
-			// Set hook prefix for helper functions
-			Helper::set_hook_prefix( 'graphql_webhooks' );
-
-			// Register events declared by subscribers
-			$this->register_events();
-
-			// Initialize and subscribe all event subscribers
-			$this->init_subscribers();
-
-			// Finalize event system (fires graphql_register_events and attaches events)
-			$this->eventRegistry->init();
-
-			// Register GraphQL types
-			add_action( get_graphql_register_action(), [ TypeRegistry::class, 'init' ] );
-		}
-
-		/**
-		 * Returns the list of active subscribers, filtered by users.
+		 * Get the webhook repository instance.
 		 *
-		 * @return array<class-string|EventSubscriber>
-		 */
-		public function get_subscribers(): array {
-			return apply_filters( 'graphql_webhooks_active_subscribers', $this->subscribers );
-		}
-
-		/**
-		 * Registers all events declared by subscribers.
+		 * Provides access to the WebhookRepository for managing webhook data.
 		 *
-		 * This method is hooked to 'graphql_register_events' and called during WPGraphQL lifecycle.
+		 * @return WebhookRepository The repository instance.
 		 */
-		public function register_events(): void {
-			if ( ! $this->webhookTypeRegistry ) {
-				error_log( 'WebhookTypeRegistry not initialized.' );
-				return;
-			}
-
-			foreach ( $this->get_subscribers() as $subscriber ) {
-				// Instantiate subscriber if given as class-string
-				if ( is_string( $subscriber ) && class_exists( $subscriber ) ) {
-					$subscriber = new $subscriber();
-				}
-
-				if ( $subscriber instanceof GraphQLEventSubscriber ) {
-					$events = [];
-
-					foreach ( $subscriber->get_event_registrations() as $eventData ) {
-						$events[] = new Event(
-							$eventData['name'],
-							$eventData['hook_name'],
-							$eventData['callback'] ?? null,
-							$eventData['priority'] ?? 10,
-							$eventData['arg_count'] ?? 1
-						);
-					}
-
-					$webhookTypeKey = strtolower( ( new \ReflectionClass( $subscriber ) )->getShortName() );
-					$webhookType = new WebhookDTO(
-						$webhookTypeKey,
-						ucfirst( $webhookTypeKey ),
-						"Webhook type for {$webhookTypeKey} events",
-						[],
-						$events
-					);
-
-					$this->webhookTypeRegistry->register_webhook_type( $webhookType );
-				}
-			}
+		public function get_repository(): WebhookRepository {
+			return $this->repository;
 		}
 
 		/**
-		 * Instantiates and subscribes all subscribers.
-		 */
-		private function init_subscribers(): void {
-			foreach ( $this->get_subscribers() as $subscriber ) {
-				if ( is_string( $subscriber ) && class_exists( $subscriber ) ) {
-					$subscriber = new $subscriber();
-				}
-
-				if ( $subscriber instanceof EventSubscriber ) {
-					$subscriber->subscribe();
-				}
-			}
-		}
-
-		/**
-		 * Prevent cloning of the singleton instance.
-		 *
-		 * @codeCoverageIgnore
+		 * Prevent cloning.
 		 */
 		public function __clone() {
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'The plugin main class should not be cloned.', 'wp-graphql-headless-webhooks' ), '0.0.1' );
+			_doing_it_wrong( __FUNCTION__, 'The plugin main class should not be cloned.', '0.0.1' );
 		}
 
 		/**
-		 * Prevent unserializing of the singleton instance.
-		 *
-		 * @codeCoverageIgnore
+		 * Prevent unserializing.
 		 */
 		public function __wakeup(): void {
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the plugin main class is not allowed.', 'wp-graphql-headless-webhooks' ), '0.0.1' );
+			_doing_it_wrong( __FUNCTION__, 'De-serializing instances of the plugin main class is not allowed.', '0.0.1' );
 		}
 	}
 

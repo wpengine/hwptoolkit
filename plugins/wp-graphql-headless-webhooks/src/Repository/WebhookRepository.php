@@ -1,120 +1,168 @@
 <?php
-namespace WPGraphQL\Webhooks;
+namespace WPGraphQL\Webhooks\Repository;
 
+use WPGraphQL\Webhooks\Entity\Webhook;
+use WPGraphQL\Webhooks\Repository\Interfaces\WebhookRepositoryInterface;
 use WP_Error;
+use WP_Post;
 
 /**
  * Class WebhookRepository
  *
- * Handles CRUD operations for webhook CPT posts.
+ * Implements CRUD operations for webhook CPT posts as Webhook entities.
  */
-class WebhookRepository {
+class WebhookRepository implements WebhookRepositoryInterface {
 
-    /**
-     * Creates a new webhook CPT post.
-     *
-     * @param string               $type   Webhook type identifier.
-     * @param string               $name   Webhook post title.
-     * @param array<string,mixed>  $config Optional webhook configuration.
-     *
-     * @return int|WP_Error Post ID on success, WP_Error on failure.
-     */
-    public function createWebhook(string $type, string $name, array $config = []) {
-        $postId = wp_insert_post([
-            'post_title'  => $name,
-            'post_type'   => 'graphql_webhook',
-            'post_status' => 'publish',
-        ], true);
+	/**
+	 * Allowed event keys and labels for UI.
+	 */
+	private array $default_events = [
+		'post_published'   => 'Post Published',
+		'post_updated'     => 'Post Updated',
+		'post_deleted'     => 'Post Deleted',
+		'post_meta_change' => 'Post Meta Changed',
+		'term_created'     => 'Term Created',
+		'term_assigned'    => 'Term Assigned to Post',
+		'term_unassigned'  => 'Term Unassigned from Post',
+		'term_deleted'     => 'Term Deleted',
+		'term_meta_change' => 'Term Meta Changed',
+		'user_created'     => 'User Created',
+		'user_assigned'    => 'User Assigned as Author',
+		'user_deleted'     => 'User Deleted',
+		'user_reassigned'  => 'User Author Reassigned',
+		'media_uploaded'   => 'Media Uploaded',
+		'media_updated'    => 'Media Updated',
+		'media_deleted'    => 'Media Deleted',
+		'comment_inserted' => 'Comment Inserted',
+		'comment_status'   => 'Comment Status Changed',
+	];
 
-        if (is_wp_error($postId)) {
-            return $postId;
-        }
+	public function get_allowed_events(): array {
+		return apply_filters('graphql_webhooks_allowed_events', $this->default_events);
+	}
 
-        update_post_meta($postId, '_webhook_type', $type);
+	public function get_all(): array {
+		$webhooks = [];
 
-        if (!empty($config)) {
-            update_post_meta($postId, '_webhook_config', wp_json_encode($config));
-        }
+		$posts = get_posts([
+			'post_type'   => 'graphql_webhook',
+			'post_status' => 'publish',
+			'numberposts' => -1,
+		]);
+        
+		foreach ($posts as $post) {
+			$webhooks[] = $this->mapPostToEntity($post);
+		}
 
-        return $postId;
-    }
+		return $webhooks;
+	}
 
-    /**
-     * Retrieves a webhook post by ID.
-     *
-     * @param int $postId Post ID.
-     *
-     * @return \WP_Post|null The webhook post object or null if not found.
-     */
-    public function getWebhook(int $postId): ?\WP_Post {
-        $post = get_post($postId);
-        if ($post && $post->post_type === 'graphql_webhook') {
-            return $post;
-        }
-        return null;
-    }
+	public function get(int $id): ?Webhook {
+		$post = get_post($id);
+		if (!$post || $post->post_type !== 'graphql_webhook') {
+			return null;
+		}
+		return $this->mapPostToEntity($post);
+	}
 
-    /**
-     * Updates an existing webhook post.
-     *
-     * @param int                  $postId Webhook post ID.
-     * @param array<string,mixed>  $fields Associative array of fields to update:
-     *                                    'title', 'content', 'status', 'config', 'type'.
-     *
-     * @return int|WP_Error Updated post ID on success, WP_Error on failure.
-     */
-    public function updateWebhook(int $postId, array $fields) {
-        $post = get_post($postId);
-        if (!$post || $post->post_type !== 'graphql_webhook') {
-            return new WP_Error('invalid_webhook', __('Webhook not found.', 'wp-graphql-headless-webhooks'));
-        }
+	public function create(string $name, string $event, string $url, string $method, array $headers): int|WP_Error {
+		$validation = $this->validate_data($event, $url, $method);
+		if (is_wp_error($validation)) {
+			return $validation;
+		}
 
-        $postData = ['ID' => $postId];
+		$postId = wp_insert_post([
+			'post_title'  => $name,
+			'post_type'   => 'graphql_webhook',
+			'post_status' => 'publish',
+		], true);
 
-        if (isset($fields['title'])) {
-            $postData['post_title'] = sanitize_text_field($fields['title']);
-        }
-        if (isset($fields['content'])) {
-            $postData['post_content'] = sanitize_textarea_field($fields['content']);
-        }
-        if (isset($fields['status'])) {
-            $postData['post_status'] = sanitize_text_field($fields['status']);
-        }
+		if (is_wp_error($postId)) {
+			return $postId;
+		}
 
-        $updatedPostId = wp_update_post($postData, true);
-        if (is_wp_error($updatedPostId)) {
-            return $updatedPostId;
-        }
+		update_post_meta($postId, '_webhook_event', sanitize_text_field($event));
+		update_post_meta($postId, '_webhook_url', esc_url_raw($url));
+		update_post_meta($postId, '_webhook_method', strtoupper($method));
+		update_post_meta($postId, '_webhook_headers', wp_json_encode($headers));
 
-        if (isset($fields['type'])) {
-            update_post_meta($postId, '_webhook_type', sanitize_text_field($fields['type']));
-        }
+		return $postId;
+	}
 
-        if (isset($fields['config'])) {
-            update_post_meta($postId, '_webhook_config', wp_json_encode($fields['config']));
-        }
+	public function update(int $id, string $name, string $event, string $url, string $method, array $headers): bool|WP_Error {
+		$post = get_post($id);
+		if (!$post || $post->post_type !== 'graphql_webhook') {
+			return new WP_Error('invalid_webhook', __('Webhook not found.', 'wp-graphql-headless-webhooks'));
+		}
 
-        return $updatedPostId;
-    }
+		$validation = $this->validate_data($event, $url, $method);
+		if (is_wp_error($validation)) {
+			return $validation;
+		}
 
-    /**
-     * Deletes a webhook post permanently.
-     *
-     * @param int $postId Post ID to delete.
-     *
-     * @return bool|WP_Error True on success, WP_Error on failure.
-     */
-    public function deleteWebhook(int $postId) {
-        $post = get_post($postId);
-        if (!$post || $post->post_type !== 'graphql_webhook') {
-            return new WP_Error('invalid_webhook', __('Webhook not found.', 'wp-graphql-headless-webhooks'));
-        }
+		$postData = [
+			'ID'         => $id,
+			'post_title' => sanitize_text_field($name),
+		];
 
-        $deleted = wp_delete_post($postId, true);
-        if (!$deleted) {
-            return new WP_Error('delete_failed', __('Failed to delete webhook.', 'wp-graphql-headless-webhooks'));
-        }
+		$updated = wp_update_post($postData, true);
+		if (is_wp_error($updated)) {
+			return $updated;
+		}
 
-        return true;
-    }
+		update_post_meta($id, '_webhook_event', sanitize_text_field($event));
+		update_post_meta($id, '_webhook_url', esc_url_raw($url));
+		update_post_meta($id, '_webhook_method', strtoupper($method));
+		update_post_meta($id, '_webhook_headers', wp_json_encode($headers));
+
+		return true;
+	}
+
+	public function delete(int $id): bool {
+		$post = get_post($id);
+		if (!$post || $post->post_type !== 'graphql_webhook') {
+			return false;
+		}
+
+		$deleted = wp_delete_post($id, true);
+
+		return (bool) $deleted;
+	}
+
+	public function validate_data(string $event, string $url, string $method): bool|WP_Error {
+		if (!isset($this->get_allowed_events()[$event])) {
+			return new WP_Error('invalid_event', 'Invalid event type.');
+		}
+		if (!filter_var($url, FILTER_VALIDATE_URL)) {
+			return new WP_Error('invalid_url', 'Invalid URL.');
+		}
+		if (!in_array(strtoupper($method), ['GET', 'POST'], true)) {
+			return new WP_Error('invalid_method', 'Invalid HTTP method.');
+		}
+		return apply_filters('graphql_webhooks_validate_data', true, $event, $url, $method);
+	}
+
+	/**
+	 * Maps a WP_Post to a Webhook entity.
+	 *
+	 * @param WP_Post $post The webhook post object.
+	 *
+	 * @return Webhook The mapped Webhook entity.
+	 */
+	private function mapPostToEntity(WP_Post $post): Webhook {
+		$event   = get_post_meta($post->ID, '_webhook_event', true);
+		$url     = get_post_meta($post->ID, '_webhook_url', true);
+		$method  = get_post_meta($post->ID, '_webhook_method', true) ?: 'POST';
+		$headers = get_post_meta($post->ID, '_webhook_headers', true);
+		$headers = $headers ? json_decode($headers, true) : [];
+
+		return new Webhook(
+			$post->ID,
+			$post->post_title,
+			$event,
+			$url,
+			$method,
+			$headers
+		);
+	}
 }
