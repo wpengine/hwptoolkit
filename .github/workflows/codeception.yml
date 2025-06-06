@@ -1,0 +1,73 @@
+name: Codeception
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'plugins/**.php'
+  pull_request:
+    paths:
+      - 'plugins/**.php'
+
+# Cancel previous workflow run groups that have not completed.
+concurrency:
+  # Group workflow runs by workflow name, along with the head branch ref of the pull request
+  # or otherwise the branch or tag ref.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  continuous_integration:
+    runs-on: ubuntu-latest
+    name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
+
+    strategy:
+      matrix:
+        # TODO: Add back in once working
+#        php: ["8.4","8.3","8.2", "8.1", "8.0", "7.4"]
+#        wordpress: ["6.8","6.7", "6.6", "6.5", "6.4", "6.3", "6.2"]
+        php: [ "8.2"]
+        wordpress: [ "6.8" ]
+        include:
+          - php: "8.2"
+            wordpress: "6.8"
+            coverage: 1
+        exclude:
+          # New WP versions that dont support older PHP versions
+          - php: "8.0"
+            wordpress: "6.8"
+          - php: "8.0"
+            wordpress: "6.7"
+          - php: "8.0"
+            wordpress: "6.6"
+          - php: "8.0"
+            wordpress: "6.5"
+          - php: "7.4"
+            wordpress: "6.8"
+          - php: "7.4"
+            wordpress: "6.7"
+          - php: "7.4"
+            wordpress: "6.6"
+          - php: "7.4"
+            wordpress: "6.5"
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          git fetch --prune --unshallow
+          plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
+          echo "slug=$plugin" >> $GITHUB_OUTPUT
+
+      - name: Run Codeception Tests
+        uses: ./.github/actions/codeception
+        with:
+          working-directory: plugins/${{ steps.plugin.outputs.slug }}
+          php: ${{ matrix.php }}
+          wordpress: ${{ matrix.wordpress }}
+          extensions: json,mbstring
