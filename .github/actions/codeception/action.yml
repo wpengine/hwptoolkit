@@ -13,21 +13,19 @@ inputs:
   wordpress:
     description: 'WordPress version'
     required: true
+  composer-options:
+    description: 'Additional composer options'
+    required: false
+    default: '--no-progress'
 runs:
   using: "composite"
   steps:
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+    - name: Setup PHP with Cached Composer
+      uses: ./.github/actions/setup-php-composer
       with:
         php-version: ${{ inputs.php }}
-        tools: composer:v2
-        coverage: none
-
-    - name: Install dependencies
-      uses: ramsey/composer-install@v2
-      with:
         working-directory: ${{ inputs.working-directory }}
-        composer-options: "--no-progress"
+        composer-options: ${{ inputs.composer-options }}
 
     - name: Setup environment
       run: |

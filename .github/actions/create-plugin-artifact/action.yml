@@ -4,18 +4,23 @@ inputs:
   slug:
     description: 'Plugin slug (directory name under plugins/)'
     required: true
+  composer-options:
+    description: 'Additional composer options'
+    required: false
+    default: '--no-progress'
 runs:
   using: "composite"
   steps:
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
+    - name: Setup PHP with Cached Composer
+      uses: ./.github/actions/setup-php-composer
       with:
-        php-version: '7.4'
+        php-version: ${{ inputs.php }}
+        working-directory: ${{ inputs.working-directory }}
+        composer-options: ${{ inputs.composer-options }}
 
-    - name: Install dependencies and build
+    - name: Create plugin artifact
       working-directory: plugins/${{ inputs.slug }}
       run: |
-        composer install --no-dev --optimize-autoloader
         echo "${GITHUB_SHA}" > build-sha.txt
         rm -f plugin-build/${{ inputs.slug }}-*.zip
         composer archive -vvv --format=zip --file="plugin-build/${{ inputs.slug }}" --dir="."
