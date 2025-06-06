@@ -23,7 +23,7 @@ class WebhookPostType {
 	 * Register the webhook CPT
 	 */
 	public static function register_webhook_cpt(): void {
-		$labels = [
+		$labels = [ 
 			'name' => __( 'Webhooks', 'wp-graphql-headless-webhooks' ),
 			'singular_name' => __( 'Webhook', 'wp-graphql-headless-webhooks' ),
 			'add_new' => __( 'Add New', 'wp-graphql-headless-webhooks' ),
@@ -37,8 +37,7 @@ class WebhookPostType {
 			'parent_item_colon' => __( 'Parent Webhook:', 'wp-graphql-headless-webhooks' ),
 			'menu_name' => __( 'Webhooks', 'wp-graphql-headless-webhooks' ),
 		];
-
-		$args = [
+		$args = [ 
 			'labels' => $labels,
 			'publicly_queryable' => false,
 			'hierarchical' => false,
@@ -55,8 +54,18 @@ class WebhookPostType {
 			'query_var' => true,
 			'can_export' => true,
 			'rewrite' => false,
-			'capability_type' => 'post',
+			'capability_type' => 'webhook',
 			'supports' => [ 'title' ],
+			'capabilities' => [ 
+				'create_posts' => 'manage_options',
+				'edit_posts' => 'manage_options',
+				'edit_post' => 'manage_options',
+				'delete_posts' => 'manage_options',
+				'delete_post' => 'manage_options',
+				'read_post' => 'manage_options',
+				'read_private_posts' => 'manage_options',
+			],
+			'map_meta_cap' => false,
 		];
 
 		register_post_type( 'graphql_webhook', $args );
