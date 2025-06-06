@@ -15,7 +15,7 @@ runs:
       uses: ./.github/actions/setup-php-composer
       with:
         php-version: ${{ inputs.php }}
-        working-directory: ${{ inputs.working-directory }}
+        working-directory:  plugins/${{ inputs.slug }}
         composer-options: ${{ inputs.composer-options }}
 
     - name: Create plugin artifact
