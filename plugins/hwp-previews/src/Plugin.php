@@ -6,6 +6,7 @@ namespace HWP\Previews;
 
 use HWP\Previews\Admin\Settings_Page;
 use HWP\Previews\Hooks\Preview_Hooks;
+use HWP\Previews\Integration\Faust_Integration;
 
 if ( ! class_exists( Plugin::class ) ) :
 
@@ -52,6 +53,7 @@ if ( ! class_exists( Plugin::class ) ) :
 			}
 
 			Preview_Hooks::init();
+			Faust_Integration::init();
 		}
 
 		/**
