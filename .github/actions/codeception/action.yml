@@ -1,22 +1,22 @@
-name: 'Run Codeception Tests'
-description: 'Sets up environment and runs Codeception test suites'
+name: "Run Codeception Tests"
+description: "Sets up environment and runs Codeception test suites"
 inputs:
   working-directory:
-    description: 'Plugin directory to run tests in'
+    description: "Plugin directory to run tests in"
     required: true
   php:
-    description: 'PHP version'
+    description: "PHP version"
     required: true
   extensions:
-    description: 'PHP extensions'
+    description: "PHP extensions"
     required: true
   wordpress:
-    description: 'WordPress version'
+    description: "WordPress version"
     required: true
   composer-options:
-    description: 'Additional composer options'
+    description: "Additional composer options"
     required: false
-    default: '--no-progress'
+    default: "--no-progress"
 runs:
   using: "composite"
   steps:
@@ -49,7 +49,7 @@ runs:
       shell: bash
       run: |
         docker compose --env-file .env up --detach
-        
+
         CONTAINER_ID=$(docker compose ps -q wordpress)
         if [ -n "$CONTAINER_ID" ]; then
           docker exec $CONTAINER_ID init-docker.sh
@@ -73,7 +73,7 @@ runs:
           bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
       env:
         DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
-        SKIP_TESTS_CLEANUP: 'true'
+        SKIP_TESTS_CLEANUP: "true"
       continue-on-error: true
 
     - name: Run Functional Tests w/ Docker
@@ -88,7 +88,7 @@ runs:
           bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
       env:
         DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
-        SKIP_TESTS_CLEANUP: 'true'
+        SKIP_TESTS_CLEANUP: "true"
       continue-on-error: true
 
     - name: Run WPUnit Tests w/ Docker
