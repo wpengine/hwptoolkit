@@ -1,0 +1,50 @@
+name: "Setup PHP with Cached Composer"
+description: "Setup PHP and install Composer dependencies with caching"
+inputs:
+  php-version:
+    description: "PHP version to setup"
+    required: false
+    default: "7.4"
+  working-directory:
+    description: "Working directory for composer install"
+    required: true
+  composer-options:
+    description: "Additional composer options"
+    required: false
+    default: "--no-progress --optimize-autoloader"
+  tools:
+    description: "Tools to install with PHP"
+    required: false
+    default: "composer:v2"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php-version }}
+        tools: ${{ inputs.tools }}
+        coverage: none
+
+    - name: Get Composer cache directory
+      id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{ steps.composer-cache.outputs.dir }}
+          ${{ inputs.working-directory }}/vendor
+        key: composer-${{ runner.os }}-php${{ inputs.php-version }}-${{ hashFiles(format('{0}/composer.lock', inputs.working-directory)) }}
+        restore-keys: |
+          composer-${{ runner.os }}-php${{ inputs.php-version }}-
+          composer-${{ runner.os }}-
+
+    - name: Install Composer dependencies
+      uses: ramsey/composer-install@v2
+      with:
+        working-directory: ${{ inputs.working-directory }}
+        composer-options: ${{ inputs.composer-options }}
