@@ -77,8 +77,8 @@ class Preview_Hooks {
 		// iframe preview functionality.
 		add_filter( 'template_include', [ self::class, 'add_iframe_preview_template' ], 10, 1 );
 
-		// Preview link functionality.
-		add_filter( 'preview_post_link', [ self::class, 'update_preview_post_link' ], 10, 2 );
+		// Preview link functionality. Extra priority to ensure it runs after the Faust preview link filter.
+		add_filter( 'preview_post_link', [ self::class, 'update_preview_post_link' ], 1001, 2 );
 
 
 		/**
