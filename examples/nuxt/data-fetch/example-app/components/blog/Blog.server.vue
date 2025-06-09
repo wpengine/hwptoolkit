@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useGraphQL, fetchGraphQL, gql } from '../../lib/client';
-import { getPostsPerPage, blogPostsPerPage, getPosts } from '../../lib/utils';
+import { capitalizeWords, blogPostsPerPage, getPosts } from '../../lib/utils';
 import PostListing from '../templates/listing/Post.vue';
 import BlogClient from './Blog.client.vue';
 
@@ -21,36 +21,26 @@ const props = defineProps({
   }
 });
 
-// Helper function to capitalize words - same as in BlogListingTemplate.js
-const capitalizeWords = (str) => {
-  if (!str) return '';
-  return str.split('-').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ');
-};
-
 // Get the slug based on category or tag
 const slug = props.category || props.tag || '';
 
 // Format title
 const pageTitle = computed(() => {
   const capitalizedSlug = capitalizeWords(slug);
-  
+
   if (capitalizedSlug) {
     return `${props.titlePrefix}: ${capitalizedSlug}`;
   }
-  
+
   return props.titlePrefix;
 });
 
-// Define GraphQL query
 const POSTS_QUERY = gql`
   query GetPosts($first: Int = 9, $after: String, $category: String, $tag: String) {
     posts(
       first: $first, 
       after: $after, 
       where: {
-        status: PUBLISH,
         categoryName: $category,
         tag: $tag
       }
@@ -94,22 +84,19 @@ const POSTS_QUERY = gql`
   }
 `;
 
-// Server-side fetch initial data (first 5 posts)
-// and then use the client-side component to handle pagination after hydrating the initial data.
-const initialCount = 5; // Fetch 5 posts initially like in BlogListingTemplate.js
-const postsPerPage = await blogPostsPerPage() || 10; // Default to 10 if not set
-
+const postsPerPage = 6; // Fetch 5 posts initially
 // Track loading state
 const loading = ref(true);
 const error = ref(null);
 
 // Fetch initial posts
 let data;
+
 try {
   data = await getPosts({
     query: POSTS_QUERY,
     slug,
-    pageSize: initialCount,
+    pageSize: postsPerPage,
     revalidate: 3600, // Caches for 60 minutes
   });
   loading.value = false;
@@ -135,7 +122,7 @@ const handleLoading = (isLoading) => {
 </script>
 
 <template>
-  <div>
+  <div class="container mx-auto p-4 max-w-3xl">
     <header>
       <h1>{{ pageTitle }}</h1>
     </header>
@@ -156,22 +143,15 @@ const handleLoading = (isLoading) => {
       <p>No posts found.</p>
     </div>
 
-    <!-- Initial posts and client-side component for pagination -->
+    <!-- Initial SSR and client-side component for pagination -->
     <template v-else>
       <!-- All posts rendered in a single component -->
       <PostListing :posts="allPosts" :loading="loading" :cols="3" />
 
       <!-- Client component for pagination (only button) -->
-      <BlogClient
-        :initial-posts="allPosts"
-        :initial-page-info="initialPageInfo"
-        :posts-per-page="postsPerPage"
-        :posts-query="POSTS_QUERY"
-        :category="props.category"
-        :tag="props.tag"
-        @update:posts="handleNewPosts"
-        @loading="handleLoading"
-      />
+      <BlogClient :initial-posts="allPosts" :initial-page-info="initialPageInfo" :posts-per-page="postsPerPage"
+        :posts-query="POSTS_QUERY" :category="props.category" :tag="props.tag" @update:posts="handleNewPosts"
+        @loading="handleLoading" />
     </template>
   </div>
 </template>

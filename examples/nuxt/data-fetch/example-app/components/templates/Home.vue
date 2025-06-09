@@ -1,16 +1,21 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useGraphQL, gql } from '../../lib/client';
 import PostListing from './listing/Post.vue';
+import Loading from '../Loading.vue';
 
-// Query to fetch both site info and posts
-const HOME_QUERY = gql`
-  query HomePageQuery {
+const HOME_SETTINGS_QUERY = gql`
+  query HomeSettingsQuery {
     generalSettings {
       title
       description
     }
-    posts(first: 6) {
+  }
+`;
+
+const HOME_BLOG_POSTS_QUERY = gql`
+  query HomeBlogPostsQuery {
+    posts(first: 4) {
       nodes {
         id
         title
@@ -43,55 +48,103 @@ const HOME_QUERY = gql`
   }
 `;
 
-// Fetch the data
-const { data, loading, error } = useGraphQL(HOME_QUERY);
+// Use unique keys for proper SSR state management
+const { 
+  data: blogData, 
+  loading: blogLoading, 
+  error: blogError 
+} = useGraphQL(HOME_BLOG_POSTS_QUERY, {}, { 
+  key: 'home-blog-posts-unique',
+  loadingText: 'Loading recent posts...' 
+});
 
-// Computed properties with better fallbacks
-const posts = computed(() => data.value?.posts?.nodes || []);
-const siteInfo = computed(() => ({
-  title: data.value?.generalSettings?.title || 'My WordPress Site',
-  description: data.value?.generalSettings?.description || 'Welcome to my site'
-}));
+const { 
+  data: settingsData, 
+  loading: settingsLoading, 
+  error: settingsError 
+} = useGraphQL(HOME_SETTINGS_QUERY, {}, { 
+  key: 'home-settings-unique',
+  loadingText: 'Loading site information...' 
+});
+
+// Computed properties with consistent fallbacks
+const posts = computed(() => {
+  return blogData.value?.posts?.nodes || [];
+});
+
+const siteInfo = computed(() => {
+  const title = settingsData.value?.generalSettings?.title;
+  const description = settingsData.value?.generalSettings?.description;
+  
+  return {
+    title: title,
+    description: description || 'Welcome to my site'
+  };
+});
+
+// Prevent hydration mismatches by ensuring consistent initial state
+const isClient = computed(() => process.import.meta.client);
 </script>
 
 <template>
   <main>
-    <!-- Site Info -->
-    <header>
-      <div v-if="loading && !data">Loading site information...</div>
-      <div v-else-if="error">Error loading data</div>
-      <div v-else>
-        <h1>{{ siteInfo.title }}</h1>
-        <p>{{ siteInfo.description }}</p>
-      </div>
-    </header>
-
-    <!-- Recent Posts -->
-    <section id="recent-posts">
-      <h2>Recent Posts</h2>
+    <section id="hero">
+      <!-- Always render the same structure to prevent hydration mismatches -->
+      <template v-if="settingsLoading">
+        <Loading text="Loading site information..." />
+      </template>
       
-      <!-- Error state -->
-      <div v-if="error">
-        <p>Failed to load posts</p>
-        <p>{{ error.message }}</p>
-      </div>
+      <template v-else-if="settingsError">
+        <div>
+          <h1>My WordPress Site1</h1>
+          <p>Welcome to my site</p>
+          <small>Error loading site data: {{ settingsError.message }}</small>
+        </div>
+      </template>
       
-      <!-- Post listing component -->
-      <PostListing 
-        :posts="posts" 
-        :loading="loading" 
-      />
+      <template v-else>
+        <div>
+          <h1>{{ siteInfo.title }}</h1>
+          <p>{{ siteInfo.description }}</p>
+        </div>
+      </template>
     </section>
     
-    <!-- Blog Link -->
-    <div>
-      <NuxtLink to="/blog">
-        View All Blog Posts →
-      </NuxtLink>
+    <div class="container">
+      <section id="recent-posts">
+        <h2>Recent Posts</h2>
+        
+        <template v-if="blogError">
+          <div>
+            <p>Failed to load posts</p>
+            <p>{{ blogError.message }}</p>
+          </div>
+        </template>
+
+        <template v-else-if="blogLoading">
+          <Loading text="Loading recent posts..." />
+        </template>
+        
+        <template v-else-if="posts.length === 0">
+          <div>
+            <p>No recent posts found.</p>
+          </div>
+        </template>
+        
+        <template v-else>
+          <PostListing :posts="posts" :loading="false" :cols="4" />
+        </template>
+      </section>
+      
+      <div class="text-center">
+        <NuxtLink to="/blog" class="button button-primary button-large">
+          View All Blog Posts →
+        </NuxtLink>
+      </div>
     </div>
   </main>
 </template>
 
-<style scoped>
-/* Add any component-specific styling here */
+<style scoped lang="scss">
+@use '@/assets/scss/pages/home';
 </style>

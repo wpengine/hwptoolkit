@@ -57,7 +57,7 @@ const props = defineProps({
           </div>
           <!-- Categories -->
           <div v-if="post.categories?.nodes?.length" class="categories-container">
-            <span>Cats:</span>
+            <span>In:</span>
             <div class="post-categories">
               <span v-for="(category, index) in post.categories.nodes" :key="category.slug">
                 {{ category.name }}{{ index < post.categories.nodes.length - 1 ? ', ' : '' }} </span>

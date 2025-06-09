@@ -34,12 +34,10 @@ const props = defineProps({
 // Use an event emitter to communicate with parent
 const emit = defineEmits(['update:posts', 'loading']);
 
-// Track state for page info and loading
 const pageInfo = ref(props.initialPageInfo);
 const loading = ref(false);
 const error = ref(null);
 
-// Load more posts function - exactly like in BlogList.js
 const loadMorePosts = async () => {
   // Early exit if no more posts or already loading
   if (!pageInfo.value?.hasNextPage || loading.value) {

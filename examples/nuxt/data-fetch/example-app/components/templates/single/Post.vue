@@ -156,27 +156,5 @@ const formatDate = (dateString) => {
 </template>
 
 <style scoped>
-/* Add post-specific styling here */
-:deep(img) {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.5rem;
-  margin: 1.5rem 0;
-}
 
-:deep(a) {
-  color: #3b82f6;
-  text-decoration: none;
-}
-
-:deep(a:hover) {
-  text-decoration: underline;
-}
-
-:deep(blockquote) {
-  border-left: 4px solid #e5e7eb;
-  padding-left: 1rem;
-  font-style: italic;
-  color: #6b7280;
-}
 </style>

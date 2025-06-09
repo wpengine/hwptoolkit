@@ -8,12 +8,17 @@ import { flatListToHierarchical } from '../lib/graphql';
 // Get current route for active menu item
 const route = useRoute();
 
-// Query to fetch both site info and menu
-const HEADER_QUERY = gql`
-  query headerNavQuery($after: String = null) {
+// Separate queries like in Home.vue
+const SETTINGS_QUERY = gql`
+  query HeaderSettingsQuery {
     generalSettings {
       title
     }
+  }
+`;
+
+const NAVIGATION_QUERY = gql`
+  query HeaderNavigationQuery($after: String = null) {
     menu(id: "primary", idType: LOCATION) {
       menuItems(first: 100, after: $after) {
         pageInfo {
@@ -35,14 +40,38 @@ const HEADER_QUERY = gql`
   }
 `;
 
-// Fetch the data
-const { data, loading, error } = useGraphQL(HEADER_QUERY);
+// Use unique keys for proper SSR state management
+const { 
+  data: settingsData, 
+  loading: settingsLoading, 
+  error: settingsError 
+} = useGraphQL(SETTINGS_QUERY, {}, { 
+  key: 'header-settings',
+  loadingText: 'Loading site title...' 
+});
 
-// Computed properties for better template readability
-const siteTitle = computed(() => data.value?.generalSettings?.title || 'My WordPress Site');
+const { 
+  data: navigationData, 
+  loading: navigationLoading, 
+  error: navigationError 
+} = useGraphQL(NAVIGATION_QUERY, {}, { 
+  key: 'header-navigation',
+  loadingText: 'Loading navigation...' 
+});
+
+
+const siteInfo = computed(() => {
+  const title = settingsData.value?.generalSettings?.title;
+  
+  return {
+    title: title
+  };
+});
 
 // Get flat menu items
-const flatMenuItems = computed(() => data.value?.menu?.menuItems?.nodes || []);
+const flatMenuItems = computed(() => {
+  return navigationData.value?.menu?.menuItems?.nodes || [];
+});
 
 // Convert flat menu to hierarchical structure
 const menuItems = computed(() => {
@@ -66,33 +95,28 @@ const isActive = (item) => {
   <header class="header">
     <div class="main-header-wrapper">
       <div class="site-title-wrapper">
-        <NuxtLink to="/">
-          {{ siteTitle }}
+        <NuxtLink to="/">          
+          <template v-if="siteInfo.title">
+            {{ siteInfo.title }}
+          </template>
         </NuxtLink>
       </div>
-      <nav class="nav">
-        <template v-if="!loading && !error">
-          <!-- Dynamic menu items from WordPress using NavigationItem -->
-          <NavigationItem v-for="item in menuItems" :key="item.id" :item="item" :is-active="isActive(item)" />
+      
+      <nav class="nav">        
+        <!-- Navigation items -->
+        <template v-if="menuItems.length > 0">
+          <NavigationItem 
+            v-for="item in menuItems" 
+            :key="item.id" 
+            :item="item" 
+            :is-active="isActive(item)" 
+          />
         </template>
       </nav>
     </div>
   </header>
 </template>
-<style scoped>
-.header {
-  background-color: #f8f9fa;
-  padding: 1rem;
-  border-bottom: 1px solid #dee2e6;
-}
-.main-header-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-}
-.nav {
-  display: flex;
-  gap: 1.5rem;
-}
+
+<style scoped lang="scss">
+@use '@/assets/scss/components/header';
 </style>

@@ -11,33 +11,32 @@ const FOOTER_QUERY = gql`
   }
 `;
 
-const { data } = useGraphQL(FOOTER_QUERY);
+const { 
+  data: settingsData, 
+} = useGraphQL(FOOTER_QUERY, {}, { 
+  key: 'header-settings',
+  loadingText: 'Loading site title...' 
+});
 
-const siteTitle = computed(() => data.value?.generalSettings?.title || 'My WordPress Site');
+const siteInfo = computed(() => {
+  const title = settingsData.value?.generalSettings?.title;
+  
+  return {
+    title: title
+  };
+});
 const currentYear = new Date().getFullYear();
 </script>
 
 <template>
   <footer class="footer">
       <div class="footer-content">
-        <p>© {{ currentYear }} <NuxtLink to="/">{{ siteTitle }}</NuxtLink>. All rights reserved.</p>
+        <p>© {{ currentYear }} <NuxtLink to="/">{{ siteInfo.title }}</NuxtLink>. All rights reserved.</p>
         <p>Built with WordPress, Nuxt, and WPGraphQL.</p>
       </div>  
   </footer>
 </template>
 
-<style scoped>
-.footer {
-  border-top: 1px solid #e5e7eb;
-  color: #333;
-  margin: 2rem 0 0 0;
-  padding-top: 2rem;
-  padding-bottom: 1.5rem; 
-}
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem; 
-  text-align: center; 
-}
+<style scoped lang="scss">
+@use '@/assets/scss/components/footer';
 </style>

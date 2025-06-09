@@ -22,6 +22,8 @@ export function formatDate(dateString) {
     year: "numeric",
     month: "long",
     day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
@@ -109,7 +111,7 @@ export async function getPostsPerPage() {
   }
 }
 // Fetch the data
-export function blogPostsPerPage() {
+export async function blogPostsPerPage() {
   const POSTS_PER_PAGE_QUERY = gql`
   query GetPostsPerPage {
     allSettings {
@@ -119,10 +121,9 @@ export function blogPostsPerPage() {
 `;
   const { data } = useGraphQL(POSTS_PER_PAGE_QUERY);
   const blogPostsPerPage = computed(
-    () => data.value?.allSettings?.readingSettingsPostsPerPage || 10
+    () => data.value?.allSettings?.readingSettingsPostsPerPage
   );
-  console.log("Blog posts per page:", data._rawValue);
-  return blogPostsPerPage;
+  return Promise.resolve(blogPostsPerPage);
 }
 // Synchronous version - just returns whatever is cached
 export function getPostsPerPageSync() {

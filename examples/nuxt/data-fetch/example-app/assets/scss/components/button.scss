@@ -1,14 +1,41 @@
 @use "../variables" as *;
+@use "sass:color";
 
 .button {
   padding: .5rem $gutter * 1.5;
   color: white;
+  transition: 0.3s ease;
+  cursor: pointer;
+  
   &.button-primary {
     background-color: $primary-color;
+    &:hover {
+      background-color: color.scale($primary-color, $lightness: -15%);
+    }
   }
+  
+  &.button-secondary {
+    background-color: $secondary-color;
+    color: #111;
+    &:hover {
+      background-color: #000;
+      color: #fff;
+    }
+  }
+  
   &.button-link {
     background-color: transparent;
     color: $primary-color;
     border: 1px solid $primary-color;
+  }
+  
+  &.button-large {
+    font-size: 1.2rem;
+    padding: 1rem $gutter * 2;
+  }
+  
+  &.button-small {
+    font-size: 0.75rem;
+    padding: .25rem $gutter;
   }
 }
