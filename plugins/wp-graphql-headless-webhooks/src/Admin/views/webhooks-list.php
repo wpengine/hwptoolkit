@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php esc_html_e( 'Add New', 'wp-graphql-headless-webhooks' ); ?>
 	</a>
 	<hr class="wp-header-end">
-
+	<br>
 	<?php if ( empty( $webhooks ) ) : ?>
 		<div class="webhooks-empty-state">
 			<p><?php esc_html_e( 'No webhooks found. Create your first webhook to get started.', 'wp-graphql-headless-webhooks' ); ?></p>
@@ -36,6 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<th><?php esc_html_e( 'Event', 'wp-graphql-headless-webhooks' ); ?></th>
 					<th><?php esc_html_e( 'URL', 'wp-graphql-headless-webhooks' ); ?></th>
 					<th><?php esc_html_e( 'Method', 'wp-graphql-headless-webhooks' ); ?></th>
+					<th><?php esc_html_e( 'Headers', 'wp-graphql-headless-webhooks' ); ?></th>
 					<th><?php esc_html_e( 'Actions', 'wp-graphql-headless-webhooks' ); ?></th>
 				</tr>
 			</thead>
@@ -51,6 +52,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</td>
 						<td><?php echo esc_html( $webhook->url ); ?></td>
 						<td><?php echo esc_html( $webhook->method ); ?></td>
+						<td>
+							<?php 
+							$header_count = is_array( $webhook->headers ) ? count( $webhook->headers ) : 0;
+							echo esc_html( $header_count );
+							?>
+						</td>
 						<td>
 							<a href="
 							<?php

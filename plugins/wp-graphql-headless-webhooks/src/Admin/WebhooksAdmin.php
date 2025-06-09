@@ -42,6 +42,9 @@ class WebhooksAdmin {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'handle_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		
+		// Register admin-post.php handlers
+		add_action( 'admin_post_graphql_webhook_save', array( $this, 'handle_webhook_save' ) );
 	}
 
 	/**
@@ -103,6 +106,7 @@ class WebhooksAdmin {
 				'restUrl'        => rest_url( 'graphql-webhooks/v1/' ),
 				'nonce'          => wp_create_nonce( 'wp_rest' ),
 				'headerTemplate' => $this->get_header_row_template(),
+				'confirmDelete'  => __( 'Are you sure you want to delete this webhook?', 'wp-graphql-headless-webhooks' ),
 			)
 		);
 	}
@@ -126,12 +130,7 @@ class WebhooksAdmin {
 			return;
 		}
 
-		if ( isset( $_POST['action'] ) ) {
-			if ( 'save_webhook' === $_POST['action'] ) {
-				$this->handle_webhook_save();
-			}
-		}
-
+		// Only handle delete action here since save is handled by admin-post.php
 		if ( isset( $_GET['action'] ) && 'delete' === $_GET['action'] ) {
 			$this->handle_webhook_delete();
 		}
@@ -168,8 +167,8 @@ class WebhooksAdmin {
 	/**
 	 * Handle webhook save
 	 */
-	private function handle_webhook_save(): void {
-		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'webhook_save' ) ) {
+	public function handle_webhook_save(): void {
+		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'graphql_webhook_save', 'graphql_webhook_nonce' ) ) {
 			return;
 		}
 
@@ -272,6 +271,7 @@ class WebhooksAdmin {
 
 			// Set default values for new webhook
 			if ( 'add' === $action ) {
+				$webhook_id = 0;
 				$name    = '';
 				$event   = '';
 				$url     = '';
@@ -279,6 +279,7 @@ class WebhooksAdmin {
 				$headers = array();
 			} else {
 				// Extract values from webhook entity
+				$webhook_id = $webhook->id;
 				$name    = $webhook->name;
 				$event   = $webhook->event;
 				$url     = $webhook->url;

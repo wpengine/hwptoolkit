@@ -11,7 +11,7 @@
 			$( '#add-header' ).on(
 				'click',
 				function () {
-					var headerRow = $( graphqlWebhooksAdmin.headerRowTemplate );
+					var headerRow = $( wpGraphQLWebhooks.headerTemplate );
 					$( '#webhook-headers' ).append( headerRow );
 				}
 			);
@@ -37,7 +37,7 @@
 			$( '.delete-webhook' ).on(
 				'click',
 				function (e) {
-					if ( ! confirm( graphqlWebhooksAdmin.confirmDelete )) {
+					if ( ! confirm( wpGraphQLWebhooks.confirmDelete )) {
 						e.preventDefault();
 					}
 				}
