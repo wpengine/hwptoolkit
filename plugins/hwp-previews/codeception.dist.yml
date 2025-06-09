@@ -94,9 +94,7 @@ modules:
             adminEmail: "%WORDPRESS_ADMIN_EMAIL%"
             title: 'Test'
             plugins:
-                - wp-graphql/wp-graphql.php
                 - hwp-previews/hwp-previews.php
             activatePlugins:
-                - wp-graphql/wp-graphql.php
                 - hwp-previews/hwp-previews.php
             configFile: 'tests/_data/config.php'

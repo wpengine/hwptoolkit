@@ -101,6 +101,7 @@
 	"autoload-dev": {
 		"psr-4": {
 			"HWP\\Previews\\Unit\\": "tests/unit/",
+			"HWP\\Previews\\Functional\\": "tests/functional/",
 			"HWP\\Previews\\Integration\\": "tests/integration/",
 			"HWP\\Previews\\PHPStan\\": "phpstan/",
 			"HWPStandard\\": "phpcs/HWPStandard"
@@ -129,8 +130,6 @@
 		"php:psalm": "psalm",
 		"php:psalm:info": "psalm --show-info=true",
 		"php:psalm:fix": "psalm --alter"
-	},
-	"scripts-descriptions": {
 	},
 	"support": {
 		"docs": "https://github.com/wpengine/hwptoolkit/tree/main/docs",

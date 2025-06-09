@@ -18,8 +18,6 @@ modules:
         lucatume\WPBrowser\Module\WPLoader:
             loadOnly: true
             plugins:
-                - wp-graphql/wp-graphql.php
                 - hwp-previews/hwp-previews.php
             activatePlugins:
-                - wp-graphql/wp-graphql.php
                 - hwp-previews/hwp-previews.php

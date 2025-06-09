@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Admin\Settings\Helper;
+namespace HWP\Previews\Preview\Helper;
 
 /**
  * Settings_Group class.
@@ -28,7 +28,7 @@ class Settings_Group {
 	/**
 	 * The settings helper instance.
 	 *
-	 * @var \HWP\Previews\Admin\Settings\Helper\Settings_Group|null
+	 * @var \HWP\Previews\Preview\Helper\Settings_Group|null
 	 */
 	protected static $instance = null;
 
