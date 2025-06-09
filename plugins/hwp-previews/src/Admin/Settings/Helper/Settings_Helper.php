@@ -1,26 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HWP\Previews\Admin\Settings\Helper;
+
 class Settings_Helper {
+	/**
+	 * The settings group.
+	 *
+	 * @var \HWP\Previews\Admin\Settings\Helper\Settings_Group
+	 */
+	protected Settings_Group $settings_group;
 
 	/**
 	 * The settings helper instance.
 	 *
-	 * @var Settings_Helper|null
+	 * @var \HWP\Previews\Admin\Settings\Helper\Settings_Helper|null
 	 */
 	protected static $instance = null;
 
 	/**
-	 * The settings group.
-	 *
-	 * @var Settings_Group
+	 * @param \HWP\Previews\Admin\Settings\Helper\Settings_Group $settings_group The settings group.
 	 */
-	protected Settings_Group $settings_group;
-
 	public function __construct( Settings_Group $settings_group ) {
 		$this->settings_group = $settings_group;
 	}
 
+	/**
+	 * Get an instance of the Settings_Helper class.
+	 *
+	 * @return \HWP\Previews\Admin\Settings\Helper\Settings_Helper
+	 */
 	public static function get_instance(): self {
 
 		$instance = self::$instance;
@@ -34,7 +44,12 @@ class Settings_Helper {
 		return self::$instance;
 	}
 
-	public function get_settings_config() : array  {
+	/**
+	 * Get the settings group.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function get_settings_config(): array {
 		return $this->settings_group->get_settings_config();
 	}
 
@@ -52,32 +67,22 @@ class Settings_Helper {
 
 		$enabled_post_types = [];
 		foreach ( $settings as $key => $item ) {
-			if ( $item[ $enabled_key ] ?? false ) {
+			if ( (bool) ( $item[ $enabled_key ] ?? false ) ) {
 				$enabled_post_types[] = $key;
 			}
 		}
 
-		return $enabled_post_types ?: $default_value;
-	}
-
-	/**
-	 * Get Unique Post Slugs setting value for the given post type.
-	 *
-	 * @param string $post_type The post type to get the setting for.
-	 * @param bool $default_value The default value to return if the setting is not set.
-	 */
-	public function unique_post_slugs( string $post_type, bool $default_value = false ): bool {
-
-		$key = $this->settings_group->get_settings_key_unique_post_slugs();
-
-		return $this->settings_group->get_post_type_boolean_value( $key, $post_type, $default_value );
+		if ( ! empty( $enabled_post_types ) ) {
+			return $enabled_post_types;
+		}
+		return $default_value;
 	}
 
 	/**
 	 * Get Post Statuses as Parent setting value for the given post type.
 	 *
 	 * @param string $post_type The post type to get the setting for.
-	 * @param bool $default_value The default value to return if the setting is not set.
+	 * @param bool   $default_value The default value to return if the setting is not set.
 	 */
 	public function post_statuses_as_parent( string $post_type, bool $default_value = false ): bool {
 		$key = $this->settings_group->get_settings_key_post_statuses_as_parent();
@@ -89,7 +94,7 @@ class Settings_Helper {
 	 * Show In iframe value for the given post type.
 	 *
 	 * @param string $post_type The post type to get the setting for.
-	 * @param bool $default_value The default value to return if the setting is not set.
+	 * @param bool   $default_value The default value to return if the setting is not set.
 	 */
 	public function in_iframe( string $post_type, bool $default_value = false ): bool {
 
@@ -109,5 +114,4 @@ class Settings_Helper {
 
 		return $this->settings_group->get_post_type_string_value( $key, $post_type, $default_value );
 	}
-
 }

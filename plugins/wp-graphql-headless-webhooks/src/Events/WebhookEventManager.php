@@ -59,14 +59,13 @@ class WebhookEventManager implements EventManager {
 		$allowed_events = $this->repository->get_allowed_events();
 
 		if ( ! array_key_exists( $event, $allowed_events ) ) {
+			error_log( 'Event ' . $event . ' is not allowed. Allowed events: ' . implode( ', ', $allowed_events ) );
 			return;
 		}
 
 		do_action( 'graphql_webhooks_before_trigger', $event, $payload );
 
-		$webhooks = $this->repository->get_all();
-
-		foreach ( $webhooks as $webhook ) {
+		foreach ( $this->repository->get_all() as $webhook ) {
 			if ( $webhook->event === $event ) {
 				$this->handler->handle( $webhook, $payload );
 			}

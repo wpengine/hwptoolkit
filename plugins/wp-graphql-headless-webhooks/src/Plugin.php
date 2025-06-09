@@ -126,6 +126,17 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 				require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'vendor/autoload.php';
 			}
 		}
+		
+		/**
+		 * Get the webhook repository instance.
+		 *
+		 * Provides access to the WebhookRepository for managing webhook data.
+		 *
+		 * @return WebhookRepository The repository instance.
+		 */
+		public function get_repository(): WebhookRepository {
+			return $this->repository;
+		}
 
 		/**
 		 * Prevent cloning.
