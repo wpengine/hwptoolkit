@@ -37,7 +37,6 @@ export default async function handler(req, res) {
     }
     console.log('[Webhook] Path to revalidate:', path);
 
-    // Use Next.js res.revalidate API (available in Next.js 12.2+)
     await res.revalidate(path);
     console.log('[Webhook] Successfully revalidated path:', path);
 
