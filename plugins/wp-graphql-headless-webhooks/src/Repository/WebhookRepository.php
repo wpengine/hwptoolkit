@@ -54,6 +54,16 @@ class WebhookRepository implements WebhookRepositoryInterface {
     }
 
     /**
+     * Get the list of allowed HTTP methods.
+     *
+     * @return array<string> Array of allowed HTTP methods.
+     */
+    public function get_allowed_methods(): array {
+        $default_methods = ['POST', 'GET'];
+        return apply_filters('graphql_webhooks_allowed_methods', $default_methods);
+    }
+
+    /**
      * Retrieve all published webhook entities.
      *
      * @return Webhook[] Array of Webhook entity objects.
@@ -197,7 +207,8 @@ class WebhookRepository implements WebhookRepositoryInterface {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             return new WP_Error('invalid_url', 'Invalid URL.');
         }
-        if (!in_array(strtoupper($method), ['GET', 'POST'], true)) {
+        $allowed_methods = $this->get_allowed_methods();
+        if (!in_array(strtoupper($method), array_map('strtoupper', $allowed_methods), true)) {
             return new WP_Error('invalid_method', 'Invalid HTTP method.');
         }
         return apply_filters('graphql_webhooks_validate_data', true, $event, $url, $method);

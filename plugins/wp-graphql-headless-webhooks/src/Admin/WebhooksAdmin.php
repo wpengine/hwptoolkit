@@ -209,7 +209,7 @@ class WebhooksAdmin {
 	/**
 	 * Handle webhook delete
 	 */
-	private function handle_webhook_delete(): void {
+	public function handle_webhook_delete(): void {
 		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'delete_webhook' ) ) {
 			return;
 		}
