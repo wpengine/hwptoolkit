@@ -41,10 +41,12 @@ setup_before() {
 	fi
 
 	# Install the PHP dev-dependencies.
-	echo "Running composer install"
-	COMPOSER_MEMORY_LIMIT=-1 composer install
+	if [ ! -d "vendor" ]; then
+  	echo "Running composer install"
+  	COMPOSER_MEMORY_LIMIT=-1 composer install
+  fi
 
-# Set output permission
+	# Set output permission
 	echo "Setting Codeception output directory permissions"
 	chmod 777 -R tests/_output
 }
@@ -64,7 +66,11 @@ run_tests() {
 	fi
 
 	if [[ -n "$COVERAGE" ]]; then
-		local coverage="--coverage --coverage-xml $suites-coverage.xml"
+		if [[ -n "$COVERAGE_OUTPUT" ]]; then
+			local coverage="--coverage --coverage-xml $COVERAGE_OUTPUT"
+		else
+			local coverage="--coverage --coverage-xml $suites-coverage.xml"
+		fi
 	fi
 
 	# If maintenance mode is active, de-activate it
@@ -86,7 +92,7 @@ run_tests() {
       echo "Error: Codeception build failed"
       exit 1
   fi
-  
+
 	XDEBUG_MODE=coverage vendor/bin/codecept run -c codeception.dist.yml ${suites} ${coverage:-} ${debug:-} --no-exit
 	if [ $? -ne 0 ]; then
 			echo "Error: Codeception tests failed with exit code $?"

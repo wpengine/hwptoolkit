@@ -10,7 +10,7 @@ class Checkbox_Field extends Abstract_Settings_Field {
 	 *
 	 * @var bool
 	 */
-	private bool $default;
+	protected bool $default;
 
 	/**
 	 * Constructor.
@@ -35,12 +35,12 @@ class Checkbox_Field extends Abstract_Settings_Field {
 	 * @param string        $setting_key The settings key.
 	 * @param string        $post_type The post type.
 	 */
-	public function render_field( $option_value, $setting_key, $post_type ): void {
+	public function render_field( $option_value, $setting_key, $post_type ): string {
 		$enabled = isset( $option_value[ $this->id ] )
 			? (bool) $option_value[ $this->id ]
 			: $this->default;
 
-		printf(
+		return sprintf(
 			'<input type="checkbox" name="%1$s[%2$s][%3$s]" value="1" %4$s class="%5$s" />',
 			esc_attr( $setting_key ),
 			esc_attr( $post_type ),

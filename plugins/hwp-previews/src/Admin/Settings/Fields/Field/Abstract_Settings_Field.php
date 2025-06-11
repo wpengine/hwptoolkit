@@ -79,6 +79,20 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 		return $this->is_hierarchical;
 	}
 
+		/**
+		 * Get the settings field title.
+		 */
+	public function get_title(): string {
+		return $this->title;
+	}
+
+		/**
+		 * Get the description field.
+		 */
+	public function get_description(): string {
+		return esc_attr( $this->description );
+	}
+
 	/**
 	 * Register the settings field.
 	 *
@@ -89,7 +103,7 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 	public function add_settings_field( string $section, string $page, array $args ): void {
 		add_settings_field(
 			$this->id,
-			$this->title,
+			$this->get_title(),
 			[ $this, 'settings_field_callback' ],
 			$page,
 			$section,
@@ -112,13 +126,17 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 				<span class="dashicons dashicons-editor-help"></span>
 				<span id="%2$s-tooltip" class="tooltip-text description">%1$s</span>
 			</div>',
-			esc_attr( $this->description ),
+			$this->get_description(),
 			esc_attr( $settings_key )
 		);
 
-		$this->render_field(
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->render_field(
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$this->get_setting_value( $settings_key, $post_type ),
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$settings_key,
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$post_type,
 		);
 	}
@@ -129,11 +147,12 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 	 * @param bool $post_type_hierarchal
 	 */
 	public function should_render_field( bool $post_type_hierarchal ): bool {
+
+		// If the post-type is hierarchical, then we always render the field as we don't need to check the field hierarchy.
 		if ( true === $post_type_hierarchal ) {
 			return true;
 		}
 
-		// If the field is not hierarchical and the post-type is hierarchical, we don't render it.
 		return ! $this->is_hierarchical();
 	}
 
@@ -145,7 +164,7 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function get_setting_value( string $settings_key, string $post_type ): array {
+	public function get_setting_value( string $settings_key, string $post_type ): array {
 		$value = get_option( $settings_key, [] );
 
 		if (

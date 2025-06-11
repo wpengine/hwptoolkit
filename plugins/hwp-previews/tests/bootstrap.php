@@ -1,6 +1,6 @@
 <?php
 /**
- * This is global bootstrap for autoloading.
+ * This is a global bootstrap file for autoloading.
  *
  * @package Tests\HWP\Previews
  */

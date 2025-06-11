@@ -12,7 +12,7 @@ interface Settings_Field_Interface {
 	 * @param string        $setting_key  The setting key.
 	 * @param string        $post_type    The post-type.
 	 */
-	public function render_field( array $option_value, string $setting_key, string $post_type ): void;
+	public function render_field( array $option_value, string $setting_key, string $post_type ): string;
 
 	/**
 	 * Get the field ID

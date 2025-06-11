@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace HWP\Previews\Admin\Settings\Fields;
 
 use HWP\Previews\Admin\Settings\Fields\Field\Checkbox_Field;
-use HWP\Previews\Admin\Settings\Fields\Field\Text_Input_Field;
+use HWP\Previews\Admin\Settings\Fields\Field\URL_Input_Field;
 
 class Settings_Field_Collection {
 	/**
@@ -92,7 +92,7 @@ class Settings_Field_Collection {
 		);
 
 		$this->add_field(
-			new Text_Input_Field(
+			new URL_Input_Field(
 				'preview_url',
 				false,
 				__( 'Preview URL', 'hwp-previews' ),

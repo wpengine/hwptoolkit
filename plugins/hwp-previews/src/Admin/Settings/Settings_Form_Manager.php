@@ -44,6 +44,51 @@ class Settings_Form_Manager {
 	}
 
 	/**
+	 * Sanitize and merge new settings per-tab, pruning unknown fields.
+	 *
+	 * @param array<string,mixed> $new_input New settings input for the specific tab that comes from the form for the sanitization.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function sanitize_settings( array $new_input ): array {
+
+		// @TODO - Refactor with Settings Group.
+		$option_name = apply_filters( 'hwp_previews_settings_key', HWP_PREVIEWS_SETTINGS_KEY );
+
+		$old_input = (array) get_option( $option_name, [] );
+
+		// Remove redundant tabs.
+		$post_types = array_keys( $this->post_types );
+		$old_input  = array_intersect_key( $old_input, array_flip( $post_types ) );
+
+		$tab = array_keys( $new_input );
+		if ( ! isset( $tab[0] ) ) {
+			return $old_input; // Wrong settings structure.
+		}
+
+		$tab_to_sanitize = (string) $tab[0];
+		if ( ! is_array( $new_input[ $tab_to_sanitize ] ) ) {
+			return $old_input; // Wrong settings structure.
+		}
+
+		// Sanitize the fields in the tab.
+		$sanitized_fields = [];
+		foreach ( $new_input[ $tab_to_sanitize ] as $key => $value ) {
+			$field = $this->fields->get_field( $key );
+			if ( is_null( $field ) ) {
+				continue; // Skip unknown fields.
+			}
+
+			$sanitized_fields[ $key ] = $field->sanitize_field( $value );
+		}
+
+		// Merge the sanitized fields with the old input.
+		$old_input[ $tab_to_sanitize ] = $sanitized_fields;
+
+		return $old_input;
+	}
+
+	/**
 	 * Create the settings tabs for the post-types.
 	 *
 	 * This method registers the settings group and the settings key for the post-types.
@@ -97,50 +142,5 @@ class Settings_Form_Manager {
 				]
 			);
 		}
-	}
-
-	/**
-	 * Sanitize and merge new settings per-tab, pruning unknown fields.
-	 *
-	 * @param array<string,mixed> $new_input New settings input for the specific tab that comes from the form for the sanitization.
-	 *
-	 * @return array<string,mixed>
-	 */
-	protected function sanitize_settings( array $new_input ): array {
-
-		// @TODO - Refactor with Settings Group.
-		$option_name = apply_filters( 'hwp_previews_settings_key', HWP_PREVIEWS_SETTINGS_KEY );
-
-		$old_input = (array) get_option( $option_name, [] );
-
-		// Remove redundant tabs.
-		$post_types = array_keys( $this->post_types );
-		$old_input  = array_intersect_key( $old_input, array_flip( $post_types ) );
-
-		$tab = array_keys( $new_input );
-		if ( ! isset( $tab[0] ) ) {
-			return $old_input; // Wrong settings structure.
-		}
-
-		$tab_to_sanitize = (string) $tab[0];
-		if ( ! is_array( $new_input[ $tab_to_sanitize ] ) ) {
-			return $old_input; // Wrong settings structure.
-		}
-
-		// Sanitize the fields in the tab.
-		$sanitized_fields = [];
-		foreach ( $new_input[ $tab_to_sanitize ] as $key => $value ) {
-			$field = $this->fields->get_field( $key );
-			if ( is_null( $field ) ) {
-				continue; // Skip unknown fields.
-			}
-
-			$sanitized_fields[ $key ] = $field->sanitize_field( $value );
-		}
-
-		// Merge the sanitized fields with the old input.
-		$old_input[ $tab_to_sanitize ] = $sanitized_fields;
-
-		return $old_input;
 	}
 }
