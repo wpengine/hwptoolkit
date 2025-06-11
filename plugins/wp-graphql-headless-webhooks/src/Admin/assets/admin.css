@@ -24,38 +24,36 @@
 	margin-bottom: 10px;
 }
 
-/* Delete link styling */
-.delete-webhook {
-	color: #a00;
-}
-
-.delete-webhook:hover {
-	color: #dc3232;
-}
-
 /* Form table adjustments */
 .form-table th {
 	width: 200px;
 }
 
-/* Webhook list table */
-.wp-list-table.webhooks-table td {
-	vertical-align: middle;
+/* Test webhook link */
+.test-webhook {
+	cursor: pointer;
 }
 
-.wp-list-table.webhooks-table .column-actions {
+/* Webhooks table column widths */
+.wp-list-table.webhooks-table .column-event {
+	width: 15%;
+}
+
+.wp-list-table.webhooks-table .column-method {
+	width: 80px;
+}
+
+.wp-list-table.webhooks-table .column-headers {
+	width: 15%;
+}
+
+/* Prevent URL wrapping */
+.wp-list-table.webhooks-table td code {
+	display: inline-block;
 	white-space: nowrap;
-}
-
-/* Empty state */
-.webhooks-empty-state {
-	text-align: center;
-	padding: 40px 20px;
-}
-
-.webhooks-empty-state p {
-	font-size: 16px;
-	margin-bottom: 20px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
 }
 
 /* Responsive adjustments */
@@ -68,7 +66,7 @@
 		width: 100%;
 		margin-bottom: 5px;
 	}
-
+	
 	.wp-list-table.webhooks-table {
 		display: block;
 		overflow-x: auto;

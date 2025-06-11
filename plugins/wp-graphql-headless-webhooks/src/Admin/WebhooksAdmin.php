@@ -51,7 +51,8 @@ class WebhooksAdmin {
 	 * Add admin menu
 	 */
 	public function add_admin_menu(): void {
-		add_options_page(
+		add_submenu_page(
+			'graphiql-ide',
 			__( 'Webhooks', 'wp-graphql-headless-webhooks' ),
 			__( 'Webhooks', 'wp-graphql-headless-webhooks' ),
 			'manage_options',
@@ -69,7 +70,7 @@ class WebhooksAdmin {
 	public function get_admin_url( array $args = array() ): string {
 		$defaults = array( 'page' => self::ADMIN_PAGE_SLUG );
 		$args     = wp_parse_args( $args, $defaults );
-		return admin_url( 'options-general.php?' . http_build_query( $args ) );
+		return admin_url( 'admin.php?' . http_build_query( $args ) );
 	}
 
 	/**
@@ -78,7 +79,7 @@ class WebhooksAdmin {
 	 * @param string $hook_suffix Current admin page.
 	 */
 	public function enqueue_assets( string $hook_suffix ): void {
-		if ( 'settings_page_' . self::ADMIN_PAGE_SLUG !== $hook_suffix ) {
+		if ( 'graphql_page_' . self::ADMIN_PAGE_SLUG !== $hook_suffix ) {
 			return;
 		}
 
@@ -264,6 +265,9 @@ class WebhooksAdmin {
 
 			$events  = $this->repository->get_allowed_events();
 			$methods = $this->repository->get_allowed_methods();
+			
+			// Convert simple array to associative array for the form
+			$methods = array_combine($methods, $methods);
 
 			// Set form variables
 			$form_title  = 'edit' === $action ? __( 'Edit Webhook', 'wp-graphql-headless-webhooks' ) : __( 'Add New Webhook', 'wp-graphql-headless-webhooks' );
