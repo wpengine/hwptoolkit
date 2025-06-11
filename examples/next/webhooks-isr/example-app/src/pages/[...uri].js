@@ -1,7 +1,7 @@
 import Archive from "@/components/Archive";
 import CouldNotLoad from "@/components/CouldNotLoad";
 import Single from "@/components/Single";
-import { client } from "@/lib/client";
+import { getApolloClient } from "@/lib/client";
 import { gql } from "@apollo/client";
 
 const ARCHIVE_TYPES = ["User", "Category", "Tag"];
@@ -111,25 +111,38 @@ const GET_CONTENT = gql`
   }
 `;
 
-// Next.js function to fetch data on the server side before rendering the page
-export async function getServerSideProps({ params }) {
-  const { data } = await client.query({
-    query: GET_CONTENT,
-    variables: {
-      uri: params.uri.join("/"),
-    },
-  });
+// Static generation with ISR
+export async function getStaticProps({ params }) {
+  try {
+    const { data } = await getApolloClient().query({
+      query: GET_CONTENT,
+      variables: {
+        uri: params.uri.join("/"),
+      },
+    });
+    if (!data?.nodeByUri) {
+      return {
+        notFound: true,
+      };
+    }
 
-  // Return 404 page if no data is found
-  if (!data?.nodeByUri)
+    console.debug("Fetched data:", data);
+    return {
+      props: {
+        data,
+      },
+      revalidate: 60,
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
     return {
       notFound: true,
     };
-
-  // Pass the fetched data to the page component as props
+  }
+}
+export async function getStaticPaths() {
   return {
-    props: {
-      data,
-    },
+    paths: [],
+    fallback: 'blocking',
   };
 }

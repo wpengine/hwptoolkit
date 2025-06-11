@@ -2,6 +2,7 @@
   "phpVersion": "7.4",
   "plugins": [
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "https://downloads.wordpress.org/plugin/code-snippets.3.6.8.zip",
     "../../../plugins/wp-graphql-headless-webhooks"
   ],
   "config": {
@@ -18,6 +19,6 @@
     ".htaccess": "./wp-env/setup/.htaccess"
   },
   "lifecycleScripts": {
-    "afterStart": "wp-env run cli && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }
 }

@@ -1,7 +1,7 @@
 {
-    "name": "hybrid-sitemap-apollo",
+    "name": "webhooks-isr-example",
     "version": "1.0.0",
-    "description": "A Next.js application that fetches and transforms WordPress sitemaps with clean URL formatting using Apollo Client.",
+    "description": "A Next.js application demonstrating full Incremental Static Regeneration (ISR) integrated with WordPress webhooks for on-demand page revalidation.",
     "scripts": {
       "example:build": "pnpm run wp:images:unzip && pnpm run example:dev:install && pnpm run wp:start && pnpm run wp:db:import && pnpm run example:start",
       "example:dev:install": "cd example-app && npm install && cd ..",
@@ -16,8 +16,7 @@
       "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
       "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
       "wp:images:unzip": "rm -rf wp-env/uploads/ && unzip wp-env/uploads.zip -d wp-env;",
-      "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads",
-      "plugin:build": "zip -r hwpt-wpgraphql-sitemap.zip hwpt-wpgraphql-sitemap"
+      "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads"
     },
     "keywords": [
       "headless",
