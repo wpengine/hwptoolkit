@@ -5,6 +5,7 @@ namespace WPGraphQL\Webhooks\Events;
 use WPGraphQL\Webhooks\Events\Interfaces\EventManager;
 use WPGraphQL\Webhooks\Repository\Interfaces\WebhookRepositoryInterface;
 use WPGraphQL\Webhooks\Handlers\Interfaces\Handler;
+use WPGraphQL\Webhooks\Events\SmartCacheEventHandler;
 
 /**
  * Webhook Event Manager
@@ -17,14 +18,23 @@ class WebhookEventManager implements EventManager {
 	private Handler $handler;
 
 	/**
+	 * Smart Cache event handler
+	 * @var SmartCacheEventHandler
+	 */
+	private SmartCacheEventHandler $smart_cache_handler;
+
+	/**
 	 * Constructor
 	 *
 	 * @param WebhookRepositoryInterface $repository
-	 * @param Handler     $sender
+	 * @param Handler $handler
 	 */
-	public function __construct( WebhookRepositoryInterface $repository, $handler ) {
+	public function __construct( WebhookRepositoryInterface $repository, Handler $handler ) {
 		$this->repository = $repository;
 		$this->handler = $handler;
+		
+		// Initialize Smart Cache handler
+		$this->smart_cache_handler = new SmartCacheEventHandler( [ $this, 'trigger_webhooks' ] );
 	}
 
 	/**
@@ -49,8 +59,7 @@ class WebhookEventManager implements EventManager {
 		add_action( 'transition_comment_status', [ $this, 'on_comment_status' ], 10, 3 );
 		
 		// Smart Cache integration
-		add_action( 'graphql_purge', [ $this, 'on_graphql_purge' ], 10, 3 );
-		add_action( 'wpgraphql_cache_purge_nodes', [ $this, 'on_cache_purge_nodes' ], 10, 2 );
+		$this->smart_cache_handler->init();
 	}
 
 	/**
@@ -182,122 +191,5 @@ class WebhookEventManager implements EventManager {
 			'comment_id' => $comment->comment_ID,
 			'new_status' => $new_status,
 		] );
-	}
-
-	/**
-	 * Handle WPGraphQL Smart Cache purge events
-	 *
-	 * @param string $key Cache key being purged
-	 * @param string $event Event type (e.g., post_UPDATE)
-	 * @param string $graphql_endpoint GraphQL endpoint URL
-	 */
-	public function on_graphql_purge( $key, $event, $graphql_endpoint ) {
-		// Parse the event to extract post type and action
-		$event_parts = explode( '_', $event );
-		if ( count( $event_parts ) !== 2 ) {
-			return;
-		}
-
-		$post_type = $event_parts[0];
-		$action = strtolower( $event_parts[1] );
-		
-		// Map Smart Cache actions to our webhook events
-		$event_map = [
-			'create' => 'smart_cache_created',
-			'update' => 'smart_cache_updated',
-			'delete' => 'smart_cache_deleted',
-		];
-
-		if ( ! isset( $event_map[ $action ] ) ) {
-			return;
-		}
-
-		$webhook_event = $event_map[ $action ];
-		
-		// Build payload with decoded information
-		$payload = [
-			'cache_key' => $key,
-			'key_type' => $this->classify_cache_key( $key ),
-			'post_type' => $post_type,
-			'action' => $action,
-			'graphql_endpoint' => $graphql_endpoint,
-			'timestamp' => current_time( 'c' ),
-		];
-
-		// Try to decode the key if it's a Relay global ID
-		if ( class_exists( '\GraphQLRelay\Relay' ) ) {
-			try {
-				$decoded = \GraphQLRelay\Relay::fromGlobalId( $key );
-				if ( ! empty( $decoded['type'] ) && ! empty( $decoded['id'] ) ) {
-					$payload['decoded_key'] = $decoded;
-					$payload['object_id'] = absint( $decoded['id'] );
-					
-					// Add object details based on type
-					if ( $decoded['type'] === 'post' && $action !== 'delete' ) {
-						$post = get_post( $decoded['id'] );
-						if ( $post ) {
-							$payload['object'] = [
-								'id' => $post->ID,
-								'title' => $post->post_title,
-								'status' => $post->post_status,
-								'type' => $post->post_type,
-								'url' => get_permalink( $post ),
-							];
-						}
-					}
-				}
-			} catch ( \Exception $e ) {
-				// Not a valid Relay ID, continue without decoding
-			}
-		}
-
-		$this->trigger_webhooks( $webhook_event, $payload );
-	}
-
-	/**
-	 * Handle WPGraphQL cache purge nodes event
-	 *
-	 * @param string $key Cache key
-	 * @param array $nodes Nodes being purged
-	 */
-	public function on_cache_purge_nodes( $key, $nodes ) {
-		$payload = [
-			'cache_key' => $key,
-			'nodes' => $nodes,
-			'nodes_count' => count( $nodes ),
-			'timestamp' => current_time( 'c' ),
-		];
-
-		$this->trigger_webhooks( 'smart_cache_nodes_purged', $payload );
-	}
-
-	/**
-	 * Classify the type of cache key
-	 *
-	 * @param string $key Cache key
-	 * @return string
-	 */
-	private function classify_cache_key( string $key ): string {
-		if ( strpos( $key, 'list:' ) === 0 ) {
-			return 'list';
-		}
-		
-		if ( strpos( $key, 'skipped:' ) === 0 ) {
-			return 'skipped';
-		}
-		
-		// Check if it's a Relay ID
-		if ( class_exists( '\GraphQLRelay\Relay' ) ) {
-			try {
-				$decoded = \GraphQLRelay\Relay::fromGlobalId( $key );
-				if ( ! empty( $decoded['type'] ) && ! empty( $decoded['id'] ) ) {
-					return 'relay_id';
-				}
-			} catch ( \Exception $e ) {
-				// Not a valid Relay ID
-			}
-		}
-		
-		return 'unknown';
 	}
 }
