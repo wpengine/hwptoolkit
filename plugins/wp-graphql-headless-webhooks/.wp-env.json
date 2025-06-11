@@ -3,6 +3,7 @@
   "phpVersion": "8.0",
   "plugins": [
     "https://downloads.wordpress.org/plugin/wp-graphql.latest-stable.zip",
+    "https://downloads.wordpress.org/plugin/wpgraphql-smart-cache.latest-stable.zip",
     "."
   ],
   "port": 8889,
