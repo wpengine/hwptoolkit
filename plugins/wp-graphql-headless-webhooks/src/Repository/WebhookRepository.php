@@ -42,6 +42,11 @@ class WebhookRepository implements WebhookRepositoryInterface {
         'media_deleted'    => 'Media Deleted',
         'comment_inserted' => 'Comment Inserted',
         'comment_status'   => 'Comment Status Changed',
+        // Smart Cache events
+        'smart_cache_created' => 'Smart Cache - Content Created',
+        'smart_cache_updated' => 'Smart Cache - Content Updated',
+        'smart_cache_deleted' => 'Smart Cache - Content Deleted',
+        'smart_cache_nodes_purged' => 'Smart Cache - Nodes Purged',
     ];
 
     /**
