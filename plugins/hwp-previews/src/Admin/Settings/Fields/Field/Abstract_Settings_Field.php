@@ -90,7 +90,7 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 		 * Get the description field.
 		 */
 	public function get_description(): string {
-		return esc_attr( $this->description );
+		return $this->description;
 	}
 
 	/**
@@ -126,7 +126,7 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 				<span class="dashicons dashicons-editor-help"></span>
 				<span id="%2$s-tooltip" class="tooltip-text description">%1$s</span>
 			</div>',
-			$this->get_description(),
+			esc_attr( $this->get_description() ),
 			esc_attr( $settings_key )
 		);
 
