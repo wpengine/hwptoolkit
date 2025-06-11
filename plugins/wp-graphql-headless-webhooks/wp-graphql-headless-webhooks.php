@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Webhooks;
 
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -107,8 +108,8 @@ function graphql_headless_webhooks_init(): void {
 
 	if ( $not_ready === [] && defined( 'WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR' ) ) {
 		// Load text domain at the init hook
-		add_action('init', 'WPGraphQL\Webhooks\graphql_headless_webhooks_load_textdomain');
-		
+		add_action( 'init', 'WPGraphQL\Webhooks\graphql_headless_webhooks_load_textdomain' );
+
 		require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'src/Plugin.php';
 		$plugin = new \WPGraphQL\Webhooks\Plugin();
 		$plugin::instance();
@@ -155,4 +156,3 @@ add_action( 'init', 'WPGraphQL\Webhooks\graphql_headless_webhooks_load_textdomai
 
 /** @psalm-suppress HookNotFound */
 add_action( 'plugins_loaded', 'WPGraphQL\Webhooks\graphql_headless_webhooks_init' );
-
