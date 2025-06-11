@@ -19,6 +19,11 @@
 	flex-shrink: 0;
 }
 
+.webhook-header-row button.remove-header:hover {
+	background: #d63638;
+	color: #fff;
+}
+
 /* Add some spacing */
 #webhook-headers {
 	margin-bottom: 10px;
@@ -32,6 +37,21 @@
 /* Test webhook link */
 .test-webhook {
 	cursor: pointer;
+}
+
+/* Test webhook button states */
+.test-webhook.testing {
+	color: #3858e9;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+.test-webhook.success {
+	color: #00a32a;
+}
+
+.test-webhook.error {
+	color: #d63638;
 }
 
 /* Webhooks table column widths */

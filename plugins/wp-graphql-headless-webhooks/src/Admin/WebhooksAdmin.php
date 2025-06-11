@@ -45,6 +45,9 @@ class WebhooksAdmin {
 		
 		// Register admin-post.php handlers
 		add_action( 'admin_post_graphql_webhook_save', array( $this, 'handle_webhook_save' ) );
+		
+		// Register AJAX handlers
+		add_action( 'wp_ajax_test_webhook', array( $this, 'handle_test_webhook' ) );
 	}
 
 	/**
@@ -79,7 +82,8 @@ class WebhooksAdmin {
 	 * @param string $hook_suffix Current admin page.
 	 */
 	public function enqueue_assets( string $hook_suffix ): void {
-		if ( 'graphql_page_' . self::ADMIN_PAGE_SLUG !== $hook_suffix ) {
+		// Only load on our admin page - check if we're on the webhooks page
+		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== self::ADMIN_PAGE_SLUG ) {
 			return;
 		}
 
@@ -106,6 +110,7 @@ class WebhooksAdmin {
 			array(
 				'restUrl'        => rest_url( 'graphql-webhooks/v1/' ),
 				'nonce'          => wp_create_nonce( 'wp_rest' ),
+				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
 				'headerTemplate' => $this->get_header_row_template(),
 				'confirmDelete'  => __( 'Are you sure you want to delete this webhook?', 'wp-graphql-headless-webhooks' ),
 			)
@@ -223,6 +228,155 @@ class WebhooksAdmin {
 
 		wp_safe_redirect( $this->get_admin_url( array( 'deleted' => 'true' ) ) );
 		exit;
+	}
+
+	/**
+	 * Handle webhook test via AJAX
+	 */
+	public function handle_test_webhook(): void {
+		// Verify nonce
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'wp_rest' ) ) {
+			wp_send_json_error( __( 'Security check failed.', 'wp-graphql-headless-webhooks' ) );
+		}
+
+		// Verify permissions
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Insufficient permissions.', 'wp-graphql-headless-webhooks' ) );
+		}
+
+		$webhook_id = isset( $_POST['webhook_id'] ) ? intval( $_POST['webhook_id'] ) : 0;
+		if ( ! $webhook_id ) {
+			wp_send_json_error( __( 'Invalid webhook ID.', 'wp-graphql-headless-webhooks' ) );
+		}
+
+		// Get the webhook
+		$webhook = $this->repository->get( $webhook_id );
+		if ( ! $webhook ) {
+			wp_send_json_error( __( 'Webhook not found.', 'wp-graphql-headless-webhooks' ) );
+		}
+
+		// Create test payload based on the event type
+		$test_payload = $this->get_test_payload_for_event( $webhook->event );
+
+		// Send the webhook using a synchronous request for testing
+		$args = [ 
+			'headers' => $webhook->headers ?: [ 'Content-Type' => 'application/json' ],
+			'timeout' => 10,
+			'blocking' => true, // We need blocking for test to get response
+		];
+
+		$payload = apply_filters( 'graphql_webhooks_payload', $test_payload, $webhook );
+
+		if ( strtoupper( $webhook->method ) === 'GET' ) {
+			$url = add_query_arg( $payload, $webhook->url );
+			$args['method'] = 'GET';
+		} else {
+			$url = $webhook->url;
+			$args['method'] = strtoupper( $webhook->method );
+			$args['body'] = wp_json_encode( $payload );
+			if ( empty( $args['headers']['Content-Type'] ) ) {
+				$args['headers']['Content-Type'] = 'application/json';
+			}
+		}
+
+		$response = wp_remote_request( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			wp_send_json_error( $response->get_error_message() );
+		}
+
+		// Get response details
+		$response_code = wp_remote_retrieve_response_code( $response );
+		$response_body = wp_remote_retrieve_body( $response );
+		
+		// Strip HTML tags from response body to remove any links
+		$response_body = wp_strip_all_tags( $response_body );
+
+		$message = sprintf(
+			__( 'Webhook sent successfully!\n\nResponse Code: %d\nResponse Body: %s', 'wp-graphql-headless-webhooks' ),
+			$response_code,
+			substr( $response_body, 0, 200 ) // Limit response body to 200 chars
+		);
+
+		wp_send_json_success( array( 'message' => $message ) );
+	}
+
+	/**
+	 * Get test payload for a specific event
+	 *
+	 * @param string $event Event type.
+	 * @return array
+	 */
+	private function get_test_payload_for_event( string $event ): array {
+		$base_payload = array(
+			'event'     => $event,
+			'timestamp' => current_time( 'mysql' ),
+			'test'      => true,
+			'test_mode' => true, // Additional flag to clearly indicate test mode
+			'message'   => 'This is a TEST webhook payload - no production data was affected',
+		);
+
+		// Add event-specific test data
+		switch ( $event ) {
+			case 'smart_cache_created':
+			case 'smart_cache_updated':
+			case 'smart_cache_deleted':
+				$base_payload['data'] = array(
+					'key'        => 'test:post:999999',
+					'action'     => str_replace( 'smart_cache_', '', $event ),
+					'purge_url'  => home_url( '/test-graphql-endpoint' ),
+					'test_note'  => 'This is test data - no actual cache was purged',
+				);
+				break;
+
+			case 'smart_cache_nodes_purged':
+				$base_payload['data'] = array(
+					'key'   => 'test:list:post',
+					'nodes' => array(
+						array( 'id' => 'test_node_1', 'type' => 'post' ),
+						array( 'id' => 'test_node_2', 'type' => 'term' ),
+					),
+					'test_note' => 'This is test data - no actual nodes were purged',
+				);
+				break;
+
+			case 'post.published':
+			case 'post.updated':
+			case 'post.deleted':
+				$base_payload['data'] = array(
+					'id'        => 999999,
+					'title'     => 'Test Post (Not Real)',
+					'status'    => 'test',
+					'author'    => 0,
+					'test_note' => 'This is test data - no actual post exists',
+				);
+				break;
+
+			case 'user.created':
+				$base_payload['data'] = array(
+					'id'        => 999999,
+					'username'  => 'test_webhook_user',
+					'email'     => 'test@webhook.local',
+					'role'      => 'test',
+					'test_note' => 'This is test data - no actual user exists',
+				);
+				break;
+
+			default:
+				$base_payload['data'] = array(
+					'message'   => 'This is a test webhook payload',
+					'test_note' => 'This is test data for event: ' . $event,
+				);
+				break;
+		}
+
+		/**
+		 * Filter the test payload for webhook testing
+		 *
+		 * @param array  $base_payload The test payload data
+		 * @param string $event        The event type being tested
+		 */
+		return apply_filters( 'graphql_webhooks_test_payload', $base_payload, $event );
 	}
 
 	/**

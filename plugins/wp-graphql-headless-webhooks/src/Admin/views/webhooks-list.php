@@ -14,44 +14,50 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
+
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php esc_html_e( 'Webhooks', 'wp-graphql-headless-webhooks' ); ?></h1>
+	
 	<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'add' ) ) ); ?>" class="page-title-action">
 		<?php esc_html_e( 'Add New', 'wp-graphql-headless-webhooks' ); ?>
 	</a>
+	
 	<hr class="wp-header-end">
 	
-	<?php if ( empty( $webhooks ) ) : ?>
-		<div class="notice notice-info inline">
-			<p>
-				<strong><?php esc_html_e( 'No webhooks found.', 'wp-graphql-headless-webhooks' ); ?></strong>
-				<?php esc_html_e( 'Create your first webhook to get started.', 'wp-graphql-headless-webhooks' ); ?>
-			</p>
-			<p>
-				<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'add' ) ) ); ?>" class="button button-primary">
-					<?php esc_html_e( 'Add New Webhook', 'wp-graphql-headless-webhooks' ); ?>
-				</a>
-			</p>
-		</div>
-	<?php else : ?>
-		<div class="tablenav top">
-			<div class="tablenav-pages one-page">
-				<span class="displaying-num">
-					<?php
-					printf(
-						esc_html( _n( '%s webhook', '%s webhooks', count( $webhooks ), 'wp-graphql-headless-webhooks' ) ),
-						number_format_i18n( count( $webhooks ) )
-					);
-					?>
-				</span>
+	<?php if ( ! empty( $_GET['message'] ) ) : ?>
+		<?php
+		$message = '';
+		switch ( $_GET['message'] ) {
+			case 'created':
+				$message = __( 'Webhook created successfully.', 'wp-graphql-headless-webhooks' );
+				$type = 'success';
+				break;
+			case 'updated':
+				$message = __( 'Webhook updated successfully.', 'wp-graphql-headless-webhooks' );
+				$type = 'success';
+				break;
+			case 'deleted':
+				$message = __( 'Webhook deleted successfully.', 'wp-graphql-headless-webhooks' );
+				$type = 'success';
+				break;
+			case 'error':
+				$message = __( 'An error occurred. Please try again.', 'wp-graphql-headless-webhooks' );
+				$type = 'error';
+				break;
+		}
+		?>
+		<?php if ( $message ) : ?>
+			<div class="notice notice-<?php echo esc_attr( $type ); ?> is-dismissible">
+				<p><?php echo esc_html( $message ); ?></p>
 			</div>
-			<br class="clear">
-		</div>
-
-		<table class="wp-list-table widefat fixed striped table-view-list webhooks-table">
+		<?php endif; ?>
+	<?php endif; ?>
+	
+	<?php if ( ! empty( $webhooks ) ) : ?>
+		<table class="wp-list-table widefat fixed striped table-view-list">
 			<thead>
 				<tr>
-					<th scope="col" class="manage-column column-title column-primary">
+					<th scope="col" class="manage-column column-name column-primary">
 						<?php esc_html_e( 'Name', 'wp-graphql-headless-webhooks' ); ?>
 					</th>
 					<th scope="col" class="manage-column column-event">
@@ -71,25 +77,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<tbody>
 				<?php foreach ( $webhooks as $webhook ) : ?>
 					<tr>
-						<td class="title column-title has-row-actions column-primary">
+						<td class="column-name column-primary" data-colname="<?php esc_attr_e( 'Name', 'wp-graphql-headless-webhooks' ); ?>">
 							<strong>
-								<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook_id' => $webhook->id ) ) ); ?>" class="row-title">
+								<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook' => $webhook->id ) ) ); ?>" class="row-title">
 									<?php echo esc_html( $webhook->name ); ?>
 								</a>
 							</strong>
 							<div class="row-actions">
 								<span class="edit">
-									<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook_id' => $webhook->id ) ) ); ?>">
+									<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook' => $webhook->id ) ) ); ?>">
 										<?php esc_html_e( 'Edit', 'wp-graphql-headless-webhooks' ); ?>
-									</a> |
+									</a> | 
 								</span>
 								<span class="test">
 									<a href="#" class="test-webhook" data-webhook-id="<?php echo esc_attr( $webhook->id ); ?>">
 										<?php esc_html_e( 'Test', 'wp-graphql-headless-webhooks' ); ?>
-									</a> |
+									</a> | 
 								</span>
 								<span class="trash">
-									<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=graphql_webhook_delete&webhook_id=' . $webhook->id ), 'delete_webhook_' . $webhook->id ) ); ?>" class="delete-webhook submitdelete">
+									<a href="<?php echo esc_url( wp_nonce_url( $admin->get_admin_url( array( 'action' => 'delete', 'webhook' => $webhook->id ) ), 'delete_webhook_' . $webhook->id ) ); ?>" class="delete-webhook submitdelete">
 										<?php esc_html_e( 'Delete', 'wp-graphql-headless-webhooks' ); ?>
 									</a>
 								</span>
@@ -98,41 +104,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'wp-graphql-headless-webhooks' ); ?></span>
 							</button>
 						</td>
-						<td>
-							<?php
-							$event_label = isset( $events[ $webhook->event ] ) ? $events[ $webhook->event ] : $webhook->event;
-							echo esc_html( $event_label );
-							?>
+						<td class="column-event" data-colname="<?php esc_attr_e( 'Event', 'wp-graphql-headless-webhooks' ); ?>">
+							<code><?php echo esc_html( $webhook->event ); ?></code>
 						</td>
-						<td>
+						<td class="column-method" data-colname="<?php esc_attr_e( 'Method', 'wp-graphql-headless-webhooks' ); ?>">
 							<strong><?php echo esc_html( strtoupper( $webhook->method ) ); ?></strong>
 						</td>
-						<td>
-							<?php
-							$url = $webhook->url;
-							$truncated_url = strlen($url) > 50 ? substr($url, 0, 50) . '...' : $url;
-							?>
-							<code title="<?php echo esc_attr( $url ); ?>" style="cursor: help;"><?php echo esc_html( $truncated_url ); ?></code>
+						<td class="column-url" data-colname="<?php esc_attr_e( 'URL', 'wp-graphql-headless-webhooks' ); ?>">
+							<code><?php echo esc_html( $webhook->url ); ?></code>
 						</td>
-						<td>
-							<?php 
-							$header_count = is_array( $webhook->headers ) ? count( $webhook->headers ) : 0;
-							if ( $header_count > 0 ) {
-								$header_names = array_keys( $webhook->headers );
-								foreach ( $header_names as $header_name ) {
-									echo esc_html( $header_name ) . '<br>';
-								}
-							} else {
-								echo '<span class="no-headers">—</span>';
-							}
-							?>
+						<td class="column-headers" data-colname="<?php esc_attr_e( 'Headers', 'wp-graphql-headless-webhooks' ); ?>">
+							<?php if ( ! empty( $webhook->headers ) ) : ?>
+								<?php foreach ( $webhook->headers as $key => $value ) : ?>
+									<div><code><?php echo esc_html( $key ); ?></code></div>
+								<?php endforeach; ?>
+							<?php else : ?>
+								<span class="description"><?php esc_html_e( 'None', 'wp-graphql-headless-webhooks' ); ?></span>
+							<?php endif; ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 			<tfoot>
 				<tr>
-					<th scope="col" class="manage-column column-title column-primary">
+					<th scope="col" class="manage-column column-name column-primary">
 						<?php esc_html_e( 'Name', 'wp-graphql-headless-webhooks' ); ?>
 					</th>
 					<th scope="col" class="manage-column column-event">
@@ -152,17 +147,119 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</table>
 		
 		<div class="tablenav bottom">
-			<div class="tablenav-pages one-page">
-				<span class="displaying-num">
-					<?php
+			<div class="alignleft actions">
+				<p class="description">
+					<?php 
 					printf(
-						esc_html( _n( '%s webhook', '%s webhooks', count( $webhooks ), 'wp-graphql-headless-webhooks' ) ),
-						number_format_i18n( count( $webhooks ) )
+						esc_html__( '%d webhooks configured', 'wp-graphql-headless-webhooks' ),
+						count( $webhooks )
 					);
 					?>
-				</span>
+				</p>
 			</div>
-			<br class="clear">
+		</div>
+	<?php else : ?>
+		<div class="webhooks-empty-state">
+			<p><?php esc_html_e( 'No webhooks configured yet.', 'wp-graphql-headless-webhooks' ); ?></p>
+			<p>
+				<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'add' ) ) ); ?>" class="button button-primary">
+					<?php esc_html_e( 'Add Your First Webhook', 'wp-graphql-headless-webhooks' ); ?>
+				</a>
+			</p>
 		</div>
 	<?php endif; ?>
 </div>
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	// Handle test webhook clicks
+	$('.test-webhook').off('click').on('click', function(e) {
+		e.preventDefault();
+		
+		var $link = $(this);
+		var webhookId = $link.data('webhook-id');
+		var originalText = $link.text();
+		
+		// Prevent multiple clicks
+		if ($link.hasClass('testing')) {
+			return false;
+		}
+		
+		// Update UI to show testing
+		$link.text('Testing...').addClass('testing').css('pointer-events', 'none');
+		
+		// Send test request
+		$.ajax({
+			url: ajaxurl,
+			type: 'POST',
+			data: {
+				action: 'test_webhook',
+				webhook_id: webhookId,
+				nonce: '<?php echo wp_create_nonce( 'wp_rest' ); ?>'
+			},
+			success: function(response) {
+				if (response.success) {
+					$link.text('✓ Success');
+					if (response.data && response.data.message) {
+						// Show inline message using WordPress admin notice
+						var message = response.data.message.replace(/\n/g, '<br>');
+						var $row = $link.closest('tr');
+						var colspan = $row.find('td').length;
+						$row.after('<tr class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-success inline"><p>' + message + '</p></div></td></tr>');
+						
+						// Remove message after 5 seconds
+						setTimeout(function() {
+							$('.webhook-test-result').fadeOut(function() {
+								$(this).remove();
+							});
+						}, 5000);
+					}
+				} else {
+					$link.text('✗ Failed');
+					var error = response.data || 'Unknown error';
+					var $row = $link.closest('tr');
+					var colspan = $row.find('td').length;
+					$row.after('<tr class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-error inline"><p><strong>Test failed:</strong> ' + error + '</p></div></td></tr>');
+					
+					// Remove message after 5 seconds
+					setTimeout(function() {
+						$('.webhook-test-result').fadeOut(function() {
+							$(this).remove();
+						});
+					}, 5000);
+				}
+				
+				// Reset button after 3 seconds
+				setTimeout(function() {
+					$link.text(originalText).removeClass('testing').css('pointer-events', 'auto');
+				}, 3000);
+			},
+			error: function(xhr, status, error) {
+				$link.text('✗ Error');
+				var $row = $link.closest('tr');
+				var colspan = $row.find('td').length;
+				$row.after('<tr class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-error inline"><p><strong>Test error:</strong> ' + error + '</p></div></td></tr>');
+				
+				// Remove message after 5 seconds
+				setTimeout(function() {
+					$('.webhook-test-result').fadeOut(function() {
+						$(this).remove();
+					});
+				}, 5000);
+				
+				// Reset button after 3 seconds
+				setTimeout(function() {
+					$link.text(originalText).removeClass('testing').css('pointer-events', 'auto');
+				}, 3000);
+			}
+		});
+	});
+	
+	// Handle delete confirmation
+	$('.delete-webhook').on('click', function(e) {
+		if (!confirm('<?php echo esc_js( __( 'Are you sure you want to delete this webhook?', 'wp-graphql-headless-webhooks' ) ); ?>')) {
+			e.preventDefault();
+		}
+	});
+});
+</script>
