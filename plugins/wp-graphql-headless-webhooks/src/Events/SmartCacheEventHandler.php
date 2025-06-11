@@ -42,9 +42,9 @@ class SmartCacheEventHandler {
 	/**
 	 * Constructor
 	 *
-	 * @param callable $webhook_trigger_callback Callback to trigger webhooks
+	 * @param $webhook_trigger_callback Callback to trigger webhooks
 	 */
-	public function __construct( callable $webhook_trigger_callback ) {
+	public function __construct( $webhook_trigger_callback ) {
 		$this->webhook_trigger_callback = $webhook_trigger_callback;
 	}
 
