@@ -39,10 +39,35 @@ jobs:
             const runId = context.runId;
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
             const slug = process.env.PLUGIN_SLUG;
-            const body = `ℹ️ [Download the ${slug} plugin artifact from this workflow run](${artifactUrl}) (see the 'Artifacts' section at the bottom).`;
-            await github.rest.issues.createComment({
+            const body = ` [Download the ${slug} plugin artifact from this workflow run](${artifactUrl}) (see the 'Artifacts' section at the bottom).`;
+            
+            // Find existing comment from this bot
+            const comments = await github.rest.issues.listComments({
               issue_number: pr.number,
               owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
+              repo: context.repo.repo
             });
+            
+            const botComment = comments.data.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.user.login === 'github-actions[bot]' &&
+              comment.body.includes(`Download the ${slug} plugin artifact`)
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                comment_id: botComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                issue_number: pr.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            }
