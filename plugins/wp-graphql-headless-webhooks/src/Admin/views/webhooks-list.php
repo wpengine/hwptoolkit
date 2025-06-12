@@ -53,10 +53,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php endif; ?>
 	<?php endif; ?>
 	
-	<?php if ( ! empty( $webhooks ) ) : ?>
+	<?php if ( empty( $webhooks ) ) : ?>
+		<div class="webhooks-empty-state">
+			<h2><?php esc_html_e( 'No webhooks yet', 'wp-graphql-headless-webhooks' ); ?></h2>
+			<p><?php esc_html_e( 'Create your first webhook to start receiving notifications when events occur.', 'wp-graphql-headless-webhooks' ); ?></p>
+			<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'add' ) ) ); ?>" class="button button-primary">
+				<?php esc_html_e( 'Add New Webhook', 'wp-graphql-headless-webhooks' ); ?>
+			</a>
+		</div>
+	<?php else : ?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="graphql_webhook_bulk_delete" />
 			<?php wp_nonce_field( 'bulk_delete_webhooks' ); ?>
-			<input type="hidden" name="action" value="graphql_webhook_bulk_delete">
 			
 			<div class="tablenav top">
 				<div class="alignleft actions bulkactions">
@@ -67,42 +75,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</select>
 					<input type="submit" class="button action" value="<?php esc_attr_e( 'Apply', 'wp-graphql-headless-webhooks' ); ?>">
 				</div>
+				<br class="clear">
 			</div>
 			
-			<table class="wp-list-table widefat fixed striped table-view-list">
+			<table class="wp-list-table widefat fixed striped webhooks">
 				<thead>
 					<tr>
 						<td class="manage-column column-cb check-column">
-							<label class="screen-reader-text" for="cb-select-all-1"><?php esc_html_e( 'Select All', 'wp-graphql-headless-webhooks' ); ?></label>
-							<input id="cb-select-all-1" type="checkbox">
+							<input type="checkbox" id="cb-select-all-1" />
 						</td>
-						<th scope="col" class="manage-column column-name column-primary">
-							<?php esc_html_e( 'Name', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
-						<th scope="col" class="manage-column column-event">
-							<?php esc_html_e( 'Event', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
-						<th scope="col" class="manage-column column-method">
-							<?php esc_html_e( 'Method', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
-						<th scope="col" class="manage-column column-url">
-							<?php esc_html_e( 'URL', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
-						<th scope="col" class="manage-column column-headers">
-							<?php esc_html_e( 'Headers', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
+						<th scope="col" class="manage-column column-name"><?php esc_html_e( 'Name', 'wp-graphql-headless-webhooks' ); ?></th>
+						<th scope="col" class="manage-column column-event"><?php esc_html_e( 'Event', 'wp-graphql-headless-webhooks' ); ?></th>
+						<th scope="col" class="manage-column column-method"><?php esc_html_e( 'Method', 'wp-graphql-headless-webhooks' ); ?></th>
+						<th scope="col" class="manage-column column-url"><?php esc_html_e( 'URL', 'wp-graphql-headless-webhooks' ); ?></th>
+						<th scope="col" class="manage-column column-headers"><?php esc_html_e( 'Headers', 'wp-graphql-headless-webhooks' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php foreach ( $webhooks as $webhook ) : ?>
 						<tr>
 							<th scope="row" class="check-column">
-								<label class="screen-reader-text" for="cb-select-<?php echo esc_attr( $webhook->id ); ?>">
-									<?php printf( esc_html__( 'Select %s', 'wp-graphql-headless-webhooks' ), esc_html( $webhook->name ) ); ?>
-								</label>
-								<input id="cb-select-<?php echo esc_attr( $webhook->id ); ?>" type="checkbox" name="webhook_ids[]" value="<?php echo esc_attr( $webhook->id ); ?>">
+								<input type="checkbox" name="webhook_ids[]" value="<?php echo esc_attr( $webhook->id ); ?>" />
 							</th>
-							<td class="column-name column-primary" data-colname="<?php esc_attr_e( 'Name', 'wp-graphql-headless-webhooks' ); ?>">
+							<td class="name column-name">
 								<strong>
 									<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook_id' => $webhook->id ) ) ); ?>" class="row-title">
 										<?php echo esc_html( $webhook->name ); ?>
@@ -129,22 +124,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'wp-graphql-headless-webhooks' ); ?></span>
 								</button>
 							</td>
-							<td class="column-event" data-colname="<?php esc_attr_e( 'Event', 'wp-graphql-headless-webhooks' ); ?>">
-								<code><?php echo esc_html( $webhook->event ); ?></code>
-							</td>
-							<td class="column-method" data-colname="<?php esc_attr_e( 'Method', 'wp-graphql-headless-webhooks' ); ?>">
+							<td class="event column-event"><?php echo esc_html( $webhook->event ); ?></td>
+							<td class="method column-method">
 								<strong><?php echo esc_html( strtoupper( $webhook->method ) ); ?></strong>
 							</td>
-							<td class="column-url" data-colname="<?php esc_attr_e( 'URL', 'wp-graphql-headless-webhooks' ); ?>">
-								<code><?php echo esc_html( $webhook->url ); ?></code>
+							<td class="url column-url">
+								<code title="<?php echo esc_attr( $webhook->url ); ?>"><?php echo esc_html( $webhook->url ); ?></code>
 							</td>
-							<td class="column-headers" data-colname="<?php esc_attr_e( 'Headers', 'wp-graphql-headless-webhooks' ); ?>">
+							<td class="headers column-headers">
 								<?php if ( ! empty( $webhook->headers ) ) : ?>
-									<?php foreach ( $webhook->headers as $key => $value ) : ?>
-										<div><code><?php echo esc_html( $key ); ?></code></div>
+									<?php foreach ( $webhook->headers as $header => $value ) : ?>
+										<code><?php echo esc_html( $header ); ?></code><br>
 									<?php endforeach; ?>
 								<?php else : ?>
-									<span class="description"><?php esc_html_e( 'None', 'wp-graphql-headless-webhooks' ); ?></span>
+									<span class="no-headers"><?php esc_html_e( 'None', 'wp-graphql-headless-webhooks' ); ?></span>
 								<?php endif; ?>
 							</td>
 						</tr>
@@ -153,24 +146,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<tfoot>
 					<tr>
 						<td class="manage-column column-cb check-column">
-							<label class="screen-reader-text" for="cb-select-all-2"><?php esc_html_e( 'Select All', 'wp-graphql-headless-webhooks' ); ?></label>
-							<input id="cb-select-all-2" type="checkbox">
+							<input type="checkbox" id="cb-select-all-2" />
 						</td>
-						<th scope="col" class="manage-column column-name column-primary">
-							<?php esc_html_e( 'Name', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
-						<th scope="col" class="manage-column column-event">
-							<?php esc_html_e( 'Event', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
-						<th scope="col" class="manage-column column-method">
-							<?php esc_html_e( 'Method', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
-						<th scope="col" class="manage-column column-url">
-							<?php esc_html_e( 'URL', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
-						<th scope="col" class="manage-column column-headers">
-							<?php esc_html_e( 'Headers', 'wp-graphql-headless-webhooks' ); ?>
-						</th>
+						<th scope="col" class="manage-column column-name"><?php esc_html_e( 'Name', 'wp-graphql-headless-webhooks' ); ?></th>
+						<th scope="col" class="manage-column column-event"><?php esc_html_e( 'Event', 'wp-graphql-headless-webhooks' ); ?></th>
+						<th scope="col" class="manage-column column-method"><?php esc_html_e( 'Method', 'wp-graphql-headless-webhooks' ); ?></th>
+						<th scope="col" class="manage-column column-url"><?php esc_html_e( 'URL', 'wp-graphql-headless-webhooks' ); ?></th>
+						<th scope="col" class="manage-column column-headers"><?php esc_html_e( 'Headers', 'wp-graphql-headless-webhooks' ); ?></th>
 					</tr>
 				</tfoot>
 			</table>
@@ -184,26 +166,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</select>
 					<input type="submit" class="button action" value="<?php esc_attr_e( 'Apply', 'wp-graphql-headless-webhooks' ); ?>">
 				</div>
-				<div class="alignleft actions">
-					<p class="description">
-						<?php 
-						printf(
-							esc_html__( '%d webhooks configured', 'wp-graphql-headless-webhooks' ),
-							count( $webhooks )
-						);
-						?>
-					</p>
-				</div>
+				<br class="clear">
 			</div>
 		</form>
-	<?php else : ?>
-		<div class="webhooks-empty-state">
-			<p><?php esc_html_e( 'No webhooks configured yet.', 'wp-graphql-headless-webhooks' ); ?></p>
-			<p>
-				<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'add' ) ) ); ?>" class="button button-primary">
-					<?php esc_html_e( 'Add Your First Webhook', 'wp-graphql-headless-webhooks' ); ?>
-				</a>
-			</p>
-		</div>
 	<?php endif; ?>
 </div>

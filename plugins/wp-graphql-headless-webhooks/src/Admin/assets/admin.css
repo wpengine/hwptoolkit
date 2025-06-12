@@ -34,6 +34,133 @@
 	width: 200px;
 }
 
+/* Webhooks table column widths */
+.wp-list-table.webhooks .column-cb {
+	width: 2.2em;
+}
+
+.wp-list-table.webhooks .column-name {
+	width: 25%;
+}
+
+.wp-list-table.webhooks .column-event {
+	width: 15%;
+}
+
+.wp-list-table.webhooks .column-method {
+	width: 10%;
+}
+
+.wp-list-table.webhooks .column-url {
+	width: auto;
+}
+
+.wp-list-table.webhooks .column-headers {
+	width: 15%;
+}
+
+/* Improve table styling */
+.wp-list-table.webhooks {
+	margin-top: 0.5em;
+}
+
+.wp-list-table.webhooks th:not(.check-column),
+.wp-list-table.webhooks td:not(.check-column) {
+	vertical-align: middle;
+}
+
+/* Checkbox column specific styling */
+.wp-list-table.webhooks .check-column {
+	vertical-align: top;
+	padding-top: 8px;
+}
+
+/* Style webhook name as primary column */
+.wp-list-table.webhooks .column-name strong {
+	display: block;
+	margin-bottom: 0.2em;
+	font-size: 14px;
+}
+
+.wp-list-table.webhooks .row-actions {
+	font-size: 13px;
+}
+
+/* Method column styling */
+.wp-list-table.webhooks .column-method {
+	text-align: center;
+}
+
+.wp-list-table.webhooks .column-method strong {
+	display: inline-block;
+	padding: 3px 8px;
+	background: #f0f0f1;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+/* URL column styling */
+.wp-list-table.webhooks .column-url code {
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+	font-size: 12px;
+	background: transparent;
+	padding: 0;
+}
+
+/* Headers column styling */
+.wp-list-table.webhooks .column-headers {
+	color: #50575e;
+	font-size: 12px;
+}
+
+.wp-list-table.webhooks .column-headers code {
+	background: #f0f0f1;
+	padding: 2px 4px;
+	border-radius: 2px;
+	font-size: 11px;
+}
+
+/* Bulk actions bar */
+.tablenav .actions {
+	padding: 8px 0;
+}
+
+/* Empty state improvements */
+.webhooks-empty-state {
+	text-align: center;
+	padding: 60px 20px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	margin-top: 20px;
+}
+
+.webhooks-empty-state h2 {
+	font-size: 21px;
+	font-weight: 400;
+	margin: 0 0 0.5em;
+	line-height: 1.3;
+}
+
+.webhooks-empty-state p {
+	font-size: 14px;
+	color: #50575e;
+	margin: 0 0 1.5em;
+	line-height: 1.5;
+}
+
+.webhooks-empty-state .button-primary {
+	font-size: 14px;
+	padding: 6px 14px;
+	height: auto;
+}
+
 /* Test webhook link */
 .test-webhook {
 	cursor: pointer;
@@ -52,46 +179,6 @@
 
 .test-webhook.error {
 	color: #d63638;
-}
-
-/* Webhooks table column widths */
-.wp-list-table.webhooks-table .column-event {
-	width: 15%;
-}
-
-.wp-list-table.webhooks-table .column-method {
-	width: 80px;
-}
-
-.wp-list-table.webhooks-table .column-headers {
-	width: 15%;
-}
-
-/* Prevent URL wrapping */
-.wp-list-table.webhooks-table td code {
-	display: inline-block;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	max-width: 100%;
-}
-
-/* Empty state */
-.webhooks-empty-state {
-	text-align: center;
-	padding: 50px 20px;
-}
-
-.webhooks-empty-state h2 {
-	font-size: 24px;
-	font-weight: 400;
-	margin: 0 0 10px;
-}
-
-.webhooks-empty-state p {
-	font-size: 16px;
-	color: #646970;
-	margin: 0 0 20px;
 }
 
 /* Webhook test response styling */
