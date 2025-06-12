@@ -1,5 +1,5 @@
 # WPGraphQL Headless Webhooks
-<!-- Test comment to trigger workflow - can be removed after testing -->
+<!-- Test to trigger workflow - can be removed after testing -->
 ## Overview
 
 A WordPress plugin that extends [WPGraphQL](https://www.wpgraphql.com/) to support webhook subscriptions and dispatching for headless WordPress environments. This allows external applications to listen and respond to WordPress content changes through GraphQL-driven webhook events.
