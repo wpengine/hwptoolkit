@@ -76,6 +76,53 @@
 	max-width: 100%;
 }
 
+/* Empty state */
+.webhooks-empty-state {
+	text-align: center;
+	padding: 50px 20px;
+}
+
+.webhooks-empty-state h2 {
+	font-size: 24px;
+	font-weight: 400;
+	margin: 0 0 10px;
+}
+
+.webhooks-empty-state p {
+	font-size: 16px;
+	color: #646970;
+	margin: 0 0 20px;
+}
+
+/* Webhook test response styling */
+.webhook-test-details {
+	margin: 0;
+}
+
+.webhook-test-details p {
+	margin: 0.5em 0;
+}
+
+.webhook-test-details .notice-message-body {
+	margin-top: 1em;
+}
+
+.webhook-test-details pre.webhook-response-body {
+	background: #f6f7f7;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 12px;
+	margin: 0.5em 0 0;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 13px;
+	line-height: 1.5;
+	max-height: 200px;
+	overflow-y: auto;
+}
+
 /* Responsive adjustments */
 @media screen and (max-width: 782px) {
 	.webhook-header-row {

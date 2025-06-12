@@ -289,16 +289,16 @@ class WebhooksAdmin {
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$response_body = wp_remote_retrieve_body( $response );
 		
-		// Strip HTML tags from response body to remove any links
+		// Strip HTML tags and decode entities from response body
 		$response_body = wp_strip_all_tags( $response_body );
-
-		$message = sprintf(
-			__( 'Webhook sent successfully!\n\nResponse Code: %d\nResponse Body: %s', 'wp-graphql-headless-webhooks' ),
-			$response_code,
-			substr( $response_body, 0, 200 ) // Limit response body to 200 chars
-		);
-
-		wp_send_json_success( array( 'message' => $message ) );
+		$response_body = html_entity_decode( $response_body, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+		
+		// Send structured response data
+		wp_send_json_success( array( 
+			'message' => __( 'Webhook sent successfully!', 'wp-graphql-headless-webhooks' ),
+			'response_code' => $response_code,
+			'response_body' => substr( $response_body, 0, 200 ) // Limit response body to 200 chars
+		) );
 	}
 
 	/**

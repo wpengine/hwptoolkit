@@ -79,13 +79,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<tr>
 						<td class="column-name column-primary" data-colname="<?php esc_attr_e( 'Name', 'wp-graphql-headless-webhooks' ); ?>">
 							<strong>
-								<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook' => $webhook->id ) ) ); ?>" class="row-title">
+								<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook_id' => $webhook->id ) ) ); ?>" class="row-title">
 									<?php echo esc_html( $webhook->name ); ?>
 								</a>
 							</strong>
 							<div class="row-actions">
 								<span class="edit">
-									<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook' => $webhook->id ) ) ); ?>">
+									<a href="<?php echo esc_url( $admin->get_admin_url( array( 'action' => 'edit', 'webhook_id' => $webhook->id ) ) ); ?>">
 										<?php esc_html_e( 'Edit', 'wp-graphql-headless-webhooks' ); ?>
 									</a> | 
 								</span>
@@ -95,7 +95,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									</a> | 
 								</span>
 								<span class="trash">
-									<a href="<?php echo esc_url( wp_nonce_url( $admin->get_admin_url( array( 'action' => 'delete', 'webhook' => $webhook->id ) ), 'delete_webhook_' . $webhook->id ) ); ?>" class="delete-webhook submitdelete">
+									<a href="<?php echo esc_url( wp_nonce_url( $admin->get_admin_url( array( 'action' => 'delete', 'webhook_id' => $webhook->id ) ), 'delete_webhook_' . $webhook->id ) ); ?>" class="delete-webhook submitdelete">
 										<?php esc_html_e( 'Delete', 'wp-graphql-headless-webhooks' ); ?>
 									</a>
 								</span>
@@ -169,97 +169,3 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	<?php endif; ?>
 </div>
-
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-	// Handle test webhook clicks
-	$('.test-webhook').off('click').on('click', function(e) {
-		e.preventDefault();
-		
-		var $link = $(this);
-		var webhookId = $link.data('webhook-id');
-		var originalText = $link.text();
-		
-		// Prevent multiple clicks
-		if ($link.hasClass('testing')) {
-			return false;
-		}
-		
-		// Update UI to show testing
-		$link.text('Testing...').addClass('testing').css('pointer-events', 'none');
-		
-		// Send test request
-		$.ajax({
-			url: ajaxurl,
-			type: 'POST',
-			data: {
-				action: 'test_webhook',
-				webhook_id: webhookId,
-				nonce: '<?php echo wp_create_nonce( 'wp_rest' ); ?>'
-			},
-			success: function(response) {
-				if (response.success) {
-					$link.text('✓ Success');
-					if (response.data && response.data.message) {
-						// Show inline message using WordPress admin notice
-						var message = response.data.message.replace(/\n/g, '<br>');
-						var $row = $link.closest('tr');
-						var colspan = $row.find('td').length;
-						$row.after('<tr class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-success inline"><p>' + message + '</p></div></td></tr>');
-						
-						// Remove message after 5 seconds
-						setTimeout(function() {
-							$('.webhook-test-result').fadeOut(function() {
-								$(this).remove();
-							});
-						}, 5000);
-					}
-				} else {
-					$link.text('✗ Failed');
-					var error = response.data || 'Unknown error';
-					var $row = $link.closest('tr');
-					var colspan = $row.find('td').length;
-					$row.after('<tr class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-error inline"><p><strong>Test failed:</strong> ' + error + '</p></div></td></tr>');
-					
-					// Remove message after 5 seconds
-					setTimeout(function() {
-						$('.webhook-test-result').fadeOut(function() {
-							$(this).remove();
-						});
-					}, 5000);
-				}
-				
-				// Reset button after 3 seconds
-				setTimeout(function() {
-					$link.text(originalText).removeClass('testing').css('pointer-events', 'auto');
-				}, 3000);
-			},
-			error: function(xhr, status, error) {
-				$link.text('✗ Error');
-				var $row = $link.closest('tr');
-				var colspan = $row.find('td').length;
-				$row.after('<tr class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-error inline"><p><strong>Test error:</strong> ' + error + '</p></div></td></tr>');
-				
-				// Remove message after 5 seconds
-				setTimeout(function() {
-					$('.webhook-test-result').fadeOut(function() {
-						$(this).remove();
-					});
-				}, 5000);
-				
-				// Reset button after 3 seconds
-				setTimeout(function() {
-					$link.text(originalText).removeClass('testing').css('pointer-events', 'auto');
-				}, 3000);
-			}
-		});
-	});
-	
-	// Handle delete confirmation
-	$('.delete-webhook').on('click', function(e) {
-		if (!confirm('<?php echo esc_js( __( 'Are you sure you want to delete this webhook?', 'wp-graphql-headless-webhooks' ) ); ?>')) {
-			e.preventDefault();
-		}
-	});
-});
-</script>
