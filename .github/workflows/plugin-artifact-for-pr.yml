@@ -39,7 +39,7 @@ jobs:
             const runId = context.runId;
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
             const slug = process.env.PLUGIN_SLUG;
-            const body = ` [Download the ${slug} plugin artifact from this workflow run](${artifactUrl}) (see the 'Artifacts' section at the bottom).`;
+            const body = `ℹ️ [Download the latest ${slug} plugin artifact from this workflow run](${artifactUrl})\n\n(See the 'Artifacts' section at the bottom).`;
             
             // Find existing comment from this bot
             const comments = await github.rest.issues.listComments({
