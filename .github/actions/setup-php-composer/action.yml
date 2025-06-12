@@ -27,9 +27,18 @@ runs:
         tools: ${{ inputs.tools }}
         coverage: none
 
+    - name: Validate Composer File
+      shell: bash
+      run: |
+        if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/composer.json" ]; then
+          echo "Error: composer.json missing in plugins/${{ steps.plugin.outputs.slug }}"
+          exit 1
+        fi
+
     - name: Get Composer cache directory
       id: composer-cache
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Cache Composer dependencies

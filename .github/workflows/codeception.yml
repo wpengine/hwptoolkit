@@ -40,14 +40,6 @@ jobs:
             wordpress: "6.6"
           - php: "8.0"
             wordpress: "6.5"
-          - php: "7.4"
-            wordpress: "6.8"
-          - php: "7.4"
-            wordpress: "6.7"
-          - php: "7.4"
-            wordpress: "6.6"
-          - php: "7.4"
-            wordpress: "6.5"
       fail-fast: false
 
     steps:
