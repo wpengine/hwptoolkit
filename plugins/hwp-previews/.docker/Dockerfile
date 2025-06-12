@@ -17,9 +17,6 @@ ARG PHP_VERSION
 ENV WP_VERSION=${WP_VERSION}
 ENV PHP_VERSION=${PHP_VERSION}
 
-LABEL author=axepress
-LABEL author_uri=https://github.com/AxeWP
-
 SHELL [ "/bin/bash", "-c" ]
 
 # Install required packages

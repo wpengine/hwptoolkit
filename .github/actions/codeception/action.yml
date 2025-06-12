@@ -37,9 +37,14 @@ runs:
       shell: bash
 
     - name: Build test environment
-      run: composer run docker:build
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
+      uses: nick-invision/retry@v2
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        retry_on: error
+        command: composer run docker:build
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
       env:
         WP_VERSION: ${{ inputs.wordpress }}
         PHP_VERSION: ${{ inputs.php }}
