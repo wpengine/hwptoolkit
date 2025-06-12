@@ -2,15 +2,22 @@ name: Playwright End-to-End Tests
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - "plugins/hwp-previews/**"
   pull_request:
     branches:
       - main
     paths:
-      - "plugins/**"
+      - "plugins/hwp-previews/**"
 
 jobs:
   playwright-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/hwp-previews
 
     steps:
       - name: Checkout code
@@ -26,14 +33,14 @@ jobs:
         run: npm ci
 
       - name: Install playwright browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install chromium --with-deps
 
       - name: Start wp-env
         run: |
-          npm run wp-env start
+          npm run wp-env -- start
 
       - name: Run Playwright tests
         run: npm run test:e2e
 
       - name: Stop wp-env
-        run: npx wp-env stop
+        run: npm wp-env -- stop
