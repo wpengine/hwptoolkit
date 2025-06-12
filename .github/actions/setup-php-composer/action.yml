@@ -29,9 +29,10 @@ runs:
 
     - name: Validate Composer File
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
-        if [ ! -f "${{ steps.plugin.outputs.slug }}/composer.json" ]; then
-          echo "Error: composer.json missing in plugins/${{ steps.plugin.outputs.slug }}"
+        if [ ! -f "composer.json" ]; then
+          echo "Error: composer.json missing in ${{ inputs.working-directory }}"
           exit 1
         fi
 
