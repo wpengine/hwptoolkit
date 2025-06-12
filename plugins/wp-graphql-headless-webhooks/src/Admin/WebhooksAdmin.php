@@ -45,6 +45,7 @@ class WebhooksAdmin {
 		
 		// Register admin-post.php handlers
 		add_action( 'admin_post_graphql_webhook_save', array( $this, 'handle_webhook_save' ) );
+		add_action( 'admin_post_graphql_webhook_bulk_delete', array( $this, 'handle_bulk_delete' ) );
 		
 		// Register AJAX handlers
 		add_action( 'wp_ajax_test_webhook', array( $this, 'handle_test_webhook' ) );
@@ -231,6 +232,43 @@ class WebhooksAdmin {
 	}
 
 	/**
+	 * Handle bulk delete action
+	 */
+	public function handle_bulk_delete(): void {
+		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'bulk_delete_webhooks' ) ) {
+			return;
+		}
+
+		$bulk_action = $_POST['bulk_action'] ?? $_POST['bulk_action2'] ?? '';
+		$webhook_ids = $_POST['webhook_ids'] ?? array();
+
+		if ( 'delete' === $bulk_action && ! empty( $webhook_ids ) ) {
+			$deleted_count = 0;
+			foreach ( $webhook_ids as $webhook_id ) {
+				$webhook_id = intval( $webhook_id );
+				if ( $webhook_id > 0 && $this->repository->delete( $webhook_id ) ) {
+					$deleted_count++;
+				}
+			}
+
+			$redirect_args = array();
+			if ( $deleted_count > 0 ) {
+				$redirect_args['deleted'] = 'true';
+				$redirect_args['count'] = $deleted_count;
+			} else {
+				$redirect_args['error'] = __( 'Failed to delete webhooks.', 'wp-graphql-headless-webhooks' );
+			}
+
+			wp_safe_redirect( $this->get_admin_url( $redirect_args ) );
+			exit;
+		}
+
+		// If no valid action, redirect back
+		wp_safe_redirect( $this->get_admin_url() );
+		exit;
+	}
+
+	/**
 	 * Handle webhook test via AJAX
 	 */
 	public function handle_test_webhook(): void {
@@ -394,8 +432,21 @@ class WebhooksAdmin {
 		}
 
 		if ( isset( $_GET['deleted'] ) ) {
-			$message = __( 'Webhook deleted successfully.', 'wp-graphql-headless-webhooks' );
-			$type    = 'success';
+			$count = isset( $_GET['count'] ) ? intval( $_GET['count'] ) : 1;
+			if ( $count > 1 ) {
+				$message = sprintf(
+					_n(
+						'%d webhook deleted successfully.',
+						'%d webhooks deleted successfully.',
+						$count,
+						'wp-graphql-headless-webhooks'
+					),
+					$count
+				);
+			} else {
+				$message = __( 'Webhook deleted successfully.', 'wp-graphql-headless-webhooks' );
+			}
+			$type = 'success';
 			include __DIR__ . '/views/admin-notice.php';
 		}
 
