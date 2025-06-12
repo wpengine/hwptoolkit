@@ -70,7 +70,7 @@ runs:
           --env SKIP_TESTS_CLEANUP=${{ env.SKIP_TESTS_CLEANUP }} \
           --env SUITES=acceptance \
           $(docker compose ps -q wordpress) \
-          bash -c "cd wp-content/plugins/$(basename ${{ inputs.working-directory }}) && bin/run-codeception.sh"
+          bash -c "cd wp-content/plugins/$(basename $(echo ${{ inputs.working-directory }} | sed 's:/*$::')) && bin/run-codeception.sh"
       env:
         DEBUG: ${{ env.ACTIONS_STEP_DEBUG }}
         SKIP_TESTS_CLEANUP: "true"
