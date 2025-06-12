@@ -30,7 +30,7 @@ runs:
     - name: Validate Composer File
       shell: bash
       run: |
-        if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/composer.json" ]; then
+        if [ ! -f "${{ steps.plugin.outputs.slug }}/composer.json" ]; then
           echo "Error: composer.json missing in plugins/${{ steps.plugin.outputs.slug }}"
           exit 1
         fi
