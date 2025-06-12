@@ -40,7 +40,7 @@ jobs:
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
             const slug = process.env.PLUGIN_SLUG;
             const body = `<table><tr><td valign="top" width="36">
-<img src="https://avatars.githubusercontent.com/t/10805240?s=48" width="36" height="36" alt="HWP Toolkit">
+<img src="https://avatars.githubusercontent.com/t/10805240?s=48" width="36" height="36" alt="HWP Toolkit"/>
 </td><td>
 
 **Download the latest ${slug} plugin artifact**
