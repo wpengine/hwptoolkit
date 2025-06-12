@@ -216,11 +216,11 @@ class WebhooksAdmin {
 	 * Handle webhook delete
 	 */
 	public function handle_webhook_delete(): void {
-		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'delete_webhook' ) ) {
+		$webhook_id = isset( $_GET['webhook_id'] ) ? intval( $_GET['webhook_id'] ) : 0;
+		
+		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'delete_webhook_' . $webhook_id ) ) {
 			return;
 		}
-
-		$webhook_id = isset( $_GET['webhook_id'] ) ? intval( $_GET['webhook_id'] ) : 0;
 
 		if ( $webhook_id > 0 ) {
 			$this->repository->delete( $webhook_id );
