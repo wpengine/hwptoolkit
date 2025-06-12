@@ -30,16 +30,6 @@ jobs:
           - php: "8.2"
             wordpress: "6.8"
             coverage: 1
-        exclude:
-          # New WP versions that do not support older PHP versions
-          - php: "8.0"
-            wordpress: "6.8"
-          - php: "8.0"
-            wordpress: "6.7"
-          - php: "8.0"
-            wordpress: "6.6"
-          - php: "8.0"
-            wordpress: "6.5"
       fail-fast: false
 
     steps:
@@ -52,6 +42,12 @@ jobs:
           git fetch --prune --unshallow
           plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
           echo "slug=$plugin" >> $GITHUB_OUTPUT
+
+      - name: Validate composer.json
+        run: |
+          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/composer.json" ]; then
+            echo "Warning: composer.json missing in plugins/${{ steps.plugin.outputs.slug }}"
+          fi
 
       - name: Run Codeception Tests
         uses: ./.github/actions/codeception
