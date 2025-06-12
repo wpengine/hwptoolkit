@@ -59,6 +59,7 @@ jobs:
             
             if (botComment) {
               // Update existing comment
+              core.info(`Updating existing comment with ID: ${botComment.id}`);
               await github.rest.issues.updateComment({
                 comment_id: botComment.id,
                 owner: context.repo.owner,
