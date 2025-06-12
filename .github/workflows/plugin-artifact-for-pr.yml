@@ -39,7 +39,16 @@ jobs:
             const runId = context.runId;
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
             const slug = process.env.PLUGIN_SLUG;
-            const body = `ℹ️ [Download the latest ${slug} plugin artifact from this workflow run](${artifactUrl})\n\n(See the 'Artifacts' section at the bottom).`;
+            const body = `<table><tr><td valign="top" width="36">
+<img src="https://avatars.githubusercontent.com/t/10805240?s=48" width="36" height="36" alt="HWP Toolkit">
+</td><td>
+
+**Download the latest ${slug} plugin artifact**
+
+🔗 [View workflow run with artifacts](${artifactUrl})
+
+<sub>See the 'Artifacts' section at the bottom of the workflow run page.</sub>
+</td></tr></table>`;
             
             // Find existing comment from this bot
             const comments = await github.rest.issues.listComments({
