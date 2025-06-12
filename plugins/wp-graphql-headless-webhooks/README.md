@@ -25,3 +25,5 @@ Clone the repository or download the latest release and place it in your WordPre
 
 ## License
 WP GPL 2
+
+<!-- Test comment to trigger workflow - can be removed after testing -->
