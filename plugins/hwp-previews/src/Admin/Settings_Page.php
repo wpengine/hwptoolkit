@@ -59,7 +59,7 @@ class Settings_Page {
 		/**
 		 * Fire off init action.
 		 *
-		 * @param Settings_Page $instance the instance of the plugin class.
+		 * @param \HWP\Previews\Admin\Settings_Page $instance the instance of the plugin class.
 		 */
 		do_action( 'hwp_previews_init', self::$instance );
 
@@ -117,7 +117,7 @@ class Settings_Page {
 		if ( empty( $post_types ) ) {
 			return '';
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification not required for tab selection.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verification not required for tab selection.
 		$value = $_GET[ $tab ] ?? '';
 		if ( ! is_string( $value ) || '' === $value ) {
 			return (string) key( $post_types );
