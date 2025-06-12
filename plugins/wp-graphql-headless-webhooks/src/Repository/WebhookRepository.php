@@ -24,25 +24,7 @@ class WebhookRepository implements WebhookRepositoryInterface {
      * @var array<string, string>
      */
     private $default_events = [
-        'post_published'   => 'Post Published',
-        'post_updated'     => 'Post Updated',
-        'post_deleted'     => 'Post Deleted',
-        'post_meta_change' => 'Post Meta Changed',
-        'term_created'     => 'Term Created',
-        'term_assigned'    => 'Term Assigned to Post',
-        'term_unassigned'  => 'Term Unassigned from Post',
-        'term_deleted'     => 'Term Deleted',
-        'term_meta_change' => 'Term Meta Changed',
-        'user_created'     => 'User Created',
-        'user_assigned'    => 'User Assigned as Author',
-        'user_deleted'     => 'User Deleted',
-        'user_reassigned'  => 'User Author Reassigned',
-        'media_uploaded'   => 'Media Uploaded',
-        'media_updated'    => 'Media Updated',
-        'media_deleted'    => 'Media Deleted',
-        'comment_inserted' => 'Comment Inserted',
-        'comment_status'   => 'Comment Status Changed',
-        // Smart Cache events
+        // Smart Cache events only by default
         'smart_cache_created' => 'Smart Cache - Content Created',
         'smart_cache_updated' => 'Smart Cache - Content Updated',
         'smart_cache_deleted' => 'Smart Cache - Content Deleted',
