@@ -60,7 +60,7 @@ jobs:
             const botComment = comments.data.find(comment => 
               comment.user.type === 'Bot' && 
               comment.user.login === 'github-actions[bot]' &&
-              comment.body.includes(`Download the ${slug} plugin artifact`)
+              comment.body.includes(`Download the latest ${slug} plugin artifact`)
             );
             
             if (botComment) {
