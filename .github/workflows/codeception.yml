@@ -24,14 +24,14 @@ jobs:
 
     strategy:
       matrix:
-        php: ["8.4","8.3","8.2","8.1","8.0","7.4"]
+        php: ["8.3","8.2","8.1"]
         wordpress: ["6.8","6.7","6.6","6.5"]
         include:
           - php: "8.2"
             wordpress: "6.8"
             coverage: 1
         exclude:
-          # New WP versions that dont support older PHP versions
+          # New WP versions that do not support older PHP versions
           - php: "8.0"
             wordpress: "6.8"
           - php: "8.0"
