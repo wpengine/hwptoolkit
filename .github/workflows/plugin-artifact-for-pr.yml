@@ -39,7 +39,7 @@ jobs:
             const runId = context.runId;
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
             const slug = process.env.PLUGIN_SLUG;
-            const body = `ℹ️ [Download the latest ${slug} plugin artifact from this workflow run](${artifactUrl})\n\n(See the 'Artifacts' section at the bottom).`;
+            const body = `ℹ️ [Download the latest ${slug} plugin zip from this PR](${artifactUrl})\n\n<sub>(See the 'Artifacts' section at the bottom)</sub>`;
             
             // Find existing comment from this bot
             const comments = await github.rest.issues.listComments({
@@ -51,7 +51,7 @@ jobs:
             const botComment = comments.data.find(comment => 
               comment.user.type === 'Bot' && 
               comment.user.login === 'github-actions[bot]' &&
-              comment.body.includes(`Download the latest ${slug} plugin artifact`)
+              comment.body.includes(`Download the latest ${slug} plugin zip for this PR`)
             );
             
             if (botComment) {
