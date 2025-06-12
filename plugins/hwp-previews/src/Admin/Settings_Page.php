@@ -59,7 +59,7 @@ class Settings_Page {
 		/**
 		 * Fire off init action.
 		 *
-		 * @param self $instance the instance of the plugin class.
+		 * @param Settings_Page $instance the instance of the plugin class.
 		 */
 		do_action( 'hwp_previews_init', self::$instance );
 
@@ -118,12 +118,13 @@ class Settings_Page {
 			return '';
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification not required for tab selection.
-		if ( ! array_key_exists( $tab, $_GET ) ) {
+		$value = $_GET[ $tab ] ?? '';
+		if ( ! is_string( $value ) || '' === $value ) {
 			return (string) key( $post_types );
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification not required for tab selection.
-		return sanitize_key( $_GET[ $tab ] );
+		return sanitize_key( $value );
 	}
 
 	/**

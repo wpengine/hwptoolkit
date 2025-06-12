@@ -99,6 +99,8 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 	 * @param string               $section The settings section.
 	 * @param string               $page The settings page.
 	 * @param array<string, mixed> $args The arguments for the settings field.
+	 *
+	 * @psalm-suppress ArgumentTypeCoercion
 	 */
 	public function add_settings_field( string $section, string $page, array $args ): void {
 		add_settings_field(
