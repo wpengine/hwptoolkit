@@ -5,7 +5,7 @@
  * @package HWP\Previews
  */
 
-declare( strict_types = 1 );
+declare(strict_types=1);
 
 /**
  * Runs when the plugin is activated.

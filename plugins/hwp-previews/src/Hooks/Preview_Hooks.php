@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Hooks;
 
-use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
 use HWP\Previews\Post\Parent\Post_Parent_Manager;
 use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
 use HWP\Previews\Post\Status\Post_Statuses_Config;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
 use HWP\Previews\Post\Type\Post_Types_Config_Registry;
+use HWP\Previews\Preview\Helper\Settings_Helper;
 use HWP\Previews\Preview\Link\Preview_Link_Placeholder_Resolver;
 use HWP\Previews\Preview\Link\Preview_Link_Service;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
@@ -21,7 +21,7 @@ class Preview_Hooks {
 	/**
 	 * Settings helper instance that provides access to plugin settings.
 	 *
-	 * @var \HWP\Previews\Admin\Settings\Helper\Settings_Helper|null
+	 * @var \HWP\Previews\Preview\Helper\Settings_Helper|null
 	 */
 	protected static ?Settings_Helper $settings_helper = null;
 

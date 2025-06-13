@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Post\Type;
 
-use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
 use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
+use HWP\Previews\Preview\Helper\Settings_Helper;
 
 /**
  * Class Post_Types_Config_Registry.
