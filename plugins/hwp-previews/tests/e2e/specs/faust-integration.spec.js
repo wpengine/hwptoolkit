@@ -16,8 +16,11 @@ import {
 } from "../constants";
 
 test.describe("HWP Previews Faust Integration Test", () => {
-	test.beforeEach(async ({ admin, page, requestUtils }) => {
+	test.beforeAll(async ({ requestUtils }) => {
 		await requestUtils.resetPreferences();
+	});
+
+	test.beforeEach(async ({ admin, page }) => {
 		await installFaust(admin, page);
 
 		// Set Faust frontend url
