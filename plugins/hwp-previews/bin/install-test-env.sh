@@ -168,7 +168,7 @@ setup_plugin() {
 		npm install --no-audit --no-fund --no-progress
 
 		# Build the plugin
-		npm run build
+		# npm run build
 	fi
 }
 

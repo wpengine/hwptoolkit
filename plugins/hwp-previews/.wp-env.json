@@ -1,0 +1,11 @@
+{
+	"plugins": ["."],
+	"env": {
+		"tests": {
+			"plugins": [".", "./tests/e2e/plugins/hwp-previews-reset-settings/"]
+		}
+	},
+	"config": {
+		"WP_DEBUG": true
+	}
+}
