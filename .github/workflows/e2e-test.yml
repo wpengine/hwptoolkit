@@ -13,11 +13,8 @@ on:
       - "plugins/hwp-previews/**"
 
 jobs:
-  playwright-tests:
+  playwright-e2e-tests:
     runs-on: ubuntu-24.04
-    defaults:
-      run:
-        working-directory: plugins/hwp-previews
 
     steps:
       - name: Checkout code
@@ -34,16 +31,21 @@ jobs:
 
       - name: Install composer
         run: composer install
+        working-directory: plugins/hwp-previews
 
       - name: Install playwright browsers
         run: npx playwright install --with-deps
+        working-directory: plugins/hwp-previews
 
       - name: Start wp-env
         run: |
           npm run wp-env start
+        working-directory: plugins/hwp-previews
 
       - name: Run Playwright tests
         run: npm run test:e2e
+        working-directory: plugins/hwp-previews
 
       - name: Stop wp-env
         run: npm run wp-env stop
+        working-directory: plugins/hwp-previews
