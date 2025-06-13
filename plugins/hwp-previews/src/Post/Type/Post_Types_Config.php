@@ -97,12 +97,13 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	 */
 	public function get_public_post_types(): array {
 		$post_types = get_post_types( [ 'public' => true ], 'objects' );
-		$result     = [];
+
+		$result = [];
 
 		foreach ( $post_types as $post_type ) {
 			$result[ $post_type->name ] = $post_type->label;
 		}
 
-		return $result;
+		return apply_filters( 'hwp_previews_filter_available_post_types', $result );
 	}
 }

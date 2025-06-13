@@ -1,9 +1,14 @@
 name: Code Quality
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'plugins/**.php'
   pull_request:
     paths:
-      - 'plugins/**'
+      - 'plugins/**.php'
 
 jobs:
   run:

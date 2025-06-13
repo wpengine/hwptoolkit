@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Integration;
 
-use HWP\Previews\Admin\Settings\Helper\Settings_Group;
 use HWP\Previews\Post\Type\Post_Types_Config_Registry;
+use HWP\Previews\Preview\Helper\Settings_Group;
 
 class Faust_Integration {
 	/**
@@ -39,8 +39,8 @@ class Faust_Integration {
 			// Remove FaustWP post preview link filter to avoid conflicts with our custom preview link generation.
 			remove_filter( 'preview_post_link', 'WPE\FaustWP\Replacement\post_preview_link', 1000 );
 
-			self::display_faust_admin_notice();            
-		}     
+			self::display_faust_admin_notice();
+		}
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Faust_Integration {
 		$setting_enabled_key = $settings_group->get_settings_key_enabled();
 
 		$default_settings = [];
-		
+
 		foreach ( $types_config->get_public_post_types() as $key => $label ) {
 			$default_settings[ $key ] = [
 				$setting_enabled_key => true,

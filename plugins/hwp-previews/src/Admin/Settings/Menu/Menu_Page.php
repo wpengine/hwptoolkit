@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Admin\Settings\Menu;
 
-use HWP\Previews\Admin\Settings\Contracts\Menu_Page_Interface;
-
-class Menu_Page implements Menu_Page_Interface {
+class Menu_Page {
 	/**
 	 * The title of the page.
 	 *

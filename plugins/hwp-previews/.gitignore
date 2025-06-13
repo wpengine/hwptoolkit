@@ -44,6 +44,11 @@ tests/*.suite.yml
 coverage/*
 build/
 .log/
+c3.php
 
 # Cache
 phpcs-cache.json
+tests/_support/
+tests/_output/
+tests/_generated/
+tests/_data/

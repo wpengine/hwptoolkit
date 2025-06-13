@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Admin\Settings\Helper;
+namespace HWP\Previews\Preview\Helper;
 
 class Settings_Helper {
 	/**
 	 * The settings group.
 	 *
-	 * @var \HWP\Previews\Admin\Settings\Helper\Settings_Group
+	 * @var \HWP\Previews\Preview\Helper\Settings_Group
 	 */
 	protected Settings_Group $settings_group;
 
 	/**
 	 * The settings helper instance.
 	 *
-	 * @var \HWP\Previews\Admin\Settings\Helper\Settings_Helper|null
+	 * @var \HWP\Previews\Preview\Helper\Settings_Helper|null
 	 */
 	protected static $instance = null;
 
 	/**
-	 * @param \HWP\Previews\Admin\Settings\Helper\Settings_Group $settings_group The settings group.
+	 * @param \HWP\Previews\Preview\Helper\Settings_Group $settings_group The settings group.
 	 */
 	public function __construct( Settings_Group $settings_group ) {
 		$this->settings_group = $settings_group;
@@ -29,7 +29,7 @@ class Settings_Helper {
 	/**
 	 * Get an instance of the Settings_Helper class.
 	 *
-	 * @return \HWP\Previews\Admin\Settings\Helper\Settings_Helper
+	 * @return \HWP\Previews\Preview\Helper\Settings_Helper
 	 */
 	public static function get_instance(): self {
 
@@ -50,6 +50,7 @@ class Settings_Helper {
 	 * @return array<string, mixed>
 	 */
 	public function get_settings_config(): array {
+		// @TODO: Remove this method when the settings group is no longer needed.
 		return $this->settings_group->get_settings_config();
 	}
 

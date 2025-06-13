@@ -48,25 +48,41 @@ if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
 
 /**
  * Define plugin constants.
+ *
+ * phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
+ * phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
  */
 function hwp_previews_constants(): void {
-	$constants = [
-		'HWP_PREVIEWS_VERSION'        => '0.0.1',
-		'HWP_PREVIEWS_PLUGIN_DIR'     => plugin_dir_path( __FILE__ ),
-		'HWP_PREVIEWS_PLUGIN_URL'     => plugin_dir_url( __FILE__ ),
-		'HWP_PREVIEWS_PLUGIN_FILE'    => __FILE__,
-		'HWP_PREVIEWS_AUTOLOAD'       => true,
-		'HWP_PREVIEWS_SETTINGS_GROUP' => 'hwp_previews_settings_group',
-		'HWP_PREVIEWS_SETTINGS_KEY'   => 'hwp_previews_settings',
-		'HWP_PREVIEWS_TEXT_DOMAIN'    => 'hwp-previews',
-	];
+	if ( ! defined( 'HWP_PREVIEWS_VERSION' ) ) {
+		define( 'HWP_PREVIEWS_VERSION', '0.0.1' );
+	}
 
-	foreach ( $constants as $name => $value ) {
-		if ( ! defined( $name ) ) {
-			// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
-			define( $name, $value );
-			// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
-		}
+	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
+		define( 'HWP_PREVIEWS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+	}
+
+	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_URL' ) ) {
+		define( 'HWP_PREVIEWS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+	}
+
+	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_FILE' ) ) {
+		define( 'HWP_PREVIEWS_PLUGIN_FILE', __FILE__ );
+	}
+
+	if ( ! defined( 'HWP_PREVIEWS_AUTOLOAD' ) ) {
+		define( 'HWP_PREVIEWS_AUTOLOAD', true );
+	}
+
+	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
+		define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
+	}
+
+	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_KEY' ) ) {
+		define( 'HWP_PREVIEWS_SETTINGS_KEY', 'hwp_previews_settings' );
+	}
+
+	if ( ! defined( 'HWP_PREVIEWS_TEXT_DOMAIN' ) ) {
+		define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
 	}
 
 	// Plugin Template Directory.
@@ -74,6 +90,9 @@ function hwp_previews_constants(): void {
 		define( 'HWP_PREVIEWS_TEMPLATE_DIR', trailingslashit( HWP_PREVIEWS_PLUGIN_DIR ) . '/src/Admin/Settings/Templates/' );
 	}
 }
+
+// phpcs:enable Generic.Metrics.CyclomaticComplexity.TooHigh
+// phpcs:enable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
 
 /**
  * Initializes plugin.
