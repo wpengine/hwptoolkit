@@ -33,6 +33,7 @@ The plugin provides scripts to set up a local WordPress environment for testing,
 1. **Copy and configure environment variables:**
 
    ```bash
+   @TODO
    cp .env.dist .env
    # Edit .env as needed for your local setup
    ```
@@ -54,25 +55,19 @@ The plugin provides scripts to set up a local WordPress environment for testing,
 
 ## Running Tests
 
-### Unit Tests
-
-Run unit tests (no WordPress loaded):
-
-```bash
-composer run test:unit
-# or
-vendor/bin/codecept run unit
-```
+@TODO
 
 ### WPUnit (WordPress-aware Unit/Integration) Tests
 
 Run WPUnit tests (WordPress loaded):
 
 ```bash
-composer run test:wpunit
-# or
-vendor/bin/codecept run wpunit
+sh bin/local/run-unit-tests.sh coverage
 ```
+
+> [!IMPORTANT]
+> You can also add coverage e.g. `sh bin/local/run-unit-tests.sh coverage --coverage-html` and the output will be saved in [tests/_output/coverage/dashboard.html](tests/_output/coverage/dashboard.html)
+
 
 ### Functional Tests
 
