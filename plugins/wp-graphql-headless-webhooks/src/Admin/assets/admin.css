@@ -1,0 +1,77 @@
+/**
+ * Admin styles for WPGraphQL Webhooks
+ */
+
+/* Webhook header rows */
+.webhook-header-row {
+	margin-bottom: 10px;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.webhook-header-row input[type="text"] {
+	flex: 1;
+	min-width: 150px;
+}
+
+.webhook-header-row .remove-header {
+	flex-shrink: 0;
+}
+
+/* Add some spacing */
+#webhook-headers {
+	margin-bottom: 10px;
+}
+
+/* Delete link styling */
+.delete-webhook {
+	color: #a00;
+}
+
+.delete-webhook:hover {
+	color: #dc3232;
+}
+
+/* Form table adjustments */
+.form-table th {
+	width: 200px;
+}
+
+/* Webhook list table */
+.wp-list-table.webhooks-table td {
+	vertical-align: middle;
+}
+
+.wp-list-table.webhooks-table .column-actions {
+	white-space: nowrap;
+}
+
+/* Empty state */
+.webhooks-empty-state {
+	text-align: center;
+	padding: 40px 20px;
+}
+
+.webhooks-empty-state p {
+	font-size: 16px;
+	margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+	.webhook-header-row {
+		flex-wrap: wrap;
+	}
+
+	.webhook-header-row input[type="text"] {
+		width: 100%;
+		margin-bottom: 5px;
+	}
+
+	.wp-list-table.webhooks-table {
+		display: block;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+}
