@@ -3,16 +3,18 @@ import {
 	getPostObject,
 	getSettingsField,
 	goToPluginPage,
-	hwpSlug,
-	resetHelperPluginSlug,
 	saveChanges,
 	switchToTab,
-	testPreviewUrl,
 	resetPluginSettings,
 } from "../utils";
+import {
+	HWP_SLUG,
+	RESET_HELPER_PLUGIN_SLUG,
+	TEST_PREVIEW_URL,
+} from "../constants";
 
 test.describe("HWP Previews Preview Link", () => {
-	const typesToTest = ["post", "page"]; // TODO add CPT
+	const typesToTest = ["post", "page"];
 	let contentIds = {};
 
 	test.beforeAll(async ({ requestUtils }) => {
@@ -24,8 +26,8 @@ test.describe("HWP Previews Preview Link", () => {
 		const newPage = await requestUtils.createPage(getPostObject("page"));
 		contentIds.page = newPage.id;
 
-		await requestUtils.activatePlugin(hwpSlug);
-		await requestUtils.activatePlugin(resetHelperPluginSlug);
+		await requestUtils.activatePlugin(HWP_SLUG);
+		await requestUtils.activatePlugin(RESET_HELPER_PLUGIN_SLUG);
 	});
 
 	test.beforeEach(async ({ admin }) => {
@@ -44,7 +46,7 @@ test.describe("HWP Previews Preview Link", () => {
 			await page.locator(getSettingsField(postKey).enabledCheckbox).check();
 			await page
 				.locator(getSettingsField(postKey).previewUrlInput)
-				.fill(testPreviewUrl);
+				.fill(TEST_PREVIEW_URL);
 			await saveChanges(page);
 
 			// Check preview link on the table
@@ -54,7 +56,7 @@ test.describe("HWP Previews Preview Link", () => {
 					hasText: "Preview",
 					exact: true,
 				}),
-			).toHaveAttribute("href", testPreviewUrl);
+			).toHaveAttribute("href", TEST_PREVIEW_URL);
 
 			// Check preview link on edit page
 			await admin.editPost(contentIds[postKey]);
@@ -62,7 +64,7 @@ test.describe("HWP Previews Preview Link", () => {
 			await page.waitForSelector(".components-popover");
 			await expect(
 				page.getByRole("menuitem", { name: "Preview in new tab" }),
-			).toHaveAttribute("href", testPreviewUrl);
+			).toHaveAttribute("href", TEST_PREVIEW_URL);
 		});
 	});
 
@@ -84,7 +86,7 @@ test.describe("HWP Previews Preview Link", () => {
 					hasText: "Preview",
 					exact: true,
 				}),
-			).not.toHaveAttribute("href", testPreviewUrl);
+			).not.toHaveAttribute("href", TEST_PREVIEW_URL);
 
 			// Check preview link on edit page
 			await admin.editPost(contentIds[postKey]);
@@ -92,7 +94,7 @@ test.describe("HWP Previews Preview Link", () => {
 			await page.waitForSelector(".components-popover");
 			await expect(
 				page.getByRole("menuitem", { name: "Preview in new tab" }),
-			).not.toHaveAttribute("href", testPreviewUrl);
+			).not.toHaveAttribute("href", TEST_PREVIEW_URL);
 		});
 	});
 
@@ -108,7 +110,7 @@ test.describe("HWP Previews Preview Link", () => {
 			await page.locator(getSettingsField(postKey).iframeCheckbox).check();
 			await page
 				.locator(getSettingsField(postKey).previewUrlInput)
-				.fill(testPreviewUrl);
+				.fill(TEST_PREVIEW_URL);
 			await saveChanges(page);
 
 			// Visit the preview page
@@ -123,10 +125,7 @@ test.describe("HWP Previews Preview Link", () => {
 
 			// Check if iframe included with the correct URL
 			const iframe = page.locator("iframe.headless-preview-frame");
-			await expect(iframe).toHaveAttribute("src", testPreviewUrl);
+			await expect(iframe).toHaveAttribute("src", TEST_PREVIEW_URL);
 		});
 	});
 });
-
-// TODO test if parameters being applied
-// TODO test post_statuses_as_parent

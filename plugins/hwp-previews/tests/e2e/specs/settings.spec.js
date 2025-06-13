@@ -2,18 +2,17 @@ import { expect, test } from "@wordpress/e2e-test-utils-playwright";
 import {
 	getDefaultPreviewUrl,
 	goToPluginPage,
-	hwpSlug,
 	defaultPostTypes,
 	switchToTab,
 	saveChanges,
-	testPreviewUrl,
 	resetPluginSettings,
 	getSettingsField,
 } from "../utils";
+import { HWP_SLUG, TEST_PREVIEW_URL } from "../constants";
 
 test.describe("HWP Previews Admin Settings", () => {
 	test.beforeAll(async ({ requestUtils }) => {
-		await requestUtils.activatePlugin(hwpSlug);
+		await requestUtils.activatePlugin(HWP_SLUG);
 	});
 
 	test.beforeEach(async ({ admin }) => {
@@ -81,7 +80,7 @@ test.describe("HWP Previews Admin Settings", () => {
 			// Update settings
 			await page.locator(enabledCheckbox).check();
 			await page.locator(iframeCheckbox).check();
-			await page.locator(previewUrlInput).fill(testPreviewUrl);
+			await page.locator(previewUrlInput).fill(TEST_PREVIEW_URL);
 
 			// Save settings
 			await saveChanges(page);
@@ -95,7 +94,7 @@ test.describe("HWP Previews Admin Settings", () => {
 			// Verify settings were saved
 			await expect(page.locator(enabledCheckbox)).toBeChecked();
 			await expect(page.locator(iframeCheckbox)).toBeChecked();
-			await expect(page.locator(previewUrlInput)).toHaveValue(testPreviewUrl);
+			await expect(page.locator(previewUrlInput)).toHaveValue(TEST_PREVIEW_URL);
 		});
 	});
 
