@@ -5,6 +5,7 @@ namespace WPGraphQL\Webhooks\Events;
 use WPGraphQL\Webhooks\Events\Interfaces\EventManager;
 use WPGraphQL\Webhooks\Repository\Interfaces\WebhookRepositoryInterface;
 use WPGraphQL\Webhooks\Handlers\Interfaces\Handler;
+use WPGraphQL\Webhooks\Events\SmartCacheEventHandler;
 
 /**
  * Webhook Event Manager
@@ -17,14 +18,23 @@ class WebhookEventManager implements EventManager {
 	private Handler $handler;
 
 	/**
+	 * Smart Cache event handler
+	 * @var SmartCacheEventHandler
+	 */
+	private SmartCacheEventHandler $smart_cache_handler;
+
+	/**
 	 * Constructor
 	 *
 	 * @param WebhookRepositoryInterface $repository
-	 * @param Handler     $sender
+	 * @param Handler $handler
 	 */
-	public function __construct( WebhookRepositoryInterface $repository, $handler ) {
+	public function __construct( WebhookRepositoryInterface $repository, Handler $handler ) {
 		$this->repository = $repository;
 		$this->handler = $handler;
+		
+		// Initialize Smart Cache handler
+		$this->smart_cache_handler = new SmartCacheEventHandler( [ $this, 'trigger_webhooks' ] );
 	}
 
 	/**
@@ -47,6 +57,9 @@ class WebhookEventManager implements EventManager {
 		add_action( 'delete_attachment', [ $this, 'on_media_deleted' ], 10, 1 );
 		add_action( 'wp_insert_comment', [ $this, 'on_comment_inserted' ], 10, 2 );
 		add_action( 'transition_comment_status', [ $this, 'on_comment_status' ], 10, 3 );
+		
+		// Smart Cache integration
+		$this->smart_cache_handler->init();
 	}
 
 	/**
@@ -57,12 +70,14 @@ class WebhookEventManager implements EventManager {
 	 */
 	private function trigger_webhooks( string $event, array $payload ): void {
 		$allowed_events = $this->repository->get_allowed_events();
+
 		if ( ! array_key_exists( $event, $allowed_events ) ) {
 			error_log( 'Event ' . $event . ' is not allowed. Allowed events: ' . implode( ', ', $allowed_events ) );
 			return;
 		}
 
 		do_action( 'graphql_webhooks_before_trigger', $event, $payload );
+
 		foreach ( $this->repository->get_all() as $webhook ) {
 			if ( $webhook->event === $event ) {
 				$this->handler->handle( $webhook, $payload );

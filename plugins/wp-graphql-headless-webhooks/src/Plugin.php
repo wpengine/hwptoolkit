@@ -10,10 +10,14 @@ declare(strict_types=1);
 namespace WPGraphQL\Webhooks;
 
 use AxeWP\GraphQL\Helper\Helper;
+use WPGraphQL\Webhooks\Admin\WebhooksAdmin;
 use WPGraphQL\Webhooks\Handlers\WebhookHandler;
 use WPGraphQL\Webhooks\PostTypes\WebhookPostType;
 use WPGraphQL\Webhooks\Repository\WebhookRepository;
 use WPGraphQL\Webhooks\Events\WebhookEventManager;
+use WPGraphQL\Webhooks\Rest\WebhookEventsEndpoint;
+use WPGraphQL\Webhooks\Rest\WebhookTestEndpoint;
+use WPGraphQL\Webhooks\Mutation\CreateWebhook;
 
 /**
  * Plugin singleton class.
@@ -51,6 +55,13 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		private WebhookEventManager $event_manager;
 
 		/**
+		 * Webhooks admin.
+		 *
+		 * @var WebhooksAdmin
+		 */
+		private WebhooksAdmin $admin;
+
+		/**
 		 * Get singleton instance.
 		 *
 		 * @return self
@@ -79,10 +90,28 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			Helper::set_hook_prefix( 'graphql_webhooks' );
 			WebhookPostType::init();
 
-			$this->repository = new WebhookRepository();
-			$this->handler = new WebhookHandler();
+			$this->repository    = new WebhookRepository();
+			$this->handler       = new WebhookHandler();
 			$this->event_manager = new WebhookEventManager( $this->repository, $this->handler );
 			$this->event_manager->register_hooks();
+
+			// Register REST endpoints
+			if ( class_exists( WebhookEventsEndpoint::class ) ) {
+				$events_endpoint = new WebhookEventsEndpoint( $this->repository );
+				add_action( 'rest_api_init', array( $events_endpoint, 'register' ) );
+			}
+
+			// Register test endpoint
+			if ( class_exists( WebhookTestEndpoint::class ) ) {
+				$test_endpoint = new WebhookTestEndpoint( $this->repository );
+				add_action( 'rest_api_init', array( $test_endpoint, 'register' ) );
+			}
+
+			// Initialize admin UI
+			if ( is_admin() ) {
+				$this->admin = new WebhooksAdmin( $this->repository );
+				$this->admin->init();
+			}
 		}
 
 		/**
