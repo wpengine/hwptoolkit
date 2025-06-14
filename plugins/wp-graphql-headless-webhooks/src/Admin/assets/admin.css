@@ -66,13 +66,13 @@
 
 .wp-list-table.webhooks th:not(.check-column),
 .wp-list-table.webhooks td:not(.check-column) {
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 /* Checkbox column specific styling */
 .wp-list-table.webhooks .check-column {
 	vertical-align: top;
-	padding-top: 8px;
+	padding: 8px 0 0 3px;
 }
 
 /* Style webhook name as primary column */
