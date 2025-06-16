@@ -52,3 +52,6 @@ tests/_support/
 tests/_output/
 tests/_generated/
 tests/_data/
+
+# Playwright outputs
+artifacts
