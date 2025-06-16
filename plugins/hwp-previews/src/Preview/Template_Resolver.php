@@ -64,11 +64,7 @@ class Template_Resolver {
 		$post_status   = $this->post->post_status;
 		$post_statuses = $this->post_statuses;
 
-		if ( ! in_array( $post_status, $post_statuses, true ) ) {
-			return false;
-		}
-
-		return true;
+		return in_array( $post_status, $post_statuses, true );
 	}
 
 	/**
