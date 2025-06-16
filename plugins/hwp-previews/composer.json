@@ -128,7 +128,15 @@
 		],
 		"php:psalm": "psalm",
 		"php:psalm:info": "psalm --show-info=true",
-		"php:psalm:fix": "psalm --alter"
+		"php:psalm:fix": "psalm --alter",
+		"test": [
+			"sh bin/local/run-unit-tests.sh",
+			"sh bin/local/run-e2e-tests.sh"
+		],
+		"test:unit": "sh bin/local/run-unit-tests.sh",
+		"test:unit:coverage": "sh bin/local/run-unit-tests.sh coverage",
+		"test:unit:coverage-html": "sh bin/local/run-unit-tests.sh coverage --coverage-html",
+		"test:e2e": "sh bin/local/run-e2e-tests.sh"
 	},
 	"support": {
 		"docs": "https://github.com/wpengine/hwptoolkit/tree/main/docs",

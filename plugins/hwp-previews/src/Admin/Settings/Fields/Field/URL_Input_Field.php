@@ -43,7 +43,16 @@ class URL_Input_Field extends Text_Input_Field {
 	 * @param string $value
 	 */
 	private function fix_url( string $value ): string {
-		// Remove HTML tags, trim, encode spaces, add protocol.
+
+
+		if ( '' === $value ) {
+			return '';
+		}
+
+		// Remove <script> tags and their content to prevent XSS.
+		$value = preg_replace( '#<script.*?>.*?</script>#is', '', $value );
+
+		// Remove HTML tags except curly braces, trim, encode spaces, add protocol.
 		$value = preg_replace( '/<(?!\{)[^>]+>/', '', $value );
 		$value = trim( str_replace( ' ', '%20', (string) $value ) );
 
@@ -55,7 +64,7 @@ class URL_Input_Field extends Text_Input_Field {
 		if ( $has_prootocol ) {
 			return $value;
 		}
-			$protocol = is_ssl() ? 'https://' : 'http://';
-			return $protocol . ltrim( $value, '/' );
+		$protocol = is_ssl() ? 'https://' : 'http://';
+		return $protocol . ltrim( $value, '/' );
 	}
 }

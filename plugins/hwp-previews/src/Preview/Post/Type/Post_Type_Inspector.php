@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Post\Type;
+namespace HWP\Previews\Preview\Post\Type;
 
-use HWP\Previews\Post\Type\Contracts\Post_Type_Inspector_Interface;
+use HWP\Previews\Preview\Post\Type\Contracts\Post_Type_Inspector_Interface;
 use WP_Post_Type;
 
 class Post_Type_Inspector implements Post_Type_Inspector_Interface {

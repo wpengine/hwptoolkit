@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Post\Type\Contracts;
+namespace HWP\Previews\Preview\Post\Type\Contracts;
 
 use WP_Post_Type;
 

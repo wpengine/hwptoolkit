@@ -31,6 +31,9 @@ extensions:
         - lucatume\WPBrowser\Command\MonkeyCachePath
         - lucatume\WPBrowser\Command\RunAll
         - lucatume\WPBrowser\Command\RunOriginal
+exclude:
+    - src/Templates
+    - src/Templates/*
 coverage:
     enabled: true
     remote: false
@@ -48,6 +51,7 @@ coverage:
         - /tests/*
         - /vendor-prefixed/*
         - /vendor/*
+        - /src/Templates/*
     show_only_summary: false
 modules:
     config:

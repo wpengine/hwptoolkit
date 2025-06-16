@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Link;
 
-use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
-use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
+use HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface;
+use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
 use WP_Post;
 
 /**
@@ -15,14 +15,14 @@ class Preview_Link_Service {
 	/**
 	 * Post types config.
 	 *
-	 * @var \HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface
+	 * @var \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface
 	 */
 	private Post_Types_Config_Interface $types;
 
 	/**
 	 * Post statuses config.
 	 *
-	 * @var \HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface
+	 * @var \HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface
 	 */
 	private Post_Statuses_Config_Interface $statuses;
 
@@ -36,9 +36,9 @@ class Preview_Link_Service {
 	/**
 	 * Constructor.
 	 *
-	 * @param \HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface      $types Post types config.
-	 * @param \HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface $statuses Post statuses config.
-	 * @param \HWP\Previews\Preview\Link\Preview_Link_Placeholder_Resolver       $resolver Preview link resolver.
+	 * @param \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface      $types Post types config.
+	 * @param \HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface $statuses Post statuses config.
+	 * @param \HWP\Previews\Preview\Link\Preview_Link_Placeholder_Resolver               $resolver Preview link resolver.
 	 */
 	public function __construct(
 		Post_Types_Config_Interface $types,

@@ -84,11 +84,6 @@ function hwp_previews_constants(): void {
 	if ( ! defined( 'HWP_PREVIEWS_TEXT_DOMAIN' ) ) {
 		define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
 	}
-
-	// Plugin Template Directory.
-	if ( ! defined( 'HWP_PREVIEWS_TEMPLATE_DIR' ) ) {
-		define( 'HWP_PREVIEWS_TEMPLATE_DIR', trailingslashit( HWP_PREVIEWS_PLUGIN_DIR ) . '/src/Admin/Settings/Templates/' );
-	}
 }
 
 // phpcs:enable Generic.Metrics.CyclomaticComplexity.TooHigh

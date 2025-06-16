@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Post\Status\Contracts;
+namespace HWP\Previews\Preview\Post\Status\Contracts;
 
 interface Post_Statuses_Config_Interface {
 	/**

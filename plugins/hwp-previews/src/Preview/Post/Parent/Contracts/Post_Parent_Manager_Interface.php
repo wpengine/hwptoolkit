@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Post\Parent\Contracts;
+namespace HWP\Previews\Preview\Post\Parent\Contracts;
 
 interface Post_Parent_Manager_Interface {
 	/**

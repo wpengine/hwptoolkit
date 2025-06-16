@@ -173,4 +173,73 @@ class TextURLFieldTest extends WPTestCase {
 		delete_option( $settings_key );
 		$this->assertEmpty( $field->get_setting_value( $settings_key, $post_type ) );
 	}
+
+	public function test_fix_url_removes_html_and_scripts() {
+		$field = $this->field;
+
+		// Simulate fix_url as a public/protected method for testing.
+		// If fix_url is private, use Reflection to access it.
+		$reflection = new \ReflectionClass($field);
+		$method = $reflection->getMethod('fix_url');
+		$method->setAccessible(true);
+
+		// Remove script tags
+		$input = '<script>alert("xss")</script>https://example.com/?preview=true';
+		$expected = 'https://example.com/?preview=true';
+		$this->assertEquals($expected, $method->invoke($field, $input));
+
+		// Remove HTML tags
+		$input = '<b>Bold</b>https://example.com/';
+		$expected = 'http://Boldhttps://example.com/';
+		$this->assertEquals($expected, $method->invoke($field, $input));
+
+		// Remove image tags
+		$input = '<img src="image.jpg" alt="test">';
+		$expected = '';
+		$this->assertEquals($expected, $method->invoke($field, $input));
+	}
+
+	public function test_fix_url_handles_encoded_urls() {
+		$field = $this->field;
+		$reflection = new \ReflectionClass($field);
+		$method = $reflection->getMethod('fix_url');
+		$method->setAccessible(true);
+
+		$input = 'https://example.com/?q=%3Cscript%3Ealert(1)%3C%2Fscript%3E';
+		$expected = 'https://example.com/?q=%3Cscript%3Ealert(1)%3C%2Fscript%3E';
+		$this->assertEquals($expected, $method->invoke($field, $input));
+	}
+
+	public function test_fix_url_preserves_placeholders() {
+		$field = $this->field;
+		$reflection = new \ReflectionClass($field);
+		$method = $reflection->getMethod('fix_url');
+		$method->setAccessible(true);
+
+		$input = 'https://example.com/{slug}?preview=true&post_id={ID}';
+		$expected = 'https://example.com/{slug}?preview=true&post_id={ID}';
+		$this->assertEquals($expected, $method->invoke($field, $input));
+	}
+
+	public function test_fix_url_handles_empty_and_invalid_input() {
+		$field = $this->field;
+		$reflection = new \ReflectionClass($field);
+		$method = $reflection->getMethod('fix_url');
+		$method->setAccessible(true);
+
+		$this->assertEquals('', $method->invoke($field, ''));
+		$this->assertEquals('', $method->invoke($field, '<div></div>'));
+	}
+
+	public function test_fix_url_handles_relative_urls() {
+		$field = $this->field;
+		$reflection = new \ReflectionClass($field);
+		$method = $reflection->getMethod('fix_url');
+		$method->setAccessible(true);
+
+		$input = '/relative/path?foo=bar';
+		$protocol = is_ssl() ? 'https://' : 'http://';
+		$expected = $protocol . 'relative/path?foo=bar';
+		$this->assertEquals($expected, $method->invoke($field, $input));
+	}
 }

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Post\Type;
+namespace HWP\Previews\Preview\Post\Type;
 
-use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
 use HWP\Previews\Preview\Helper\Settings_Helper;
+use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
 
 /**
  * Class Post_Types_Config_Registry.
@@ -14,7 +14,7 @@ class Post_Types_Config_Registry {
 	/**
 	 * The instance of the post types config.
 	 *
-	 * @var \HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface|null
+	 * @var \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface|null
 	 */
 	protected static ?Post_Types_Config_Interface $instance = null;
 

@@ -55,7 +55,10 @@ The plugin provides scripts to set up a local WordPress environment for testing,
 
 ## Running Tests
 
-@TODO
+Currently the plugin has the following suite of tests
+
+1. WP Unit Tests - (Unit and Integration Tests)
+2. E2E Tests - Playright tests
 
 ### WPUnit (WordPress-aware Unit/Integration) Tests
 
@@ -69,24 +72,12 @@ sh bin/local/run-unit-tests.sh coverage
 > You can also add coverage e.g. `sh bin/local/run-unit-tests.sh coverage --coverage-html` and the output will be saved in [tests/_output/coverage/dashboard.html](tests/_output/coverage/dashboard.html)
 
 
-### Functional Tests
-
-Run functional tests (simulate web requests):
-
-```bash
-composer run test:functional
-# or
-vendor/bin/codecept run functional
-```
-
-### Acceptance Tests
+### E2WTests
 
 Run browser-based acceptance tests:
 
 ```bash
-composer run test:acceptance
-# or
-vendor/bin/codecept run acceptance
+sh bin/local/run-e2e-tests.sh coverage
 ```
 
 ### All Tests

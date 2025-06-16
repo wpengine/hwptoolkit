@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Post\Parent;
+namespace HWP\Previews\Preview\Post\Parent;
 
-use HWP\Previews\Post\Parent\Contracts\Post_Parent_Manager_Interface;
-use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
-use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
+use HWP\Previews\Preview\Post\Parent\Contracts\Post_Parent_Manager_Interface;
+use HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface;
+use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
 
 /**
  * Class Post_Parent_Manager.
@@ -24,22 +24,22 @@ class Post_Parent_Manager implements Post_Parent_Manager_Interface {
 	/**
 	 * Post types configuration.
 	 *
-	 * @var \HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface
+	 * @var \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface
 	 */
 	private Post_Types_Config_Interface $post_types;
 
 	/**
 	 * Post statuses configuration.
 	 *
-	 * @var \HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface
+	 * @var \HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface
 	 */
 	private Post_Statuses_Config_Interface $post_statuses;
 
 	/**
 	 * Post_Parent_Manager constructor.
 	 *
-	 * @param \HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface      $post_types Post types configuration.
-	 * @param \HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface $post_statuses Post statuses configuration.
+	 * @param \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface      $post_types Post types configuration.
+	 * @param \HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface $post_statuses Post statuses configuration.
 	 */
 	public function __construct( Post_Types_Config_Interface $post_types, Post_Statuses_Config_Interface $post_statuses ) {
 		$this->post_types    = $post_types;

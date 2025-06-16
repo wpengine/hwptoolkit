@@ -7,9 +7,9 @@ namespace HWP\Previews\Admin;
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Admin\Settings\Menu\Menu_Page;
 use HWP\Previews\Admin\Settings\Settings_Form_Manager;
-use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
-use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
+use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
+use HWP\Previews\Preview\Post\Type\Post_Types_Config_Registry;
 
 class Settings_Page {
 	/**
@@ -23,7 +23,7 @@ class Settings_Page {
 	protected Preview_Parameter_Registry $parameters;
 
 	/**
-	 * @var \HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface The post types available for previews.
+	 * @var \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface The post types available for previews.
 	 */
 	protected Post_Types_Config_Interface $types_config;
 
@@ -80,7 +80,7 @@ class Settings_Page {
 				__( 'HWP Previews Settings', 'hwp-previews' ),
 				'HWP Previews',
 				self::PLUGIN_MENU_SLUG,
-				trailingslashit( HWP_PREVIEWS_TEMPLATE_DIR ) . 'settings-page-main.php',
+				trailingslashit(HWP_PREVIEWS_PLUGIN_DIR) . 'src/Templates/admin.php',
 				[
 					'hwp_previews_main_page_config' => [
 						'tabs'        => $post_types,

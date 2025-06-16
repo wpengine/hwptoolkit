@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Post\Type;
+namespace HWP\Previews\Preview\Post\Type;
 
-use HWP\Previews\Post\Type\Contracts\Post_Type_Inspector_Interface;
-use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
+use HWP\Previews\Preview\Post\Type\Contracts\Post_Type_Inspector_Interface;
+use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
 use WP_Post_Type;
 
 /**
@@ -22,14 +22,14 @@ class Post_Types_Config implements Post_Types_Config_Interface {
 	/**
 	 * Post type inspector.
 	 *
-	 * @var \HWP\Previews\Post\Type\Contracts\Post_Type_Inspector_Interface
+	 * @var \HWP\Previews\Preview\Post\Type\Contracts\Post_Type_Inspector_Interface
 	 */
 	private Post_Type_Inspector_Interface $inspector;
 
 	/**
 	 * Class constructor.
 	 *
-	 * @param \HWP\Previews\Post\Type\Contracts\Post_Type_Inspector_Interface $inspector Post Type inspector.
+	 * @param \HWP\Previews\Preview\Post\Type\Contracts\Post_Type_Inspector_Interface $inspector Post Type inspector.
 	 */
 	public function __construct( Post_Type_Inspector_Interface $inspector ) {
 		$this->inspector = $inspector;

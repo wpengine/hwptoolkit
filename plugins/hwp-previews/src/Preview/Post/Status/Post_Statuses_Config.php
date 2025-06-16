@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Post\Status;
+namespace HWP\Previews\Preview\Post\Status;
 
-use HWP\Previews\Post\Status\Contracts\Post_Statuses_Config_Interface;
+use HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface;
 
 /**
  * Class Post_Statuses_Config.

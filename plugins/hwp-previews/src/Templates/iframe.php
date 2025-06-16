@@ -9,9 +9,7 @@
 
 declare(strict_types=1);
 
-use HWP\Previews\Preview\Template\Preview_Template_Resolver;
-
-$hwp_previews_url_template = (string) get_query_var( Preview_Template_Resolver::HWP_PREVIEWS_IFRAME_PREVIEW_URL );
+$hwp_previews_url_template = \HWP\Previews\Preview\Template_Resolver::get_query_variable();
 
 ?>
 

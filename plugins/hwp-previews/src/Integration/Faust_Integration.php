@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Integration;
 
-use HWP\Previews\Post\Type\Post_Types_Config_Registry;
 use HWP\Previews\Preview\Helper\Settings_Group;
+use HWP\Previews\Preview\Post\Type\Post_Types_Config_Registry;
 
 class Faust_Integration {
 	/**
