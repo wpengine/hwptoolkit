@@ -76,62 +76,114 @@
 						},
 						success: function(response) {
 							if (response.success) {
-								$link.text( 'Success' );
-								if (response.data && response.data.message) {
+								$link.text( 'Success' ).removeClass( 'testing' ).addClass( 'success' );
+								if (response.data) {
 									var $row = $link.closest( 'tr' );
 									var colspan = $row.find( 'td' ).length;
-									var message = response.data.message;
+									
+									// Build detailed result HTML
+									var resultHtml = '<div class="webhook-test-details">';
+									resultHtml += '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>';
+									resultHtml += '<p><strong>' + response.data.message + '</strong></p>';
+									
+									// Response details
 									if (response.data.response_code) {
-										message += ' (Response: ' + response.data.response_code + ')';
+										var statusClass = response.data.success ? 'success' : 'error';
+										resultHtml += '<p>Response Status: <span class="status-' + statusClass + '">' + response.data.response_code + '</span></p>';
 									}
-									var $resultRow = $( '<tr id="' + resultId + '" class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-success inline"><p>' + message + '</p></div></td></tr>' );
+									
+									// Show payload sent
+									if (response.data.test_payload) {
+										resultHtml += '<details>';
+										resultHtml += '<summary>Test Payload Sent</summary>';
+										resultHtml += '<pre class="webhook-test-payload">' + JSON.stringify(response.data.test_payload, null, 2) + '</pre>';
+										resultHtml += '</details>';
+									}
+									
+									// Show response body if available
+									if (response.data.response_body) {
+										resultHtml += '<details>';
+										resultHtml += '<summary>Response Body</summary>';
+										resultHtml += '<pre class="webhook-response-body">' + response.data.response_body + '</pre>';
+										resultHtml += '</details>';
+									}
+									
+									resultHtml += '</div>';
+									
+									var noticeClass = response.data.success ? 'notice-success' : 'notice-warning';
+									var $resultRow = $( '<tr id="' + resultId + '" class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice ' + noticeClass + ' is-dismissible inline">' + resultHtml + '</div></td></tr>' );
 									$row.after( $resultRow );
 									
-									// Remove this specific message after 7 seconds
-									setTimeout(function() {
+									// Handle dismiss button
+									$( '#' + resultId + ' .notice-dismiss' ).on( 'click', function() {
 										$( '#' + resultId ).fadeOut(function() {
 											$( this ).remove();
 										});
-									}, 7000);
+									});
 								}
 							} else {
-								$link.text( 'Failed' );
-								var error = response.data || 'Unknown error';
+								$link.text( 'Failed' ).removeClass( 'testing' ).addClass( 'error' );
+								var errorData = response.data || {};
 								var $row = $link.closest( 'tr' );
 								var colspan = $row.find( 'td' ).length;
-								var $resultRow = $( '<tr id="' + resultId + '" class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-error inline"><p>Test failed: ' + error + '</p></div></td></tr>' );
+								
+								// Build error HTML
+								var errorHtml = '<div class="webhook-test-details">';
+								errorHtml += '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>';
+								errorHtml += '<p><strong>Test failed: ' + (errorData.message || 'Unknown error') + '</strong></p>';
+								
+								if (errorData.error_code) {
+									errorHtml += '<p>Error Code: ' + errorData.error_code + '</p>';
+								}
+								
+								if (errorData.error_data) {
+									errorHtml += '<details>';
+									errorHtml += '<summary>Error Details</summary>';
+									errorHtml += '<pre>' + JSON.stringify(errorData.error_data, null, 2) + '</pre>';
+									errorHtml += '</details>';
+								}
+								
+								errorHtml += '</div>';
+								
+								var $resultRow = $( '<tr id="' + resultId + '" class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-error is-dismissible inline">' + errorHtml + '</div></td></tr>' );
 								$row.after( $resultRow );
 								
-								// Remove this specific message after 7 seconds
-								setTimeout(function() {
+								// Handle dismiss button
+								$( '#' + resultId + ' .notice-dismiss' ).on( 'click', function() {
 									$( '#' + resultId ).fadeOut(function() {
 										$( this ).remove();
 									});
-								}, 7000);
+								});
 							}
 							
 							// Reset button after 3 seconds
 							setTimeout(function() {
-								$link.text( originalText ).removeClass( 'testing' ).css( 'pointer-events', 'auto' );
+								$link.text( originalText ).removeClass( 'testing success error' ).css( 'pointer-events', 'auto' );
 							}, 3000);
 						},
 						error: function(xhr, status, error) {
-							$link.text( 'Error' );
+							$link.text( 'Error' ).removeClass( 'testing' ).addClass( 'error' );
 							var $row = $link.closest( 'tr' );
 							var colspan = $row.find( 'td' ).length;
-							var $resultRow = $( '<tr id="' + resultId + '" class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-error inline"><p>Test error: ' + error + '</p></div></td></tr>' );
+							
+							var errorHtml = '<div class="webhook-test-details">';
+							errorHtml += '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>';
+							errorHtml += '<p><strong>Test error: ' + error + '</strong></p>';
+							errorHtml += '</div>';
+							
+							var $resultRow = $( '<tr id="' + resultId + '" class="webhook-test-result"><td colspan="' + colspan + '"><div class="notice notice-error is-dismissible inline">' + errorHtml + '</div></td></tr>' );
 							$row.after( $resultRow );
 							
-							// Remove this specific message after 7 seconds
-							setTimeout(function() {
+							// Handle dismiss button
+							$( '#' + resultId + ' .notice-dismiss' ).on( 'click', function() {
 								$( '#' + resultId ).fadeOut(function() {
 									$( this ).remove();
 								});
-							}, 7000);
+							});
 							
 							// Reset button after 3 seconds
 							setTimeout(function() {
-								$link.text( originalText ).removeClass( 'testing' ).css( 'pointer-events', 'auto' );
+								$link.text( originalText ).removeClass( 'testing error' ).css( 'pointer-events', 'auto' );
 							}, 3000);
 						}
 					});

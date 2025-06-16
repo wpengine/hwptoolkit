@@ -317,25 +317,59 @@ class WebhooksAdmin {
 			}
 		}
 
+		// Log the test request for debugging
+		error_log( sprintf( 
+			'[Webhook Test] Sending %s request to %s with payload: %s',
+			$args['method'],
+			$url,
+			wp_json_encode( $payload )
+		) );
+
 		$response = wp_remote_request( $url, $args );
 
 		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( $response->get_error_message() );
+			wp_send_json_error( array(
+				'message' => sprintf( 
+					__( 'Connection failed: %s', 'wp-graphql-headless-webhooks' ),
+					$response->get_error_message()
+				),
+				'error_code' => $response->get_error_code(),
+				'error_data' => $response->get_error_data(),
+			) );
 		}
 
 		// Get response details
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$response_body = wp_remote_retrieve_body( $response );
+		$response_headers = wp_remote_retrieve_headers( $response );
 		
-		// Strip HTML tags and decode entities from response body
-		$response_body = wp_strip_all_tags( $response_body );
-		$response_body = html_entity_decode( $response_body, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+		// Try to parse JSON response
+		$parsed_body = json_decode( $response_body, true );
+		if ( json_last_error() === JSON_ERROR_NONE ) {
+			$response_body_display = wp_json_encode( $parsed_body, JSON_PRETTY_PRINT );
+		} else {
+			// Strip HTML tags and decode entities from response body
+			$response_body = wp_strip_all_tags( $response_body );
+			$response_body = html_entity_decode( $response_body, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+			$response_body_display = $response_body;
+		}
+		
+		// Determine success based on response code
+		$is_success = $response_code >= 200 && $response_code < 300;
+		
+		// Build detailed response message
+		$message = $is_success 
+			? __( 'Webhook test completed successfully!', 'wp-graphql-headless-webhooks' )
+			: sprintf( __( 'Webhook test failed with status %d', 'wp-graphql-headless-webhooks' ), $response_code );
 		
 		// Send structured response data
 		wp_send_json_success( array( 
-			'message' => __( 'Webhook sent successfully!', 'wp-graphql-headless-webhooks' ),
+			'message' => $message,
+			'success' => $is_success,
 			'response_code' => $response_code,
-			'response_body' => substr( $response_body, 0, 200 ) // Limit response body to 200 chars
+			'response_body' => substr( $response_body_display, 0, 500 ), // Limit response body to 500 chars
+			'response_headers' => $response_headers->getAll(),
+			'test_payload' => $payload, // Include what was sent for debugging
 		) );
 	}
 
@@ -378,26 +412,95 @@ class WebhooksAdmin {
 				);
 				break;
 
-			case 'post.published':
-			case 'post.updated':
-			case 'post.deleted':
-				$base_payload['data'] = array(
-					'id'        => 999999,
-					'title'     => 'Test Post (Not Real)',
-					'status'    => 'test',
-					'author'    => 0,
-					'test_note' => 'This is test data - no actual post exists',
+			case 'post_published':
+			case 'post_updated':
+			case 'post_deleted':
+				// Match the actual webhook payload structure
+				$test_post_id = 999999;
+				$base_payload = array(
+					'post_id' => $test_post_id,
+					'post' => array(
+						'id'       => $test_post_id,
+						'title'    => 'Test Post - Hello World',
+						'slug'     => 'test-post-hello-world',
+						'uri'      => '/test-post-hello-world/',
+						'status'   => 'publish',
+						'type'     => 'post',
+						'date'     => current_time( 'mysql' ),
+						'modified' => current_time( 'mysql' ),
+					),
+					'path' => '/test-post-hello-world/',
+					'test' => true,
+					'test_mode' => true,
+					'message' => 'This is a TEST webhook payload - no actual post was affected',
 				);
 				break;
 
-			case 'user.created':
+			case 'post_meta_change':
+				$base_payload['post_id'] = 999999;
+				$base_payload['meta_key'] = 'test_meta_key';
+				$base_payload['test_note'] = 'This is test data - no actual meta was changed';
+				break;
+
+			case 'term_created':
+			case 'term_assigned':
+			case 'term_unassigned':
+			case 'term_deleted':
+				$base_payload['term_id'] = 999999;
+				$base_payload['taxonomy'] = 'category';
+				if ( $event === 'term_assigned' || $event === 'term_unassigned' ) {
+					$base_payload['object_id'] = 888888;
+				}
+				$base_payload['test_note'] = 'This is test data - no actual term was affected';
+				break;
+
+			case 'user_created':
+			case 'user_deleted':
+				$base_payload['user_id'] = 999999;
 				$base_payload['data'] = array(
-					'id'        => 999999,
 					'username'  => 'test_webhook_user',
 					'email'     => 'test@webhook.local',
-					'role'      => 'test',
-					'test_note' => 'This is test data - no actual user exists',
+					'role'      => 'subscriber',
 				);
+				$base_payload['test_note'] = 'This is test data - no actual user was affected';
+				break;
+
+			case 'user_assigned':
+			case 'user_reassigned':
+				$base_payload['post_id'] = 999999;
+				$base_payload['author_id'] = 888888;
+				if ( $event === 'user_reassigned' ) {
+					$base_payload['old_author_id'] = 777777;
+					$base_payload['new_author_id'] = 888888;
+				}
+				$base_payload['test_note'] = 'This is test data - no actual assignment was made';
+				break;
+
+			case 'media_uploaded':
+			case 'media_updated':
+			case 'media_deleted':
+				$base_payload['post_id'] = 999999;
+				$base_payload['post'] = array(
+					'id'       => 999999,
+					'title'    => 'Test Media File',
+					'slug'     => 'test-media-file',
+					'uri'      => '/test-media-file/',
+					'status'   => 'inherit',
+					'type'     => 'attachment',
+					'date'     => current_time( 'mysql' ),
+					'modified' => current_time( 'mysql' ),
+				);
+				$base_payload['path'] = '/test-media-file/';
+				$base_payload['test_note'] = 'This is test data - no actual media was affected';
+				break;
+
+			case 'comment_inserted':
+			case 'comment_status':
+				$base_payload['comment_id'] = 999999;
+				if ( $event === 'comment_status' ) {
+					$base_payload['new_status'] = 'approved';
+				}
+				$base_payload['test_note'] = 'This is test data - no actual comment was affected';
 				break;
 
 			default:

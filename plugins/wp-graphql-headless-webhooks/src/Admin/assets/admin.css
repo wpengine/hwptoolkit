@@ -164,30 +164,95 @@
 /* Test webhook link */
 .test-webhook {
 	cursor: pointer;
+	text-decoration: none;
 }
 
 /* Test webhook button states */
 .test-webhook.testing {
-	color: #3858e9;
+	color: #666;
 	cursor: not-allowed;
 	pointer-events: none;
 }
 
 .test-webhook.success {
-	color: #00a32a;
+	color: #46b450;
 }
 
 .test-webhook.error {
-	color: #d63638;
+	color: #dc3232;
 }
 
-/* Webhook test response styling */
+/* Test webhook result display */
+.webhook-test-result td {
+	padding: 0 !important;
+	background: transparent !important;
+}
+
+.webhook-test-result .notice {
+	margin: 10px 0;
+	border-left-width: 4px;
+}
+
 .webhook-test-details {
+	padding: 5px 0;
 	margin: 0;
 }
 
 .webhook-test-details p {
-	margin: 0.5em 0;
+	margin: 5px 0;
+}
+
+.webhook-test-details .status-success {
+	color: #46b450;
+	font-weight: bold;
+}
+
+.webhook-test-details .status-error {
+	color: #dc3232;
+	font-weight: bold;
+}
+
+.webhook-test-details details {
+	margin: 10px 0;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 5px;
+	background: #f9f9f9;
+}
+
+.webhook-test-details summary {
+	cursor: pointer;
+	font-weight: 600;
+	padding: 5px;
+	user-select: none;
+}
+
+.webhook-test-details summary:hover {
+	background: #f1f1f1;
+}
+
+.webhook-test-details pre {
+	margin: 10px 0 5px;
+	padding: 10px;
+	background: #fff;
+	border: 1px solid #e1e1e1;
+	border-radius: 3px;
+	overflow-x: auto;
+	font-size: 12px;
+	line-height: 1.4;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+.webhook-test-details pre.webhook-test-payload {
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+.webhook-test-details pre.webhook-response-body {
+	background: #f7f7f7;
+	max-height: 200px;
+	overflow-y: auto;
 }
 
 .webhook-test-details .notice-message-body {
