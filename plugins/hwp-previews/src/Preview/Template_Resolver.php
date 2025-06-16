@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview;
 
-use HWP\Previews\Preview\Helper\Settings_Helper;
 use WP_Post;
 
 class Template_Resolver {
@@ -18,54 +17,69 @@ class Template_Resolver {
 	/**
 	 * The current post object.
 	 *
-	 * @var \WP_Post|null
+	 * @var \WP_Post
 	 */
-	protected ?WP_Post $post = null;
+	protected WP_Post $post;
 
-	public function __construct() {
-		$post = get_post();
-		if ( $post instanceof WP_Post ) {
-			$this->post = $post;
-		}
+	/**
+	 * Allowed post types for preview links.
+	 *
+	 * @var array<string>
+	 */
+	private array $post_types = [];
+
+	/**
+	 * Allowed post statuses for preview links.
+	 *
+	 * @var array<string>
+	 */
+	private array $post_statuses = [];
+
+	/**
+	 * Constructor.
+	 *
+	 * @param \WP_Post      $post The post object.
+	 * @param array<string> $post_types Post types that are applicable for preview links.
+	 * @param array<string> $post_statuses Post statuses that are applicable for preview links.
+	 */
+	public function __construct( WP_Post $post, array $post_types = [], array $post_statuses = [] ) {
+		$this->post          = $post;
+		$this->post_types    = $post_types;
+		$this->post_statuses = $post_statuses;
 	}
 
+	/**
+	 * Check if the current post is allowed for preview in an iframe.
+	 *
+	 * @return bool True if the post is allowed, false otherwise.
+	 */
 	public function is_allowed(): bool {
 
-		if ( ! is_preview() ) {
+		$post_type  = $this->post->post_type;
+		$post_types = $this->post_types;
+		if ( ! in_array( $post_type, $post_types, true ) ) {
 			return false;
 		}
 
-		if ( ! $this->post instanceof WP_Post ) {
+		$post_status   = $this->post->post_status;
+		$post_statuses = $this->post_statuses;
+
+		if ( ! in_array( $post_status, $post_statuses, true ) ) {
 			return false;
 		}
 
-		// @TODO check
-		// if (
-		// empty( $template_path ) ||
-		// ! $this->types->is_post_type_applicable( $post->post_type ) ||
-		// ! $this->statuses->is_post_status_applicable( $post->post_status ) ||
-		// ! is_preview()
-		// ) {
-		// return '';
-		// }
-
-		$settings_helper = Settings_Helper::get_instance();
-		if ( ! $settings_helper->in_iframe( $this->post->post_type ) ) {
-			return false;
-		}
-
-
-		return is_preview();
+		return true;
 	}
 
-	public function get_post(): ?WP_Post {
-		return $this->post;
-	}
-
-	public function get_iframe_template(): string {
+	/**
+	 * Get the path to the iframe template.
+	 *
+	 * @return string|null The path to the iframe template, or null if it does not exist.
+	 */
+	public function get_iframe_template(): ?string {
 
 		/**
-		 * The filter 'hwp_previews_template_path' allows to change the template directory path.
+		 * The filter 'hwp_previews_template_path' allows changing the template file path.
 		 */
 		$template_dir_path = (string) apply_filters(
 			'hwp_previews_template_path',

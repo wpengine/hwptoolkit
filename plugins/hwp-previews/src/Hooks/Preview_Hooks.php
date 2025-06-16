@@ -1,6 +1,6 @@
 <?php
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace HWP\Previews\Hooks;
 
@@ -59,6 +59,9 @@ class Preview_Hooks {
 	 * Initializes the settings helper, post types and statuses configurations, and the preview link service.
 	 */
 	public function __construct() {
+
+		// @TODO - Refactor to use a factory or service locator pattern and ananlyze what is is actually needed.
+
 		$this->settings_helper = Settings_Helper::get_instance();
 
 		$this->types_config = apply_filters(
@@ -190,8 +193,25 @@ class Preview_Hooks {
 	 */
 	public function add_iframe_preview_template( string $template ): string {
 
-		$template_resolver = new Template_Resolver();
+		if ( ! is_preview() ) {
+			return $template;
+		}
 
+		$post = get_post();
+		if ( ! is_object( $post ) || ! ( $post instanceof WP_Post ) ) {
+			return $template;
+		}
+
+		// @TODO - Refactor as should be part of the main preview settings.
+		$settings_helper = Settings_Helper::get_instance();
+		if ( ! $settings_helper->in_iframe( $post->post_type ) ) {
+			return $template;
+		}
+
+		// @TODO - Refactor as part of types and post statuses config refactor.
+		$post_types        = $this->types_config->get_post_types();
+		$post_statuses     = $this->statuses_config->get_post_statuses();
+		$template_resolver = new Template_Resolver( $post, $post_types, $post_statuses );
 
 		if ( ! $template_resolver->is_allowed() ) {
 			return $template;
@@ -202,13 +222,8 @@ class Preview_Hooks {
 			return $template;
 		}
 
-		// @TODO remove
-		// @TODO how do we get this URL with Preview_URL_Generator?
-		$post = $template_resolver->get_post();
-		set_query_var( $template_resolver::HWP_PREVIEWS_IFRAME_PREVIEW_URL, self::generate_preview_url( $post ) );
-
-		// @TODO - Add back in.
-		// $template_resolver->set_query_variable( $iframe_template );
+		// @TODO - Refactor this as part of URL generation refactor.
+		$template_resolver->set_query_variable( self::generate_preview_url( $post ) );
 
 		return $iframe_template;
 	}

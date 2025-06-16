@@ -52,6 +52,10 @@ class URL_Input_Field extends Text_Input_Field {
 		// Remove <script> tags and their content to prevent XSS.
 		$value = preg_replace( '#<script.*?>.*?</script>#is', '', $value );
 
+		if ( ! is_string( $value ) || '' === trim( $value ) ) {
+			return '';
+		}
+
 		// Remove HTML tags except curly braces, trim, encode spaces, add protocol.
 		$value = preg_replace( '/<(?!\{)[^>]+>/', '', $value );
 		$value = trim( str_replace( ' ', '%20', (string) $value ) );

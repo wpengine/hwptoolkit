@@ -10,7 +10,6 @@
 declare(strict_types=1);
 
 $hwp_previews_url_template = \HWP\Previews\Preview\Template_Resolver::get_query_variable();
-
 ?>
 
 <!DOCTYPE html>

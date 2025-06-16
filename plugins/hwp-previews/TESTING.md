@@ -128,13 +128,7 @@ tests/
 ├── _envs/                # Environment configs
 ├── _output/              # Test output (logs, coverage)
 ├── _support/             # Helper classes, modules
-├── acceptance/           # Acceptance test cases
-├── functional/           # Functional test cases
-├── unit/                 # Unit test cases
 ├── wpunit/               # WPUnit (WordPress-aware unit/integration) test cases
-├── acceptance.suite.dist.yml
-├── functional.suite.dist.yml
-├── unit.suite.dist.yml
 ├── wpunit.suite.dist.yml
 └── wpunit/
     └── bootstrap.php     # Bootstrap for WPUnit tests

@@ -129,6 +129,7 @@
 		"php:psalm": "psalm",
 		"php:psalm:info": "psalm --show-info=true",
 		"php:psalm:fix": "psalm --alter",
+		"qa": "sh bin/local/run-qa.sh",
 		"test": [
 			"sh bin/local/run-unit-tests.sh",
 			"sh bin/local/run-e2e-tests.sh"
