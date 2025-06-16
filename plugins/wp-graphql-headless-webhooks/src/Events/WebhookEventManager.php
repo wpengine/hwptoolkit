@@ -76,6 +76,27 @@ class WebhookEventManager implements EventManager {
 			return;
 		}
 
+		// Enrich payload with post data if post_id is present
+		if ( isset( $payload['post_id'] ) ) {
+			$post = get_post( $payload['post_id'] );
+			if ( $post ) {
+				// Add post data to payload
+				$payload['post'] = [
+					'id' => $post->ID,
+					'title' => $post->post_title,
+					'slug' => $post->post_name,
+					'uri' => str_replace( home_url(), '', get_permalink( $post ) ),
+					'status' => $post->post_status,
+					'type' => $post->post_type,
+					'date' => $post->post_date,
+					'modified' => $post->post_modified,
+				];
+				
+				// Add the path for Next.js revalidation
+				$payload['path'] = '/' . trim( $payload['post']['uri'], '/' ) . '/';
+			}
+		}
+
 		do_action( 'graphql_webhooks_before_trigger', $event, $payload );
 
 		foreach ( $this->repository->get_all() as $webhook ) {

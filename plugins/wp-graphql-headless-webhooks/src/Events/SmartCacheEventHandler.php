@@ -124,18 +124,57 @@ class SmartCacheEventHandler {
 				continue;
 			}
 			
-			// Simple payload with just the essential information
+			// Decode cache keys to get actual post IDs
+			$decoded_items = [];
+			$paths = [];
+			
+			foreach ( $data['keys'] as $key ) {
+				// WPGraphQL cache keys are base64 encoded global IDs
+				// Format is typically: base64("post:123") or base64("page:456")
+				$decoded = base64_decode( $key );
+				if ( $decoded && strpos( $decoded, ':' ) !== false ) {
+					list( $type, $id ) = explode( ':', $decoded, 2 );
+					
+					// Get the post data
+					if ( $type === 'post' || $type === 'page' ) {
+						$post = get_post( $id );
+						if ( $post ) {
+							$uri = str_replace( home_url(), '', get_permalink( $post ) );
+							$path = '/' . trim( $uri, '/' ) . '/';
+							
+							$decoded_items[] = [
+								'id' => $post->ID,
+								'title' => $post->post_title,
+								'slug' => $post->post_name,
+								'uri' => $uri,
+								'path' => $path,
+								'type' => $post->post_type,
+								'status' => $post->post_status,
+							];
+							
+							$paths[] = $path;
+						}
+					}
+				}
+			}
+			
+			// Enhanced payload with decoded post data
 			$payload = [
 				'post_type' => $data['post_type'],
 				'action' => $data['action'],
 				'graphql_endpoint' => $data['graphql_endpoint'],
-				'cache_keys' => array_unique( $data['keys'] ), // Remove duplicates
+				'cache_keys' => array_unique( $data['keys'] ), // Original cache keys
 				'cache_keys_count' => count( array_unique( $data['keys'] ) ),
+				'posts' => $decoded_items, // Decoded post data
+				'paths' => array_unique( $paths ), // Paths for ISR revalidation
 				'timestamp' => current_time( 'c' ),
 			];
 			
-			// Let webhook consumers decode the keys if they need to
-			// They already have access to WPGraphQL and can use Relay::fromGlobalId()
+			// If there's only one post, add it as the primary post/path for compatibility
+			if ( count( $decoded_items ) === 1 ) {
+				$payload['post'] = $decoded_items[0];
+				$payload['path'] = $decoded_items[0]['path'];
+			}
 			
 			call_user_func( $this->webhook_trigger_callback, $webhook_event, $payload );
 		}

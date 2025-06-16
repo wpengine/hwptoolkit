@@ -95,6 +95,38 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			$this->event_manager = new WebhookEventManager( $this->repository, $this->handler );
 			$this->event_manager->register_hooks();
 
+			// Add standard WordPress events to the allowed events list
+			add_filter( 'graphql_webhooks_allowed_events', function( $events ) {
+				// Add standard WordPress post events
+				$events['post_published'] = 'Post Published';
+				$events['post_updated'] = 'Post Updated';
+				$events['post_deleted'] = 'Post Deleted';
+				$events['post_meta_change'] = 'Post Meta Changed';
+				
+				// Add term events
+				$events['term_created'] = 'Term Created';
+				$events['term_assigned'] = 'Term Assigned';
+				$events['term_unassigned'] = 'Term Unassigned';
+				$events['term_deleted'] = 'Term Deleted';
+				
+				// Add user events
+				$events['user_created'] = 'User Created';
+				$events['user_deleted'] = 'User Deleted';
+				$events['user_assigned'] = 'User Assigned to Post';
+				$events['user_reassigned'] = 'User Reassigned on Post';
+				
+				// Add media events
+				$events['media_uploaded'] = 'Media Uploaded';
+				$events['media_updated'] = 'Media Updated';
+				$events['media_deleted'] = 'Media Deleted';
+				
+				// Add comment events
+				$events['comment_inserted'] = 'Comment Added';
+				$events['comment_status'] = 'Comment Status Changed';
+				
+				return $events;
+			} );
+
 			// Register REST endpoints
 			if ( class_exists( WebhookEventsEndpoint::class ) ) {
 				$events_endpoint = new WebhookEventsEndpoint( $this->repository );
