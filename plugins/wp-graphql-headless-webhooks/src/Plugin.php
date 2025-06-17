@@ -89,6 +89,26 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			// Initialize event manager and register hooks
 			$eventManager = $this->services->get( 'event_manager' );
 			$eventManager->register_hooks();
+
+			// Initialize admin UI
+			if ( is_admin() ) {
+				$repository = $this->services->get( 'repository' );
+				
+				if ( class_exists( 'WPGraphQL\Webhooks\Admin\WebhooksAdmin' ) ) {
+					$admin = new \WPGraphQL\Webhooks\Admin\WebhooksAdmin( $repository );
+					$admin->init();
+				}
+			}
+
+			// Initialize REST endpoints
+			add_action( 'rest_api_init', function () {
+				$repository = $this->services->get( 'repository' );
+				
+				if ( class_exists( 'WPGraphQL\Webhooks\Rest\WebhookTestEndpoint' ) ) {
+					$testEndpoint = new \WPGraphQL\Webhooks\Rest\WebhookTestEndpoint( $repository );
+					$testEndpoint->register_routes();
+				}
+			} );
 		}
 
 		/**
