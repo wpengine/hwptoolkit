@@ -80,30 +80,4 @@ class Settings_Helper {
 
 		return $this->settings_group->get_post_type_boolean_value( $key, $post_type, $default_value );
 	}
-
-	/**
-	 * Show In iframe value for the given post type.
-	 *
-	 * @param string $post_type The post type to get the setting for.
-	 * @param bool   $default_value The default value to return if the setting is not set.
-	 */
-	public function in_iframe( string $post_type, bool $default_value = false ): bool {
-
-		// @TODO remove as part of Post_Type_Service refactor.
-		$key = $this->settings_group->get_settings_key_in_iframe();
-
-		return $this->settings_group->get_post_type_boolean_value( $key, $post_type, $default_value );
-	}
-
-	/**
-	 * URL template setting value for the given post type.
-	 *
-	 * @param string $post_type The post type to get the setting for.
-	 * @param string $default_value The default value to return if the setting is not set.
-	 */
-	public function url_template( string $post_type, string $default_value = '' ): string {
-		$key = $this->settings_group->get_settings_key_preview_url();
-
-		return $this->settings_group->get_post_type_string_value( $key, $post_type, $default_value );
-	}
 }

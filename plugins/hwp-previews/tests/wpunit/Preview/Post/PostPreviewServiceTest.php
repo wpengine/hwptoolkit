@@ -3,9 +3,9 @@
 
 declare( strict_types=1 );
 
-namespace HWP\Previews\Tests\Unit\Preview\Service;
+namespace HWP\Previews\Tests\Unit\Preview\Post;
 
-use HWP\Previews\Preview\Service\Post_Preview_Service;
+use HWP\Previews\Preview\Post\Post_Preview_Service;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**

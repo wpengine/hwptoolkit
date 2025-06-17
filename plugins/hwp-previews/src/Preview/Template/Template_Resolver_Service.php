@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Preview\Service;
+namespace HWP\Previews\Preview\Template;
 
 class Template_Resolver_Service {
 	/**

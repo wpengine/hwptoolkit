@@ -2,11 +2,12 @@
 
 declare( strict_types=1 );
 
-namespace HWP\Previews\Tests\Unit\Preview\Service;
+namespace HWP\Previews\Tests\Unit\Preview\Template;
 
-use HWP\Previews\Preview\Service\Template_Resolver_Service;
+use HWP\Previews\Preview\Template\Template_Resolver_Service;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
-class Template_Resolver_Service_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
+class Template_Resolver_Service_Test extends WPTestCase {
 
 
 	/**

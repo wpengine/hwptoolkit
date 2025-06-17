@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HWP\Previews\Preview\Service;
+namespace HWP\Previews\Preview\Post;
 
 class Post_Settings_Service {
 	/**

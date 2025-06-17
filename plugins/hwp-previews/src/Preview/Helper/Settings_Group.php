@@ -136,23 +136,6 @@ class Settings_Group {
 	}
 
 	/**
-	 *  Gets a string value for a specific setting in a post type.
-	 *
-	 * @param string $name The setting name.
-	 * @param string $post_type The post type slug.
-	 * @param string $default_value The default value to return if the setting is not found.
-	 */
-	public function get_post_type_string_value( string $name, string $post_type, string $default_value = '' ): string {
-		$settings = $this->get_cached_settings();
-		$type     = $this->settings_config[ $name ] ?? null;
-		if ( 'string' === $type && isset( $settings[ $post_type ][ $name ] ) ) {
-			return (string) $settings[ $post_type ][ $name ];
-		}
-
-		return $default_value;
-	}
-
-	/**
 	 * Gets the option key for the settings group.
 	 */
 	protected function get_option_key(): string {

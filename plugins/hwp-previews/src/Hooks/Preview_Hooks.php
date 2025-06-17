@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace HWP\Previews\Hooks;
 
 use HWP\Previews\Preview\Helper\Settings_Helper;
-use HWP\Previews\Preview\Link\Preview_Link_Placeholder_Resolver;
-use HWP\Previews\Preview\Link\Preview_Link_Service;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 use HWP\Previews\Preview\Post\Parent\Post_Parent_Manager;
+use HWP\Previews\Preview\Post\Post_Preview_Service;
+use HWP\Previews\Preview\Post\Post_Settings_Service;
+use HWP\Previews\Preview\Post\Post_Type_Service;
 use HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface;
 use HWP\Previews\Preview\Post\Status\Post_Statuses_Config;
 use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
 use HWP\Previews\Preview\Post\Type\Post_Types_Config_Registry;
-use HWP\Previews\Preview\Service\Post_Preview_Service;
-use HWP\Previews\Preview\Service\Post_Settings_Service;
-use HWP\Previews\Preview\Service\Post_Type_Service;
-use HWP\Previews\Preview\Service\Template_Resolver_Service;
+use HWP\Previews\Preview\Template\Template_Resolver_Service;
+use HWP\Previews\Preview\Url\Preview_Url_Resolver_Service;
 use WP_Post;
 use WP_REST_Response;
 
@@ -43,11 +42,11 @@ class Preview_Hooks {
 	protected Post_Statuses_Config_Interface $statuses_config;
 
 	/**
-	 * Preview link service class that handles the generation of preview links.
+	 * Post-settings service that provides access to post-settings.
 	 *
-	 * @var \HWP\Previews\Preview\Link\Preview_Link_Service
+	 * @var \HWP\Previews\Preview\Post\Post_Preview_Service
 	 */
-	protected Preview_Link_Service $link_service;
+	protected Post_Preview_Service $post_preview_service;
 
 	/**
 	 * The instance of the Preview_Hooks class.
@@ -55,6 +54,13 @@ class Preview_Hooks {
 	 * @var \HWP\Previews\Hooks\Preview_Hooks|null
 	 */
 	protected static ?Preview_Hooks $instance = null;
+
+	/**
+	 * Post-settings service that provides access to post-settings.
+	 *
+	 * @var \HWP\Previews\Preview\Post\Post_Settings_Service
+	 */
+	private Post_Settings_Service $post_settings_service;
 
 	/**
 	 * Constructor for the Preview_Hooks class.
@@ -78,15 +84,9 @@ class Preview_Hooks {
 			( new Post_Statuses_Config() )->set_post_statuses( $this->get_post_statuses() )
 		);
 
-		// Initialize the preview link service.
-		$this->link_service = apply_filters(
-			'hwp_previews_hooks_preview_link_service',
-			new Preview_Link_Service(
-				$this->types_config,
-				$this->statuses_config,
-				new Preview_Link_Placeholder_Resolver( Preview_Parameter_Registry::get_instance() )
-			)
-		);
+
+		$this->post_preview_service  = new Post_Preview_Service();
+		$this->post_settings_service = new Post_Settings_Service();
 	}
 
 	/**
@@ -154,11 +154,11 @@ class Preview_Hooks {
 	 */
 	public function enable_post_statuses_as_parent( array $args ): array {
 
-		$post_parent_manager = new Post_Parent_Manager( $this->types_config, $this->statuses_config );
-
 		if ( empty( $args['post_type'] ) ) {
 			return $args;
 		}
+
+		$post_parent_manager = new Post_Parent_Manager( $this->types_config, $this->statuses_config );
 
 		$post_type = (string) $args['post_type'];
 
@@ -180,7 +180,13 @@ class Preview_Hooks {
 	 */
 	public function filter_rest_prepare_link( WP_REST_Response $response, WP_Post $post ): WP_REST_Response {
 
-		if ( $this->settings_helper->in_iframe( $post->post_type ) ) {
+		$post_type_service = new Post_Type_Service( $post, $this->post_preview_service, $this->post_settings_service );
+
+		if ( ! $post_type_service->is_allowed_for_previews() ) {
+			return $response;
+		}
+
+		if ( $post_type_service->is_iframe() ) {
 			return $response;
 		}
 
@@ -202,27 +208,28 @@ class Preview_Hooks {
 		}
 
 		$post = get_post();
-		if ( ! is_object( $post ) || ! ( $post instanceof WP_Post ) ) {
+		if ( ! ( $post instanceof WP_Post ) ) {
 			return $template;
 		}
 
-		// @TODO - Move main classes into properties
-		$post_preview_service  = new Post_Preview_Service();
-		$post_settings_service = new Post_Settings_Service();
-		$post_type_service     = new Post_Type_Service( $post, $post_preview_service, $post_settings_service );
+		$post_type_service = new Post_Type_Service( $post, $this->post_preview_service, $this->post_settings_service );
 
-		if ( ! $post_type_service->is_allowed_for_previews() || ! $post_type_service->is_iframe() ) {
+		if (
+			! $post_type_service->is_allowed_for_previews() ||
+			! $post_type_service->is_iframe()
+		) {
 			return $template;
 		}
 
 		$template_resolver = new Template_Resolver_Service();
 		$iframe_template   = $template_resolver->get_iframe_template();
-		if ( empty( $iframe_template ) ) {
+		$url               = self::generate_preview_url( $post );
+
+		if ( empty( $iframe_template ) || empty( $url ) ) {
 			return $template;
 		}
 
-		// @TODO - Refactor this as part of URL generation refactor.
-		$template_resolver->set_query_variable( self::generate_preview_url( $post ) );
+		$template_resolver->set_query_variable( $url );
 
 		return $iframe_template;
 	}
@@ -234,10 +241,14 @@ class Preview_Hooks {
 	 */
 	public function update_preview_post_link( string $preview_link, WP_Post $post ): string {
 
-		// @TODO - Need to do more testing and add e2e tests for this filter.
+		$post_type_service = new Post_Type_Service( $post, $this->post_preview_service, $this->post_settings_service );
 
-		// If iframe option is enabled, we need to resolve preview on the template redirect level.
-		if ( $this->settings_helper->in_iframe( $post->post_type ) ) {
+		if ( ! $post_type_service->is_allowed_for_previews() ) {
+			return $preview_link;
+		}
+
+		// If the iframe option is enabled, we need to resolve preview on the template redirect level.
+		if ( $post_type_service->is_iframe() ) {
 			return $preview_link;
 		}
 
@@ -258,14 +269,24 @@ class Preview_Hooks {
 	 */
 	public function generate_preview_url( WP_Post $post ): string {
 
-		// Check if the correspondent setting is enabled.
-		$url = $this->settings_helper->url_template( $post->post_type );
+		$post_type_service = new Post_Type_Service( $post, $this->post_preview_service, $this->post_settings_service );
 
+		if ( ! $post_type_service->is_allowed_for_previews() ) {
+			return '';
+		}
+
+		$url = $post_type_service->get_preview_url();
 		if ( empty( $url ) ) {
 			return '';
 		}
 
-		return $this->link_service->generate_preview_post_link( $url, $post );
+		$service = new Preview_Url_Resolver_Service( Preview_Parameter_Registry::get_instance() );
+		$url     = $service->resolve( $post, $url );
+		if ( empty( $url ) ) {
+			return '';
+		}
+
+		return $url;
 	}
 
 	/**
