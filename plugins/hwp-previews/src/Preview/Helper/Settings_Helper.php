@@ -45,16 +45,6 @@ class Settings_Helper {
 	}
 
 	/**
-	 * Get the settings group.
-	 *
-	 * @return array<string, mixed>
-	 */
-	public function get_settings_config(): array {
-		// @TODO: Remove this method when the settings group is no longer needed.
-		return $this->settings_group->get_settings_config();
-	}
-
-	/**
 	 * Get all post types that are enabled in the settings.
 	 *
 	 * @param array<string> $default_value Default post types to return if none are enabled.
@@ -99,6 +89,7 @@ class Settings_Helper {
 	 */
 	public function in_iframe( string $post_type, bool $default_value = false ): bool {
 
+		// @TODO remove as part of Post_Type_Service refactor.
 		$key = $this->settings_group->get_settings_key_in_iframe();
 
 		return $this->settings_group->get_post_type_boolean_value( $key, $post_type, $default_value );

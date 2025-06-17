@@ -13,7 +13,10 @@ use HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface;
 use HWP\Previews\Preview\Post\Status\Post_Statuses_Config;
 use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
 use HWP\Previews\Preview\Post\Type\Post_Types_Config_Registry;
-use HWP\Previews\Preview\Template_Resolver;
+use HWP\Previews\Preview\Service\Post_Preview_Service;
+use HWP\Previews\Preview\Service\Post_Settings_Service;
+use HWP\Previews\Preview\Service\Post_Type_Service;
+use HWP\Previews\Preview\Service\Template_Resolver_Service;
 use WP_Post;
 use WP_REST_Response;
 
@@ -60,7 +63,7 @@ class Preview_Hooks {
 	 */
 	public function __construct() {
 
-		// @TODO - Refactor to use a factory or service locator pattern and ananlyze what is is actually needed.
+		// @TODO - Refactor to use a factory or service locator pattern and analyze what is is actually needed.
 
 		$this->settings_helper = Settings_Helper::get_instance();
 
@@ -125,6 +128,7 @@ class Preview_Hooks {
 	 * @return array<string>
 	 */
 	public function get_post_statuses(): array {
+		// @TODO - Remove
 		$post_statuses = [
 			'publish',
 			'future',
@@ -202,22 +206,17 @@ class Preview_Hooks {
 			return $template;
 		}
 
-		// @TODO - Refactor as should be part of the main preview settings.
-		$settings_helper = Settings_Helper::get_instance();
-		if ( ! $settings_helper->in_iframe( $post->post_type ) ) {
+		// @TODO - Move main classes into properties
+		$post_preview_service  = new Post_Preview_Service();
+		$post_settings_service = new Post_Settings_Service();
+		$post_type_service     = new Post_Type_Service( $post, $post_preview_service, $post_settings_service );
+
+		if ( ! $post_type_service->is_allowed_for_previews() || ! $post_type_service->is_iframe() ) {
 			return $template;
 		}
 
-		// @TODO - Refactor as part of types and post statuses config refactor.
-		$post_types        = $this->types_config->get_post_types();
-		$post_statuses     = $this->statuses_config->get_post_statuses();
-		$template_resolver = new Template_Resolver( $post, $post_types, $post_statuses );
-
-		if ( ! $template_resolver->is_allowed() ) {
-			return $template;
-		}
-
-		$iframe_template = $template_resolver->get_iframe_template();
+		$template_resolver = new Template_Resolver_Service();
+		$iframe_template   = $template_resolver->get_iframe_template();
 		if ( empty( $iframe_template ) ) {
 			return $template;
 		}

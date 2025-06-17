@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-$hwp_previews_url_template = \HWP\Previews\Preview\Template_Resolver::get_query_variable();
+$hwp_previews_url_template = \HWP\Previews\Preview\Service\Template_Resolver_Service::get_query_variable();
 ?>
 
 <!DOCTYPE html>
