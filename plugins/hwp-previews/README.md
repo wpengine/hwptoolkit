@@ -36,7 +36,6 @@ With HWP Previews, you can define dynamic URL templates, enforce unique slugs fo
 	* `{slug}` – Post slug
 	* `{parent_ID}` – Parent post ID (hierarchical types)
 	* `{type}` – Post type slug
-	* `{uri}` – Page URI/path
 	* `{template}` – Template filename
 
 * **Unique Post Slugs**: Force unique slugs for all post statuses in the post status config.
