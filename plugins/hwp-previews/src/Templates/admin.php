@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 use HWP\Previews\Integration\Faust_Integration;
 
-$hwp_previews_tabs_config = (array) get_query_var( 'hwp_previews_main_page_config' );
-$hwp_previews_current_tab = (string) ( $hwp_previews_tabs_config['current_tab'] ?? '' );
-$hwp_previews_tabs        = (array) ( $hwp_previews_tabs_config['tabs'] ?? [] );
-$hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] );
+$hwp_previews_tabs_config       = (array) get_query_var( 'hwp_previews_main_page_config' );
+$hwp_previews_current_tab       = (string) ( $hwp_previews_tabs_config['current_tab'] ?? '' );
+$hwp_previews_tabs              = (array) ( $hwp_previews_tabs_config['tabs'] ?? [] );
+$hwp_previews_params            = (array) ( $hwp_previews_tabs_config['params'] ?? [] );
+$hwp_previews_faust_integration = Faust_Integration::init();
 
 ?>
 
@@ -61,11 +62,11 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 						<div class="postbox">
 							<h2><?php esc_html_e( 'Get Started With HWP Previews', 'hwp-previews' ); ?></h2>
 							<div class="inside hwp-previews-docs">
-			
+
 								<ul>
 									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#getting-started" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Getting Started', 'hwp-previews' ); ?></a></li>
 									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#front-end-integration" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Front-End Integration', 'hwp-previews' ); ?></a></li>
-									<?php if ( Faust_Integration::$faust_enabled ) : ?>
+									<?php if ( $hwp_previews_faust_integration->get_faust_enabled() ) : ?>
 										<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#using-with-faustjs" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Using With Faust.js', 'hwp-previews' ); ?></a></li>
 									<?php endif; ?>
 									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#extending-the-functionality" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Extending the Functionality', 'hwp-previews' ); ?></a></li>

@@ -1,6 +1,6 @@
 <?php
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace HWP\Previews\Integration;
 
@@ -17,6 +17,11 @@ class Faust_Integration {
 	public const FAUST_NOTICE_KEY = 'hwp_previews_faust_notice';
 
 	/**
+	 * Whether Faust is enabled.
+	 */
+	public bool $faust_enabled = false;
+
+	/**
 	 * The instance of the Faust integration.
 	 *
 	 * @var \HWP\Previews\Integration\Faust_Integration|null
@@ -24,11 +29,10 @@ class Faust_Integration {
 	protected static ?Faust_Integration $instance = null;
 
 	/**
-	 * Whether Faust is enabled.
+	 * Faust_Integration constructor.
+	 *
+	 * Initializes the Faust integration if Faust is enabled.
 	 */
-	public bool $faust_enabled = false;
-
-
 	public function __construct() {
 		$this->faust_enabled = $this->is_faust_enabled();
 
@@ -37,6 +41,17 @@ class Faust_Integration {
 		}
 
 		$this->configure_faust();
+	}
+
+	/**
+	 * Initialize the hooks for the preview functionality.
+	 */
+	public static function init(): Faust_Integration {
+		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
 	}
 
 	/**
@@ -55,29 +70,6 @@ class Faust_Integration {
 	 */
 	public function get_faust_enabled(): bool {
 		return $this->faust_enabled;
-	}
-
-	/**
-	 * Initialize the hooks for the preview functionality.
-	 */
-	public static function init(): Faust_Integration {
-		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	/**
-	 * Configure Faust settings and remove conflicting filters.
-	 */
-	protected function configure_faust(): void {
-		$this->set_default_faust_settings();
-
-		// Remove FaustWP post preview link filter to avoid conflicts with our custom preview link generation.
-		remove_filter( 'preview_post_link', 'WPE\FaustWP\Replacement\post_preview_link', 1000 );
-
-		$this->display_faust_admin_notice();
 	}
 
 	/**
@@ -135,17 +127,10 @@ class Faust_Integration {
 	}
 
 	/**
-	 * Dismiss the Faust admin notice.
-	 */
-	public function dismiss_faust_admin_notice(): void {
-		update_user_meta( get_current_user_id(), self::FAUST_NOTICE_KEY, 1 );
-	}
-
-	/**
 	 * Register admin notice to inform users about Faust integration.
 	 */
 	public function register_faust_admin_notice(): void {
-		add_action( 'admin_notices', function (): void {
+		add_action( 'admin_notices', static function (): void {
 			$screen = get_current_screen();
 
 			// Exit if not this plugin's settings page.
@@ -182,6 +167,25 @@ class Faust_Integration {
 	}
 
 	/**
+	 * Dismiss the Faust admin notice.
+	 */
+	public static function dismiss_faust_admin_notice(): void {
+		update_user_meta( get_current_user_id(), self::FAUST_NOTICE_KEY, 1 );
+	}
+
+	/**
+	 * Configure Faust settings and remove conflicting filters.
+	 */
+	protected function configure_faust(): void {
+		$this->set_default_faust_settings();
+
+		// Remove FaustWP post preview link filter to avoid conflicts with our custom preview link generation.
+		remove_filter( 'preview_post_link', 'WPE\FaustWP\Replacement\post_preview_link', 1000 );
+
+		$this->display_faust_admin_notice();
+	}
+
+	/**
 	 * If Faust is enabled, show an admin notice about the migration on the settings page.
 	 */
 	protected function display_faust_admin_notice(): void {
@@ -195,7 +199,7 @@ class Faust_Integration {
 		self::register_faust_admin_notice();
 
 		// Register the AJAX action for dismissing the notice.
-		add_action( 'wp_ajax_' . self::FAUST_NOTICE_KEY, function (): void {
+		add_action( 'wp_ajax_' . self::FAUST_NOTICE_KEY, static function (): void {
 			// Exit if the action is not set or does not match the expected key.
 			if ( ! isset( $_POST['action'] ) || esc_attr( self::FAUST_NOTICE_KEY ) !== $_POST['action'] ) {
 				return;
