@@ -56,3 +56,18 @@
 	visibility: visible;
 	opacity: 1;
 }
+
+.hwp-previews-docs ul li {
+	list-style-type: none;
+	margin-left: 30px;
+	padding-bottom: 16px;
+}
+
+.hwp-previews-docs ul li:before {
+	content: url(../icons/doc.svg);
+	height: 1em;
+	margin-left: -29px;
+	margin-top: -2px;
+	position: absolute;
+	width: 0.5em;
+}

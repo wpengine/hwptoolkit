@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+	// --------------------------------------------------------
+	// Parameter buttons
+	// --------------------------------------------------------
+
 	const buttons = document.querySelectorAll(".hwp-previews-insert-tag");
 	const input = document.querySelector(".hwp-previews-url");
 
@@ -40,4 +44,36 @@ document.addEventListener("DOMContentLoaded", () => {
 	for (const button of buttons) {
 		button.addEventListener("click", insertTag);
 	}
+
+	// --------------------------------------------------------
+	// Unsaved changes warning
+	// --------------------------------------------------------
+
+	// Select the form to monitor for changes
+	const formElement = document.querySelector("form");
+
+	function getFormState(form) {
+		const data = new FormData(form);
+		return JSON.stringify(Array.from(data.entries()));
+	}
+
+	// Save the initial state of the form for later comparison
+	const initialState = getFormState(formElement);
+
+	// Warn the user if they try to leave with unsaved changes
+	function beforeUnload(e) {
+		const formState = getFormState(formElement);
+
+		if (formState !== initialState) {
+			e.preventDefault();
+			e.returnValue = true;
+		}
+	}
+
+	window.addEventListener("beforeunload", beforeUnload);
+
+	// Remove the warning on submit so it doesn't appear when saving
+	formElement.addEventListener("submit", function () {
+		window.removeEventListener("beforeunload", beforeUnload);
+	});
 });

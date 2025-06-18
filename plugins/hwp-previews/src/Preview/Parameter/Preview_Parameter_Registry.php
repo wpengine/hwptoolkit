@@ -62,8 +62,6 @@ class Preview_Parameter_Registry {
 			)->register(
 				new Preview_Parameter( 'type', static fn( WP_Post $post ) => $post->post_type, 'The post type, like post or page.' )
 			)->register(
-				new Preview_Parameter( 'uri', static fn( WP_Post $post ) => (string) get_page_uri( $post ), 'The URI path for a page.' )
-			)->register(
 				new Preview_Parameter( 'template', static fn( WP_Post $post ) => (string) get_page_template_slug( $post ), 'Specific template filename for a given post.' )
 			);
 

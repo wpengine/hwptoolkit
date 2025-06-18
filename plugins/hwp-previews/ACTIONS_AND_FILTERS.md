@@ -36,7 +36,7 @@ Modify which post types appear in the settings UI:
 ```php
 // Removes attachment post type from the settings page configuration.
 
-add_filter( 'hwp_previews_filter_post_type_setting', 'hwp_previews_filter_post_type_setting_callback' );
+add_filter( 'hwp_previews_filter_available_post_types', 'hwp_previews_filter_post_type_setting_callback' );
 function hwp_previews_filter_post_type_setting_callback( $post_types ) {
     if ( isset( $post_types['attachment'] ) ) {
         unset( $post_types['attachment'] );
