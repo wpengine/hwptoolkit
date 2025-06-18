@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use HWP\Previews\Integration\Faust_Integration;
+
 $hwp_previews_tabs_config = (array) get_query_var( 'hwp_previews_main_page_config' );
 $hwp_previews_current_tab = (string) ( $hwp_previews_tabs_config['current_tab'] ?? '' );
 $hwp_previews_tabs        = (array) ( $hwp_previews_tabs_config['tabs'] ?? [] );
@@ -53,6 +55,23 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 										</button>
 									<?php endforeach; ?>
 								</div>
+							</div>
+						</div>
+
+						<div class="postbox">
+							<h2><?php esc_html_e( 'Get Started With HWP Previews', 'hwp-previews' ); ?></h2>
+							<div class="inside hwp-previews-docs">
+			
+								<ul>
+									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#getting-started" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Getting Started', 'hwp-previews' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#front-end-integration" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Front-End Integration', 'hwp-previews' ); ?></a></li>
+									<?php if ( Faust_Integration::$faust_enabled ) : ?>
+										<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#using-with-faustjs" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Using With Faust.js', 'hwp-previews' ); ?></a></li>
+									<?php endif; ?>
+									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#xtending-the-functionality" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Extending the Functionality', 'hwp-previews' ); ?></a></li>
+								</ul>
+								<p><?php esc_html_e( 'HWP Previews is part of the HWP Toolkit, our comprehensive suite of tools and examples for headless WordPress.', 'hwp-previews' ); ?></p>
+								<p><a class="button-secondary" href="https://github.com/wpengine/hwptoolkit" target="_blank" rel="noopener noreferrer">HWP Toolkit on GitHub</a></p>
 							</div>
 						</div>
 					</div>
