@@ -59,6 +59,16 @@ class WebhookRepository implements WebhookRepositoryInterface {
 	}
 
 	/**
+	 * Get the list of allowed HTTP methods.
+	 *
+	 * @return array<string> Array of allowed HTTP methods.
+	 */
+	public function get_allowed_methods(): array {
+		$methods = [ 'POST', 'GET' ];
+		return apply_filters( 'graphql_webhooks_allowed_methods', $methods );
+	}
+
+	/**
 	 * Retrieve all published webhook entities.
 	 *
 	 * @return Webhook[] Array of Webhook entity objects.
@@ -96,15 +106,25 @@ class WebhookRepository implements WebhookRepositoryInterface {
 	/**
 	 * Create a new webhook entity.
 	 *
-	 * @param string $name    Name/title of the webhook.
-	 * @param string $event   Event key the webhook listens to.
-	 * @param string $url     Target URL for the webhook request.
-	 * @param string $method  HTTP method (GET or POST).
-	 * @param array  $headers Associative array of HTTP headers.
+	 * @param array $data {
+	 *     Webhook data.
+	 *
+	 *     @type string $name    Name/title of the webhook.
+	 *     @type string $event   Event key the webhook listens to.
+	 *     @type string $url     Target URL for the webhook request.
+	 *     @type string $method  HTTP method (GET, POST, etc).
+	 *     @type array  $headers Associative array of HTTP headers.
+	 * }
 	 *
 	 * @return int|WP_Error Post ID on success, or WP_Error on failure.
 	 */
-	public function create( $name, $event, $url, $method, $headers ) {
+	public function create( $data ) {
+		$name    = $data['name'] ?? '';
+		$event   = $data['event'] ?? '';
+		$url     = $data['url'] ?? '';
+		$method  = $data['method'] ?? 'POST';
+		$headers = $data['headers'] ?? [];
+
 		$validation = $this->validate_data( $event, $url, $method );
 		if ( is_wp_error( $validation ) ) {
 			return $validation;
@@ -131,20 +151,30 @@ class WebhookRepository implements WebhookRepositoryInterface {
 	/**
 	 * Update an existing webhook entity.
 	 *
-	 * @param int    $id      Post ID of the webhook to update.
-	 * @param string $name    New name/title of the webhook.
-	 * @param string $event   New event key.
-	 * @param string $url     New target URL.
-	 * @param string $method  New HTTP method.
-	 * @param array  $headers New HTTP headers.
+	 * @param int   $id   Post ID of the webhook to update.
+	 * @param array $data {
+	 *     Webhook data.
+	 *
+	 *     @type string $name    New name/title of the webhook.
+	 *     @type string $event   New event key.
+	 *     @type string $url     New target URL.
+	 *     @type string $method  New HTTP method.
+	 *     @type array  $headers New HTTP headers.
+	 * }
 	 *
 	 * @return bool|WP_Error True on success, or WP_Error on failure.
 	 */
-	public function update( $id, $name, $event, $url, $method, $headers ) {
+	public function update( $id, $data ) {
 		$post = get_post( $id );
 		if ( ! $post || $post->post_type !== 'graphql_webhook' ) {
 			return new WP_Error( 'invalid_webhook', __( 'Webhook not found.', 'wp-graphql-headless-webhooks' ) );
 		}
+
+		$name    = $data['name'] ?? '';
+		$event   = $data['event'] ?? '';
+		$url     = $data['url'] ?? '';
+		$method  = $data['method'] ?? 'POST';
+		$headers = $data['headers'] ?? [];
 
 		$validation = $this->validate_data( $event, $url, $method );
 		if ( is_wp_error( $validation ) ) {
@@ -202,7 +232,7 @@ class WebhookRepository implements WebhookRepositoryInterface {
 		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
 			return new WP_Error( 'invalid_url', 'Invalid URL.' );
 		}
-		if ( ! in_array( strtoupper( $method ), [ 'GET', 'POST' ], true ) ) {
+		if ( ! in_array( strtoupper( $method ), $this->get_allowed_methods(), true ) ) {
 			return new WP_Error( 'invalid_method', 'Invalid HTTP method.' );
 		}
 		return apply_filters( 'graphql_webhooks_validate_data', true, $event, $url, $method );

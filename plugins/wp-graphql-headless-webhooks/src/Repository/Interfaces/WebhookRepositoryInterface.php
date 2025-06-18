@@ -29,29 +29,31 @@ interface WebhookRepositoryInterface {
     /**
      * Creates a new webhook.
      *
-     * @param string $name    The name (title) of the webhook.
-     * @param string $event   The event identifier the webhook listens to.
-     * @param string $url     The target URL the webhook will send data to.
-     * @param string $method  The HTTP method to use when sending the webhook (e.g., 'POST').
-     * @param array  $headers Optional associative array of headers to send with the request.
+     * @param array $data The webhook data containing:
+     *                    - name (string): The name (title) of the webhook.
+     *                    - event (string): The event identifier the webhook listens to.
+     *                    - url (string): The target URL the webhook will send data to.
+     *                    - method (string): The HTTP method to use when sending the webhook (e.g., 'POST').
+     *                    - headers (array): Optional associative array of headers to send with the request.
      *
      * @return int|\WP_Error The new webhook's post ID on success, or WP_Error on failure.
      */
-    public function create(string $name, string $event, string $url, string $method, array $headers);
+    public function create(array $data);
 
     /**
      * Updates an existing webhook.
      *
-     * @param int    $id      The webhook post ID.
-     * @param string $name    The updated name (title) of the webhook.
-     * @param string $event   The updated event identifier.
-     * @param string $url     The updated target URL.
-     * @param string $method  The updated HTTP method.
-     * @param array  $headers The updated array of headers.
+     * @param int   $id   The webhook post ID.
+     * @param array $data The webhook data containing:
+     *                    - name (string): The updated name (title) of the webhook.
+     *                    - event (string): The updated event identifier.
+     *                    - url (string): The updated target URL.
+     *                    - method (string): The updated HTTP method.
+     *                    - headers (array): The updated array of headers.
      *
      * @return bool|\WP_Error True on success, or WP_Error on failure.
      */
-    public function update(int $id, string $name, string $event, string $url, string $method, array $headers);
+    public function update(int $id, array $data);
 
     /**
      * Deletes a webhook by its ID.
