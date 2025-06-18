@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Post;
 
+use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use WP_Post;
 
 class Post_Type_Service {
@@ -55,11 +56,13 @@ class Post_Type_Service {
 			return false;
 		}
 
-		if ( ! isset( $config['enabled'] ) ) {
+		$field_id = Settings_Field_Collection::ENABLED_FIELD_ID;
+
+		if ( ! isset( $config[ $field_id ] ) ) {
 			return false;
 		}
 
-		return (bool) $config['enabled'];
+		return (bool) $config[ $field_id ];
 	}
 
 	/**
@@ -91,12 +94,12 @@ class Post_Type_Service {
 			return false;
 		}
 
-		// @TODO - Key resolution.
-		if ( ! isset( $config['in_iframe'] ) ) {
+		$field_id = Settings_Field_Collection::IN_IFRAME_FIELD_ID;
+		if ( ! isset( $config[ $field_id ] ) ) {
 			return false;
 		}
 
-		return (bool) $config['in_iframe'];
+		return (bool) $config[ $field_id ];
 	}
 
 	/**
@@ -110,10 +113,11 @@ class Post_Type_Service {
 			return null;
 		}
 
-		if ( ! isset( $config['preview_url'] ) ) {
+		$field_id = Settings_Field_Collection::PREVIEW_URL_FIELD_ID;
+		if ( ! isset( $config[ $field_id ] ) ) {
 			return null;
 		}
 
-		return (string) $config['preview_url'];
+		return (string) $config[ $field_id ];
 	}
 }

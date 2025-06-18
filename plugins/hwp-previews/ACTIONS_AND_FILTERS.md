@@ -13,6 +13,7 @@
 - `hwp_previews_core` - Register or unregister URL parameters, and adjust types/statuses
 - `hwp_previews_filter_available_post_types` - Filter to modify the available post types for Previews.
 - `hwp_previews_filter_available_post_statuses` - Filter for post statuses for previews for Previews
+- `hwp_previews_filter_available_parent_post_statuses` - Filter for parent post statuses for Previews
 - `hwp_previews_settings_group_option_key` - Filter to modify the settings group option key. Default is HWP_PREVIEWS_SETTINGS_KEY
 - `hwp_previews_settings_group_settings_group` - Filter to modify the settings group name. Default is HWP_PREVIEWS_SETTINGS_GROUP
 - `hwp_previews_settings_group_settings_config` - Filter to modify the settings array. See `Settings_Group`
@@ -24,6 +25,9 @@
 - `hwp_previews_settings_fields` - Allows a user to register, modify, or remove settings fields for the settings page
 
 ## Usage Examples
+
+@TODO - Redo
+
 
 ### Filter: Post Types List
 

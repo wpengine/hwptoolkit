@@ -68,16 +68,4 @@ class Settings_Helper {
 		}
 		return $default_value;
 	}
-
-	/**
-	 * Get Post Statuses as Parent setting value for the given post type.
-	 *
-	 * @param string $post_type The post type to get the setting for.
-	 * @param bool   $default_value The default value to return if the setting is not set.
-	 */
-	public function post_statuses_as_parent( string $post_type, bool $default_value = false ): bool {
-		$key = $this->settings_group->get_settings_key_post_statuses_as_parent();
-
-		return $this->settings_group->get_post_type_boolean_value( $key, $post_type, $default_value );
-	}
 }

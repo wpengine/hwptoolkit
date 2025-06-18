@@ -41,7 +41,27 @@ class Post_Preview_Service_Test extends WPTestCase {
 	public function test_get_post_statuses_returns_default_statuses(): void {
 		$result = $this->service->get_post_statuses();
 
-		$expected = ['publish', 'future', 'draft', 'pending', 'private', 'auto-draft'];
+		$expected = [
+			'publish',
+			'future',
+			'draft',
+			'pending',
+			'private',
+			'auto-draft',
+		];
+		$this->assertEquals($expected, $result);
+	}
+
+	public function test_get_parent_post_statuses_returns_default_statuses(): void {
+		$result = $this->service->get_parent_post_statuses();
+
+		$expected = [
+			'publish',
+			'future',
+			'draft',
+			'pending',
+			'private'
+		];
 		$this->assertEquals($expected, $result);
 	}
 
@@ -53,44 +73,43 @@ class Post_Preview_Service_Test extends WPTestCase {
 	}
 
 	public function test_post_types_filter_is_applied(): void {
-		// Arrange
 		$custom_post_types = ['custom_post' => 'Custom Post Type'];
 		add_filter('hwp_previews_filter_available_post_types', function() use ($custom_post_types) {
 			return $custom_post_types;
 		});
 
-		// Act
 		$service = new Post_Preview_Service();
 		$result = $service->get_post_types();
-
-		// Assert
 		$this->assertEquals($custom_post_types, $result);
 	}
 
 	public function test_post_statuses_filter_is_applied(): void {
-		// Arrange
 		$custom_statuses = ['custom_status'];
 		add_filter('hwp_previews_filter_available_post_statuses', function() use ($custom_statuses) {
 			return $custom_statuses;
 		});
 
-		// Act
 		$service = new Post_Preview_Service();
 		$result = $service->get_post_statuses();
+		$this->assertEquals($custom_statuses, $result);
+	}
 
-		// Assert
+	public function test_parent_post_statuses_filter_is_applied(): void {
+		$custom_statuses = ['custom_status'];
+		add_filter('hwp_previews_filter_available_parent_post_statuses', function() use ($custom_statuses) {
+			return $custom_statuses;
+		});
+
+		$service = new Post_Preview_Service();
+		$result = $service->get_parent_post_statuses();
 		$this->assertEquals($custom_statuses, $result);
 	}
 
 	public function test_constructor_initializes_post_types_and_statuses(): void {
-		// Act
 		$service = new Post_Preview_Service();
 
-		// Assert
 		$this->assertIsArray($service->get_post_types());
 		$this->assertIsArray($service->get_post_statuses());
-
-		// Ensure post statuses are not empty (should have default values)
 		$this->assertNotEmpty($service->get_post_statuses());
 	}
 }

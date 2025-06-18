@@ -20,6 +20,13 @@ class Post_Preview_Service {
 	protected $post_statuses = [];
 
 	/**
+	 * The allowed post-statuses for parent post-types (hierarchical).
+	 *
+	 * @var array<string>
+	 */
+	protected $parent_post_statuses = [];
+
+	/**
 	 * Constructor for the Post_Preview_Service class.
 	 *
 	 * Initializes the allowed post-types and statuses for previews.
@@ -27,6 +34,7 @@ class Post_Preview_Service {
 	public function __construct() {
 		$this->set_post_types();
 		$this->set_post_statuses();
+		$this->set_post_parent_statuses();
 	}
 
 	/**
@@ -52,6 +60,15 @@ class Post_Preview_Service {
 	 */
 	public function get_post_types(): array {
 		return $this->post_types;
+	}
+
+	/**
+	 * Get the parent post statuses
+	 *
+	 * @return array<string>
+	 */
+	public function get_parent_post_statuses(): array {
+		return $this->parent_post_statuses;
 	}
 
 	/**
@@ -84,5 +101,21 @@ class Post_Preview_Service {
 		];
 
 		$this->post_statuses = apply_filters( 'hwp_previews_filter_available_post_statuses', $post_statuses );
+	}
+
+	/**
+	 * Sets the allowed post statuses for parent post-types (hierarchael).
+	 */
+	protected function set_post_parent_statuses(): void {
+
+		$post_statuses = [
+			'publish',
+			'future',
+			'draft',
+			'pending',
+			'private'
+		];
+
+		$this->parent_post_statuses = apply_filters( 'hwp_previews_filter_available_parent_post_statuses', $post_statuses );
 	}
 }

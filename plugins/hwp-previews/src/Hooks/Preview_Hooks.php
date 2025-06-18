@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Hooks;
 
-use HWP\Previews\Preview\Helper\Settings_Helper;
+use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
-use HWP\Previews\Preview\Post\Parent\Post_Parent_Manager;
 use HWP\Previews\Preview\Post\Post_Preview_Service;
 use HWP\Previews\Preview\Post\Post_Settings_Service;
 use HWP\Previews\Preview\Post\Post_Type_Service;
@@ -20,13 +19,6 @@ use WP_Post;
 use WP_REST_Response;
 
 class Preview_Hooks {
-	/**
-	 * Settings helper instance that provides access to plugin settings.
-	 *
-	 * @var \HWP\Previews\Preview\Helper\Settings_Helper
-	 */
-	protected Settings_Helper $settings_helper;
-
 	/**
 	 * Post types configuration.
 	 *
@@ -70,8 +62,6 @@ class Preview_Hooks {
 	public function __construct() {
 
 		// @TODO - Refactor to use a factory or service locator pattern and analyze what is is actually needed.
-
-		$this->settings_helper = Settings_Helper::get_instance();
 
 		$this->types_config = apply_filters(
 			'hwp_previews_hooks_post_type_config',
@@ -153,26 +143,47 @@ class Preview_Hooks {
 	 * @link https://developer.wordpress.org/reference/hooks/quick_edit_dropdown_pages_args/
 	 */
 	public function enable_post_statuses_as_parent( array $args ): array {
-
-		if ( empty( $args['post_type'] ) ) {
+		if ( ! $this->should_enable_post_statuses_as_parent( $args ) ) {
 			return $args;
 		}
 
-		$post_parent_manager = new Post_Parent_Manager( $this->types_config, $this->statuses_config );
+		$parent_statuses = $this->post_preview_service->get_parent_post_statuses();
+		$post_statuses   = $this->post_preview_service->get_post_statuses();
+		$post_statuses   = array_intersect( $parent_statuses, $post_statuses );
+
+		if ( empty( $post_statuses ) ) {
+			return $args;
+		}
+
+		$args['post_status'] = $post_statuses;
+
+		return $args;
+	}
+
+	/**
+	 * Whether post-statuses should be enabled as parent for the given post-type.
+	 *
+	 * @param array<mixed> $args
+	 */
+	public function should_enable_post_statuses_as_parent( array $args ): bool {
+		if ( empty( $args['post_type'] ) ) {
+			return false;
+		}
 
 		$post_type = (string) $args['post_type'];
 
-		// Check if the correspondent setting is enabled.
-		if ( ! $this->settings_helper->post_statuses_as_parent( $post_type ) ) {
-			return $args;
+		if ( ! is_post_type_hierarchical( $post_type ) ) {
+			return false;
 		}
 
-		$post_statuses = $post_parent_manager->get_post_statuses_as_parent( $post_type );
-		if ( ! empty( $post_statuses ) ) {
-			$args['post_status'] = $post_statuses;
+		$config = $this->post_settings_service->get_post_type_config( $post_type );
+		if ( ! is_array( $config ) || empty( $config ) ) {
+			return false;
 		}
 
-		return $args;
+		$field_id = Settings_Field_Collection::POST_STATUSES_AS_PARENT_FIELD_ID;
+
+		return isset( $config[ $field_id ] ) && (bool) $config[ $field_id ];
 	}
 
 	/**
