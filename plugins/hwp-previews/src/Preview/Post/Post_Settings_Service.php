@@ -20,6 +20,15 @@ class Post_Settings_Service {
 	}
 
 	/**
+	 * Get the settings values.
+	 *
+	 * @return array<mixed>
+	 */
+	public function get_settings_values(): array {
+		return $this->settings_values;
+	}
+
+	/**
 	 * @param string $post_type
 	 *
 	 * @return array<mixed>|null

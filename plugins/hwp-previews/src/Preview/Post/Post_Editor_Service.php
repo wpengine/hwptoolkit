@@ -29,11 +29,11 @@ class Post_Editor_Service {
 	 */
 	public function is_gutenberg_supported( WP_Post_Type $post_type ): bool {
 
-		if (empty($post_type->show_in_rest)) {
+		if ( empty( $post_type->show_in_rest ) ) {
 			return false;
 		}
 
-		if (!post_type_supports($post_type->name, 'editor')) {
+		if ( ! post_type_supports( $post_type->name, 'editor' ) ) {
 			return false;
 		}
 

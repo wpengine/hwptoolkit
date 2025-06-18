@@ -36,6 +36,7 @@
 		"johnpbloch/wordpress-core": "^6.8",
 		"lucatume/wp-browser": "^3.5",
 		"mockery/mockery": "^1.5",
+		"pcov/clobber": "*",
 		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
 		"phpstan/phpstan-strict-rules": "^2.0",
@@ -89,7 +90,10 @@
 			".env.dist",
 			"c3.php",
 			"codeception.dist.yml",
-			"tests"
+			"tests",
+			"artifacts",
+			"package.json",
+			"package-lock.json"
 		]
 	},
 	"autoload": {

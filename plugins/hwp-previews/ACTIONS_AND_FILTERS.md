@@ -19,7 +19,6 @@
 - `hwp_previews_settings_group_settings_config` - Filter to modify the settings array. See `Settings_Group`
 - `hwp_previews_settings_group_cache_groups` - Filter to modify cache groups for `Settings_Group`
 - `hwp_previews_get_post_types_config` - Filter for generating the instance of `Post_Types_Config_Interface`
-- `hwp_previews_hooks_post_type_config` - Filter for post type config service for the Hook class
 - `hwp_previews_hooks_post_status_config` - Filter for post status config service for the Hook class
 - `hwp_previews_hooks_preview_link_service` - Filter for preview link service for the Hook class
 - `hwp_previews_settings_fields` - Allows a user to register, modify, or remove settings fields for the settings page
