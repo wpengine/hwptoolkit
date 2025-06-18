@@ -11,11 +11,14 @@
 
 ## Table of Contents
 
-* [Overview](#overview)
-* [Features](#features)
-* [Configuration](#configuration)
-* [Hooks & Extensibility](#hooks--extensibility)
-* [Integration](#integration)
+- [Overview](#overview)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Configuration](#configuration)
+- [Front-End Integration](#front-end-integration)
+- [Using With Faust.js](#using-with-faustjs)
+- [Extending the Functionality](#extending-the-functionality)
+- [Testing](#testing)
 
 ## Overview
 
@@ -27,51 +30,62 @@ With HWP Previews, you can define dynamic URL templates, enforce unique slugs fo
 
 ## Features
 
-* **Enable/Disable Previews**: Turn preview functionality on or off for each public post type (including custom types).
-* **Custom URL Templates**: Define preview URLs using placeholder tokens for dynamic content. Default tokens include:
-
-	* `{ID}` – Post ID
-	* `{author_ID}` – Post author’s user ID
-	* `{status}` – Post status slug
-	* `{slug}` – Post slug
-	* `{parent_ID}` – Parent post ID (hierarchical types)
-	* `{type}` – Post type slug
-	* `{template}` – Template filename
-
-* **Unique Post Slugs**: Force unique slugs for all post statuses in the post status config.
-* **Parent Status**: Allow posts of **all** statuses to be used as parent within hierarchical post types.
-* **Default Post Statuses Config**: `publish`, `future`, `draft`, `pending`, `private`, `auto-draft` (modifiable via core hook).
-* **Parameter Registry**: Register, unregister, or customize URL tokens through the `hwp_previews_core` action.
-* **Iframe Template for Previews**: Allows enable previews in the iframe on the WP Admin side. User can override the iframe preview template via `hwp_previews_template_path` filter.
+- **Enable/Disable Previews**: Turn preview functionality on or off for each public post type (including custom types).
+- **Custom URL Templates**: Define preview URLs using placeholder tokens for dynamic content.
+- **Parent Status**: Allow posts of **all** statuses to be used as parent within hierarchical post types.
+- **Highly Customizable**: Extend core behavior with a comprehensive set of actions and filters.
 
 ---
 
+## Getting Started
 
-## Actions & Filters
+This guide will help you set up your first headless preview link for the "Posts" post type.
 
-See the [Actions & Filters documentation](ACTIONS_AND_FILTERS.md) for a comprehensive list of available hooks and how to use them.
+1.  **Activate the Plugin:** Ensure "HWP Previews" is installed and activated.
+2.  **Navigate to Settings:** Go to **Settings > HWP Previews** in your WordPress admin dashboard.
+3.  **Enable for Posts:** On the "Posts" tab check the "Enable HWP Previews" box. If you have Faust installed this option will be enabled by default. Find more information about Faust integration below.
+4.  **Set the Preview URL:** In the "Preview URL Template" field for Posts, enter the URL for your front-end application's preview endpoint. Use parameters to add dynamic information that you want to access.
+5.  **Save and Test:** Save changes and go to any post, make a change, and click the "Preview" button. You should be redirected to the URL you just configured.
+
+---
 
 ## Configuration
 
-### Default Post Types Config: 
-All public post types are enabled by default on the settings page. It is filterable via `hwp_previews_filter_post_type_setting` filter hook. 
+HWP Previews configuration located at **Settings > HWP Previews** page in your WP Admin. The settings are organized by post type.
 
-### Default Post Statuses Config: 
-Post statuses are `publish`, `future`, `draft`, `pending`, `private`, `auto-draft` (modifiable via core hook).
+### Settings
 
-### Configure HWP Previews Plugin:
-Navigate in WP Admin to **Settings › HWP Previews**. For each public post type, configure:
+For each public post type, you can configure:
 
-* **Enable HWP Previews** – Master switch
-* **Allow All Statuses as Parent** – (Hierarchical types only)
-* **Preview URL Template** – Custom URL with tokens like `{ID}`, `{slug}`
-* **Load Previews in Iframe** – Toggle iframe-based preview rendering
+- **Enable HWP Previews:** This is the master switch for the post type. If disabled, WordPress will revert to its default preview behavior for these posts.
+- **Allow All Statuses as Parent:** This option is only available for Pages type. By default, WordPress only allows published posts to be parents. Enable this to build parent-child relationships using draft or pending posts.
+- **Load Previews in Iframe:** When enabled, the preview will be displayed directly within the WordPress editor in a sandboxed `<iframe>`. This provides a more integrated experience but requires your front-end to be configured to allow embedding. If disabled, clicking "Preview" will open a new browser tab.
+- **Preview URL:** You will be redirected to this link, whenever you click the preview button for the enabled post type.
 
-_Note: Retrieving of settings is cached for performance._
+> [!NOTE]  
+> Retrieving of settings is cached for performance.
+
+### Parameters
+
+You can use the parameters on the sidebar to add dynamic context info to your preview URL. This information can be used by your front-end application to better handle the preview requests.
+
+Currently below parameters are available by default, but you can add your own parameters by extending the plugin via hooks. Check Extending the Functionality section for details.
+
+- `{ID}` – Post ID
+- `{author_ID}` – Post author’s user ID
+- `{status}` – Post status slug
+- `{slug}` – Post slug
+- `{parent_ID}` – Parent post ID (hierarchical types)
+- `{type}` – Post type slug
+- `{template}` – Template filename
+
+### Default Post Statuses Config:
+
+Default post statuses are `publish`, `future`, `draft`, `pending`, `private`, `auto-draft` but these also modifiable via core hook.
 
 ---
 
-## Integration
+## Front-End Integration
 
 HWP Previews is framework and API agnostic, meaning you can integrate it with any front-end application and with any data-fetching method (WPGraphQL, REST).
 
@@ -83,10 +97,33 @@ To implement your own approach from scratch you can refer to the appropriate doc
 - [Next.js Draft Mode with App router](https://nextjs.org/docs/app/guides/draft-mode)
 - [Nuxt usePreviewMode](https://nuxt.com/docs/api/composables/use-preview-mode)
 
+---
+
+## Using With Faust.js
+
+This plugin is fully compatible with [Faust.js](https://faustjs.org/). It gives you the option to override Faust’s native preview system, providing granular control over preview URLs for use with any front-end framework.
+
+### Automatic Integration
+
+HWP Previews automatically detects when the Faust.js plugin is active to ensure a seamless integration. Upon detection, it pre-configures the following settings for all public post types:
+
+- The "Enable HWP Previews" toggle is activated by default.
+- The Preview URL is automatically updated to match Faust’s standard structure.
+
+This out-of-the-box configuration allows your existing preview workflow to continue functioning, without manual setup. You can continue to use [Faust.js authentication](https://faustjs.org/docs/how-to/authentication/) to access the preview pages.
+
+---
+
+## Extending the Functionality
+
+The plugin's behavior can be extended using its PHP hooks. Developers can control which post types are configurable in the settings via the `hwp_previews_filter_available_post_types` filter. The `hwp_previews_core` action allows for registering new URL parameters or unregistering default ones. Additionally, the `hwp_previews_template_path` filter can be used to replace the default preview iframe with a custom PHP template.
+
+### Actions & Filters
+
+See the [Actions & Filters documentation](ACTIONS_AND_FILTERS.md) for a comprehensive list of available hooks and how to use them.
 
 ---
 
 ## Testing
 
 See [Testing.md](TESTING.md) for details on how to test the plugin.
-
