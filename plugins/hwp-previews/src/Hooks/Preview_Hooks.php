@@ -9,8 +9,6 @@ use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 use HWP\Previews\Preview\Post\Post_Preview_Service;
 use HWP\Previews\Preview\Post\Post_Settings_Service;
 use HWP\Previews\Preview\Post\Post_Type_Service;
-use HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface;
-use HWP\Previews\Preview\Post\Status\Post_Statuses_Config;
 use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
 use HWP\Previews\Preview\Post\Type\Post_Types_Config_Registry;
 use HWP\Previews\Preview\Template\Template_Resolver_Service;
@@ -25,13 +23,6 @@ class Preview_Hooks {
 	 * @var \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface
 	 */
 	protected Post_Types_Config_Interface $types_config;
-
-	/**
-	 * Post statuses configuration.
-	 *
-	 * @var \HWP\Previews\Preview\Post\Status\Contracts\Post_Statuses_Config_Interface
-	 */
-	protected Post_Statuses_Config_Interface $statuses_config;
 
 	/**
 	 * Post-settings service that provides access to post-settings.
@@ -68,13 +59,6 @@ class Preview_Hooks {
 			Post_Types_Config_Registry::get_post_type_config()
 		);
 
-		// Initialize the post types and statuses configurations.
-		$this->statuses_config = apply_filters(
-			'hwp_previews_hooks_post_status_config',
-			( new Post_Statuses_Config() )->set_post_statuses( $this->get_post_statuses() )
-		);
-
-
 		$this->post_preview_service  = new Post_Preview_Service();
 		$this->post_settings_service = new Post_Settings_Service();
 	}
@@ -110,25 +94,6 @@ class Preview_Hooks {
 		foreach ( $this->types_config->get_public_post_types() as $key => $label ) {
 			add_filter( 'rest_prepare_' . $key, [ $this, 'filter_rest_prepare_link' ], 10, 2 );
 		}
-	}
-
-	/**
-	 * Gets a list of available post statuses for the preview functionality..
-	 *
-	 * @return array<string>
-	 */
-	public function get_post_statuses(): array {
-		// @TODO - Remove
-		$post_statuses = [
-			'publish',
-			'future',
-			'draft',
-			'pending',
-			'private',
-			'auto-draft',
-		];
-
-		return apply_filters( 'hwp_previews_hooks_post_statuses', $post_statuses );
 	}
 
 	/**

@@ -113,7 +113,7 @@ class Post_Preview_Service {
 			'future',
 			'draft',
 			'pending',
-			'private'
+			'private',
 		];
 
 		$this->parent_post_statuses = apply_filters( 'hwp_previews_filter_available_parent_post_statuses', $post_statuses );
