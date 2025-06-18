@@ -8,8 +8,7 @@ use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Admin\Settings\Menu\Menu_Page;
 use HWP\Previews\Admin\Settings\Settings_Form_Manager;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
-use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
-use HWP\Previews\Preview\Post\Type\Post_Types_Config_Registry;
+use HWP\Previews\Preview\Post\Post_Preview_Service;
 
 class Settings_Page {
 	/**
@@ -23,9 +22,11 @@ class Settings_Page {
 	protected Preview_Parameter_Registry $parameters;
 
 	/**
-	 * @var \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface The post types available for previews.
+	 * Post-preview service to get post types and statuses for the settings page.
+	 *
+	 * @var \HWP\Previews\Preview\Post\Post_Preview_Service
 	 */
-	protected Post_Types_Config_Interface $types_config;
+	protected Post_Preview_Service $post_preview_service;
 
 	/**
 	 * The instance of the plugin.
@@ -40,8 +41,8 @@ class Settings_Page {
 	 * Initializes the settings page, registers settings fields, and loads scripts and styles.
 	 */
 	public function __construct() {
-		$this->parameters   = Preview_Parameter_Registry::get_instance();
-		$this->types_config = Post_Types_Config_Registry::get_post_type_config();
+		$this->parameters           = Preview_Parameter_Registry::get_instance();
+		$this->post_preview_service = new Post_Preview_Service();
 
 		$this->register_settings_pages();
 		$this->register_settings_fields();
@@ -72,9 +73,9 @@ class Settings_Page {
 	public function register_settings_pages(): void {
 		add_action( 'admin_menu', function (): void {
 
-			// Note: We didn't initalize in the constructor because we need to ensure
-			// the post types are registered before we can use them.
-			$post_types = $this->types_config->get_public_post_types();
+			// Note: We didn't initalise in the constructor because we need to ensure
+			// the post-types are registered before we can use them.
+			$post_types = $this->post_preview_service->get_post_types();
 
 			$page = new Menu_Page(
 				__( 'HWP Previews Settings', 'hwp-previews' ),
@@ -100,7 +101,7 @@ class Settings_Page {
 	public function register_settings_fields(): void {
 		add_action( 'admin_init', function (): void {
 			$settings_manager = new Settings_Form_Manager(
-				$this->types_config->get_public_post_types(),
+				$this->post_preview_service->get_post_types(),
 				new Settings_Field_Collection()
 			);
 			$settings_manager->render_form();

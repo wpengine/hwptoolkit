@@ -6,24 +6,16 @@ namespace HWP\Previews\Hooks;
 
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
+use HWP\Previews\Preview\Post\Post_Editor_Service;
 use HWP\Previews\Preview\Post\Post_Preview_Service;
 use HWP\Previews\Preview\Post\Post_Settings_Service;
 use HWP\Previews\Preview\Post\Post_Type_Service;
-use HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface;
-use HWP\Previews\Preview\Post\Type\Post_Types_Config_Registry;
 use HWP\Previews\Preview\Template\Template_Resolver_Service;
 use HWP\Previews\Preview\Url\Preview_Url_Resolver_Service;
 use WP_Post;
 use WP_REST_Response;
 
 class Preview_Hooks {
-	/**
-	 * Post types configuration.
-	 *
-	 * @var \HWP\Previews\Preview\Post\Type\Contracts\Post_Types_Config_Interface
-	 */
-	protected Post_Types_Config_Interface $types_config;
-
 	/**
 	 * Post-settings service that provides access to post-settings.
 	 *
@@ -51,14 +43,6 @@ class Preview_Hooks {
 	 * Initializes the settings helper, post types and statuses configurations, and the preview link service.
 	 */
 	public function __construct() {
-
-		// @TODO - Refactor to use a factory or service locator pattern and analyze what is is actually needed.
-
-		$this->types_config = apply_filters(
-			'hwp_previews_hooks_post_type_config',
-			Post_Types_Config_Registry::get_post_type_config()
-		);
-
 		$this->post_preview_service  = new Post_Preview_Service();
 		$this->post_settings_service = new Post_Settings_Service();
 	}
@@ -72,11 +56,15 @@ class Preview_Hooks {
 		add_filter( 'page_attributes_dropdown_pages_args', [ $this, 'enable_post_statuses_as_parent' ], 10, 1 );
 		add_filter( 'quick_edit_dropdown_pages_args', [ $this, 'enable_post_statuses_as_parent' ], 10, 1 );
 
-		foreach ( $this->types_config->get_post_types() as $post_type ) {
-			if ( ! $this->types_config->gutenberg_editor_enabled( $post_type ) ) {
+		$post_editor_service = new Post_Editor_Service();
+		$post_types          = $this->post_preview_service->get_post_types();
+
+		// Enable post-statuses as parent for the post-types specified in the post-types config.
+		foreach ( $post_types as $post_type => $label ) {
+			if ( ! $post_editor_service->gutenberg_editor_enabled( $post_type ) ) {
 				continue;
 			}
-			// @TODO - Add unit tests for this filter.
+
 			add_filter( 'rest_' . $post_type . '_query', [ $this, 'enable_post_statuses_as_parent' ], 10, 1 );
 		}
 
@@ -91,13 +79,13 @@ class Preview_Hooks {
 		 * Hack Function that changes the preview link for draft articles,
 		 * this must be removed when properly fixed https://github.com/WordPress/gutenberg/issues/13998.
 		 */
-		foreach ( $this->types_config->get_public_post_types() as $key => $label ) {
-			add_filter( 'rest_prepare_' . $key, [ $this, 'filter_rest_prepare_link' ], 10, 2 );
+		foreach ( $post_types as $post_type => $label ) {
+			add_filter( 'rest_prepare_' . $post_type, [ $this, 'filter_rest_prepare_link' ], 10, 2 );
 		}
 	}
 
 	/**
-	 * Enable post statuses as parent for the post types specified in the post types config.
+	 * Enable post-statuses as parent for the post types specified in the post types config.
 	 *
 	 * @param array<mixed> $args The arguments for the dropdown pages.
 	 *

@@ -67,132 +67,97 @@ class Post_Settings_Service_Test extends WPTestCase {
 		update_option( $this->test_option_key, $test_config );
 
 		$this->service = new Post_Settings_Service();
-
-		// Act
 		$result = $this->service->get_post_type_config( 'post' );
 
-		// Assert
+
 		$this->assertEquals( [ 'enabled' => true, 'in_iframe' => false ], $result );
 	}
 
 	public function test_get_post_type_config_returns_null_when_not_exists(): void {
-		// Arrange
+
 		$test_config = [ 'post' => [ 'enabled' => true ] ];
 		update_option( $this->test_option_key, $test_config );
 
 		$this->service = new Post_Settings_Service();
-
-		// Act
 		$result = $this->service->get_post_type_config( 'nonexistent_post_type' );
 
-		// Assert
 		$this->assertNull( $result );
 	}
 
 	public function test_get_post_type_config_returns_null_when_no_settings(): void {
-		// Arrange - no settings saved
 		$this->service = new Post_Settings_Service();
-
-		// Act
 		$result = $this->service->get_post_type_config( 'post' );
 
-		// Assert
 		$this->assertNull( $result );
 	}
 
 	public function test_get_option_key_returns_filtered_value(): void {
-		// Arrange
 		$this->service = new Post_Settings_Service();
-
-		// Act
 		$result = $this->service->get_option_key();
 
-		// Assert
 		$this->assertEquals( $this->test_option_key, $result );
 	}
 
 	public function test_get_settings_group_returns_filtered_value(): void {
-		// Arrange
 		$this->service = new Post_Settings_Service();
-
-		// Act
 		$result = $this->service->get_settings_group();
 
-		// Assert
 		$this->assertEquals( $this->test_settings_group, $result );
 	}
 
 	public function test_constructor_loads_settings_from_cache_when_available(): void {
-		// Arrange
 		$cached_data = [ 'post' => [ 'enabled' => true, 'cached' => true ] ];
 		wp_cache_set( $this->test_option_key, $cached_data, $this->test_settings_group );
 
-		// Different data in database to ensure cache is used
 		$db_data = [ 'post' => [ 'enabled' => false, 'cached' => false ] ];
 		update_option( $this->test_option_key, $db_data );
 
-		// Act
 		$this->service = new Post_Settings_Service();
 		$result        = $this->service->get_post_type_config( 'post' );
 
-		// Assert
 		$this->assertEquals( [ 'enabled' => true, 'cached' => true ], $result );
 	}
 
 	public function test_constructor_loads_settings_from_database_when_cache_empty(): void {
-		// Arrange
 		$db_data = [ 'post' => [ 'enabled' => true, 'from_db' => true ] ];
 		update_option( $this->test_option_key, $db_data );
 
-		// Ensure cache is empty
 		wp_cache_delete( $this->test_option_key, $this->test_settings_group );
 
-		// Act
 		$this->service = new Post_Settings_Service();
 		$result        = $this->service->get_post_type_config( 'post' );
 
-		// Assert
 		$this->assertEquals( [ 'enabled' => true, 'from_db' => true ], $result );
 	}
 
 	public function test_constructor_handles_non_array_cache_value(): void {
-		// Arrange
 		wp_cache_set( $this->test_option_key, 'not_an_array', $this->test_settings_group );
-
 		$db_data = [ 'post' => [ 'enabled' => true ] ];
 		update_option( $this->test_option_key, $db_data );
 
-		// Act
 		$this->service = new Post_Settings_Service();
 		$result        = $this->service->get_post_type_config( 'post' );
 
-		// Assert
 		$this->assertEquals( [ 'enabled' => true ], $result );
 	}
 
 	public function test_constructor_handles_empty_database_option(): void {
-		// Arrange - ensure option doesn't exist
 		delete_option( $this->test_option_key );
 		wp_cache_delete( $this->test_option_key, $this->test_settings_group );
 
-		// Act
 		$this->service = new Post_Settings_Service();
 		$result        = $this->service->get_post_type_config( 'post' );
 
-		// Assert
 		$this->assertNull( $result );
 	}
 
 	public function test_constructor_handles_non_array_database_option(): void {
-		// Arrange
 		update_option( $this->test_option_key, 'not_an_array' );
 		wp_cache_delete( $this->test_option_key, $this->test_settings_group );
 
-		// Act
 		$this->service = new Post_Settings_Service();
 		$result        = $this->service->get_post_type_config( 'post' );
 
-		// Assert
 		$this->assertNull( $result );
 	}
 }
