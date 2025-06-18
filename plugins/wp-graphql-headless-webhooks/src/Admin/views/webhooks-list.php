@@ -13,9 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <div class="wrap">
-	<h1 class="wp-heading-inline"><?php esc_html_e( 'Webhooks', 'wp-graphql-webhooks' ); ?></h1>
+	<h1 class="wp-heading-inline"><?php esc_html_e( 'Webhooks', 'wp-graphql-headless-webhooks' ); ?></h1>
 	<a href="<?php echo esc_url( add_query_arg( 'action', 'add', remove_query_arg( [ 'id', 'deleted' ] ) ) ); ?>" class="page-title-action">
-		<?php esc_html_e( 'Add New', 'wp-graphql-webhooks' ); ?>
+		<?php esc_html_e( 'Add New', 'wp-graphql-headless-webhooks' ); ?>
 	</a>
 	<hr class="wp-header-end">
 
