@@ -1,0 +1,37 @@
+{
+  "phpVersion": "8.3",
+  "plugins": [
+    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "https://downloads.wordpress.org/plugin/classic-editor.latest-stable.zip",
+    "https://downloads.wordpress.org/plugin/wpgraphql-ide.latest-stable.zip"
+  ],
+  "themes": [
+    "https://downloads.wordpress.org/theme/twentytwentyone.latest-stable.zip"
+  ],
+  "env": {
+    "development": {
+      "port": 8890,
+      "mysqlPort": 55090
+    },
+    "tests": {
+      "port": 8891,
+      "mysqlPort": 55091
+    }
+  },
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": false,
+    "GRAPHQL_DEBUG": true,
+    "WP_DEBUG_LOG": true,
+    "WP_DEBUG_DISPLAY": false,
+    "SAVEQUERIES": false
+  },
+  "mappings": {
+    "db": "./wp-env/db",
+    "wp-content/uploads": "./wp-env/uploads",
+    ".htaccess": "./wp-env/setup/.htaccess"
+  },
+  "lifecycleScripts": {
+    "afterStart": "wp-env run cli -- wp theme activate twentytwentyone && wp-env run cli -- wp theme delete --all && wp-env run cli -- wp plugin delete hello-dolly && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+  }
+}
