@@ -3,6 +3,7 @@
 	"type": "wordpress-plugin",
 	"description": "A WordPress plugin for headless previews.",
 	"license": "GPL-3.0-or-later",
+	"version": "0.0.1-beta",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
