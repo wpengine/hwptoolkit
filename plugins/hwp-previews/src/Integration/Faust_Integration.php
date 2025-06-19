@@ -7,7 +7,6 @@ namespace HWP\Previews\Integration;
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Preview\Post\Post_Preview_Service;
 use HWP\Previews\Preview\Post\Post_Settings_Service;
-use function WPE\FaustWP\Settings\faustwp_get_setting;
 
 class Faust_Integration {
 	/**
@@ -86,7 +85,7 @@ class Faust_Integration {
 		$default_value = 'http://localhost:3000';
 
 		if ( $this->get_faust_enabled() && function_exists( '\WPE\FaustWP\Settings\faustwp_get_setting' ) ) {
-			$frontend_uri = faustwp_get_setting( 'frontend_uri', '' );
+			$frontend_uri = \WPE\FaustWP\Settings\faustwp_get_setting( 'frontend_uri', '' );
 
 			if ( ! empty( $frontend_uri ) ) {
 				return $frontend_uri;
