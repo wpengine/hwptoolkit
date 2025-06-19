@@ -14,6 +14,9 @@ use WPGraphQL\Webhooks\Handlers\WebhookHandler;
 use WPGraphQL\Webhooks\PostTypes\WebhookPostType;
 use WPGraphQL\Webhooks\Repository\WebhookRepository;
 use WPGraphQL\Webhooks\Events\WebhookEventManager;
+use WPGraphQL\Webhooks\Events\SmartCacheWebhookManager;
+use WPGraphQL\Webhooks\Services\Interfaces\ServiceLocator;
+use WPGraphQL\Webhooks\Services\PluginServiceLocator;
 
 /**
  * Plugin singleton class.
@@ -30,25 +33,11 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		private static ?self $instance = null;
 
 		/**
-		 * Webhook repository.
+		 * Service locator instance.
 		 *
-		 * @var WebhookRepository
+		 * @var ServiceLocator
 		 */
-		private WebhookRepository $repository;
-
-		/**
-		 * Webhook handler.
-		 *
-		 * @var WebhookHandler
-		 */
-		private WebhookHandler $handler;
-
-		/**
-		 * Webhook event manager.
-		 *
-		 * @var WebhookEventManager
-		 */
-		private WebhookEventManager $event_manager;
+		private ServiceLocator $services;
 
 		/**
 		 * Get singleton instance.
@@ -72,17 +61,54 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			return self::$instance;
 		}
 
-		/**
-		 * Setup plugin.
-		 */
 		private function setup(): void {
 			Helper::set_hook_prefix( 'graphql_webhooks' );
 			WebhookPostType::init();
 
-			$this->repository = new WebhookRepository();
-			$this->handler = new WebhookHandler();
-			$this->event_manager = new WebhookEventManager( $this->repository, $this->handler );
-			$this->event_manager->register_hooks();
+			$this->services = new PluginServiceLocator();
+
+			// Register services
+			$this->services->set( 'repository', function () {
+				return new WebhookRepository();
+			} );
+
+			$this->services->set( 'handler', function () {
+				return new WebhookHandler();
+			} );
+
+			$this->services->set( 'event_manager', function () {
+				$repository = $this->services->get( 'repository' );
+				$handler = $this->services->get( 'handler' );
+				
+				if ( class_exists( 'WPGraphQL\SmartCache\Document' ) || defined( 'WPGRAPHQL_SMART_CACHE_VERSION' ) ) {
+					return new SmartCacheWebhookManager( $repository, $handler );
+				}
+				
+				return new WebhookEventManager( $repository, $handler );
+			} );
+			// Initialize event manager and register hooks
+			$eventManager = $this->services->get( 'event_manager' );
+			$eventManager->register_hooks();
+
+			// Initialize admin UI
+			if ( is_admin() ) {
+				$repository = $this->services->get( 'repository' );
+				
+				if ( class_exists( 'WPGraphQL\Webhooks\Admin\WebhooksAdmin' ) ) {
+					$admin = new \WPGraphQL\Webhooks\Admin\WebhooksAdmin( $repository );
+					$admin->init();
+				}
+			}
+
+			// Initialize REST endpoints
+			add_action( 'rest_api_init', function () {
+				$repository = $this->services->get( 'repository' );
+				
+				if ( class_exists( 'WPGraphQL\Webhooks\Rest\WebhookTestEndpoint' ) ) {
+					$testEndpoint = new \WPGraphQL\Webhooks\Rest\WebhookTestEndpoint( $repository );
+					$testEndpoint->register_routes();
+				}
+			} );
 		}
 
 		/**
@@ -97,7 +123,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 				require_once WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_DIR . 'vendor/autoload.php';
 			}
 		}
-		
+
 		/**
 		 * Get the webhook repository instance.
 		 *
@@ -106,7 +132,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 		 * @return WebhookRepository The repository instance.
 		 */
 		public function get_repository(): WebhookRepository {
-			return $this->repository;
+			return $this->services->get( 'repository' );
 		}
 
 		/**
