@@ -26,6 +26,14 @@ jobs:
           plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
           echo "slug=$plugin" >> $GITHUB_OUTPUT
 
+      # We should at least have a phpcs.xml file to run code quality checks
+      - name: Validate phpcs.xml
+        run: |
+          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/phpcs.xml" ]; then
+            echo "Exiting as no phpcs.xml file found for /${{ steps.plugin.outputs.slug }}"
+            exit 1
+          fi
+
       - name: PHP Code Quality
         uses: ./.github/actions/code-quality
         with:

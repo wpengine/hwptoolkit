@@ -31,13 +31,15 @@ extensions:
         - lucatume\WPBrowser\Command\MonkeyCachePath
         - lucatume\WPBrowser\Command\RunAll
         - lucatume\WPBrowser\Command\RunOriginal
+exclude:
+    - src/Templates
+    - src/Templates/*
 coverage:
     enabled: true
     remote: false
     c3_url: "%WORDPRESS_URL%/wp-content/plugins/hwp-previews/hwp-previews.php"
     include:
         - src/*
-        - /access-functions.php
         - /activation.php
         - /deactivation.php
     exclude:
@@ -46,8 +48,8 @@ coverage:
         - /node_modules/*
         - /packages/*
         - /tests/*
-        - /vendor-prefixed/*
         - /vendor/*
+        - /src/Templates/*
     show_only_summary: false
 modules:
     config:

@@ -5,4 +5,8 @@ actor: WpunitTester
 modules:
     enabled:
         - lucatume\WPBrowser\Module\WPLoader
+    config:
+        lucatume\WPBrowser\Module\WPLoader:
+            # Enable coverage collection for this suite
+            coverage: true
 bootstrap: bootstrap.php

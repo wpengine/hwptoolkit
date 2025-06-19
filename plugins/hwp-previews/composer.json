@@ -3,6 +3,7 @@
 	"type": "wordpress-plugin",
 	"description": "A WordPress plugin for headless previews.",
 	"license": "GPL-3.0-or-later",
+	"version": "0.0.1-beta",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
@@ -21,6 +22,7 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"require-dev": {
+		"10up/wp_mock": "^1.1",
 		"automattic/vipwpcs": "^3.0",
 		"codeception/lib-innerbrowser": "^1.0",
 		"codeception/module-asserts": "^1.0",
@@ -89,7 +91,11 @@
 			".env.dist",
 			"c3.php",
 			"codeception.dist.yml",
-			"tests"
+			"tests",
+			"artifacts",
+			"package.json",
+			"package-lock.json",
+			"node_modules/"
 		]
 	},
 	"autoload": {
@@ -128,7 +134,16 @@
 		],
 		"php:psalm": "psalm",
 		"php:psalm:info": "psalm --show-info=true",
-		"php:psalm:fix": "psalm --alter"
+		"php:psalm:fix": "psalm --alter",
+		"qa": "sh bin/local/run-qa.sh",
+		"test": [
+			"sh bin/local/run-unit-tests.sh",
+			"sh bin/local/run-e2e-tests.sh"
+		],
+		"test:unit": "sh bin/local/run-unit-tests.sh",
+		"test:unit:coverage": "sh bin/local/run-unit-tests.sh coverage",
+		"test:unit:coverage-html": "sh bin/local/run-unit-tests.sh coverage --coverage-html",
+		"test:e2e": "sh bin/local/run-e2e-tests.sh"
 	},
 	"support": {
 		"docs": "https://github.com/wpengine/hwptoolkit/tree/main/docs",

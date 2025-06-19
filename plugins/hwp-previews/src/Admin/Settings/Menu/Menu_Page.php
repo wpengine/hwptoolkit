@@ -42,13 +42,6 @@ class Menu_Page {
 	protected array $args;
 
 	/**
-	 * The name of a Dashicons helper class to use a font icon.
-	 *
-	 * @var string
-	 */
-	protected string $icon;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param string                              $page_title The text to be displayed in the title tags of the page when the menu is selected.
@@ -56,22 +49,19 @@ class Menu_Page {
 	 * @param string                              $menu_slug The slug name to refer to this menu by. Should be unique for this menu and only include lowercase alphanumeric, dashes, and underscores characters to be compatible with sanitize_key().
 	 * @param string                              $template The template that will be included in the callback.
 	 * @param array<string, array<string, mixed>> $args The args array for the template.
-	 * @param string                              $icon The name of a Dashicons helper class to use a font icon.
 	 */
 	public function __construct(
 		string $page_title,
 		string $menu_title,
 		string $menu_slug,
 		string $template,
-		array $args = [],
-		string $icon = 'dashicons-admin-generic'
+		array $args = []
 	) {
 		$this->page_title = $page_title;
 		$this->menu_title = $menu_title;
 		$this->menu_slug  = $menu_slug;
 		$this->template   = $template;
 		$this->args       = $args;
-		$this->icon       = $icon;
 	}
 
 	/**
@@ -84,8 +74,7 @@ class Menu_Page {
 			$this->menu_title,
 			'manage_options',
 			$this->menu_slug,
-			[ $this, 'registration_callback' ],
-			999
+			[ $this, 'registration_callback' ]
 		);
 	}
 
@@ -101,18 +90,11 @@ class Menu_Page {
 
 			return;
 		}
-		$this->set_query_vars();
-
-		// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable -- $this->template is validated and defined within the class
-		include_once $this->template;
-	}
-
-	/**
-	 * Sets the query vars for the template.
-	 */
-	protected function set_query_vars(): void {
 		foreach ( $this->args as $query_var => $args ) {
 			set_query_var( $query_var, $args );
 		}
+
+        // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable -- $this->template is validated and defined within the class
+		include_once $this->template;
 	}
 }

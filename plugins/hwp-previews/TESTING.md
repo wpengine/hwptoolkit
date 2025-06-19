@@ -33,6 +33,7 @@ The plugin provides scripts to set up a local WordPress environment for testing,
 1. **Copy and configure environment variables:**
 
    ```bash
+   @TODO
    cp .env.dist .env
    # Edit .env as needed for your local setup
    ```
@@ -54,44 +55,29 @@ The plugin provides scripts to set up a local WordPress environment for testing,
 
 ## Running Tests
 
-### Unit Tests
+Currently the plugin has the following suite of tests
 
-Run unit tests (no WordPress loaded):
-
-```bash
-composer run test:unit
-# or
-vendor/bin/codecept run unit
-```
+1. WP Unit Tests - (Unit and Integration Tests)
+2. E2E Tests - Playright tests
 
 ### WPUnit (WordPress-aware Unit/Integration) Tests
 
 Run WPUnit tests (WordPress loaded):
 
 ```bash
-composer run test:wpunit
-# or
-vendor/bin/codecept run wpunit
+sh bin/local/run-unit-tests.sh coverage
 ```
 
-### Functional Tests
+> [!IMPORTANT]
+> You can also add coverage e.g. `sh bin/local/run-unit-tests.sh coverage --coverage-html` and the output will be saved in [tests/_output/coverage/dashboard.html](tests/_output/coverage/dashboard.html)
 
-Run functional tests (simulate web requests):
 
-```bash
-composer run test:functional
-# or
-vendor/bin/codecept run functional
-```
-
-### Acceptance Tests
+### E2WTests
 
 Run browser-based acceptance tests:
 
 ```bash
-composer run test:acceptance
-# or
-vendor/bin/codecept run acceptance
+sh bin/local/run-e2e-tests.sh coverage
 ```
 
 ### All Tests
@@ -142,13 +128,7 @@ tests/
 ├── _envs/                # Environment configs
 ├── _output/              # Test output (logs, coverage)
 ├── _support/             # Helper classes, modules
-├── acceptance/           # Acceptance test cases
-├── functional/           # Functional test cases
-├── unit/                 # Unit test cases
 ├── wpunit/               # WPUnit (WordPress-aware unit/integration) test cases
-├── acceptance.suite.dist.yml
-├── functional.suite.dist.yml
-├── unit.suite.dist.yml
 ├── wpunit.suite.dist.yml
 └── wpunit/
     └── bootstrap.php     # Bootstrap for WPUnit tests
