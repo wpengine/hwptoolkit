@@ -59,6 +59,9 @@ class Faust_Integration {
 	 * Checks if Faust is enabled.
 	 */
 	public function is_faust_enabled(): bool {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			return false;
+		}
 		return is_plugin_active( 'faustwp/faustwp.php' );
 	}
 

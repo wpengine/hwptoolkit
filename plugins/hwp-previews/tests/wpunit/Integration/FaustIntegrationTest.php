@@ -19,7 +19,7 @@ class Faust_Integration_Test extends WPTestCase {
 
 		// Note: We need WP_Mock so we can test frontend URL resolution for Faust
 		if (class_exists('\WP_Mock')) {
-			\WP_Mock::setUp();
+			WP_Mock::setUp();
 		}
 
 
@@ -115,15 +115,15 @@ class Faust_Integration_Test extends WPTestCase {
 		$frontend_uri = 'https://mocked-frontend.com';
 
 		// We need to Mock each type so that the function can be called in different ways
-		\WP_Mock::userFunction('\WPE\FaustWP\Settings\faustwp_get_setting', [
+		WP_Mock::userFunction('\WPE\FaustWP\Settings\faustwp_get_setting', [
 			'return' => $frontend_uri
 		]);
 
-		\WP_Mock::userFunction('faustwp_get_setting', [
+		WP_Mock::userFunction('faustwp_get_setting', [
 			'return' => $frontend_uri
 		]);
 
-		\WP_Mock::userFunction('WPE\FaustWP\Settings\faustwp_get_setting', [
+		WP_Mock::userFunction('WPE\FaustWP\Settings\faustwp_get_setting', [
 			'return' => $frontend_uri
 		]);
 
