@@ -33,8 +33,7 @@ class Preview_Url_Resolver_Service_Test extends WPTestCase {
 		$service = new Preview_Url_Resolver_Service($registry);
 
 		$author = WPTestCase::factory()->user->create_and_get( [
-			'user_login' => 'test_author',
-			'user_email' => uniqid( 'test_author', true ) . '@example.com'
+			'user_login' => 'test_author'
 		]);
 
 		$post = WPTestCase::factory()->post->create_and_get( [

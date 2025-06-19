@@ -7,6 +7,7 @@ namespace HWP\Previews\Integration;
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Preview\Post\Post_Preview_Service;
 use HWP\Previews\Preview\Post\Post_Settings_Service;
+use function WPE\FaustWP\Settings\faustwp_get_setting;
 
 class Faust_Integration {
 	/**
@@ -22,6 +23,11 @@ class Faust_Integration {
 	public bool $faust_enabled = false;
 
 	/**
+	 * Whether Faust is enabled.
+	 */
+	public bool $faust_configured = false;
+
+	/**
 	 * The instance of the Faust integration.
 	 *
 	 * @var \HWP\Previews\Integration\Faust_Integration|null
@@ -35,11 +41,6 @@ class Faust_Integration {
 	 */
 	public function __construct() {
 		$this->faust_enabled = $this->is_faust_enabled();
-
-		if ( ! $this->get_faust_enabled() ) {
-			return;
-		}
-
 		$this->configure_faust();
 	}
 
@@ -58,10 +59,6 @@ class Faust_Integration {
 	 * Checks if Faust is enabled.
 	 */
 	public function is_faust_enabled(): bool {
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			return false;
-		}
-
 		return is_plugin_active( 'faustwp/faustwp.php' );
 	}
 
@@ -73,13 +70,20 @@ class Faust_Integration {
 	}
 
 	/**
+	 * Get the Faust configured status.
+	 */
+	public function get_faust_configured(): bool {
+		return $this->faust_configured;
+	}
+
+	/**
 	 * Returns the Faust frontend URL from settings or a default value.
 	 */
 	public function get_faust_frontend_url(): string {
 		$default_value = 'http://localhost:3000';
 
 		if ( $this->get_faust_enabled() && function_exists( '\WPE\FaustWP\Settings\faustwp_get_setting' ) ) {
-			$frontend_uri = \WPE\FaustWP\Settings\faustwp_get_setting( 'frontend_uri', '' );
+			$frontend_uri = faustwp_get_setting( 'frontend_uri', '' );
 
 			if ( ! empty( $frontend_uri ) ) {
 				return $frontend_uri;
@@ -177,6 +181,11 @@ class Faust_Integration {
 	 * Configure Faust settings and remove conflicting filters.
 	 */
 	protected function configure_faust(): void {
+		if ( ! $this->get_faust_enabled() ) {
+			return;
+		}
+		$this->faust_configured = true;
+
 		$this->set_default_faust_settings();
 
 		// Remove FaustWP post preview link filter to avoid conflicts with our custom preview link generation.
