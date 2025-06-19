@@ -34,6 +34,8 @@ final class Plugin {
 
 		/**
 		 * Fire off init action.
+		 *
+		 * @param \HWP\Previews\Plugin $instance the instance of the plugin class.
 		 */
 		do_action( 'hwp_previews_init', self::$instance );
 

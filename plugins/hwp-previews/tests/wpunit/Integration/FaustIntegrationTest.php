@@ -35,9 +35,6 @@ class Faust_Integration_Test extends WPTestCase {
 		$this->assertSame( $instance1, $instance2, 'init() should return the same singleton instance' );
 	}
 
-//	public function test_is_faust_enabled_asserts_false() {
-//
-//	}
 
 	public function test_is_faust_enabled_asserts_true() {
 

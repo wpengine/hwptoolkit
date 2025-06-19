@@ -19,4 +19,6 @@ class Preview_Url_Resolver_Service_Test extends WPTestCase {
 
 		$this->assertInstanceOf(Preview_Url_Resolver_Service::class, $service);
 	}
+
+	// @TODO add more tests for resolve method
 }

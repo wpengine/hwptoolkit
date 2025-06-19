@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Parameter;
 
-use HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface;
 use WP_Post;
 
 /**
  * Class Callable_Preview_Parameter.
  */
-class Preview_Parameter implements Preview_Parameter_Interface {
+class Preview_Parameter {
 	/**
 	 * The name of the parameter.
 	 *

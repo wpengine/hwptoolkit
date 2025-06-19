@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Url;
 
-use HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface;
+use HWP\Previews\Preview\Parameter\Preview_Parameter;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 use WP_Post;
 
@@ -63,7 +63,7 @@ class Preview_Url_Resolver_Service {
 	 */
 	public function resolve_token( string $key, WP_Post $post ): string {
 		$parameter = $this->parameter_registry->get( $key );
-		if ( ! $parameter instanceof Preview_Parameter_Interface ) {
+		if ( ! $parameter instanceof Preview_Parameter ) {
 			return self::PLACEHOLDER_NOT_FOUND;
 		}
 
