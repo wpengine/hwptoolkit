@@ -46,79 +46,103 @@ if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
 	register_deactivation_hook( __FILE__, 'hwp_previews_deactivation_callback' );
 }
 
-/**
- * Define plugin constants.
- *
- * phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
- * phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
- */
-function hwp_previews_constants(): void {
-	if ( ! defined( 'HWP_PREVIEWS_VERSION' ) ) {
-		define( 'HWP_PREVIEWS_VERSION', '0.0.1-beta' );
-	}
-
-	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
-		define( 'HWP_PREVIEWS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-	}
-
-	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_URL' ) ) {
-		define( 'HWP_PREVIEWS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-	}
-
-	if ( ! defined( 'HWP_PREVIEWS_PLUGIN_FILE' ) ) {
-		define( 'HWP_PREVIEWS_PLUGIN_FILE', __FILE__ );
-	}
-
-	if ( ! defined( 'HWP_PREVIEWS_AUTOLOAD' ) ) {
-		define( 'HWP_PREVIEWS_AUTOLOAD', true );
-	}
-
-	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
-		define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
-	}
-
-	if ( ! defined( 'HWP_PREVIEWS_SETTINGS_KEY' ) ) {
-		define( 'HWP_PREVIEWS_SETTINGS_KEY', 'hwp_previews_settings' );
-	}
-
-	if ( ! defined( 'HWP_PREVIEWS_TEXT_DOMAIN' ) ) {
-		define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
-	}
-}
 
 // phpcs:enable Generic.Metrics.CyclomaticComplexity.TooHigh
 // phpcs:enable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
 
-/**
- * Initializes plugin.
- */
-function hwp_previews_init(): void {
-	hwp_previews_constants();
-
-	if ( defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
-		require_once HWP_PREVIEWS_PLUGIN_DIR . 'src/Plugin.php';
-		Plugin::instance();
-
-		return;
+if ( ! function_exists( 'hwp_previews_init' ) ) {
+	/**
+	 * Initializes plugin.
+	 */
+	function hwp_previews_init(): void {
+		hwp_previews_constants();
+		hwp_previews_plugin_init();
+		hwp_previews_plugin_admin_notice();
 	}
+}
+
+if ( ! function_exists( 'hwp_previews_constants' ) ) {
+	/**
+	 * Define plugin constants.
+	 *
+	 * phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
+	 * phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
+	 */
+	function hwp_previews_constants(): void {
+		if ( ! defined( 'HWP_PREVIEWS_VERSION' ) ) {
+			define( 'HWP_PREVIEWS_VERSION', '0.0.1-beta' );
+		}
+
+		if ( ! defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
+			define( 'HWP_PREVIEWS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+		}
+
+		if ( ! defined( 'HWP_PREVIEWS_PLUGIN_URL' ) ) {
+			define( 'HWP_PREVIEWS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+		}
+
+		if ( ! defined( 'HWP_PREVIEWS_PLUGIN_FILE' ) ) {
+			define( 'HWP_PREVIEWS_PLUGIN_FILE', __FILE__ );
+		}
+
+		if ( ! defined( 'HWP_PREVIEWS_AUTOLOAD' ) ) {
+			define( 'HWP_PREVIEWS_AUTOLOAD', true );
+		}
+
+		if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
+			define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
+		}
+
+		if ( ! defined( 'HWP_PREVIEWS_SETTINGS_KEY' ) ) {
+			define( 'HWP_PREVIEWS_SETTINGS_KEY', 'hwp_previews_settings' );
+		}
+
+		if ( ! defined( 'HWP_PREVIEWS_TEXT_DOMAIN' ) ) {
+			define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
+		}
+	}
+}
+
+if ( ! function_exists( 'hwp_previews_plugin_init' ) ) {
+	/**
+	 * Initialize the HWP Previews plugin.
+	 */
+	function hwp_previews_plugin_init(): ?Plugin {
+		if ( ! defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
+			return null;
+		}
+		require_once HWP_PREVIEWS_PLUGIN_DIR . 'src/Plugin.php';
+		return Plugin::instance();
+	}
+}
 
 
-	add_action(
-		'admin_notices',
-		static function (): void {
-			?>
-			<div class="error notice">
-				<p>
-					<?php
-					echo 'Composer vendor directory must be present for HWP Previews to work.'
-					?>
-				</p>
-			</div>
-			<?php
-		},
-		10,
-		0
-	);
+if ( ! function_exists( 'hwp_previews_plugin_admin_notice' ) ) {
+	/**
+	 * Display an admin notice if the plugin is not properly initialized.
+	 */
+	function hwp_previews_plugin_admin_notice(): void {
+		if ( defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {
+			return;
+		}
+
+		add_action(
+			'admin_notices',
+			static function (): void {
+				?>
+				<div class="error notice">
+					<p>
+						<?php
+						echo 'Composer vendor directory must be present for HWP Previews to work.'
+						?>
+					</p>
+				</div>
+				<?php
+			},
+			10,
+			0
+		);
+	}
 }
 
 /**

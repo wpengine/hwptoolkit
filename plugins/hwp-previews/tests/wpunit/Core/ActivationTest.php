@@ -1,10 +1,15 @@
 <?php
 
-namespace HWP\Previews\Tests;
+declare( strict_types=1 );
+
+namespace HWP\Previews\Tests\Core;
 
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
+/**
+ * Test class for the activation callback.
+ */
 class ActivationTest extends WPTestCase {
 	protected function setUp(): void {
 		parent::setUp();

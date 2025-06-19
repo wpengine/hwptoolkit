@@ -1,10 +1,16 @@
 <?php
 
-namespace HWP\Previews\Tests;
+declare( strict_types=1 );
+
+namespace HWP\Previews\Tests\Core;
 
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
+/**
+ * Test class for the de-activation callback.
+ *
+ */
 class DeactivationTest extends WPTestCase {
 	protected function setUp(): void {
 		parent::setUp();

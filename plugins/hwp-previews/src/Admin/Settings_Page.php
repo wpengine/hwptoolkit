@@ -52,7 +52,10 @@ class Settings_Page {
 	/**
 	 * Initializes the settings page.
 	 */
-	public static function init(): Settings_Page {
+	public static function init(): ?Settings_Page {
+		if ( ! is_admin() ) {
+			return null;
+		}
 		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
 			self::$instance = new self();
 		}
