@@ -48,6 +48,18 @@ class Preview_Hooks {
 	}
 
 	/**
+	 * Initialize the hooks for the preview functionality.
+	 */
+	public static function init(): self {
+		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
+			self::$instance = new self();
+			self::$instance->setup();
+		}
+
+		return self::$instance;
+	}
+
+	/**
 	 * Registers the hooks for the preview functionality.
 	 */
 	public function setup(): void {
@@ -100,7 +112,8 @@ class Preview_Hooks {
 			return $args;
 		}
 
-		$args['post_status'] =  $this->get_statuses_for_parent_post_type();;
+		$args['post_status'] = $this->get_statuses_for_parent_post_type();
+
 		return $args;
 	}
 
@@ -238,19 +251,6 @@ class Preview_Hooks {
 		$service = new Preview_Url_Resolver_Service( Preview_Parameter_Registry::get_instance() );
 		return (string) $service->resolve( $post, $url );
 	}
-
-	/**
-	 * Initialize the hooks for the preview functionality.
-	 */
-	public static function init(): self {
-		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
-			self::$instance = new self();
-			self::$instance->setup();
-		}
-
-		return self::$instance;
-	}
-
 
 	/**
 	 * @return array<string>
