@@ -47,6 +47,9 @@ class WebhookEventManager implements EventManager {
 		add_action( 'delete_attachment', [ $this, 'on_media_deleted' ], 10, 1 );
 		add_action( 'wp_insert_comment', [ $this, 'on_comment_inserted' ], 10, 2 );
 		add_action( 'transition_comment_status', [ $this, 'on_comment_status' ], 10, 3 );
+		
+		// Register test webhook event handler
+		add_action( 'graphql_webhooks_test_event', [ $this, 'on_test_webhook' ], 10, 2 );
 	}
 
 	/**
@@ -176,5 +179,23 @@ class WebhookEventManager implements EventManager {
 			'comment_id' => $comment->comment_ID,
 			'new_status' => $new_status,
 		] );
+	}
+	
+	/**
+	 * Handle test webhook event.
+	 *
+	 * @param \WPGraphQL\Webhooks\Entity\Webhook $webhook The webhook being tested.
+	 * @param array $payload The test payload.
+	 */
+	public function on_test_webhook( $webhook, $payload = [] ) {
+		// For test webhooks, we want to send directly to the specific webhook
+		// Enable test mode for blocking requests during tests
+		add_filter( 'graphql_webhooks_test_mode', '__return_true' );
+		
+		// Send the webhook with the test payload
+		$this->handler->handle( $webhook, $payload );
+		
+		// Remove the test mode filter
+		remove_filter( 'graphql_webhooks_test_mode', '__return_true' );
 	}
 }
