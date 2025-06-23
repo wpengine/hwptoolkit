@@ -1,6 +1,7 @@
 import { ref, onMounted, onServerPrefetch } from "vue";
 import { useRuntimeConfig, useState } from "#app";
-
+const GRAPHQL_URL = "index.php?graphql";
+const graphqlApi = new URL(GRAPHQL_URL, "http://localhost:8888").href;
 /**
  * Hybrid SSR + CSR approach for data fetching in Nuxt.
  *  Runs on server during initial page load (SSR)
@@ -237,3 +238,7 @@ export async function useMutation(mutation, variables = {}) {
     return { data: null, errors: [error] };
   }
 }
+// export const client = new Client({
+//   url: graphqlApi,
+//   exchanges: [fetchExchange],
+// });

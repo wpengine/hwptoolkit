@@ -3,9 +3,8 @@ import { computed, ref } from 'vue';
 import { useGraphQL, fetchGraphQL, gql } from '../../lib/client';
 import { capitalizeWords, getPosts } from '../../lib/utils';
 import PostListing from '../templates/listing/Post.vue';
-import BlogClient from './Blog.client.vue';
+import BlogClient from '../blog/Blog.client.vue';
 
-// Define props similar to BlogListingTemplate.js
 const props = defineProps({
   category: {
     type: String,

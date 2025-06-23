@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useGraphQL, gql } from '../../lib/client';
-import PostListing from './listing/Post.vue';
+import PostListing from '../templates/listing/Post.vue';
 import Loading from '../Loading.vue';
 
 const HOME_SETTINGS_QUERY = gql`
