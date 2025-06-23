@@ -100,16 +100,7 @@ class Preview_Hooks {
 			return $args;
 		}
 
-		$parent_statuses = $this->post_preview_service->get_parent_post_statuses();
-		$post_statuses   = $this->post_preview_service->get_post_statuses();
-		$post_statuses   = array_intersect( $parent_statuses, $post_statuses );
-
-		if ( empty( $post_statuses ) ) {
-			return $args;
-		}
-
-		$args['post_status'] = $post_statuses;
-
+		$args['post_status'] =  $this->get_statuses_for_parent_post_type();;
 		return $args;
 	}
 
@@ -217,7 +208,7 @@ class Preview_Hooks {
 		}
 
 		$url = $this->generate_preview_url( $post );
-		if ( empty( $url ) ) {
+		if ( '' === $url ) {
 			return $preview_link;
 		}
 
@@ -245,21 +236,28 @@ class Preview_Hooks {
 		}
 
 		$service = new Preview_Url_Resolver_Service( Preview_Parameter_Registry::get_instance() );
-		$url     = $service->resolve( $post, $url );
-		if ( empty( $url ) ) {
-			return '';
-		}
-
-		return $url;
+		return (string) $service->resolve( $post, $url );
 	}
 
 	/**
 	 * Initialize the hooks for the preview functionality.
 	 */
-	public static function init(): void {
+	public static function init(): self {
 		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
 			self::$instance = new self();
 			self::$instance->setup();
 		}
+
+		return self::$instance;
+	}
+
+
+	/**
+	 * @return array<string>
+	 */
+	public function get_statuses_for_parent_post_type(): array {
+		$parent_statuses = $this->post_preview_service->get_parent_post_statuses();
+		$post_statuses   = $this->post_preview_service->get_post_statuses();
+		return array_intersect( $parent_statuses, $post_statuses );
 	}
 }
