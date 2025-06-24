@@ -6,7 +6,6 @@ namespace HWP\Previews\Preview\Post;
 
 use WP_Post_Type;
 
-
 /**
  * Post Editor Service class
  *

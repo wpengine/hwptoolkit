@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Post;
 
-
 /**
  * Post-Settings Service class
  *

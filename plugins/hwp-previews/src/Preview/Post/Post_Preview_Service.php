@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Post;
 
-
 /**
  * Post Preview Service class
  *
@@ -14,7 +13,6 @@ namespace HWP\Previews\Preview\Post;
  *
  * @since 0.0.1
  */
-
 class Post_Preview_Service {
 	/**
 	 * The allowed post-types for previews.

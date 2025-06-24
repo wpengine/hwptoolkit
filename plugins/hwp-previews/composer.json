@@ -2,7 +2,7 @@
 	"name": "hwp/previews",
 	"type": "wordpress-plugin",
 	"description": "A WordPress plugin for headless previews.",
-	"license": "GPL-3.0-or-later",
+	"license": "GPL-2.0",
 	"version": "0.0.1-beta",
 	"authors": [
 		{

@@ -10,7 +10,7 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "GPL-3",
+	"license": "GPL-2",
 	"devDependencies": {
 		"@playwright/test": "^1.52.0",
 		"@wordpress/e2e-test-utils-playwright": "^1.25.0",

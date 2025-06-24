@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin settings page for the HWP Previews plugin.
  *
