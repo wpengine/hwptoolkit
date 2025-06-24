@@ -2,14 +2,11 @@
 
 namespace HWP\Previews\wpunit\Hooks;
 
-use http\Env\Url;
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Hooks\Preview_Hooks;
 use HWP\Previews\Preview\Template\Template_Resolver_Service;
 use lucatume\WPBrowser\TestCase\WPTestCase;
-
 use ReflectionClass;
-use WP_Mock;
 use WP_Post;
 use WP_REST_Response;
 
@@ -490,8 +487,8 @@ class PreviewHooksTest extends WPTestCase {
 
 		$test_config = [
 			'post' => [
-				Settings_Field_Collection::ENABLED_FIELD_ID   => true,
-				Settings_Field_Collection::IN_IFRAME_FIELD_ID => false,
+				Settings_Field_Collection::ENABLED_FIELD_ID     => true,
+				Settings_Field_Collection::IN_IFRAME_FIELD_ID   => false,
 				Settings_Field_Collection::PREVIEW_URL_FIELD_ID => $preview_link,
 			]
 		];
@@ -499,14 +496,14 @@ class PreviewHooksTest extends WPTestCase {
 
 		$new_post = $this->post;
 
-		$original_response  = new WP_REST_Response(['foo' => 'bar']);
-		$preview = new Preview_Hooks();
+		$original_response = new WP_REST_Response( [ 'foo' => 'bar' ] );
+		$preview           = new Preview_Hooks();
 
 		$response = $preview->filter_rest_prepare_link( $original_response, $new_post );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 		$this->assertArrayHasKey( 'link', $data );
 
-		$this->assertEquals( 'https://localhost:3000/post?preview=true&post_id=' . $new_post->ID . '&status=' . $new_post->post_status, $data[ 'link' ] );
+		$this->assertEquals( 'https://localhost:3000/post?preview=true&post_id=' . $new_post->ID . '&status=' . $new_post->post_status, $data['link'] );
 	}
 
 	public function test_filter_rest_prepare_link_no_link_iframe_enabled() {
@@ -515,8 +512,8 @@ class PreviewHooksTest extends WPTestCase {
 
 		$test_config = [
 			'post' => [
-				Settings_Field_Collection::ENABLED_FIELD_ID   => true,
-				Settings_Field_Collection::IN_IFRAME_FIELD_ID => true,
+				Settings_Field_Collection::ENABLED_FIELD_ID     => true,
+				Settings_Field_Collection::IN_IFRAME_FIELD_ID   => true,
 				Settings_Field_Collection::PREVIEW_URL_FIELD_ID => $preview_link,
 			]
 		];
@@ -524,13 +521,13 @@ class PreviewHooksTest extends WPTestCase {
 
 		$new_post = $this->post;
 
-		$original_response  = new WP_REST_Response(['foo' => 'bar']);
-		$preview = new Preview_Hooks();
+		$original_response = new WP_REST_Response( [ 'foo' => 'bar' ] );
+		$preview           = new Preview_Hooks();
 
 		$response = $preview->filter_rest_prepare_link( $original_response, $new_post );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 		$this->assertArrayNotHasKey( 'link', $data );
-		$this->assertEquals($original_response, $response);
+		$this->assertEquals( $original_response, $response );
 	}
 
 	public function test_filter_rest_prepare_link_no_link_previews_not_enabled() {
@@ -539,8 +536,8 @@ class PreviewHooksTest extends WPTestCase {
 
 		$test_config = [
 			'post' => [
-				Settings_Field_Collection::ENABLED_FIELD_ID   => false,
-				Settings_Field_Collection::IN_IFRAME_FIELD_ID => false,
+				Settings_Field_Collection::ENABLED_FIELD_ID     => false,
+				Settings_Field_Collection::IN_IFRAME_FIELD_ID   => false,
 				Settings_Field_Collection::PREVIEW_URL_FIELD_ID => $preview_link,
 			]
 		];
@@ -548,13 +545,13 @@ class PreviewHooksTest extends WPTestCase {
 
 		$new_post = $this->post;
 
-		$original_response  = new WP_REST_Response(['foo' => 'bar']);
-		$preview = new Preview_Hooks();
+		$original_response = new WP_REST_Response( [ 'foo' => 'bar' ] );
+		$preview           = new Preview_Hooks();
 
 		$response = $preview->filter_rest_prepare_link( $original_response, $new_post );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 		$this->assertArrayNotHasKey( 'link', $data );
-		$this->assertEquals($original_response, $response);
+		$this->assertEquals( $original_response, $response );
 	}
 
 	public function test_filter_rest_prepare_link_no_link_previews_no_preview_url() {
@@ -569,12 +566,12 @@ class PreviewHooksTest extends WPTestCase {
 
 		$new_post = $this->post;
 
-		$original_response  = new WP_REST_Response(['foo' => 'bar']);
-		$preview = new Preview_Hooks();
+		$original_response = new WP_REST_Response( [ 'foo' => 'bar' ] );
+		$preview           = new Preview_Hooks();
 
 		$response = $preview->filter_rest_prepare_link( $original_response, $new_post );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 		$this->assertArrayNotHasKey( 'link', $data );
-		$this->assertEquals($original_response, $response);
+		$this->assertEquals( $original_response, $response );
 	}
 }
