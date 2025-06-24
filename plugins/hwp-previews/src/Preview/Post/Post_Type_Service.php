@@ -7,6 +7,15 @@ namespace HWP\Previews\Preview\Post;
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use WP_Post;
 
+/**
+ * Post-Type Service class
+ *
+ * This class provides methods to retrieve and manage post-settings for the HWP Previews plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Post_Type_Service {
 	/**
 	 * The post-object
@@ -16,14 +25,14 @@ class Post_Type_Service {
 	protected WP_Post $post;
 
 	/**
-	 * Post-preview service that provide information about the post type for previews.
+	 * Post-preview service that provide information about the post-type for previews.
 	 *
 	 * @var \HWP\Previews\Preview\Post\Post_Preview_Service
 	 */
 	private Post_Preview_Service $post_preview_service;
 
 	/**
-	 * Settings service to retrieve post type settings.
+	 * Settings service to retrieve post-type settings.
 	 *
 	 * @var \HWP\Previews\Preview\Post\Post_Settings_Service
 	 */
@@ -41,7 +50,7 @@ class Post_Type_Service {
 	}
 
 	/**
-	 * Checks if the post type is allowed for previews.
+	 * Checks if the post-type is allowed for previews.
 	 */
 	public function is_allowed_for_previews(): bool {
 		return $this->is_enabled() && $this->is_allowed_post_type() && $this->is_allowed_post_status();

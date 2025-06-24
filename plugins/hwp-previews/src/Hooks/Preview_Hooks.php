@@ -15,6 +15,15 @@ use HWP\Previews\Preview\Url\Preview_Url_Resolver_Service;
 use WP_Post;
 use WP_REST_Response;
 
+/**
+ * Preview Hooks class
+ *
+ * This is the main class for handling preview-related hooks in the HWP Previews plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Preview_Hooks {
 	/**
 	 * Post-settings service that provides access to post-settings.

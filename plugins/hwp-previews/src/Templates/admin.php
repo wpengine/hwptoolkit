@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * The admin settings page for the HWP Previews plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
+
 declare(strict_types=1);
 
 use HWP\Previews\Integration\Faust_Integration;

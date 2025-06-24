@@ -11,6 +11,10 @@ use WP_Post;
  * Class Preview_Parameter_Registry.
  *
  * This class is responsible for registering and managing preview parameters.
+ *
+ * @package HwP\Previews
+ *
+ * @since 0.0.1
  */
 class Preview_Parameter_Registry {
 	/**

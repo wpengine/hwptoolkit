@@ -7,7 +7,13 @@ namespace HWP\Previews\Preview\Parameter;
 use WP_Post;
 
 /**
- * Class Callable_Preview_Parameter.
+ * Preview Parameter class
+ *
+ * This class represents a parameter for the preview URL.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
  */
 class Preview_Parameter {
 	/**

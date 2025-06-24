@@ -5,6 +5,8 @@
  * This template will be used for all post/page previews
  *
  * @package HWP\Previews
+ *
+ * @since 0.0.1
  */
 
 declare(strict_types=1);

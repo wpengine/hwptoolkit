@@ -8,6 +8,15 @@ use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Preview\Post\Post_Preview_Service;
 use HWP\Previews\Preview\Post\Post_Settings_Service;
 
+/**
+ * Faust Integration class
+ *
+ * This class handles the integration with the Faust plugin for HWP Previews and updates the settings accordingly.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Faust_Integration {
 	/**
 	 * The key for the admin notice.

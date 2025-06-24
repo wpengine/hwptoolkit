@@ -4,6 +4,16 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Post;
 
+
+/**
+ * Post-Settings Service class
+ *
+ * This class provides methods to retrieve and manage post-settings for the HWP Previews plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Post_Settings_Service {
 	/**
 	 * The settings value
@@ -52,7 +62,7 @@ class Post_Settings_Service {
 	}
 
 	/**
-	 * Setup the settings values by retrieving them from the database or cache.
+	 * Set up the settings values it by retrieving them from the database or cache.
 	 * This method is called in the constructor to ensure settings are available.
 	 */
 	protected function setup(): void {

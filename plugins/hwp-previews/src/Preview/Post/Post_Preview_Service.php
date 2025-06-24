@@ -4,6 +4,17 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Post;
 
+
+/**
+ * Post Preview Service class
+ *
+ * This class provides methods to get the allowed post-types and statuses for previews.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
+
 class Post_Preview_Service {
 	/**
 	 * The allowed post-types for previews.
@@ -45,7 +56,7 @@ class Post_Preview_Service {
 	}
 
 	/**
-	 * Get the post statuses.
+	 * Get the post-statuses.
 	 *
 	 * @return array<string>
 	 */
@@ -54,7 +65,7 @@ class Post_Preview_Service {
 	}
 
 	/**
-	 * Get the post types.
+	 * Get the post-types.
 	 *
 	 * @return array<string>
 	 */
@@ -63,7 +74,7 @@ class Post_Preview_Service {
 	}
 
 	/**
-	 * Get the parent post statuses
+	 * Get the parent post-statuses
 	 *
 	 * @return array<string>
 	 */
@@ -72,7 +83,7 @@ class Post_Preview_Service {
 	}
 
 	/**
-	 * Sets the allowed post types for previews.
+	 * Sets the allowed post-types for previews.
 	 */
 	protected function set_post_types(): void {
 		$post_types = get_post_types( [ 'public' => true ], 'objects' );
@@ -87,7 +98,7 @@ class Post_Preview_Service {
 	}
 
 	/**
-	 * Sets the allowed post statuses for previews.
+	 * Sets the allowed post-statuses for previews.
 	 */
 	protected function set_post_statuses(): void {
 
@@ -104,7 +115,7 @@ class Post_Preview_Service {
 	}
 
 	/**
-	 * Sets the allowed post statuses for parent post-types (hierarchael).
+	 * Sets the allowed post-statuses for parent post-types (hierarchical).
 	 */
 	protected function set_post_parent_statuses(): void {
 
