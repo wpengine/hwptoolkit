@@ -189,5 +189,4 @@ See [Testing.md](TESTING.md) for details on how to test the plugin.
 
 ![App Password](./screenshots/app_password.png)
 *App password setup for authentication.*
-
 </details>
