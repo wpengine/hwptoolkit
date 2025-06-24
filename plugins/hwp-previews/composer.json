@@ -100,7 +100,8 @@
 			"package.json",
 			"package-lock.json",
 			"node_modules/",
-			"/TESTING.md"
+			"/TESTING.md",
+			"/screenshots"
 		]
 	},
 	"autoload": {

@@ -1,4 +1,4 @@
-name: Codeception
+name: Testing Integration
 
 on:
   push:
