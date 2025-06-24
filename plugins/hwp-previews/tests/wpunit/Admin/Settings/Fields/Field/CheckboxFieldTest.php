@@ -65,8 +65,9 @@ class CheckboxFieldTest extends WPTestCase {
 		$post_type = 'post';
 
 		$expected_input_name = 'hwp_previews_settings[' . $post_type . '][in_iframe]';
+		$expceted_input_label = 'hwp_previews_settings-' . $post_type . '-in_iframe-tooltip';
 		$expected_css_class = 'custom-css-class';
-		$expected_output = '<input type="checkbox" name="' . $expected_input_name . '" value="1"  checked=\'checked\' class="' . $expected_css_class . '" />';
+		$expected_output = '<input type="checkbox" name="' . $expected_input_name . '" aria-labelledby="' . $expceted_input_label . '" value="1"  checked=\'checked\' class="' . $expected_css_class . '" />';
 
 		$rendered_output = $field->render_field($option_value, $setting_key, $post_type);
 
@@ -80,8 +81,9 @@ class CheckboxFieldTest extends WPTestCase {
 		$post_type = 'post';
 
 		$expected_input_name = 'hwp_previews_settings[' . $post_type . '][in_iframe]';
+		$expceted_input_label = 'hwp_previews_settings-' . $post_type . '-in_iframe-tooltip';
 		$expected_css_class = 'custom-css-class';
-		$expected_output = '<input type="checkbox" name="' . $expected_input_name . '" value="1"  class="' . $expected_css_class . '" />';
+		$expected_output = '<input type="checkbox" name="' . $expected_input_name . '" aria-labelledby="' . $expceted_input_label . '" value="1"  class="' . $expected_css_class . '" />';
 
 		$rendered_output = $field->render_field($option_value, $setting_key, $post_type);
 
@@ -99,7 +101,7 @@ class CheckboxFieldTest extends WPTestCase {
 		$rendered_output = $field->render_field([], HWP_PREVIEWS_SETTINGS_KEY, 'page');
 
 		$this->assertEquals(
-			'<input type="checkbox" name="hwp_previews_settings[page][in_iframe]" value="1"  class="" />',
+			'<input type="checkbox" name="hwp_previews_settings[page][in_iframe]" aria-labelledby="hwp_previews_settings-page-in_iframe-tooltip" value="1"  class="" />',
 			$rendered_output
 		);
 	}
