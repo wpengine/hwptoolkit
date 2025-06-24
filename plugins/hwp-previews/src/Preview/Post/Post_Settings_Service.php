@@ -40,14 +40,14 @@ class Post_Settings_Service {
 	/**
 	 * The option key for the settings group.
 	 */
-	public function get_option_key(): string {
+	public static function get_option_key(): string {
 		return (string) apply_filters( 'hwp_previews_settings_group_option_key', HWP_PREVIEWS_SETTINGS_KEY );
 	}
 
 	/**
 	 * The settings group for the options.
 	 */
-	public function get_settings_group(): string {
+	public static function get_settings_group(): string {
 		return (string) apply_filters( 'hwp_previews_settings_group_settings_group', HWP_PREVIEWS_SETTINGS_GROUP );
 	}
 
@@ -56,8 +56,8 @@ class Post_Settings_Service {
 	 * This method is called in the constructor to ensure settings are available.
 	 */
 	protected function setup(): void {
-		$option_key     = $this->get_option_key();
-		$settings_group = $this->get_settings_group();
+		$option_key     = self::get_option_key();
+		$settings_group = self::get_settings_group();
 
 		$value = wp_cache_get( $option_key, $settings_group );
 		if ( is_array( $value ) ) {

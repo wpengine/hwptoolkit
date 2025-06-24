@@ -93,14 +93,14 @@ class Post_Settings_Service_Test extends WPTestCase {
 
 	public function test_get_option_key_returns_filtered_value(): void {
 		$this->service = new Post_Settings_Service();
-		$result = $this->service->get_option_key();
+		$result = Post_Settings_Service::get_option_key();
 
 		$this->assertEquals( $this->test_option_key, $result );
 	}
 
 	public function test_get_settings_group_returns_filtered_value(): void {
 		$this->service = new Post_Settings_Service();
-		$result = $this->service->get_settings_group();
+		$result = Post_Settings_Service::get_settings_group();
 
 		$this->assertEquals( $this->test_settings_group, $result );
 	}

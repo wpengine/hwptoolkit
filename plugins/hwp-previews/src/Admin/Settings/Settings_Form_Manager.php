@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HWP\Previews\Admin\Settings;
 
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
+use HWP\Previews\Preview\Post\Post_Settings_Service;
 
 class Settings_Form_Manager {
 	/**
@@ -52,8 +53,7 @@ class Settings_Form_Manager {
 	 */
 	public function sanitize_settings( array $new_input ): array {
 
-		// @TODO - Refactor with Settings Group.
-		$option_name = apply_filters( 'hwp_previews_settings_key', HWP_PREVIEWS_SETTINGS_KEY );
+		$option_name = $this->get_option_key();
 
 		$old_input = (array) get_option( $option_name, [] );
 
@@ -89,15 +89,28 @@ class Settings_Form_Manager {
 	}
 
 	/**
+	 * Get the option key for the settings group.
+	 */
+	public function get_option_key(): string {
+		return Post_Settings_Service::get_option_key();
+	}
+
+	/**
+	 * Get the settings group for the options.
+	 */
+	public function get_settings_group(): string {
+		return Post_Settings_Service::get_settings_group();
+	}
+
+	/**
 	 * Create the settings tabs for the post-types.
 	 *
 	 * This method registers the settings group and the settings key for the post-types.
 	 */
 	protected function create_tabs(): void {
 
-		// @TODO - Refactor with Settings Group.
-		$option_group = apply_filters( 'hwp_previews_settings_group', HWP_PREVIEWS_SETTINGS_GROUP );
-		$option_name  = apply_filters( 'hwp_previews_settings_key', HWP_PREVIEWS_SETTINGS_KEY );
+		$option_group = $this->get_settings_group();
+		$option_name  = $this->get_option_key();
 
 		register_setting(
 			$option_group,
