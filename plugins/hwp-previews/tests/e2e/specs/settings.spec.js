@@ -132,4 +132,17 @@ test.describe("HWP Previews Admin Settings", () => {
 			expect(inputValue).toContain(buttonText.trim());
 		}
 	});
+
+	test(`URL input rejects an incorrect URL value`, async ({ page }) => {
+		const urlInput = page.locator("input.hwp-previews-url");
+		const incorrectUrlValue = "this is not a valid url";
+
+		await urlInput.fill(incorrectUrlValue);
+		await page.getByRole("button", { name: "Save Changes" }).click();
+
+		const validationMessage = await urlInput.evaluate(
+			(element) => element.validationMessage,
+		);
+		expect(validationMessage).not.toBe("");
+	});
 });
