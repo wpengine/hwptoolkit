@@ -30,6 +30,7 @@ jobs:
           PLUGIN_SLUG: ${{ steps.plugin.outputs.slug }}
         with:
             slug: ${{ env.PLUGIN_SLUG }}
+            composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Comment with artifact link
         uses: actions/github-script@v7

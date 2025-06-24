@@ -14,7 +14,11 @@
 	"keywords": [
 		"package",
 		"dependency",
-		"autoload"
+		"autoload",
+		"headless",
+		"wordpress",
+		"plugin",
+		"previews"
 	],
 	"require": {
 		"php": "^7.4 || ^8.0"
@@ -95,7 +99,8 @@
 			"artifacts",
 			"package.json",
 			"package-lock.json",
-			"node_modules/"
+			"node_modules/",
+			"/TESTING.md"
 		]
 	},
 	"autoload": {
