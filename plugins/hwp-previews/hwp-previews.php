@@ -64,9 +64,6 @@ if ( ! function_exists( 'hwp_previews_init' ) ) {
 if ( ! function_exists( 'hwp_previews_constants' ) ) {
 	/**
 	 * Define plugin constants.
-	 *
-	 * phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
-	 * phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
 	 */
 	function hwp_previews_constants(): void {
 		if ( ! defined( 'HWP_PREVIEWS_VERSION' ) ) {
@@ -81,24 +78,12 @@ if ( ! function_exists( 'hwp_previews_constants' ) ) {
 			define( 'HWP_PREVIEWS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 		}
 
-		if ( ! defined( 'HWP_PREVIEWS_PLUGIN_FILE' ) ) {
-			define( 'HWP_PREVIEWS_PLUGIN_FILE', __FILE__ );
-		}
-
-		if ( ! defined( 'HWP_PREVIEWS_AUTOLOAD' ) ) {
-			define( 'HWP_PREVIEWS_AUTOLOAD', true );
-		}
-
 		if ( ! defined( 'HWP_PREVIEWS_SETTINGS_GROUP' ) ) {
 			define( 'HWP_PREVIEWS_SETTINGS_GROUP', 'hwp_previews_settings_group' );
 		}
 
 		if ( ! defined( 'HWP_PREVIEWS_SETTINGS_KEY' ) ) {
 			define( 'HWP_PREVIEWS_SETTINGS_KEY', 'hwp_previews_settings' );
-		}
-
-		if ( ! defined( 'HWP_PREVIEWS_TEXT_DOMAIN' ) ) {
-			define( 'HWP_PREVIEWS_TEXT_DOMAIN', 'hwp-previews' );
 		}
 	}
 }
@@ -112,7 +97,7 @@ if ( ! function_exists( 'hwp_previews_plugin_init' ) ) {
 			return null;
 		}
 		require_once HWP_PREVIEWS_PLUGIN_DIR . 'src/Plugin.php';
-		return Plugin::instance();
+		return Plugin::init();
 	}
 }
 
@@ -146,7 +131,7 @@ if ( ! function_exists( 'hwp_previews_plugin_admin_notice' ) ) {
 }
 
 /**
- * Load plugin textdomain.
+ * Load plugin text domain.
  */
 function hwp_previews_load_textdomain(): void {
 	load_plugin_textdomain( 'hwp-previews', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );

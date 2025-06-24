@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Admin\Settings\Fields\Field;
 
+/**
+ * Text input class
+ *
+ * This class represents a text input field in the settings of the HWP Previews plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Text_Input_Field extends Abstract_Settings_Field {
 	/**
 	 * The default value for the field.

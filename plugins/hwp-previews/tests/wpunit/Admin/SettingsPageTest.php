@@ -9,7 +9,8 @@ use ReflectionClass;
 
 class SettingsPageTest extends WPTestCase {
 
-	public function set_as_admin() {
+	public function setup() : void {
+		parent::setup();
 		// Will set is_admin() to true
 		$GLOBALS['current_screen'] = new class {
 			public function in_admin( $context = null ) {
@@ -22,14 +23,13 @@ class SettingsPageTest extends WPTestCase {
 		};
 	}
 
-	public function unset_as_admin() {
+	public function tearDown() : void {
+		// Reset the current screen to avoid affecting other tests
 		unset( $GLOBALS['current_screen'] );
+		parent::tearDown();
 	}
 
 	public function test_settings_page_instance() {
-
-		$this->set_as_admin();
-
 		$reflection       = new ReflectionClass( Settings_Page::class );
 		$instanceProperty = $reflection->getProperty( 'instance' );
 		$instanceProperty->setAccessible( true );
@@ -40,11 +40,9 @@ class SettingsPageTest extends WPTestCase {
 
 		$this->assertInstanceOf( Settings_Page::class, $instanceProperty->getValue() );
 		$this->assertSame( $instance, $instanceProperty->getValue(), 'Settings_Page::init() should set the static instance property' );
-		$this->unset_as_admin();
 	}
 
 	public function test_get_current_tab() {
-		$this->set_as_admin();
 		$_GET['attachment'] = 'attachment';
 		$settings_page      = Settings_Page::init();
 
@@ -63,7 +61,7 @@ class SettingsPageTest extends WPTestCase {
 	}
 
 	public function test_register_hooks() {
-		$settings_page = new Settings_Page();
+		$settings_page = Settings_Page::init();
 		$this->assertNull( $settings_page->register_settings_page() );
 		$this->assertNull( $settings_page->register_settings_fields() );
 		$this->assertNull( $settings_page->load_scripts_styles( 'settings_page_hwp-previews' ) );

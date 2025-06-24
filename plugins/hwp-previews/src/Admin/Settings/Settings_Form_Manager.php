@@ -7,6 +7,15 @@ namespace HWP\Previews\Admin\Settings;
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Preview\Post\Post_Settings_Service;
 
+/**
+ * Settings Form Manager class for HWP Previews.
+ *
+ * This class manages the settings form for different post types, allowing for the registration and sanitization of settings fields.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Settings_Form_Manager {
 	/**
 	 * Array of available post-types for which settings are registered.
@@ -20,15 +29,22 @@ class Settings_Form_Manager {
 	 *
 	 * @var \HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection
 	 */
-	protected Settings_Field_Collection $fields;
+	protected Settings_Field_Collection $field_collection;
 
 	/**
 	 * @param array<string>                                                 $post_types Array of post types for which settings are registered.
 	 * @param \HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection $fields Collection of fields to be registered in the settings sections.
 	 */
 	public function __construct( array $post_types, Settings_Field_Collection $fields ) {
-		$this->post_types = $post_types;
-		$this->fields     = $fields;
+		$this->set_post_types( $post_types );
+		$this->set_field_collection( $fields );
+
+		/**
+		 * Fire off init action.
+		 *
+		 * @param \HWP\Previews\Admin\Settings\Settings_Form_Manager $instance the instance of the settings class.
+		 */
+		do_action( 'hwp_previews_settings_form_manager_init', $this );
 	}
 
 	/**
@@ -39,7 +55,7 @@ class Settings_Form_Manager {
 	public function render_form(): void {
 		$this->create_tabs();
 
-		foreach ( $this->post_types as $post_type => $label ) {
+		foreach ( $this->get_post_types() as $post_type => $label ) {
 			$this->render_post_type_section( $post_type, $label );
 		}
 	}
@@ -74,7 +90,7 @@ class Settings_Form_Manager {
 		// Sanitize the fields in the tab.
 		$sanitized_fields = [];
 		foreach ( $new_input[ $tab_to_sanitize ] as $key => $value ) {
-			$field = $this->fields->get_field( $key );
+			$field = $this->get_field_collection()->get_field( $key );
 			if ( is_null( $field ) ) {
 				continue; // Skip unknown fields.
 			}
@@ -100,6 +116,36 @@ class Settings_Form_Manager {
 	 */
 	public function get_settings_group(): string {
 		return Post_Settings_Service::get_settings_group();
+	}
+
+	/**
+	 * Get the fields collection for the settings form.
+	 */
+	public function get_field_collection(): Settings_Field_Collection {
+		return $this->field_collection;
+	}
+
+	/**
+	 * @param \HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection $field_collection
+	 */
+	public function set_field_collection( Settings_Field_Collection $field_collection ): void {
+		$this->field_collection = $field_collection;
+	}
+
+	/**
+	 * The available post types for which settings are registered.
+	 *
+	 * @return array<string>
+	 */
+	public function get_post_types(): array {
+		return $this->post_types;
+	}
+
+	/**
+	 * @param array<string, string> $post_types
+	 */
+	public function set_post_types( array $post_types ): void {
+		$this->post_types = $post_types;
 	}
 
 	/**
@@ -132,7 +178,7 @@ class Settings_Form_Manager {
 	 * @param string $label     The label for the post type section.
 	 */
 	protected function render_post_type_section( string $post_type, string $label ): void {
-		$fields          = $this->fields->get_fields();
+		$fields          = $this->get_field_collection()->get_fields();
 		$page_id         = 'hwp_previews_section_' . $post_type;
 		$page_uri        = 'hwp-previews-' . $post_type;
 		$is_hierarchical = is_post_type_hierarchical( $post_type );
@@ -151,7 +197,7 @@ class Settings_Form_Manager {
 				[
 					'post_type'    => $post_type,
 					'label'        => $label,
-					'settings_key' => HWP_PREVIEWS_SETTINGS_KEY,
+					'settings_key' => Post_Settings_Service::get_option_key(),
 				]
 			);
 		}

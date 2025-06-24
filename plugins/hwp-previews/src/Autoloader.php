@@ -1,18 +1,15 @@
 <?php
-/**
- * Includes the composer Autoloader used for packages and classes in the src/ directory.
- *
- * @package HWP\Previews
- *
- * @since 0.0.1
- */
 
 declare(strict_types=1);
 
 namespace HWP\Previews;
 
 /**
- * Class - Autoloader
+ * Includes the composer Autoloader used for packages and classes in the src/ directory.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
  */
 class Autoloader {
 	/**

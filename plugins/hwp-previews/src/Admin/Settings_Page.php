@@ -10,6 +10,15 @@ use HWP\Previews\Admin\Settings\Settings_Form_Manager;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 use HWP\Previews\Preview\Post\Post_Preview_Service;
 
+/**
+ * Settings_Page class for HWP Previews.
+ *
+ * This class handles the registration of the settings page, settings fields, and loading of scripts and styles for the plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Settings_Page {
 	/**
 	 * @var string The slug for the plugin menu.
@@ -40,7 +49,7 @@ class Settings_Page {
 	 *
 	 * Initializes the settings page, registers settings fields, and loads scripts and styles.
 	 */
-	public function __construct() {
+	protected function __construct() {
 		$this->parameters           = Preview_Parameter_Registry::get_instance();
 		$this->post_preview_service = new Post_Preview_Service();
 	}
@@ -62,7 +71,7 @@ class Settings_Page {
 		 *
 		 * @param \HWP\Previews\Admin\Settings_Page $instance the instance of the plugin class.
 		 */
-		do_action( 'hwp_previews_init', self::$instance );
+		do_action( 'hwp_previews_settings_init', self::$instance );
 
 		return self::$instance;
 	}
@@ -81,7 +90,7 @@ class Settings_Page {
 	 */
 	public function register_settings_page(): void {
 
-		// Note: We didn't initalise in the constructor because we need to ensure
+		// Note: We didn't initialise in the constructor because we need to ensure
 		// the post-types are registered before we can use them.
 		$post_types = $this->post_preview_service->get_post_types();
 

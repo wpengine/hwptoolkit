@@ -24,9 +24,15 @@ final class Plugin {
 	protected static ?Plugin $instance = null;
 
 	/**
+	 * Private constructor to prevent direct instantiation.
+	 */
+	protected function __construct() {
+	}
+
+	/**
 	 * Constructor
 	 */
-	public static function instance(): self {
+	public static function init(): self {
 		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
 			self::$instance = new self();
 			self::$instance->setup();

@@ -8,6 +8,12 @@ use HWP\Previews\Plugin;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use ReflectionClass;
 
+/**
+ * Class PluginTest
+ *
+ * Tests for the Plugin class
+ *
+ */
 class PluginTest extends WPTestCase {
 
 	public function test_instance_from_function_in_hwp_previews() {
@@ -16,8 +22,8 @@ class PluginTest extends WPTestCase {
 	}
 
 	public function test_singleton_returns_same_instance() {
-		$first  = Plugin::instance();
-		$second = Plugin::instance();
+		$first  = Plugin::init();
+		$second = Plugin::init();
 		$this->assertSame( $first, $second, 'Plugin::instance() should always return the same instance' );
 	}
 
@@ -28,7 +34,7 @@ class PluginTest extends WPTestCase {
 		$instanceProperty->setValue( null );
 
 		$this->assertNull( $instanceProperty->getValue() );
-		$instance = Plugin::instance();
+		$instance = Plugin::init();
 
 		$this->assertInstanceOf( Plugin::class, $instanceProperty->getValue() );
 		$this->assertSame( $instance, $instanceProperty->getValue(), 'Plugin::instance() should set the static instance property' );
@@ -37,27 +43,27 @@ class PluginTest extends WPTestCase {
 
 	public function test_clone_method_throws_error() {
 		// Create a fresh instance instead of using singleton
-		$reflection = new ReflectionClass(Plugin::class);
-		$plugin = $reflection->newInstanceWithoutConstructor();
+		$reflection = new ReflectionClass( Plugin::class );
+		$plugin     = $reflection->newInstanceWithoutConstructor();
 
-		$this->setExpectedIncorrectUsage('HWP\Previews\Plugin::__clone');
+		$this->setExpectedIncorrectUsage( 'HWP\Previews\Plugin::__clone' );
 		$clone = clone $plugin;
 
 		// Verify the clone exists to ensure the operation completed
-		$this->assertInstanceOf(Plugin::class, $clone);
+		$this->assertInstanceOf( Plugin::class, $clone );
 	}
 
 	public function test_wakeup_method_throws_error() {
-		$this->setExpectedIncorrectUsage('HWP\Previews\Plugin::__wakeup');
+		$this->setExpectedIncorrectUsage( 'HWP\Previews\Plugin::__wakeup' );
 
 		// Create a fresh instance
-		$reflection = new ReflectionClass(Plugin::class);
-		$plugin = $reflection->newInstanceWithoutConstructor();
+		$reflection = new ReflectionClass( Plugin::class );
+		$plugin     = $reflection->newInstanceWithoutConstructor();
 
-		$serialized = serialize($plugin);
-		$unserialized = unserialize($serialized);
+		$serialized   = serialize( $plugin );
+		$unserialized = unserialize( $serialized );
 
 		// Verify the unserialized object exists
-		$this->assertInstanceOf(Plugin::class, $unserialized);
+		$this->assertInstanceOf( Plugin::class, $unserialized );
 	}
 }

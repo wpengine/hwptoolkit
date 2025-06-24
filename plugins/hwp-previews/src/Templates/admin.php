@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use HWP\Previews\Integration\Faust_Integration;
+use HWP\Previews\Preview\Post\Post_Settings_Service;
 
 $hwp_previews_tabs_config       = (array) get_query_var( 'hwp_previews_main_page_config' );
 $hwp_previews_current_tab       = (string) ( $hwp_previews_tabs_config['current_tab'] ?? '' );
@@ -33,7 +34,7 @@ $hwp_previews_faust_integration = Faust_Integration::init();
 							<div class="inside">
 								<?php
 								// Post Types.
-								settings_fields( HWP_PREVIEWS_SETTINGS_GROUP );
+								settings_fields( Post_Settings_Service::get_settings_group() );
 								do_settings_sections( 'hwp-previews-' . $hwp_previews_current_tab );
 								submit_button();
 								?>

@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Admin\Settings\Fields\Field;
 
+/**
+ * URL input class
+ *
+ * This class represents a url input field in the settings of the HWP Previews plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class URL_Input_Field extends Text_Input_Field {
 	/**
 	 * @param mixed $value
@@ -64,8 +73,8 @@ class URL_Input_Field extends Text_Input_Field {
 			return '';
 		}
 
-		$has_prootocol = preg_match( '/^https?:\/\//i', $value ) === 1;
-		if ( $has_prootocol ) {
+		$has_protocol = preg_match( '/^https?:\/\//i', $value ) === 1;
+		if ( $has_protocol ) {
 			return $value;
 		}
 		$protocol = is_ssl() ? 'https://' : 'http://';

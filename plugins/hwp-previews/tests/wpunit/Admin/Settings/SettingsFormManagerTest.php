@@ -9,6 +9,20 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 
 class SettingsFormManagerTest extends WPTestCase {
 
+	public function test_get_fields_post_types() {
+		$post_preview_service = new Post_Preview_Service();
+		$form_manager         = new Settings_Form_Manager(
+			$post_preview_service->get_post_types(),
+			new Settings_Field_Collection()
+		);
+
+		$fields = $form_manager->get_field_collection();
+		$this->assertInstanceOf(Settings_Field_Collection::class, $fields);
+		$post_types = $form_manager->get_post_types();
+		$this->assertIsArray( $post_types );
+		$this->assertNotEmpty( $post_types );
+	}
+
 	public function test_sanitize_settings() {
 
 		$post_preview_service = new Post_Preview_Service();

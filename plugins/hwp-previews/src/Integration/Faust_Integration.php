@@ -129,7 +129,7 @@ class Faust_Integration {
 			];
 		}
 
-		update_option( HWP_PREVIEWS_SETTINGS_KEY, $default_settings );
+		update_option( Post_Settings_Service::get_option_key(), $default_settings );
 	}
 
 	/**

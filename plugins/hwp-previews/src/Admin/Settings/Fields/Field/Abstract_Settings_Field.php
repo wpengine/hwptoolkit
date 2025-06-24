@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HWP\Previews\Admin\Settings\Fields\Field;
 
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Interface;
+use HWP\Previews\Preview\Post\Post_Settings_Service;
 
 abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 	/**
@@ -121,7 +122,7 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 	public function settings_field_callback( array $args ): void {
 
 		$post_type    = $args['post_type'] ?? 'post';
-		$settings_key = $args['settings_key'] ?? HWP_PREVIEWS_SETTINGS_KEY;
+		$settings_key = $args['settings_key'] ?? Post_Settings_Service::get_option_key();
 
 		printf(
 			'<div tabindex="0" aria-describedby="%2$s-tooltip" class="hwp-previews-tooltip">

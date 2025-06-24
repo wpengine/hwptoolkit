@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Admin\Settings\Fields\Field;
 
+/**
+ * Checkbox field class
+ *
+ * This class represents a checkbox field in the settings of the HWP Previews plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Checkbox_Field extends Abstract_Settings_Field {
 	/**
 	 * The default value for the field.

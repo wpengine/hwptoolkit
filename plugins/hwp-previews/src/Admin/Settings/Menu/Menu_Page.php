@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Admin\Settings\Menu;
 
+/**
+ * Menu class for WordPress admin settings page.
+ *
+ * This class is responsible for creating a menu page in the WordPress admin area.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Menu_Page {
 	/**
 	 * The title of the page.
