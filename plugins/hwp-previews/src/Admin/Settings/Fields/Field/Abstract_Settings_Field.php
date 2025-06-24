@@ -125,12 +125,14 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 		$settings_key = $args['settings_key'] ?? Post_Settings_Service::get_option_key();
 
 		printf(
-			'<div tabindex="0" aria-describedby="%2$s-tooltip" class="hwp-previews-tooltip">
+			'<span class="hwp-previews-tooltip">
 				<span class="dashicons dashicons-editor-help"></span>
-				<span id="%2$s-tooltip" class="tooltip-text description">%1$s</span>
-			</div>',
+				<span id="%2$s-%3$s-%4$s-tooltip" class="tooltip-text description">%1$s</span>
+			</span>',
 			esc_attr( $this->get_description() ),
-			esc_attr( $settings_key )
+			esc_attr( $settings_key ),
+			esc_attr( $post_type ),
+			esc_attr( $this->id ),
 		);
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

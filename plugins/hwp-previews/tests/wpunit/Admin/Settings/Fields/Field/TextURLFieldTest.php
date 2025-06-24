@@ -91,9 +91,10 @@ class TextURLFieldTest extends WPTestCase {
 
 		$rendered_output      = $field->render_field( $option_value, $setting_key, $post_type );
 		$excepted_input_name  = 'hwp_previews_settings[' . $post_type . '][preview_url]';
+		$expceted_input_label = 'hwp_previews_settings-' . $post_type . '-preview_url-tooltip';
 		$excepted_input_value = 'https://example.com/' . $post_type . '?preview=true&amp;post_id={ID}&amp;name={slug}';
 		$excepted_css_class   = 'custom-css-class';
-		$expected_output      = '<input type="url" name="' . $excepted_input_name . '" value="' . $excepted_input_value . '" placeholder="' . $excepted_input_value . '" class="' . $excepted_css_class . '" />';
+		$expected_output      = '<input type="url" name="' . $excepted_input_name . '" aria-labelledby="' . $expceted_input_label . '" value="' . $excepted_input_value . '" placeholder="' . $excepted_input_value . '" class="' . $excepted_css_class . '" />';
 
 		$this->assertEquals( $expected_output, $rendered_output );
 	}
@@ -106,9 +107,10 @@ class TextURLFieldTest extends WPTestCase {
 
 		$rendered_output      = $field->render_field( $option_value, $setting_key, $post_type );
 		$excepted_input_name  = 'hwp_previews_settings[' . $post_type . '][preview_url]';
+		$expceted_input_label = 'hwp_previews_settings-' . $post_type . '-preview_url-tooltip';
 		$excepted_input_value = 'https://example.com/' . $post_type . '?preview=true&amp;post_id={ID}&amp;name={slug}';
 		$excepted_css_class   = 'custom-css-class';
-		$expected_output      = '<input type="url" name="' . $excepted_input_name . '" value="' . $excepted_input_value . '" placeholder="' . $excepted_input_value . '" class="' . $excepted_css_class . '" />';
+		$expected_output      = '<input type="url" name="' . $excepted_input_name . '" aria-labelledby="' . $expceted_input_label . '" value="' . $excepted_input_value . '" placeholder="' . $excepted_input_value . '" class="' . $excepted_css_class . '" />';
 
 		$this->assertEquals( $expected_output, $rendered_output );
 	}
@@ -124,9 +126,10 @@ class TextURLFieldTest extends WPTestCase {
 
 		$rendered_output     = $field->render_field( $option_value, $setting_key, $post_type );
 		$excepted_input_name = 'hwp_previews_settings[' . $post_type . '][preview_url]';
+		$expceted_input_label = 'hwp_previews_settings-' . $post_type . '-preview_url-tooltip';
 		$default_value       = 'https://example.com/' . $post_type . '?preview=true&amp;post_id={ID}&amp;name={slug}';
 		$excepted_css_class  = 'custom-css-class';
-		$expected_output     = '<input type="url" name="' . $excepted_input_name . '" value="' . $excepted_input_value . '" placeholder="' . $default_value . '" class="' . $excepted_css_class . '" />';
+		$expected_output     = '<input type="url" name="' . $excepted_input_name . '" aria-labelledby="' . $expceted_input_label . '" value="' . $excepted_input_value . '" placeholder="' . $default_value . '" class="' . $excepted_css_class . '" />';
 
 		$this->assertEquals( $expected_output, $rendered_output );
 	}
@@ -142,7 +145,7 @@ class TextURLFieldTest extends WPTestCase {
 		$rendered_output = $field->render_field( [], HWP_PREVIEWS_SETTINGS_KEY, 'page' );
 
 		$this->assertEquals(
-			'<input type="url" name="hwp_previews_settings[page][preview_url]" value="" placeholder="" class="" />',
+			'<input type="url" name="hwp_previews_settings[page][preview_url]" aria-labelledby="hwp_previews_settings-page-preview_url-tooltip" value="" placeholder="" class="" />',
 			$rendered_output
 		);
 	}
