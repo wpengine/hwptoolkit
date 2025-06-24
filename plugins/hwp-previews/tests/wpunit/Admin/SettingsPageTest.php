@@ -67,5 +67,6 @@ class SettingsPageTest extends WPTestCase {
 		$this->assertNull( $settings_page->register_settings_page() );
 		$this->assertNull( $settings_page->register_settings_fields() );
 		$this->assertNull( $settings_page->load_scripts_styles( 'settings_page_hwp-previews' ) );
+		$this->assertNull( $settings_page->load_scripts_styles( 'invalid-previews' ) );
 	}
 }

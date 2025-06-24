@@ -188,6 +188,9 @@ class TextURLFieldTest extends WPTestCase {
 		$expected = 'https://example.com/?preview=true';
 		$this->assertEquals($expected, $method->invoke($field, $input));
 
+		$input = '<script async>document.ready();</script>';
+		$this->assertEmpty($method->invoke($field, $input));
+
 		// Remove HTML tags
 		$input = '<b>Bold</b>https://example.com/';
 		$expected = 'http://Boldhttps://example.com/';
