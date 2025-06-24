@@ -53,7 +53,7 @@ class Text_Input_Field extends Abstract_Settings_Field {
 
 
 		return sprintf(
-			'<input type="%1$s" name="%2$s[%3$s][%4$s]" value="%5$s" placeholder="%6$s" class="%7$s" />',
+			'<input type="%1$s" name="%2$s[%3$s][%4$s]" aria-labelledby="%2$s-%3$s-%4$s-tooltip" value="%5$s" placeholder="%6$s" class="%7$s" />',
 			$this->get_input_type(),
 			esc_attr( $setting_key ),
 			esc_attr( $post_type ),

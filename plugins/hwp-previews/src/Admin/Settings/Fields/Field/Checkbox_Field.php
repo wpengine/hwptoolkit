@@ -41,7 +41,7 @@ class Checkbox_Field extends Abstract_Settings_Field {
 			: $this->default;
 
 		return sprintf(
-			'<input type="checkbox" name="%1$s[%2$s][%3$s]" value="1" %4$s class="%5$s" />',
+			'<input type="checkbox" name="%1$s[%2$s][%3$s]" aria-labelledby="%1$s-%2$s-%3$s-tooltip" value="1" %4$s class="%5$s" />',
 			esc_attr( $setting_key ),
 			esc_attr( $post_type ),
 			esc_attr( $this->id ),

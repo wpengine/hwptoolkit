@@ -14,7 +14,7 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 <div class="wrap">
 	<h1><?php esc_html_e( 'HWP Previews Settings', 'hwp-previews' ); ?></h1>
 	<form method="post" action="options.php">
-		<h2 class="nav-tab-wrapper">
+		<nav class="nav-tab-wrapper">
 			<?php
 			foreach ( $hwp_previews_tabs as $hwp_previews_tab_key => $hwp_previews_tab_label ) {
 				$hwp_previews_tab_url   = admin_url( 'admin.php?page=hwp-previews&tab=' . $hwp_previews_tab_key );
@@ -22,7 +22,7 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 				echo '<a href="' . esc_url( $hwp_previews_tab_url ) . '" class="' . esc_attr( $hwp_previews_tab_class ) . '">' . esc_html( $hwp_previews_tab_label ) . '</a>';
 			}
 			?>
-		</h2>
+		</nav>
 
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-2">
@@ -45,7 +45,7 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 				<div id="postbox-container-1" class="postbox-container">
 					<div class="meta-box-sortables">
 						<div class="postbox">
-							<h2><?php esc_html_e( 'Available Preview URL Parameters', 'hwp-previews' ); ?></h2>
+							<h3><?php esc_html_e( 'Available Preview URL Parameters', 'hwp-previews' ); ?></h3>
 							<div class="inside">
 								<div class="hwp-previews-tag-cloud">
 									<?php foreach ( $hwp_previews_params as $hwp_previews_param_name => $hwp_previews_param_desc ) : ?>
@@ -59,7 +59,7 @@ $hwp_previews_params      = (array) ( $hwp_previews_tabs_config['params'] ?? [] 
 						</div>
 
 						<div class="postbox">
-							<h2><?php esc_html_e( 'Get Started With HWP Previews', 'hwp-previews' ); ?></h2>
+							<h3><?php esc_html_e( 'Get Started With HWP Previews', 'hwp-previews' ); ?></h3>
 							<div class="inside hwp-previews-docs">
 			
 								<ul>
