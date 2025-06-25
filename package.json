@@ -9,7 +9,9 @@
   "scripts": {
     "clean": "bash ./scripts/clean.sh",
     "dev": "bash ./scripts/dev.sh",
-    "stop": "pnpm --filter '*' stop"
+    "stop": "pnpm --filter '*' stop",
+    "changeset": "changeset",
+    "version:previews": "changeset version && node scripts/plugin-version/previewsVersionPlugin.js"
   },
   "engines": {
     "node": ">=18",
@@ -20,12 +22,13 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@changesets/cli": "^2.29.5",
     "@playwright/test": "^1.40.0",
-    "@wordpress/env": "^8.0.0",
-    "rimraf": "^5.0.5",
     "@wordpress/e2e-test-utils-playwright": "^1.25.0",
+    "@wordpress/env": "^8.0.0",
     "@wordpress/jest-console": "^8.25.0",
-    "@wordpress/scripts": "^30.18.0"
+    "@wordpress/scripts": "^30.18.0",
+    "rimraf": "^5.0.5"
   },
   "packageManager": "pnpm@10.0.0+sha512.b8fef5494bd3fe4cbd4edabd0745df2ee5be3e4b0b8b08fa643aa3e4c6702ccc0f00d68fa8a8c9858a735a0032485a44990ed2810526c875e416f001b17df12b"
 }
