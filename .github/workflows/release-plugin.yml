@@ -1,0 +1,76 @@
+name: Release Plugin
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "plugins/**"
+
+jobs:
+  create-github-release:
+    name: Create Github Release
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+
+      - name: Setup Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8 # min version for the toolkit
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          git fetch --prune --unshallow
+          plugin=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
+          echo "slug=$plugin" >> $GITHUB_OUTPUT
+
+      - name: Validate package.json
+        run: |
+          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/package.json" ]; then
+            echo "Exiting as no package.json file found so we cannot generate a changeset for this plugin - /${{ steps.plugin.outputs.slug }}"
+            exit 1
+          fi
+
+      - name: Gather package name
+        run: |
+          package_name=$(jq -r '.name // empty' "plugins/${{ steps.plugin.outputs.slug }}/package.json")
+          if [ -z "$package_name" ]; then
+              echo "No package name found in plugins/${{ steps.plugin.outputs.slug }}/package.json"
+              exit 1
+          fi
+          echo "PACKAGE_NAME=$package_name" >> $GITHUB_ENV
+
+      - name: Save Plugin version
+        run: |
+          json=${{ toJSON(steps.changesets.outputs.publishedPackages) }}
+          echo PLUGIN_VERSION=$(echo "$json" | jq --arg name "$PACKAGE_NAME" '.[] | select(.name == $name) | .version') >> $GITHUB_ENV
+
+      - name: Create Github Release
+        # Checks the changesets publishedPackages output
+        # If there is a published package named after the plugin slug,
+        # Then deploy the WordPress plugin
+        # https://github.com/changesets/action#outputs
+        if: steps.changesets.outputs.published && contains(steps.changesets.outputs.publishedPackages, format('"{0}"', steps.plugin.outputs.slug))
+        uses: ./.github/actions/release-plugin
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          php: 8.2
+          composer-options: '--no-progress --optimize-autoloader --no-dev'
+          slug: ${{ steps.plugin.outputs.slug }}
+        env:
+          VERSION: ${{ env.PLUGIN_VERSION }}
+          NAME: ${{ env.PACKAGE_NAME }}

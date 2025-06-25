@@ -10,8 +10,10 @@
     "clean": "bash ./scripts/clean.sh",
     "dev": "bash ./scripts/dev.sh",
     "stop": "pnpm --filter '*' stop",
+    "release": "npm run build && changeset publish",
     "changeset": "changeset",
-    "version:previews": "changeset version && node scripts/plugin-version/previewsVersionPlugin.js"
+    "version:hwp-previews": "changeset version && node scripts/plugin-version/previewsVersionPlugin.js",
+    "version:wp-graphql-headless-webhooks": "changeset version && node scripts/plugin-version/webhooksVersionPlugin.js"
   },
   "engines": {
     "node": ">=18",
@@ -22,6 +24,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.5",
     "@playwright/test": "^1.40.0",
     "@wordpress/e2e-test-utils-playwright": "^1.25.0",

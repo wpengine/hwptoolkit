@@ -5,7 +5,11 @@ on:
     branches:
       - main
     paths:
-      - "plugins/hwp-previews/**"
+      - 'plugins/hwp-previews/**.php'
+      - 'plugins/hwp-previews/**.js'
+      - 'plugins/hwp-previews/**.css'
+      - 'plugins/hwp-previews/**.json'
+
   pull_request:
     branches:
       - main
