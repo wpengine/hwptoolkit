@@ -1,7 +1,5 @@
 import { ref, onMounted, onServerPrefetch } from "vue";
 import { useRuntimeConfig, useState } from "#app";
-const GRAPHQL_URL = "index.php?graphql";
-const graphqlApi = new URL(GRAPHQL_URL, "http://localhost:8888").href;
 /**
  * Hybrid SSR + CSR approach for data fetching in Nuxt.
  *  Runs on server during initial page load (SSR)
@@ -47,7 +45,7 @@ export function useGraphQL(query, initialVariables = {}, options = {}) {
       const config = useRuntimeConfig();
       const wpUrl = config.public.wordpressUrl;
       const graphqlEndpoint = `${wpUrl}/graphql`;
-
+      //console.log("initialVariables:", initialVariables);
       const response = await fetch(graphqlEndpoint, {
         method: "POST",
         headers: {
@@ -75,6 +73,7 @@ export function useGraphQL(query, initialVariables = {}, options = {}) {
       }
 
       data.value = result.data;
+      //console.log("response", result);
       return result;
     } catch (e) {
       error.value = e;
@@ -238,7 +237,3 @@ export async function useMutation(mutation, variables = {}) {
     return { data: null, errors: [error] };
   }
 }
-// export const client = new Client({
-//   url: graphqlApi,
-//   exchanges: [fetchExchange],
-// });

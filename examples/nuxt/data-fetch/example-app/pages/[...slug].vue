@@ -1,14 +1,13 @@
 <script setup>
 import { uriToTemplate } from '../lib/templateHierarchy'
 import { computed } from 'vue'
-
+import NotFound from '../components/404.vue'
 const uri = useRoute().path || '/'
 
 const { data: templateData, error } = await useAsyncData(`template-${uri}`, () =>
   uriToTemplate({ uri })
 )
 
-// Dynamically load the component from `components/templates/<template.id>.vue`
 const component = computed(() => {
   const templateId = templateData.value?.template?.id
   if (!templateId) return null
@@ -18,15 +17,8 @@ const component = computed(() => {
 </script>
 
 <template>
-<component
-  :is="component"
-  v-if="component"
-  :template-data="templateData"
-/>
+  <component :is="component" v-if="component" :template-data="templateData" />
   <div v-else-if="error">
-    <p>Error loading template: {{ error.message }}</p>
-  </div>
-  <div v-else>
-    <p>Loading...</p>
+    <NotFound text="Error loading template" />
   </div>
 </template>

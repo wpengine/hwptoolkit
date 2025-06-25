@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { useGraphQL, gql } from '../lib/client';
 import { useRoute } from 'vue-router';
 import NavigationItem from './templates/header/NavigationItem.vue';
-import { flatListToHierarchical } from '../lib/graphql';
+import { flatListToHierarchical } from '../lib/utils';
 
 // Get current route for active menu item
 const route = useRoute();

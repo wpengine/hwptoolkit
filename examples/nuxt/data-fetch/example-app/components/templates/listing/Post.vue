@@ -57,11 +57,24 @@ const props = defineProps({
           </div>
           <!-- Categories -->
           <div v-if="post.categories?.nodes?.length" class="categories-container">
-            <span>In:</span>
-            <div class="post-categories">
-              <span v-for="(category, index) in post.categories.nodes" :key="category.slug">
-                {{ category.name }}{{ index < post.categories.nodes.length - 1 ? ', ' : '' }} </span>
-            </div>
+            <span>Categories:</span>
+            <ul class="post-categories">
+              <li v-for="(category, index) in post.categories.nodes" :key="category.slug">
+                <NuxtLink :to="category.slug">
+                  {{ category.name }}                  
+                </NuxtLink>{{ index < post.categories.nodes.length - 1 ? ', ' : '' }}
+              </li>
+            </ul>
+          </div>
+          <div v-if="post.tags?.nodes?.length" class="tags-container">
+            <span>Tags:</span>
+            <ul class="post-tags">
+              <li v-for="(tag, index) in post.tags.nodes" :key="tag.slug">
+                <NuxtLink :to="'tags/' + tag.slug">
+                  {{ tag.name }}
+                </NuxtLink>{{ index < post.tags.nodes.length - 1 ? ', ' : '' }}
+              </li>
+            </ul>
           </div>
         </div>
       </header>
