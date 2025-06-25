@@ -1,6 +1,7 @@
 {
-	"name": "hwp-previews",
-	"version": "0.0.1",
+	"name": "@hwp-previews/wordpress-plugin",
+	"version": "0.0.1-beta",
+	"private": true,
 	"description": "Headless Previews solution for WordPress: fully configurable preview URLs via the settings page.",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
