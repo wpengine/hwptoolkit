@@ -77,7 +77,7 @@ $hwp_previews_faust_integration = Faust_Integration::init();
 									<?php if ( $hwp_previews_faust_integration->get_faust_enabled() ) : ?>
 										<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#using-with-faustjs" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Using With Faust.js', 'hwp-previews' ); ?></a></li>
 									<?php endif; ?>
-									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#extending-the-functionality" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Extending the Functionality', 'hwp-previews' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/plugins/hwp-previews/ACTIONS_AND_FILTERS.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Actions and Filters', 'hwp-previews' ); ?></a></li>
 								</ul>
 								<p><?php esc_html_e( 'HWP Previews is part of the HWP Toolkit, our comprehensive suite of tools and examples for headless WordPress.', 'hwp-previews' ); ?></p>
 								<p><a class="button-secondary" href="https://github.com/wpengine/hwptoolkit" target="_blank" rel="noopener noreferrer">HWP Toolkit on GitHub</a></p>
