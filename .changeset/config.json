@@ -1,0 +1,20 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@2.4.0/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "wpengine/hwptoolkit" }
+  ],
+  "commit": false,
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "docs/",
+    "examples/",
+    "packages/"
+  ],
+  "packages": [
+    "plugins/*"
+  ]
+}
