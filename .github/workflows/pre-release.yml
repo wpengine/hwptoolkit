@@ -40,6 +40,20 @@ jobs:
           plugin=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/' | head -1 | cut -d/ -f2)
           echo "plugin_slug=$plugin" >> $GITHUB_OUTPUT
 
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Apply version bumps from changesets
+        run: pnpm changeset version
+
+      - name: Commit updated package.json and changelogs
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "chore: apply version bump from changesets" || echo "No changes to commit"
+          git push
+
       - name: Read package metadata
         id: metadata
         run: |
@@ -55,7 +69,6 @@ jobs:
           echo "package_name=$package_name" >> $GITHUB_OUTPUT
           echo "package_version=$package_version" >> $GITHUB_OUTPUT
           echo "PLUGIN_DIR=$PLUGIN_DIR" >> $GITHUB_ENV
-          echo "ARCHIVE_NAME=${package_name}-${package_version}.zip" >> $GITHUB_ENV
 
       - name: Create Git tag
         run: |
@@ -72,8 +85,8 @@ jobs:
       - name: Create plugin archive
         working-directory: ${{ env.PLUGIN_DIR }}
         run: |
-          mkdir -p plugin-build
-          composer archive -vvv --format=zip --file="plugin-build/${{ steps.plugin.outputs.plugin_slug }}" --dir="."
+          mkdir -p plugin-build || true
+          composer archive -vvv --format=zip --file="plugin-build/${{ steps.plugin.outputs.plugin_slug }}.zip" --dir="."
 
       - name: Upload archive to GitHub Release
         uses: softprops/action-gh-release@v2
