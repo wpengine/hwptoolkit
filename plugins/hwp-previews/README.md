@@ -156,7 +156,7 @@ This out-of-the-box configuration allows your existing preview workflow to conti
 
 ---
 
-### Actions & Filters
+## Actions & Filters
 
 See the [Actions & Filters documentation](ACTIONS_AND_FILTERS.md) for a comprehensive list of available hooks and how to use them.
 
