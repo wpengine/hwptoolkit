@@ -54,7 +54,7 @@ jobs:
           fi
           echo "PACKAGE_NAME=$package_name" >> $GITHUB_ENV
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: Create Release Pull Request
         id: changesets
         uses: changesets/action@v1
         with:
