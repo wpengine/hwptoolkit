@@ -11,9 +11,7 @@
     "dev": "bash ./scripts/dev.sh",
     "stop": "pnpm --filter '*' stop",
     "release": "npm run build && changeset publish",
-    "changeset": "changeset",
-    "version:hwp-previews": "changeset version && node scripts/plugin-version/previewsVersionPlugin.js",
-    "version:wp-graphql-headless-webhooks": "changeset version && node scripts/plugin-version/webhooksVersionPlugin.js"
+    "changeset": "changeset"
   },
   "engines": {
     "node": ">=18",

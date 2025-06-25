@@ -24,9 +24,6 @@ We believe in transparent, collaborative development. These guidelines document 
 - Schedule releases Monday-Wednesday only
 - Distribute to WPE Updater and WordPress.org when applicable
 
->[!NOTE]
-> Our plugin release process is explained under [docs/explanation/hwp-toolkit-plugin-release-process.md](docs/explanation/hwp-toolkit-plugin-release-process.md)
-
 ## Effective Communication
 
 - Work in public by default (except for security/private infrastructure)
