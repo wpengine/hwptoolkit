@@ -1,4 +1,4 @@
-name: Codeception
+name: Testing Integration
 
 on:
   push:
@@ -43,10 +43,18 @@ jobs:
           plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
           echo "slug=$plugin" >> $GITHUB_OUTPUT
 
+      - name: Validate codeception.dist.yml
+        run: |
+          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/codeception.dist.yml" ]; then
+            echo "Exiting as no codeception file found for this plugin - /${{ steps.plugin.outputs.slug }}"
+            exit 1
+          fi
+
       - name: Validate composer.json
         run: |
           if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/composer.json" ]; then
-            echo "Warning: composer.json missing in plugins/${{ steps.plugin.outputs.slug }}"
+            echo "Exiting as no composer file found for this plugin - ${{ steps.plugin.outputs.slug }}"
+            exit 1
           fi
 
       - name: Run Codeception Tests

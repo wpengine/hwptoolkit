@@ -1,11 +1,26 @@
 # HWP Previews
 
-**Headless Previews** solution for WordPress: fully configurable preview URLs via the settings page.
+**Headless Previews** solution for WordPress: fully configurable preview URLs via the settings page which is framework agnostic.
 
-[![Version](https://img.shields.io/badge/version-0.0.1-blue)]() [![License](https://img.shields.io/badge/license-GPLv2%2B-lightgrey)]()
+* [Join the Headless WordPress community on Discord.](https://discord.gg/headless-wordpress-836253505944813629)
+* [Documentation](#getting-started)
+
+
+-----
+
+[![Version](https://img.shields.io/badge/version-0.0.1-beta)]()
+[![License](https://img.shields.io/badge/license-GPLv2%2B-green)]()
+![GitHub forks](https://img.shields.io/github/forks/wpengine/hwptoolkit?style=social)
+![GitHub stars](https://img.shields.io/github/stars/wpengine/hwptoolkit?style=social)
+[![Testing Integration](https://github.com/wpengine/hwptoolkit/workflows/Testing%20Integration/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22Testing+Integration%22)
+[![Code Quality](https://github.com/wpengine/hwptoolkit/workflows/Code%20Quality/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22Code+Quality%22)
+[![End-to-End Tests](https://github.com/wpengine/hwptoolkit/workflows/End-to-End%20Tests/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22End-to-End+Tests%22)
+-----
+
+
 
 > [!CAUTION]
-> This plugin is currently in an alpha state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible.
+> This plugin is currently in an beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible. You can create an issue at [https://github.com/wpengine/hwptoolkit/issues](https://github.com/wpengine/hwptoolkit/issues)
 
 ---
 
@@ -26,6 +41,11 @@ HWP Previews is a robust and extensible WordPress plugin that centralizes all pr
 It empowers site administrators and developers to tailor preview behaviors for each public post type independently, facilitating seamless headless or decoupled workflows.
 With HWP Previews, you can define dynamic URL templates, enforce unique slugs for drafts, allow all post statuses be used as parent and extend functionality through flexible hooks and filters, ensuring a consistent and conflict-free preview experience across diverse environments.
 
+
+
+>[!IMPORTANT]
+> For Faust users, HWP Previews integrates seamlessly, automatically configuring settings to match Faust's preview system. This allows you to maintain your existing preview workflow without additional setup.
+
 ---
 
 ## Features
@@ -34,8 +54,8 @@ With HWP Previews, you can define dynamic URL templates, enforce unique slugs fo
 - **Custom URL Templates**: Define preview URLs using placeholder tokens for dynamic content.
 - **Parent Status**: Allow posts of **all** statuses to be used as parent within hierarchical post types.
 - **Highly Customizable**: Extend core behavior with a comprehensive set of actions and filters.
+- **Faust Compatibility**: The plugin is compatible with [Faust.js](https://faustjs.org/) and the [FaustWP plugin](https://github.com/wpengine/faustjs/tree/canary/plugins/faustwp).
 
----
 
 ## Getting Started
 
@@ -48,6 +68,28 @@ This guide will help you set up your first headless preview link for the "Posts"
 5.  **Save and Test:** Save changes and go to any post, make a change, and click the "Preview" button. You should be redirected to the URL you just configured.
 
 ---
+
+## Project Structure
+
+```text
+hwp-previews/
+├── src/                        # Main plugin source code
+│   ├── Admin/                  # Admin settings, menu, and settings page logic
+│   ├── Hooks/                  # WordPress hooks and filters
+│   ├── Integration/            # Integrations (e.g. Faust)
+│   ├── Preview/                # Preview URL logic, template resolver, helpers
+│   ├── Plugin.php              # Main plugin class (entry point)
+│   └── Autoload.php            # PSR-4 autoloader
+├── tests/                      # All test suites
+│   ├── wpunit/                 # WPBrowser/Codeception unit 
+├── [hwp-previews.php]
+├── [activation.php]
+├── [composer.json]
+├── [deactivation.php]
+├── [ACTIONS_AND_FILTERS.md]
+├── [TESTING.md]
+├── [README.md]
+```
 
 ## Configuration
 
@@ -114,11 +156,7 @@ This out-of-the-box configuration allows your existing preview workflow to conti
 
 ---
 
-## Extending the Functionality
-
-The plugin's behavior can be extended using its PHP hooks. Developers can control which post types are configurable in the settings via the `hwp_previews_filter_available_post_types` filter. The `hwp_previews_core` action allows for registering new URL parameters or unregistering default ones. Additionally, the `hwp_previews_template_path` filter can be used to replace the default preview iframe with a custom PHP template.
-
-### Actions & Filters
+## Actions & Filters
 
 See the [Actions & Filters documentation](ACTIONS_AND_FILTERS.md) for a comprehensive list of available hooks and how to use them.
 
@@ -127,3 +165,28 @@ See the [Actions & Filters documentation](ACTIONS_AND_FILTERS.md) for a comprehe
 ## Testing
 
 See [Testing.md](TESTING.md) for details on how to test the plugin.
+
+
+## Screenshots
+
+<details>
+<summary>Click to expand screenshots</summary>
+
+![Custom Post Type Preview](./screenshots/settings_page.png)
+*Preview settings page.*
+
+![Custom Post Type Preview](./screenshots/cpt_preview.png)
+*Preview settings for a custom post type.*
+
+![Post Preview](./screenshots/post_preview.png)
+*Preview button in the WordPress editor.*
+
+![Post Preview in Iframe](./screenshots/post_preview_iframe.png)
+*Preview loaded inside the WordPress editor using an iframe.*
+
+![Preview Token](./screenshots/preview_token.png)
+*Preview token parameter for secure preview URLs.*
+
+![App Password](./screenshots/app_password.png)
+*App password setup for authentication.*
+</details>

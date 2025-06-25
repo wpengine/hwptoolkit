@@ -7,7 +7,47 @@ namespace HWP\Previews\Admin\Settings\Fields;
 use HWP\Previews\Admin\Settings\Fields\Field\Checkbox_Field;
 use HWP\Previews\Admin\Settings\Fields\Field\URL_Input_Field;
 
+/**
+ * Class Settings_Field_Collection
+ *
+ * This class manages a collection of settings fields for the HWP Previews plugin.
+ * It provides methods to add, remove, and retrieve fields, as well as to initialize them.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Settings_Field_Collection {
+	/**
+	 * The ID of the field that enables or disables the previews.
+	 *
+	 * @var string
+	 */
+	public const ENABLED_FIELD_ID = 'enabled';
+
+
+	/**
+	 * The ID of the field that allows using post-statuses as parent.
+	 *
+	 * @var string
+	 */
+	public const POST_STATUSES_AS_PARENT_FIELD_ID = 'post_statuses_as_parent';
+
+
+	/**
+	 * The ID of the field that indicates whether the preview is rendered in an iframe.
+	 *
+	 * @var string
+	 */
+	public const IN_IFRAME_FIELD_ID = 'in_iframe';
+
+	/**
+	 * The ID of the field that contains the preview URL.
+	 *
+	 * @var string
+	 */
+	public const PREVIEW_URL_FIELD_ID = 'preview_url';
+
 	/**
 	 * Array of fields
 	 *
@@ -66,7 +106,7 @@ class Settings_Field_Collection {
 
 		$this->add_field(
 			new Checkbox_Field(
-				'enabled',
+				self::ENABLED_FIELD_ID,
 				false,
 				__( 'Enable Previews', 'hwp-previews' ),
 				__( 'Enable previews for post type.', 'hwp-previews' )
@@ -75,7 +115,7 @@ class Settings_Field_Collection {
 
 		$this->add_field(
 			new Checkbox_Field(
-				'post_statuses_as_parent',
+				self::POST_STATUSES_AS_PARENT_FIELD_ID,
 				true,
 				__( 'Allow all post statuses in parents option', 'hwp-previews' ),
 				__( 'By default WordPress only allows published posts to be parents. This option allows posts of all statuses to be used as parent within hierarchical post types.', 'hwp-previews' )
@@ -84,7 +124,7 @@ class Settings_Field_Collection {
 
 		$this->add_field(
 			new Checkbox_Field(
-				'in_iframe',
+				self::IN_IFRAME_FIELD_ID,
 				false,
 				__( 'Use iframe to render previews', 'hwp-previews' ),
 				__( 'With this option enabled, headless previews will be displayed inside an iframe on the preview page, without leaving WordPress.', 'hwp-previews' )
@@ -93,7 +133,7 @@ class Settings_Field_Collection {
 
 		$this->add_field(
 			new URL_Input_Field(
-				'preview_url',
+				self::PREVIEW_URL_FIELD_ID,
 				false,
 				__( 'Preview URL', 'hwp-previews' ),
 				__( 'Construct your preview URL using the tags on the right. You can add any parameters needed to support headless previews.', 'hwp-previews' ),

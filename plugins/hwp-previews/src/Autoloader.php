@@ -1,18 +1,15 @@
 <?php
-/**
- * Includes the composer Autoloader used for packages and classes in the src/ directory.
- *
- * @package HWP\Previews
- *
- * @since 0.0.1
- */
 
 declare(strict_types=1);
 
 namespace HWP\Previews;
 
 /**
- * Class - Autoloader
+ * Includes the composer Autoloader used for packages and classes in the src/ directory.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
  */
 class Autoloader {
 	/**
@@ -26,19 +23,28 @@ class Autoloader {
 	 * Attempts to autoload the Composer dependencies.
 	 */
 	public static function autoload(): bool {
-		// If we're not *supposed* to autoload anything, then return true.
-		if ( defined( 'HWP_PREVIEWS_AUTOLOAD' ) && false === HWP_PREVIEWS_AUTOLOAD ) {
-			return true;
+		if ( self::get_is_loaded() ) {
+			return self::get_is_loaded();
 		}
 
-		if ( self::$is_loaded ) {
-			return self::$is_loaded;
-		}
-
-		$autoloader      = dirname( __DIR__ ) . '/vendor/autoload.php';
+		$autoloader      = self::get_composer_autoloader_path();
 		self::$is_loaded = self::require_autoloader( $autoloader );
 
+		return self::get_is_loaded();
+	}
+
+	/**
+	 * If the autoloader has been loaded.
+	 */
+	public static function get_is_loaded(): bool {
 		return self::$is_loaded;
+	}
+
+	/**
+	 * Returns the path to the Composer autoloader.
+	 */
+	public static function get_composer_autoloader_path(): string {
+		return dirname( __DIR__ ) . '/vendor/autoload.php';
 	}
 
 	/**

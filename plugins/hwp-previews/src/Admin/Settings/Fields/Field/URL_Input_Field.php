@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Admin\Settings\Fields\Field;
 
+/**
+ * URL input class
+ *
+ * This class represents a url input field in the settings of the HWP Previews plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class URL_Input_Field extends Text_Input_Field {
 	/**
 	 * @param mixed $value
@@ -43,7 +52,20 @@ class URL_Input_Field extends Text_Input_Field {
 	 * @param string $value
 	 */
 	private function fix_url( string $value ): string {
-		// Remove HTML tags, trim, encode spaces, add protocol.
+
+
+		if ( '' === $value ) {
+			return '';
+		}
+
+		// Remove <script> tags and their content to prevent XSS.
+		$value = preg_replace( '#<script.*?>.*?</script>#is', '', $value );
+
+		if ( ! is_string( $value ) || '' === trim( $value ) ) {
+			return '';
+		}
+
+		// Remove HTML tags except curly braces, trim, encode spaces, add protocol.
 		$value = preg_replace( '/<(?!\{)[^>]+>/', '', $value );
 		$value = trim( str_replace( ' ', '%20', (string) $value ) );
 
@@ -51,11 +73,11 @@ class URL_Input_Field extends Text_Input_Field {
 			return '';
 		}
 
-		$has_prootocol = preg_match( '/^https?:\/\//i', $value ) === 1;
-		if ( $has_prootocol ) {
+		$has_protocol = preg_match( '/^https?:\/\//i', $value ) === 1;
+		if ( $has_protocol ) {
 			return $value;
 		}
-			$protocol = is_ssl() ? 'https://' : 'http://';
-			return $protocol . ltrim( $value, '/' );
+		$protocol = is_ssl() ? 'https://' : 'http://';
+		return $protocol . ltrim( $value, '/' );
 	}
 }
