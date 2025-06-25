@@ -10,9 +10,9 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "docs/",
-    "examples/",
-    "packages/"
+    "docs",
+    "examples",
+    "packages"
   ],
   "packages": [
     "plugins/*"
