@@ -97,15 +97,3 @@ jobs:
           files: ${{ env.PLUGIN_DIR }}/plugin-build/${{ steps.plugin.outputs.plugin_slug }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete .changeset files
-        run: |
-          find .changeset -type f -name "*.md" -delete
-
-      - name: Commit deletion of changeset files
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add .changeset
-          git commit -m "chore: cleanup changeset files after pre-release" || echo "No changes to commit"
-          git push
