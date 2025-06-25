@@ -23,5 +23,10 @@ A WordPress plugin that extends [WPGraphQL](https://www.wpgraphql.com/) to suppo
 
 Clone the repository or download the latest release and place it in your WordPress `plugins` directory:
 
+## Documentation
+
+For detailed usage instructions, developer references, and examples, please visit the [Documentation](docs/index.md) folder included with this plugin.
+
+
 ## License
 WP GPL 2

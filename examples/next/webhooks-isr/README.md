@@ -4,19 +4,19 @@ This integration enables seamless communication between a WordPress backend and 
 
 ## Features
 
-*Incremental Static Regeneration (ISR) Showcase – Demonstrates Next.js ISR fully working with WordPress-triggered webhooks.
+* Incremental Static Regeneration (ISR) Showcase – Demonstrates Next.js ISR fully working with WordPress-triggered webhooks.
 
-*On-Demand Revalidation – Webhooks notify Next.js to revalidate specific pages when WordPress content changes.
+* On-Demand Revalidation – Webhooks notify Next.js to revalidate specific pages when WordPress content changes.
 
-*Relative Path Payloads – Webhook payloads send clean relative paths (e.g., /posts/my-post) for accurate revalidation.
+* Relative Path Payloads – Webhook payloads send clean relative paths (e.g., /posts/my-post) for accurate revalidation.
 
-*Secure Webhook Requests – Uses secret tokens in headers to authenticate webhook calls.
+* Secure Webhook Requests – Uses secret tokens in headers to authenticate webhook calls.
 
-*Flexible HTTP Methods & Headers – Supports POST requests with custom headers for integration flexibility.
+* Flexible HTTP Methods & Headers – Supports POST requests with custom headers for integration flexibility.
 
-*WordPress Native Integration – Uses WordPress Custom Post Types and hooks for managing webhooks.
+* WordPress Native Integration – Uses WordPress Custom Post Types and hooks for managing webhooks.
 
-*Extensible & Developer Friendly – Easily customizable payloads and event triggers via WordPress filters and actions.
+* Extensible & Developer Friendly – Easily customizable payloads and event triggers via WordPress filters and actions.
 
 ## Prerequisites
 
@@ -33,36 +33,31 @@ NEXT_PUBLIC_WORDPRESS_URL=http://your-wordpress-site.com
 WEBHOOK_REVALIDATE_SECRET=your_webhook_secret_token
 ```
 
-### Creating a Test Webhook in WordPress
-Add this PHP snippet to your theme’s `functions.php` or a custom plugin to create a webhook that triggers on post updates and calls your Next.js revalidation API:
+### Creating a Webhook via the Admin UI
+You can easily create and manage webhooks directly from the WordPress admin dashboard, without writing any code. The intuitive Webhooks UI allows you to specify the event, target URL, HTTP method, and custom headers for each webhook. This makes it simple to connect WordPress events to external services and automate your workflows.
 
-```php
-function create_test_post_published_webhook() {
-    // Get the repository instance from your plugin
-    $repository = \WPGraphQL\Webhooks\Plugin::instance()->get_repository();
+Follow these steps to create a webhook using the UI:
 
-    // Define webhook properties
-    $name = 'Test Post Published Webhook';
-    $event = 'post_updated';
-    $url = 'http://localhost:3000/api/revalidate'; // Update to your Next.js API URL
-    $method = 'POST';
+1. **Navigate to the Webhooks Admin Page**
+    In your WordPress dashboard, go to the sidebar and click on Webhooks.
 
-    $headers = [
-        'X-Webhook-Secret' => 'your_webhook_secret_token', // Must match Next.js secret
-        'Content-Type' => 'application/json',
-    ];
-    $result = $repository->create( $name, $event, $url, $method, $headers );
+2. **Click "Add New" or Edit an Existing Webhook**
+    To create a new webhook, click the Add New button.
+    To edit, click the webhook you want to update.
 
-    if ( is_wp_error( $result ) ) {
-        error_log( 'Failed to create webhook: ' . $result->get_error_message() );
-    } else {
-        error_log( 'Webhook created successfully with ID: ' . $result );
-    }
-}
+3. **Fill in the Webhook Details**
+    * **Name**: Enter a descriptive name (e.g., Test Post Published Webhook).
+    * **Event**: Select the event that will trigger the webhook (e.g., Post Updated).
+    * **URL**: Enter the endpoint URL where the webhook payload should be sent (e.g., http://localhost:3000/api/revalidate).
+    **HTTP Method**: Choose the HTTP method (e.g., POST).
+    **Headers**: Add any HTTP headers required. For example:
+        **X-Webhook-Secret**: d9f8a7e2b6c4d3f1a9e7b5c2df1f0e8a3
+        **Content-Type**: application/json
+    * Click Add Header to add more headers as needed.
+4. **Save the Webhook**
+    Click Create Webhook (or Update Webhook if editing) to save your settings.
 
-// Run once, for example on admin_init or manually trigger it
-add_action( 'admin_init', 'create_test_post_published_webhook' );
-```
+![Create Webhook view](./screenshots/create_webhook-ui.png)
 
 ## Modifying the Webhook Payload to Send Relative Paths
 Add this filter to your WordPress plugin or theme to ensure the webhook payload sends a relative path (required by Next.js revalidate API):
@@ -95,7 +90,44 @@ add_filter( 'graphql_webhooks_payload', function( array $payload, $webhook ) {
 }, 10, 2 );
 ```
 
+## Testing the Integration with the Example Project
 
+To verify that your webhook integration is working correctly, follow these steps:
+
+1. Run the example project in production mode. (see ## Command Reference section)
+
+2. In WordPress, update or create a new post, for example with the slug `/posts/new-post`.
+
+3. Visit the corresponding page on your headless site at:
+
+`http://localhost:3000/posts/new-post`
+
+
+Refresh the page to see the updated content served via Incremental Static Regeneration (ISR).
+
+4. Check the Next.js server logs. You should see logs indicating that the webhook revalidation request was received and processed successfully, similar to the following:
+
+```bash
+[Webhook] Received revalidation request
+[Webhook] Secret from header: Provided
+[Webhook] Expected secret is set: Yes
+[Webhook] Secret token validated successfully
+[Webhook] Request body parsed: {
+  key: 'cG9zdDoyNDI=',
+  path: '/posts/new-post/',
+  graphql_endpoint: 'mysite.local/graphql',
+  smart_cache_keys: [ 'cG9zdDoyNDI=' ],
+  _webhook_meta: {
+    sent_at: '2025-06-24 12:19:15',
+    webhook_id: 254,
+    webhook_name: 'Test Post Published Webhook',
+    event_type: 'post_updated'
+  }
+}
+[Webhook] Path to revalidate: /posts/new-post/
+```
+
+This confirms that the webhook triggered by your WordPress post update is successfully revalidating the page on your headless Next.js site.
 
 ## How It Works
 This integration:
@@ -142,7 +174,6 @@ Congratulations, WordPress should now be fully set up.
 
 
 > **Note:** The login details for the admin is username "admin" and password "password"
-
 
 ## Command Reference
 

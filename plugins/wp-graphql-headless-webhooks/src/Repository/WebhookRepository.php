@@ -106,32 +106,18 @@ class WebhookRepository implements WebhookRepositoryInterface {
 	/**
 	 * Create a new webhook entity.
 	 *
-	 * @param array $data {
-	 *     Webhook data.
-	 *
-	 *     @type string $name    Name/title of the webhook.
-	 *     @type string $event   Event key the webhook listens to.
-	 *     @type string $url     Target URL for the webhook request.
-	 *     @type string $method  HTTP method (GET, POST, etc).
-	 *     @type array  $headers Associative array of HTTP headers.
-	 * }
+	 * @param Webhook $webhook The webhook entity to create.
 	 *
 	 * @return int|WP_Error Post ID on success, or WP_Error on failure.
 	 */
-	public function create( $data ) {
-		$name    = $data['name'] ?? '';
-		$event   = $data['event'] ?? '';
-		$url     = $data['url'] ?? '';
-		$method  = $data['method'] ?? 'POST';
-		$headers = $data['headers'] ?? [];
-
-		$validation = $this->validate_data( $event, $url, $method );
+	public function create( Webhook $webhook ) {
+		$validation = $this->validate( $webhook );
 		if ( is_wp_error( $validation ) ) {
 			return $validation;
 		}
 
 		$postId = wp_insert_post( [ 
-			'post_title' => $name,
+			'post_title' => $webhook->name,
 			'post_type' => 'graphql_webhook',
 			'post_status' => 'publish',
 		], true );
@@ -140,10 +126,10 @@ class WebhookRepository implements WebhookRepositoryInterface {
 			return $postId;
 		}
 
-		update_post_meta( $postId, '_webhook_event', sanitize_text_field( $event ) );
-		update_post_meta( $postId, '_webhook_url', esc_url_raw( $url ) );
-		update_post_meta( $postId, '_webhook_method', strtoupper( $method ) );
-		update_post_meta( $postId, '_webhook_headers', wp_json_encode( $headers ) );
+		update_post_meta( $postId, '_webhook_event', sanitize_text_field( $webhook->event ) );
+		update_post_meta( $postId, '_webhook_url', esc_url_raw( $webhook->url ) );
+		update_post_meta( $postId, '_webhook_method', strtoupper( $webhook->method ) );
+		update_post_meta( $postId, '_webhook_headers', wp_json_encode( $webhook->headers ) );
 
 		return $postId;
 	}
@@ -151,39 +137,26 @@ class WebhookRepository implements WebhookRepositoryInterface {
 	/**
 	 * Update an existing webhook entity.
 	 *
-	 * @param int   $id   Post ID of the webhook to update.
-	 * @param array $data {
-	 *     Webhook data.
-	 *
-	 *     @type string $name    New name/title of the webhook.
-	 *     @type string $event   New event key.
-	 *     @type string $url     New target URL.
-	 *     @type string $method  New HTTP method.
-	 *     @type array  $headers New HTTP headers.
-	 * }
+	 * @param int     $id      Post ID of the webhook to update.
+	 * @param Webhook $webhook The webhook entity with updated data.
 	 *
 	 * @return bool|WP_Error True on success, or WP_Error on failure.
 	 */
-	public function update( $id, $data ) {
+	public function update( int $id, Webhook $webhook ) {
 		$post = get_post( $id );
 		if ( ! $post || $post->post_type !== 'graphql_webhook' ) {
 			return new WP_Error( 'invalid_webhook', __( 'Webhook not found.', 'wp-graphql-headless-webhooks' ) );
 		}
 
-		$name    = $data['name'] ?? '';
-		$event   = $data['event'] ?? '';
-		$url     = $data['url'] ?? '';
-		$method  = $data['method'] ?? 'POST';
-		$headers = $data['headers'] ?? [];
-
-		$validation = $this->validate_data( $event, $url, $method );
+		// Validate using the Webhook entity
+		$validation = $this->validate( $webhook );
 		if ( is_wp_error( $validation ) ) {
 			return $validation;
 		}
 
 		$postData = [ 
 			'ID' => $id,
-			'post_title' => sanitize_text_field( $name ),
+			'post_title' => sanitize_text_field( $webhook->name ),
 		];
 
 		$updated = wp_update_post( $postData, true );
@@ -191,10 +164,10 @@ class WebhookRepository implements WebhookRepositoryInterface {
 			return $updated;
 		}
 
-		update_post_meta( $id, '_webhook_event', sanitize_text_field( $event ) );
-		update_post_meta( $id, '_webhook_url', esc_url_raw( $url ) );
-		update_post_meta( $id, '_webhook_method', strtoupper( $method ) );
-		update_post_meta( $id, '_webhook_headers', wp_json_encode( $headers ) );
+		update_post_meta( $id, '_webhook_event', sanitize_text_field( $webhook->event ) );
+		update_post_meta( $id, '_webhook_url', esc_url_raw( $webhook->url ) );
+		update_post_meta( $id, '_webhook_method', strtoupper( $webhook->method ) );
+		update_post_meta( $id, '_webhook_headers', wp_json_encode( $webhook->headers ) );
 
 		return true;
 	}
@@ -217,15 +190,16 @@ class WebhookRepository implements WebhookRepositoryInterface {
 	}
 
 	/**
-	 * Validate webhook data before creation or update.
+	 * Validate webhook entity before creation or update.
 	 *
-	 * @param string $event  Event key to validate.
-	 * @param string $url    URL to validate.
-	 * @param string $method HTTP method to validate.
-	 *
+	 * @param Webhook $webhook The webhook entity to validate.
 	 * @return bool|WP_Error True if valid, WP_Error if invalid.
 	 */
-	public function validate_data( $event, $url, $method ) {
+	public function validate( Webhook $webhook ) {
+		$event = $webhook->event;
+		$url = $webhook->url;
+		$method = $webhook->method;
+
 		if ( ! isset( $this->get_allowed_events()[ $event ] ) ) {
 			return new WP_Error( 'invalid_event', 'Invalid event type.' );
 		}
