@@ -1,5 +1,6 @@
 import { ref, onMounted, onServerPrefetch } from "vue";
 import { useRuntimeConfig, useState } from "#app";
+
 /**
  * Hybrid SSR + CSR approach for data fetching in Nuxt.
  *  Runs on server during initial page load (SSR)
@@ -174,6 +175,20 @@ export function gql(strings, ...values) {
   }, "");
 }
 
+
+/**
+ * Executes a GraphQL mutation against a WordPress GraphQL endpoint.
+ * Used for submitting comments for the moment.
+ * 
+ * @async
+ * @function useMutation
+ * @param {string} mutation - The GraphQL mutation string to execute
+ * @param {Object} [variables={}] - Variables to pass to the GraphQL mutation
+ * @returns {Promise<Object>} Promise that resolves to an object containing:
+ *   - data: The GraphQL response data (null if error occurred)
+ *   - errors: Array of errors from GraphQL or caught exceptions
+ * @throws {Error} Throws error if HTML response received instead of JSON or if JSON parsing fails
+  */
 export async function useMutation(mutation, variables = {}) {
   const config = useRuntimeConfig();
   const wpUrl = config.public.wordpressUrl;

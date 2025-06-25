@@ -16,27 +16,8 @@ const props = defineProps({
     }
 });
 
-// Format WordPress URL
-const formatUrl = (uri) => {
-    if (!uri) return '/';
-
-    // Remove the leading slash if present
-    let cleanUri = uri.startsWith('/') ? uri.substring(1) : uri;
-
-    // Remove trailing slash if present (except for root)
-    cleanUri = cleanUri.endsWith('/') && cleanUri !== '/'
-        ? cleanUri.slice(0, -1)
-        : cleanUri;
-
-    return `${cleanUri}`;
-};
-
-const url = computed(() => formatUrl(props.item.uri));
-
-// Check if this item has children
 const hasChildren = computed(() => props.item.children && props.item.children.length > 0);
 
-// Determine dropdown position class based on level
 const dropdownClass = computed(() => {
     return props.level === 0 
         ? 'dropdown-top' 
@@ -48,7 +29,7 @@ const dropdownClass = computed(() => {
     <div class="group relative">
         <!-- Regular menu item -->
         <NuxtLink 
-            :to="url" 
+            :to="props.item.uri" 
             :class="[
                 'nav-link',
                 { 'active': isActive },

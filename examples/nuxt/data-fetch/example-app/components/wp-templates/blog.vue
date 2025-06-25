@@ -1,9 +1,9 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { useGraphQL, fetchGraphQL, gql } from '../../lib/client';
+import { gql } from '../../lib/client';
 import { capitalizeWords, getPosts } from '../../lib/utils';
 import PostListing from '../templates/listing/Post.vue';
-import BlogClient from '../blog/Blog.client.vue';
+import LoadMore from '../blog/LoadMore.vue';
 
 const props = defineProps({
   category: {
@@ -148,7 +148,7 @@ const handleLoading = (isLoading) => {
       <PostListing :posts="allPosts" :loading="loading" :cols="3" />
 
       <!-- Client component for pagination (only button) -->
-      <BlogClient :initial-posts="allPosts" :initial-page-info="initialPageInfo" :posts-per-page="postsPerPage"
+      <LoadMore :initial-posts="allPosts" :initial-page-info="initialPageInfo" :posts-per-page="postsPerPage"
         :posts-query="POSTS_QUERY" :category="props.category" :tag="props.tag" @update:posts="handleNewPosts"
         @loading="handleLoading" />
     </template>

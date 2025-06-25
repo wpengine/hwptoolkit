@@ -1,9 +1,7 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref } from 'vue';
 import { fetchGraphQL } from '../../lib/client';
-import PostListing from '../templates/listing/Post.vue';
 
-// Define props - similar to BlogList.js
 const props = defineProps({
   initialPosts: {
     type: Array,

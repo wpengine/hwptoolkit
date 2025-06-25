@@ -1,5 +1,6 @@
 import { useGraphQL, gql, fetchGraphQL } from "./client";
 import { useRuntimeConfig } from "nuxt/app";
+
 // Format WordPress URL
 export function formatWordPressUrl(uri) {
   if (!uri) return "/";
