@@ -1,5 +1,5 @@
 {
-	"name": "@hwp-previews/wordpress-plugin",
+	"name": "@wpengine/hwp-previews-wordpress-plugin",
 	"version": "0.0.1-beta",
 	"private": true,
 	"description": "Headless Previews solution for WordPress: fully configurable preview URLs via the settings page.",
@@ -10,7 +10,7 @@
 		"wp-env": "wp-env"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "wpengine",
 	"license": "GPL-2.0",
 	"devDependencies": {
 		"@playwright/test": "^1.52.0",
