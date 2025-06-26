@@ -45,8 +45,7 @@ class WebhooksAdmin {
 		add_action( 'admin_menu', [ $this, 'add_admin_menu' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'admin_post_graphql_webhook_save', [ $this, 'handle_webhook_save' ] );
-		add_action( 'admin_post_graphql_webhook_delete', [ $this, 'handle_webhook_delete' ] );
-		add_action( 'admin_init', [ $this, 'handle_admin_actions' ] );
+		add_action( 'admin_init', [ $this, 'handle_delete_actions' ] );
 		add_action( 'wp_ajax_test_webhook', [ $this, 'ajax_test_webhook' ] );
 	}
 
@@ -132,20 +131,6 @@ class WebhooksAdmin {
 		return ob_get_clean();
 	}
 
-	/**
-	 * Handles admin actions from the webhooks page.
-	 *
-	 * @return void
-	 */
-	public function handle_actions(): void {
-		if ( ! isset( $_GET['page'] ) || self::ADMIN_PAGE_SLUG !== $_GET['page'] ) {
-			return;
-		}
-
-		if ( isset( $_POST['action'] ) && 'save_webhook' === $_POST['action'] ) {
-			$this->handle_webhook_save();
-		}
-	}
 
 	/**
 	 * Checks if the current user has permission to manage options.
@@ -219,67 +204,43 @@ class WebhooksAdmin {
 	}
 
 	/**
-	 * Handles deleting a webhook.
+	 * Handles webhook delete actions (both single and bulk).
+	 * Consolidates delete logic in one place for easier maintenance.
 	 *
 	 * @return void
 	 */
-	public function handle_webhook_delete() {
-		// To be implemented: Individual deletes are handled through the list table's handle_row_actions.
-	}
-
-	/**
-	 * Handles bulk admin actions (such as bulk delete).
-	 *
-	 * @return void
-	 */
-	public function handle_admin_actions() {
-		// Handle single webhook delete
-		if ( isset( $_REQUEST['action'] ) && 'delete' === $_REQUEST['action'] && isset( $_GET['webhook'] ) ) {
-			if ( ! $this->verify_admin_permission() ) {
-				return;
-			}
-
-			$webhook_id = intval( $_GET['webhook'] );
-			$nonce = isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : '';
-
-			if ( ! wp_verify_nonce( $nonce, 'delete-webhook-' . $webhook_id ) ) {
-				wp_die( __( 'Security check failed.', 'wp-graphql-headless-webhooks' ) );
-			}
-
-			if ( $this->repository->delete( $webhook_id ) ) {
-				wp_redirect( add_query_arg( [ 'deleted' => 1 ], remove_query_arg( [ 'action', 'webhook', '_wpnonce' ], $this->get_admin_url() ) ) );
-				exit;
-			}
+	public function handle_delete_actions() {
+		// Only process on our admin page
+		if ( ! isset( $_REQUEST['page'] ) || self::ADMIN_PAGE_SLUG !== $_REQUEST['page'] ) {
+			return;
 		}
 
-		// Handle bulk delete actions from WP_List_Table
-		if ( isset( $_POST['action'] ) && 'delete' === $_POST['action'] || 
-		     isset( $_POST['action2'] ) && 'delete' === $_POST['action2'] ) {
-			
-			if ( ! $this->verify_admin_permission() ) {
-				return;
-			}
-
-			// Check bulk action nonce
-			if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'bulk-webhooks' ) ) {
-				wp_die( __( 'Security check failed.', 'wp-graphql-headless-webhooks' ) );
-			}
-
-			$webhook_ids = isset( $_POST['webhook'] ) ? array_map( 'intval', (array) $_POST['webhook'] ) : [];
-			$deleted = 0;
-
-			foreach ( $webhook_ids as $webhook_id ) {
-				if ( $this->repository->delete( $webhook_id ) ) {
-					$deleted++;
-				}
-			}
-
-			if ( $deleted > 0 ) {
-				wp_redirect( add_query_arg( [ 'deleted' => $deleted ], remove_query_arg( [ 'action', 'action2', 'webhook', '_wpnonce' ], $this->get_admin_url() ) ) );
-				exit;
-			}
+		// Check if this is a delete action
+		$is_single_delete = isset( $_GET['action'] ) && 'delete' === $_GET['action'] && isset( $_GET['webhook'] );
+		
+		if ( ! $is_single_delete ) {
+			return;
 		}
+
+		// Verify permissions once
+		if ( ! $this->verify_admin_permission() ) {
+			return;
+		}
+
+		// Single delete
+		$webhook_id = intval( $_GET['webhook'] );
+		$nonce = isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : '';
+		
+		if ( ! wp_verify_nonce( $nonce, 'delete-webhook-' . $webhook_id ) ) {
+			wp_die( __( 'Security check failed.', 'wp-graphql-headless-webhooks' ) );
+		}
+
+		// Delete and redirect
+		$deleted = $this->repository->delete( $webhook_id ) ? 1 : 0;
+		wp_redirect( add_query_arg( [ 'deleted' => $deleted ], remove_query_arg( [ 'action', 'webhook', '_wpnonce' ], $this->get_admin_url() ) ) );
+		exit;
 	}
+
 
 	/**
 	 * Renders the webhooks admin page.

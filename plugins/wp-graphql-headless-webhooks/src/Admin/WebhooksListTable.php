@@ -83,9 +83,52 @@ class WebhooksListTable extends \WP_List_Table {
 
 
 	/**
+	 * Process bulk actions
+	 */
+	public function process_bulk_action() {
+		// Only handle delete action
+		if ( 'delete' !== $this->current_action() ) {
+			return;
+		}
+
+		// Verify nonce
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
+			wp_die( __( 'Security check failed.', 'wp-graphql-webhooks' ) );
+		}
+
+		// Check permissions
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.', 'wp-graphql-headless-webhooks' ) );
+		}
+
+		// Get selected webhooks
+		$webhook_ids = isset( $_REQUEST['webhook'] ) ? array_map( 'intval', (array) $_REQUEST['webhook'] ) : [];
+		if ( empty( $webhook_ids ) ) {
+			return;
+		}
+
+		// Delete webhooks
+		$deleted = 0;
+		foreach ( $webhook_ids as $webhook_id ) {
+			if ( $this->repository->delete( $webhook_id ) ) {
+				$deleted++;
+			}
+		}
+
+		// Redirect with success message
+		if ( $deleted > 0 ) {
+			wp_redirect( add_query_arg( [ 'deleted' => $deleted ], remove_query_arg( [ 'action', 'action2', 'webhook', '_wpnonce' ] ) ) );
+			exit;
+		}
+	}
+
+	/**
 	 * Prepare items for display
 	 */
-	public function prepare_items() {		
+	public function prepare_items() {
+		// Process bulk actions first
+		$this->process_bulk_action();
+		
 		$per_page = $this->get_items_per_page( 'webhooks_per_page', 20 );
 		$current_page = $this->get_pagenum();
 		
