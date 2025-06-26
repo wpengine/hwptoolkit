@@ -7,7 +7,6 @@ Tests are organized into suites for unit, integration (wpunit), functional, and 
 
 ## Test Suites
 
-- **unit**: Pure PHP unit tests, no WordPress loaded.
 - **wpunit**: Unit/integration tests with WordPress loaded.
 - **functional**: Simulates web requests, runs WordPress in a test environment.
 - **acceptance**: Browser-based tests (WPBrowser/WPWebDriver).

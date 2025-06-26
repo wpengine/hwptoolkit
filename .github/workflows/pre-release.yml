@@ -56,6 +56,8 @@ jobs:
 
       - name: Apply version bumps from changesets
         run: pnpm changeset version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit updated package.json and changelogs
         run: |
@@ -110,6 +112,8 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag "$TAG_NAME"
           git push origin "$TAG_NAME"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run composer install
         working-directory: ${{ steps.metadata.outputs.PLUGIN_DIR }}
