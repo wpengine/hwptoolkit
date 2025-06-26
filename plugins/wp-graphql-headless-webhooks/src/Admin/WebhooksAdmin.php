@@ -41,7 +41,14 @@ class WebhooksAdmin {
 	 */
 	public function __construct( WebhookRepositoryInterface $repository ) {
 		$this->repository = $repository;
+	}
 
+	/**
+	 * Initialize the admin functionality.
+	 *
+	 * @return void
+	 */
+	public function init(): void {
 		add_action( 'admin_menu', [ $this, 'add_admin_menu' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'admin_init', [ $this, 'handle_actions' ] );

@@ -96,7 +96,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 				
 				if ( class_exists( 'WPGraphQL\Webhooks\Admin\WebhooksAdmin' ) ) {
 					$admin = new \WPGraphQL\Webhooks\Admin\WebhooksAdmin( $repository );
-					// The constructor already sets up all necessary hooks
+					$admin->init();
 				}
 			}
 
