@@ -2,4 +2,4 @@
 
 ## 0.0.1-beta
 
-- Initial proof of concept.
+- Proof of concept. A WordPress plugin for headless previews.
