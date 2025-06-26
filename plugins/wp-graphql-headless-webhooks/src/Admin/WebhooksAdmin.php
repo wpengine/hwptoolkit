@@ -233,11 +233,9 @@ class WebhooksAdmin {
 	 * @return void
 	 */
 	public function handle_admin_actions() {
-		if (
-			( isset( $_REQUEST['action'] ) && 'delete' === $_REQUEST['action'] ) ||
-			( isset( $_REQUEST['action2'] ) && 'delete' === $_REQUEST['action2'] )
-		) {
-			if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'bulk-webhooks', '_wpnonce' ) ) {
+		// Handle single webhook delete
+		if ( isset( $_REQUEST['action'] ) && 'delete' === $_REQUEST['action'] && isset( $_GET['webhook'] ) ) {
+			if ( ! $this->verify_admin_permission() ) {
 				return;
 			}
 
