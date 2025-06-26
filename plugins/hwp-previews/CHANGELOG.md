@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.2
+
+### Patch Changes
+
+- [#284](https://github.com/wpengine/hwptoolkit/pull/284) [`9e3e968`](https://github.com/wpengine/hwptoolkit/commit/9e3e968c2cb8e09071a80f096a3a1f4b65aaba81) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Updated testing docs to trigger workflow process.
+
 ## 0.0.1
 
 ### Patch Changes
