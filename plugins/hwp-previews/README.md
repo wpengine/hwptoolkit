@@ -166,7 +166,6 @@ See the [Actions & Filters documentation](ACTIONS_AND_FILTERS.md) for a comprehe
 
 See [Testing.md](TESTING.md) for details on how to test the plugin.
 
-
 ## Screenshots
 
 <details>
