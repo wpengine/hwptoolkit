@@ -1,17 +1,25 @@
-name: Pre-release Tag
+# Part of create-release-branch.yml
+# Changesets are applied to the release branch instead of main as this is a production branch
+# Once merged, the PR should create the pre-release tag
+
+name: Create Pre-release Tag
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - main
     paths:
       - "plugins/**"
 
 permissions:
-  contents: write # Allow actions to read and write repository contents
-  actions: read # Allow actions to read repository metadata but not write
+  contents: write
+  actions: read
+
 jobs:
   tag-pre-release:
+    # Only run if PR was merged and branch name starts with 'release/'
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/')
     runs-on: ubuntu-latest
 
     steps:
@@ -23,51 +31,37 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.2' # Note: All plugins are compatible with PHP 8.2
           extensions: mbstring, json, zip
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 18.x # Min  version required by the repo
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 10
+          version: 10 # Min version required by the repo
 
       - name: Get changed plugin directory
         id: plugin
         run: |
-          git fetch --prune --unshallow 2>/dev/null || git fetch --prune
+          # Get files changed in the merged PR
           plugin=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/' | head -1 | cut -d/ -f2)
+          if [ -z "$plugin" ]; then
+            # Fallback: extract from branch name if no plugin changes detected
+            branch_name="${{ github.head_ref }}"
+            plugin=$(echo "$branch_name" | sed 's/release\/\([^-]*\)-.*/\1/')
+          fi
           echo "plugin_slug=$plugin" >> $GITHUB_OUTPUT
 
       - name: Validate plugin detection
-        continue-on-error: false
         run: |
           if [ ! -d "plugins/${{ steps.plugin.outputs.plugin_slug }}" ]; then
-            echo "Plugin directory does not exist"
+            echo "Plugin directory does not exist: plugins/${{ steps.plugin.outputs.plugin_slug }}"
             exit 1
           fi
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Apply version bumps from changesets
-        run: pnpm changeset version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit updated package.json and changelogs
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "chore: apply version bump from changesets" || echo "No changes to commit"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Read package metadata
         id: metadata
@@ -95,25 +89,30 @@ jobs:
           echo "package_name=$package_name" >> $GITHUB_OUTPUT
           echo "package_version=$package_version" >> $GITHUB_OUTPUT
           echo "PLUGIN_DIR=$PLUGIN_DIR" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Git tag
+        continue-on-error: false
         run: |
           TAG_NAME="${{ steps.metadata.outputs.package_name }}-${{ steps.metadata.outputs.package_version }}"
 
           # Check if tag already exists
           if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
             echo "Tag $TAG_NAME already exists. Skipping tag creation."
-            exit 0
+            echo "tag_exists=true" >> $GITHUB_ENV
+            exit 1
           fi
 
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git tag "$TAG_NAME"
           git push origin "$TAG_NAME"
+          echo "tag_exists=false" >> $GITHUB_ENV
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Run composer install
         working-directory: ${{ steps.metadata.outputs.PLUGIN_DIR }}
@@ -141,7 +140,7 @@ jobs:
       - name: Upload archive to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.metadata.outputs.package_name }}-${{ steps.metadata.outputs.package_version }}
+          tag_name: ${{ env.TAG_NAME }}
           name: "Pre-release ${{ steps.metadata.outputs.package_version }} for ${{ steps.metadata.outputs.package_name }}"
           prerelease: true
           files: |

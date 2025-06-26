@@ -1,7 +1,7 @@
 # Testing HWP Previews
 
 This plugin uses [Codeception](https://codeception.com/) with [WPBrowser](https://wpbrowser.wptestkit.dev/) for automated testing.  
-Tests are organized into suites for unit, integration (wpunit), functional, and acceptance testing.
+Tests are organized into suites for integration (wpunit), functional, and acceptance testing.
 
 ---
 
