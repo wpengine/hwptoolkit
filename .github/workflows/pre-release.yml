@@ -44,12 +44,8 @@ jobs:
           echo "plugin_slug=$plugin" >> $GITHUB_OUTPUT
 
       - name: Validate plugin detection
+        continue-on-error: false
         run: |
-          if [ -z "${{ steps.plugin.outputs.plugin_slug }}" ]; then
-            echo "No plugin detected in changes"
-            exit 1
-          fi
-
           if [ ! -d "plugins/${{ steps.plugin.outputs.plugin_slug }}" ]; then
             echo "Plugin directory does not exist"
             exit 1
@@ -68,6 +64,8 @@ jobs:
           git add .
           git commit -m "chore: apply version bump from changesets" || echo "No changes to commit"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Read package metadata
         id: metadata
@@ -95,6 +93,8 @@ jobs:
           echo "package_name=$package_name" >> $GITHUB_OUTPUT
           echo "package_version=$package_version" >> $GITHUB_OUTPUT
           echo "PLUGIN_DIR=$PLUGIN_DIR" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Git tag
         run: |
