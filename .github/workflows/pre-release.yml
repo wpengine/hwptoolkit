@@ -60,6 +60,8 @@ jobs:
 
       - name: Apply version bumps from changesets
         run: pnpm changeset version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit updated package.json and changelogs
         run: |
@@ -68,6 +70,8 @@ jobs:
           git add .
           git commit -m "chore: apply version bump from changesets" || echo "No changes to commit"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Read package metadata
         id: metadata
@@ -95,6 +99,8 @@ jobs:
           echo "package_name=$package_name" >> $GITHUB_OUTPUT
           echo "package_version=$package_version" >> $GITHUB_OUTPUT
           echo "PLUGIN_DIR=$PLUGIN_DIR" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Git tag
         run: |
@@ -110,6 +116,8 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag "$TAG_NAME"
           git push origin "$TAG_NAME"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run composer install
         working-directory: ${{ steps.metadata.outputs.PLUGIN_DIR }}
