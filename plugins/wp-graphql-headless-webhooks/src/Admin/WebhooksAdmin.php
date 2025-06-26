@@ -147,10 +147,6 @@ class WebhooksAdmin {
 		if ( isset( $_POST['action'] ) && 'save_webhook' === $_POST['action'] ) {
 			$this->handle_webhook_save();
 		}
-
-		if ( isset( $_GET['action'] ) && 'delete' === $_GET['action'] && isset( $_GET['webhook_id'] ) ) {
-			$this->handle_webhook_delete();
-		}
 	}
 
 	/**
@@ -186,7 +182,7 @@ class WebhooksAdmin {
 	 */
 	public function handle_webhook_save() {
 		// Verify permissions and nonce
-		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'webhook_save', 'webhook_nonce' ) ) {
+		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'webhook_nonce', 'webhook_save' ) ) {
 			wp_die( __( 'Unauthorized', 'wp-graphql-webhooks' ) );
 		}
 
@@ -200,7 +196,7 @@ class WebhooksAdmin {
 		];
 
 		// Validate data
-		$validation = $this->repository->validate_data( $data );
+		$validation = $this->repository->validate_data( $data['event'], $data['url'], $data['method'] );
 		if ( is_wp_error( $validation ) ) {
 			wp_die( $validation->get_error_message() );
 		}
@@ -231,15 +227,44 @@ class WebhooksAdmin {
 	 * Handle admin actions
 	 */
 	public function handle_admin_actions() {
-		// Handle bulk actions from WP_List_Table
-		if ( isset( $_REQUEST['action'] ) && 'delete' === $_REQUEST['action'] || 
-		     isset( $_REQUEST['action2'] ) && 'delete' === $_REQUEST['action2'] ) {
-			
-			if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'bulk-webhooks', '_wpnonce' ) ) {
+		// Only process on our admin page
+		if ( ! isset( $_GET['page'] ) || self::ADMIN_PAGE_SLUG !== $_GET['page'] ) {
+			return;
+		}
+
+		// Handle single delete action
+		if ( isset( $_GET['action'] ) && 'delete' === $_GET['action'] && isset( $_GET['webhook'] ) ) {
+			if ( ! $this->verify_admin_permission() ) {
 				return;
 			}
 
-			$webhook_ids = isset( $_REQUEST['webhook'] ) ? array_map( 'intval', (array) $_REQUEST['webhook'] ) : [];
+			$webhook_id = intval( $_GET['webhook'] );
+			$nonce = isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : '';
+
+			if ( ! wp_verify_nonce( $nonce, 'delete-webhook-' . $webhook_id ) ) {
+				wp_die( __( 'Security check failed.', 'wp-graphql-headless-webhooks' ) );
+			}
+
+			if ( $this->repository->delete( $webhook_id ) ) {
+				wp_redirect( add_query_arg( [ 'deleted' => 1 ], remove_query_arg( [ 'action', 'webhook', '_wpnonce' ], $this->get_admin_url() ) ) );
+				exit;
+			}
+		}
+
+		// Handle bulk delete actions from WP_List_Table
+		if ( isset( $_POST['action'] ) && 'delete' === $_POST['action'] || 
+		     isset( $_POST['action2'] ) && 'delete' === $_POST['action2'] ) {
+			
+			if ( ! $this->verify_admin_permission() ) {
+				return;
+			}
+
+			// Check bulk action nonce
+			if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'bulk-webhooks' ) ) {
+				wp_die( __( 'Security check failed.', 'wp-graphql-headless-webhooks' ) );
+			}
+
+			$webhook_ids = isset( $_POST['webhook'] ) ? array_map( 'intval', (array) $_POST['webhook'] ) : [];
 			$deleted = 0;
 
 			foreach ( $webhook_ids as $webhook_id ) {
@@ -249,7 +274,7 @@ class WebhooksAdmin {
 			}
 
 			if ( $deleted > 0 ) {
-				wp_redirect( add_query_arg( [ 'deleted' => $deleted ], $this->get_admin_url() ) );
+				wp_redirect( add_query_arg( [ 'deleted' => $deleted ], remove_query_arg( [ 'action', 'action2', 'webhook', '_wpnonce' ], $this->get_admin_url() ) ) );
 				exit;
 			}
 		}

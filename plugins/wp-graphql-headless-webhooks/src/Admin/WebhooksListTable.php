@@ -77,47 +77,15 @@ class WebhooksListTable extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		return [
-			'bulk-delete' => __( 'Delete', 'wp-graphql-webhooks' ),
+			'delete' => __( 'Delete', 'wp-graphql-webhooks' ),
 		];
 	}
 
-	/**
-	 * Process bulk actions
-	 */
-	public function process_bulk_action() {
-		// Handle bulk delete
-		if ( 'bulk-delete' === $this->current_action() ) {
-			$webhook_ids = isset( $_POST['webhook'] ) ? array_map( 'intval', $_POST['webhook'] ) : [];
-			
-			if ( ! empty( $webhook_ids ) && isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
-				foreach ( $webhook_ids as $id ) {
-					$this->repository->delete( $id );
-				}
-				
-				wp_redirect( add_query_arg( 'deleted', count( $webhook_ids ), remove_query_arg( [ 'action', 'webhook', '_wpnonce' ] ) ) );
-				exit;
-			}
-		}
-		
-		// Handle single delete
-		if ( 'delete' === $this->current_action() ) {
-			$webhook_id = isset( $_GET['webhook'] ) ? intval( $_GET['webhook'] ) : 0;
-			$nonce = isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : '';
-			
-			if ( $webhook_id && wp_verify_nonce( $nonce, 'delete-webhook-' . $webhook_id ) ) {
-				$this->repository->delete( $webhook_id );
-				wp_redirect( add_query_arg( 'deleted', 1, remove_query_arg( [ 'action', 'webhook', '_wpnonce' ] ) ) );
-				exit;
-			}
-		}
-	}
 
 	/**
 	 * Prepare items for display
 	 */
-	public function prepare_items() {
-		$this->process_bulk_action();
-		
+	public function prepare_items() {		
 		$per_page = $this->get_items_per_page( 'webhooks_per_page', 20 );
 		$current_page = $this->get_pagenum();
 		
