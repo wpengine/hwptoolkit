@@ -7,6 +7,8 @@
 
 	<description>Coding standards for the HWP Previews plugin</description>
 	<file>./hwp-previews.php</file>
+	<file>./activation.php</file>
+	<file>./deactivation.php</file>
 	<file>./vendor/autoload.php</file>
 	<file>./src/</file>
 	<exclude-pattern>*/languages/*</exclude-pattern>

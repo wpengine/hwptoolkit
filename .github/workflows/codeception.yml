@@ -1,0 +1,66 @@
+name: Testing Integration
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'plugins/**.php'
+  pull_request:
+    paths:
+      - 'plugins/**.php'
+
+# Cancel previous workflow run groups that have not completed.
+concurrency:
+  # Group workflow runs by workflow name, along with the head branch ref of the pull request
+  # or otherwise the branch or tag ref.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  continuous_integration:
+    runs-on: ubuntu-latest
+    name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
+
+    strategy:
+      matrix:
+        php: ["8.3","8.2","8.1"]
+        wordpress: ["6.8","6.7","6.6","6.5"]
+        include:
+          - php: "8.2"
+            wordpress: "6.8"
+            coverage: 1
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          git fetch --prune --unshallow
+          plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
+          echo "slug=$plugin" >> $GITHUB_OUTPUT
+
+      - name: Validate codeception.dist.yml
+        run: |
+          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/codeception.dist.yml" ]; then
+            echo "Exiting as no codeception file found for this plugin - /${{ steps.plugin.outputs.slug }}"
+            exit 1
+          fi
+
+      - name: Validate composer.json
+        run: |
+          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/composer.json" ]; then
+            echo "Exiting as no composer file found for this plugin - ${{ steps.plugin.outputs.slug }}"
+            exit 1
+          fi
+
+      - name: Run Codeception Tests
+        uses: ./.github/actions/codeception
+        with:
+          working-directory: plugins/${{ steps.plugin.outputs.slug }}
+          php: ${{ matrix.php }}
+          wordpress: ${{ matrix.wordpress }}
+          extensions: json,mbstring

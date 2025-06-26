@@ -31,7 +31,7 @@ class WebhookHandler implements Handler {
 		
 		$args = [ 
 			'headers' => $webhook->headers ?: [ 'Content-Type' => 'application/json' ],
-			'timeout' => 15, // Increased from 5 to 15 seconds for better reliability
+			'timeout' => apply_filters( 'graphql_webhooks_timeout', 15 ), // Configurable timeout with a default of 15 seconds
 			'blocking' => false,
 			'sslverify' => apply_filters( 'graphql_webhooks_sslverify', true, $webhook ),
 			'user-agent' => 'WPGraphQL-Webhooks/' . ( defined( 'WPGRAPHQL_WEBHOOKS_VERSION' ) ? WPGRAPHQL_WEBHOOKS_VERSION : '1.0.0' ),

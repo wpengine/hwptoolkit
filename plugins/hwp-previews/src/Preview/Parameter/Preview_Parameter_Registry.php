@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Preview\Parameter;
 
-use HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface;
+use HWP\Previews\Preview\Parameter\Preview_Parameter;
 use WP_Post;
 
 /**
  * Class Preview_Parameter_Registry.
  *
  * This class is responsible for registering and managing preview parameters.
+ *
+ * @package HwP\Previews
+ *
+ * @since 0.0.1
  */
 class Preview_Parameter_Registry {
 	/**
@@ -23,7 +27,7 @@ class Preview_Parameter_Registry {
 	/**
 	 * Registered parameters.
 	 *
-	 * @var array<\HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface>
+	 * @var array<\HWP\Previews\Preview\Parameter\Preview_Parameter>
 	 */
 	private array $parameters = [];
 
@@ -62,8 +66,6 @@ class Preview_Parameter_Registry {
 			)->register(
 				new Preview_Parameter( 'type', static fn( WP_Post $post ) => $post->post_type, 'The post type, like post or page.' )
 			)->register(
-				new Preview_Parameter( 'uri', static fn( WP_Post $post ) => (string) get_page_uri( $post ), 'The URI path for a page.' )
-			)->register(
 				new Preview_Parameter( 'template', static fn( WP_Post $post ) => (string) get_page_template_slug( $post ), 'Specific template filename for a given post.' )
 			);
 
@@ -74,9 +76,9 @@ class Preview_Parameter_Registry {
 	/**
 	 * Register a parameter.
 	 *
-	 * @param \HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface $parameter The parameter object.
+	 * @param \HWP\Previews\Preview\Parameter\Preview_Parameter $parameter The parameter object.
 	 */
-	public function register( Preview_Parameter_Interface $parameter ): self {
+	public function register( Preview_Parameter $parameter ): self {
 		$this->parameters[ $parameter->get_name() ] = $parameter;
 
 		return $this;
@@ -93,15 +95,6 @@ class Preview_Parameter_Registry {
 		}
 
 		return $this;
-	}
-
-	/**
-	 * Get all registered parameters.
-	 *
-	 * @return array<string, \HWP\Previews\Preview\Parameter\Contracts\Preview_Parameter_Interface>
-	 */
-	public function get_all(): array {
-		return $this->parameters;
 	}
 
 	/**
@@ -123,7 +116,7 @@ class Preview_Parameter_Registry {
 	 *
 	 * @param string $name The parameter name.
 	 */
-	public function get( string $name ): ?Preview_Parameter_Interface {
+	public function get( string $name ): ?Preview_Parameter {
 		return $this->parameters[ $name ] ?? null;
 	}
 }

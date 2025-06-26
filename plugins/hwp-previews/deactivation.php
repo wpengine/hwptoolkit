@@ -6,6 +6,8 @@ declare(strict_types=1);
  * Deactivation Hook
  *
  * @package HWP\Previews
+ *
+ * @since 0.0.1
  */
 
 /**

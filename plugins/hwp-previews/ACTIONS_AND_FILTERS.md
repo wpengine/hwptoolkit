@@ -8,22 +8,32 @@
 
 ## PHP Filters
 
-- `hwp_previews_register_parameters` - Allows modification of the URL parameters used for previews for the class `Preview_Parameter_Registry`
-- `hwp_previews_filter_post_type_setting` - Filter or modify what post types appear in the settings UI
-- `hwp_previews_template_path` - To use our own template for iframe previews
-- `hwp_previews_core` - Register or unregister URL parameters, and adjust types/statuses
+## Admin
+
+- `hwp_previews_settings_init` - Allows a user to modify the `Settings` instance
+- `hwp_previews_settings_form_manager_init` - Allows a user to modify the `Settings_Form_Manager` instance and update fields and post types
+- `hwp_previews_settings_fields` - Allows a user to register, modify, or remove settings fields for the settings page
 - `hwp_previews_settings_group_option_key` - Filter to modify the settings group option key. Default is HWP_PREVIEWS_SETTINGS_KEY
 - `hwp_previews_settings_group_settings_group` - Filter to modify the settings group name. Default is HWP_PREVIEWS_SETTINGS_GROUP
+
+
+
+- `hwp_previews_register_parameters` - Allows modification of the URL parameters used for previews for the class `Preview_Parameter_Registry`
+- `hwp_previews_template_path` - To use our own template for iframe previews
+- `hwp_previews_core` - Register or unregister URL parameters, and adjust types/statuses
+- `hwp_previews_filter_available_post_types` - Filter to modify the available post types for Previews.
+- `hwp_previews_filter_available_post_statuses` - Filter for post statuses for previews for Previews
+- `hwp_previews_filter_available_parent_post_statuses` - Filter for parent post statuses for Previews
 - `hwp_previews_settings_group_settings_config` - Filter to modify the settings array. See `Settings_Group`
 - `hwp_previews_settings_group_cache_groups` - Filter to modify cache groups for `Settings_Group`
 - `hwp_previews_get_post_types_config` - Filter for generating the instance of `Post_Types_Config_Interface`
-- `hwp_previews_hooks_post_type_config` - Filter for post type config service for the Hook class
 - `hwp_previews_hooks_post_status_config` - Filter for post status config service for the Hook class
 - `hwp_previews_hooks_preview_link_service` - Filter for preview link service for the Hook class
-- `hwp_previews_hooks_post_statuses` - Filter for post statuses for previews for the Hook Class
-
 
 ## Usage Examples
+
+@TODO - Redo
+
 
 ### Filter: Post Types List
 
@@ -32,7 +42,7 @@ Modify which post types appear in the settings UI:
 ```php
 // Removes attachment post type from the settings page configuration.
 
-add_filter( 'hwp_previews_filter_post_type_setting', 'hwp_previews_filter_post_type_setting_callback' );
+add_filter( 'hwp_previews_filter_available_post_types', 'hwp_previews_filter_post_type_setting_callback' );
 function hwp_previews_filter_post_type_setting_callback( $post_types ) {
     if ( isset( $post_types['attachment'] ) ) {
         unset( $post_types['attachment'] );

@@ -3,7 +3,10 @@ name: Plugin Artifact for PR
 on:
   pull_request:
     paths:
-      - 'plugins/**'
+      - 'plugins/**.php'
+      - 'plugins/**.js'
+      - 'plugins/**.css'
+      - 'plugins/**.json'
 
 jobs:
   create-plugin-artifact:
@@ -27,6 +30,7 @@ jobs:
           PLUGIN_SLUG: ${{ steps.plugin.outputs.slug }}
         with:
             slug: ${{ env.PLUGIN_SLUG }}
+            composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Comment with artifact link
         uses: actions/github-script@v7
@@ -39,10 +43,36 @@ jobs:
             const runId = context.runId;
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
             const slug = process.env.PLUGIN_SLUG;
-            const body = `ℹ️ [Download the ${slug} plugin artifact from this workflow run](${artifactUrl}) (see the 'Artifacts' section at the bottom).`;
-            await github.rest.issues.createComment({
+            const body = `ℹ️ [Download the latest ${slug} plugin zip from this PR](${artifactUrl})\n<em>(See the 'Artifacts' section at the bottom)</em>`;
+            
+            // Find existing comment from this bot
+            const comments = await github.rest.issues.listComments({
               issue_number: pr.number,
               owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
+              repo: context.repo.repo
             });
+            
+            const botComment = comments.data.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.user.login === 'github-actions[bot]' &&
+              comment.body.includes(`ℹ️ [Download the latest ${slug} plugin zip from this PR]`)
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              core.info(`Updating existing comment with ID: ${botComment.id}`);
+              await github.rest.issues.updateComment({
+                comment_id: botComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                issue_number: pr.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            }

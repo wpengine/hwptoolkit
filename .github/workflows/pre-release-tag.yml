@@ -1,0 +1,149 @@
+# Part of create-release-branch.yml
+# Changesets are applied to the release branch instead of main as this is a production branch
+# Once merged, the PR should create the pre-release tag
+
+name: Create Pre-release Tag
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+    paths:
+      - "plugins/**"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  tag-pre-release:
+    # Only run if PR was merged and branch name starts with 'release/'
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Note: All plugins are compatible with PHP 8.2
+          extensions: mbstring, json, zip
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x # Min  version required by the repo
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10 # Min version required by the repo
+
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          # Get files changed in the merged PR
+          plugin=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/' | head -1 | cut -d/ -f2)
+          if [ -z "$plugin" ]; then
+            # Fallback: extract from branch name if no plugin changes detected
+            branch_name="${{ github.head_ref }}"
+            plugin=$(echo "$branch_name" | sed 's/release\/\([^-]*\)-.*/\1/')
+          fi
+          echo "plugin_slug=$plugin" >> $GITHUB_OUTPUT
+
+      - name: Validate plugin detection
+        run: |
+          if [ ! -d "plugins/${{ steps.plugin.outputs.plugin_slug }}" ]; then
+            echo "Plugin directory does not exist: plugins/${{ steps.plugin.outputs.plugin_slug }}"
+            exit 1
+          fi
+
+      - name: Read package metadata
+        id: metadata
+        run: |
+          PLUGIN_DIR="plugins/${{ steps.plugin.outputs.plugin_slug }}"
+
+          if [ ! -f "$PLUGIN_DIR/package.json" ]; then
+            echo "package.json not found in $PLUGIN_DIR"
+            exit 1
+          fi
+
+          package_name=$(jq -r '.name // empty' "$PLUGIN_DIR/package.json")
+          package_version=$(jq -r '.version // empty' "$PLUGIN_DIR/package.json")
+
+          if [ -z "$package_name" ] || [ "$package_name" = "null" ] || [ "$package_name" = "empty" ]; then
+              echo "Missing or invalid name in $PLUGIN_DIR/package.json"
+              exit 1
+          fi
+
+          if [ -z "$package_version" ] || [ "$package_version" = "null" ] || [ "$package_version" = "empty" ]; then
+              echo "Missing or invalid version in $PLUGIN_DIR/package.json"
+              exit 1
+          fi
+
+          echo "package_name=$package_name" >> $GITHUB_OUTPUT
+          echo "package_version=$package_version" >> $GITHUB_OUTPUT
+          echo "PLUGIN_DIR=$PLUGIN_DIR" >> $GITHUB_OUTPUT
+
+      - name: Create Git tag
+        continue-on-error: false
+        run: |
+          TAG_NAME="${{ steps.metadata.outputs.package_name }}-${{ steps.metadata.outputs.package_version }}"
+
+          # Check if tag already exists
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Tag $TAG_NAME already exists. Skipping tag creation."
+            echo "tag_exists=true" >> $GITHUB_ENV
+            exit 1
+          fi
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag "$TAG_NAME"
+          git push origin "$TAG_NAME"
+          echo "tag_exists=false" >> $GITHUB_ENV
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run composer install
+        working-directory: ${{ steps.metadata.outputs.PLUGIN_DIR }}
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Validate composer setup
+        working-directory: ${{ steps.metadata.outputs.PLUGIN_DIR }}
+        run: |
+          composer validate --no-check-publish --no-check-lock
+
+      - name: Create plugin archive
+        working-directory: ${{ steps.metadata.outputs.PLUGIN_DIR }}
+        run: |
+          rm -f plugin-build/${{ steps.plugin.outputs.plugin_slug }}.-*.zip
+          composer archive -vvv --format=zip --file="plugin-build/${{ steps.plugin.outputs.plugin_slug }}" --dir="."
+
+          # Verify archive was created
+          if [ ! -f "plugin-build/${{ steps.plugin.outputs.plugin_slug }}.zip" ]; then
+            echo "Failed to create plugin archive"
+            exit 1
+          fi
+
+          echo "Archive created successfully: $(ls -lh plugin-build/${{ steps.plugin.outputs.plugin_slug }}.zip)"
+
+      - name: Upload archive to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: "Pre-release ${{ steps.metadata.outputs.package_version }} for ${{ steps.metadata.outputs.package_name }}"
+          prerelease: true
+          files: |
+            ${{ steps.metadata.outputs.PLUGIN_DIR }}/plugin-build/${{ steps.plugin.outputs.plugin_slug }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

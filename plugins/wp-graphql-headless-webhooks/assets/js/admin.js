@@ -4,7 +4,6 @@
 
 (function ($) {
 	'use strict';
-
 	$( document ).ready(
 		function () {
 			// Handle adding new header fields

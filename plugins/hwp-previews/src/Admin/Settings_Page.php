@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace HWP\Previews\Admin;
 
-use HWP\Previews\Admin\Settings\Fields\Checkbox_Field;
-use HWP\Previews\Admin\Settings\Fields\Text_Input_Field;
-use HWP\Previews\Admin\Settings\Helper\Settings_Helper;
+use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
 use HWP\Previews\Admin\Settings\Menu\Menu_Page;
-use HWP\Previews\Admin\Settings\Settings_Section;
-use HWP\Previews\Admin\Settings\Tabbed_Settings;
-use HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface;
-use HWP\Previews\Post\Type\Post_Types_Config_Registry;
+use HWP\Previews\Admin\Settings\Settings_Form_Manager;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
+use HWP\Previews\Preview\Post\Post_Preview_Service;
 
+/**
+ * Settings_Page class for HWP Previews.
+ *
+ * This class handles the registration of the settings page, settings fields, and loading of scripts and styles for the plugin.
+ *
+ * @package HWP\Previews
+ *
+ * @since 0.0.1
+ */
 class Settings_Page {
 	/**
 	 * @var string The slug for the plugin menu.
@@ -21,205 +26,100 @@ class Settings_Page {
 	public const PLUGIN_MENU_SLUG = 'hwp-previews';
 
 	/**
-	 * @var \HWP\Previews\Preview\Parameter\Preview_Parameter_Registry|null  The registry of preview parameters.
+	 * @var \HWP\Previews\Preview\Parameter\Preview_Parameter_Registry  The registry of preview parameters.
 	 */
-	protected static ?Preview_Parameter_Registry $parameters = null;
+	protected Preview_Parameter_Registry $parameters;
 
 	/**
-	 * @var \HWP\Previews\Post\Type\Contracts\Post_Types_Config_Interface|null The post types available for previews..
+	 * Post-preview service to get post types and statuses for the settings page.
+	 *
+	 * @var \HWP\Previews\Preview\Post\Post_Preview_Service
 	 */
-	protected static ?Post_Types_Config_Interface $types_config = null;
+	protected Post_Preview_Service $post_preview_service;
 
 	/**
-	 * Initializes the settings page and registers the necessary properties, configuration and hooks.
+	 * The instance of the plugin.
+	 *
+	 * @var \HWP\Previews\Admin\Settings_Page|null
 	 */
-	public static function init(): void {
-		self::init_class_properties();
-		self::register_settings_pages();
-		self::register_settings_fields();
-		self::load_scripts_styles();
+	protected static ?Settings_Page $instance = null;
+
+	/**
+	 * Constructor.
+	 *
+	 * Initializes the settings page, registers settings fields, and loads scripts and styles.
+	 */
+	protected function __construct() {
+		$this->parameters           = Preview_Parameter_Registry::get_instance();
+		$this->post_preview_service = new Post_Preview_Service();
 	}
 
 	/**
-	 * Initializes the class properties.
+	 * Initializes the settings page.
 	 */
-	public static function init_class_properties(): void {
+	public static function init(): ?Settings_Page {
+		if ( ! is_admin() ) {
+			return null;
+		}
+		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
+			self::$instance = new self();
+			self::$instance->setup();
+		}
 
-		self::$parameters   = Preview_Parameter_Registry::get_instance();
-		self::$types_config = Post_Types_Config_Registry::get_post_type_config();
+		/**
+		 * Fire off init action.
+		 *
+		 * @param \HWP\Previews\Admin\Settings_Page $instance the instance of the plugin class.
+		 */
+		do_action( 'hwp_previews_settings_init', self::$instance );
+
+		return self::$instance;
+	}
+
+	/**
+	 * Sets up the settings page by registering hooks.
+	 */
+	public function setup(): void {
+		add_action( 'admin_menu', [ $this, 'register_settings_page' ], 10, 0 );
+		add_action( 'admin_init', [ $this, 'register_settings_fields' ], 10, 0 );
+		add_action( 'admin_enqueue_scripts', [ $this, 'load_scripts_styles' ], 10, 1 );
 	}
 
 	/**
 	 * Registers the settings page.
 	 */
-	public static function register_settings_pages(): void {
-		add_action( 'admin_menu', static function (): void {
+	public function register_settings_page(): void {
 
-			$post_types = ( null === self::$types_config ) ? [] : self::$types_config->get_public_post_types();
+		// Note: We didn't initialise in the constructor because we need to ensure
+		// the post-types are registered before we can use them.
+		$post_types = $this->post_preview_service->get_post_types();
 
-			/**
-			 * Array of post types where key is the post type slug and value is the label.
-			 *
-			 * @var array<string, string> $post_types
-			 */
-			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', $post_types );
-			self::create_settings_page( $post_types )->register_page();
-		} );
+		$page = new Menu_Page(
+			__( 'HWP Previews Settings', 'hwp-previews' ),
+			'HWP Previews',
+			self::PLUGIN_MENU_SLUG,
+			trailingslashit( HWP_PREVIEWS_PLUGIN_DIR ) . 'src/Templates/admin.php',
+			[
+				'hwp_previews_main_page_config' => [
+					'tabs'        => $post_types,
+					'current_tab' => $this->get_current_tab( $post_types ),
+					'params'      => $this->parameters->get_descriptions(),
+				],
+			],
+		);
+
+		$page->register_page();
 	}
 
 	/**
 	 * Registers the settings fields for each post type.
 	 */
-	public static function register_settings_fields(): void {
-		add_action( 'admin_init', static function (): void {
-
-			$post_types = ( null === self::$types_config ) ? [] : self::$types_config->get_public_post_types();
-
-			/**
-			 * Array of post types where key is the post type slug and value is the label.
-			 *
-			 * @var array<string, string> $post_types
-			 */
-			$post_types = apply_filters( 'hwp_previews_filter_post_type_setting', $post_types );
-
-			/**
-			 * Register setting itself.
-			 */
-			self::create_tabbed_settings( $post_types )->register_settings();
-
-			/**
-			 * Register settings sections and fields for each post type.
-			 */
-			foreach ( $post_types as $post_type => $label ) {
-				self::create_setting_section( $post_type, $label )->register_section( HWP_PREVIEWS_SETTINGS_KEY, $post_type, "hwp-previews-{$post_type}" );
-			}
-		}, 10, 0 );
-	}
-
-	/**
-	 * Enqueues the JavaScript and the CSS file for the plugin admin area.
-	 */
-	public static function load_scripts_styles(): void {
-		add_action( 'admin_enqueue_scripts', static function ( string $hook ): void {
-
-			if ( 'settings_page_' . self::PLUGIN_MENU_SLUG !== $hook ) {
-				return;
-			}
-
-			wp_enqueue_script(
-				'hwp-previews-js',
-				trailingslashit( HWP_PREVIEWS_PLUGIN_URL ) . 'assets/js/hwp-previews.js',
-				[],
-				HWP_PREVIEWS_VERSION,
-				true
-			);
-
-			wp_enqueue_style(
-				'hwp-previews-css',
-				trailingslashit( HWP_PREVIEWS_PLUGIN_URL ) . 'assets/css/hwp-previews.css',
-				[],
-				HWP_PREVIEWS_VERSION
-			);
-		} );
-	}
-
-	/**
-	 * Creates the settings page.
-	 *
-	 * @param array<string> $post_types The post types to be used in the settings page.
-	 */
-	public static function create_settings_page( array $post_types ): Menu_Page {
-
-		$descriptions = ( null === self::$parameters ) ? [] : self::$parameters->get_descriptions();
-
-
-		return new Menu_Page(
-			__( 'HWP Previews Settings', 'hwp-previews' ),
-			'HWP Previews',
-			self::PLUGIN_MENU_SLUG,
-			trailingslashit( HWP_PREVIEWS_TEMPLATE_DIR ) . 'settings-page-main.php',
-			[
-				'hwp_previews_main_page_config' => [
-					'tabs'        => $post_types,
-					'current_tab' => self::get_current_tab( $post_types ),
-					'params'      => $descriptions,
-				],
-			],
+	public function register_settings_fields(): void {
+		$settings_manager = new Settings_Form_Manager(
+			$this->post_preview_service->get_post_types(),
+			new Settings_Field_Collection()
 		);
-	}
-
-	/**
-	 * Creates the settings section for a specific post type.
-	 *
-	 * @param string $post_type The post type slug.
-	 * @param string $label The label for the post type.
-	 */
-	public static function create_setting_section( string $post_type, string $label ): Settings_Section {
-		return new Settings_Section(
-			'hwp_previews_section_' . $post_type,
-			'',
-			'hwp-previews-' . $post_type,
-			self::create_settings_fields( $post_type, $label, is_post_type_hierarchical( $post_type ) )
-		);
-	}
-
-	/**
-	 * Creates the settings fields for a specific post type.
-	 *
-	 * @param string $post_type The post type slug.
-	 * @param string $label The label for the post type.
-	 * @param bool   $is_hierarchical Whether the post type is hierarchical.
-	 *
-	 * @return array<\HWP\Previews\Admin\Settings\Fields\Abstract_Settings_Field>
-	 */
-	public static function create_settings_fields( string $post_type, string $label, bool $is_hierarchical ): array {
-		$fields   = [];
-		$fields[] = new Checkbox_Field(
-			'enabled',
-			// translators: %s is the label of the post type.
-			sprintf( __( 'Enable HWP Previews for %s', 'hwp-previews' ), $label ),
-			__( 'Turn preview functionality on or off for this public post type.', 'hwp-previews' )
-		);
-
-		if ( $is_hierarchical ) {
-			$fields[] = new Checkbox_Field(
-				'post_statuses_as_parent',
-				__( 'Allow all post statuses in parents option', 'hwp-previews' ),
-				__( 'By default WordPress only allows published posts to be parents. This option allows posts of all statuses to be used as parent within hierarchical post types.', 'hwp-previews' )
-			);
-		}
-
-		$fields[] = new Checkbox_Field(
-			'in_iframe',
-			sprintf( __( 'Load previews in iframe', 'hwp-previews' ), $label ),
-			__( 'With this option enabled, headless previews will be displayed inside an iframe on the preview page, without leaving WordPress.', 'hwp-previews' )
-		);
-		$fields[] = new Text_Input_Field(
-			'preview_url',
-			// translators: %s is the label of the post type.
-			sprintf( __( 'Preview URL for %s', 'hwp-previews' ), $label ),
-			__( 'Construct your preview URL using the tags on the right. You can add any parameters needed to support headless previews.', 'hwp-previews' ),
-			"https://localhost:3000/{$post_type}?preview=true&post_id={ID}&name={slug}",
-			'code hwp-previews-url' // The class is being used as a query for the JS.
-		);
-
-		return $fields;
-	}
-
-	/**
-	 * Creates the tabbed settings object.
-	 *
-	 * @param array<string> $post_types Post Types as a tabs.
-	 */
-	public static function create_tabbed_settings( array $post_types ): Tabbed_Settings {
-		$helper = Settings_Helper::get_instance();
-
-		return new Tabbed_Settings(
-			HWP_PREVIEWS_SETTINGS_GROUP,
-			HWP_PREVIEWS_SETTINGS_KEY,
-			array_keys( $post_types ),
-			$helper->get_settings_config()
-		);
+		$settings_manager->render_form();
 	}
 
 	/**
@@ -228,12 +128,44 @@ class Settings_Page {
 	 * @param array<string> $post_types The post types to be used in the settings page.
 	 * @param string        $tab The name of the tab.
 	 */
-	public static function get_current_tab( $post_types, string $tab = 'tab' ): string {
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		if ( isset( $_GET[ $tab ] ) && is_string( $_GET[ $tab ] ) ) {
-			return sanitize_key( $_GET[ $tab ] );
+	public function get_current_tab( array $post_types, string $tab = 'tab' ): string {
+		if ( empty( $post_types ) ) {
+			return '';
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verification not required for tab selection.
+		$value = $_GET[ $tab ] ?? '';
+		if ( ! is_string( $value ) || '' === $value ) {
+			return (string) key( $post_types );
 		}
 
-		return ! empty( $post_types ) ? (string) key( $post_types ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification not required for tab selection.
+		return sanitize_key( $value );
+	}
+
+	/**
+	 * Enqueues the JavaScript and the CSS file for the plugin admin area.
+	 *
+	 * @param string $hook The current admin page hook.
+	 */
+	public function load_scripts_styles( string $hook ): void {
+
+		if ( 'settings_page_' . self::PLUGIN_MENU_SLUG !== $hook ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'hwp-previews-js',
+			trailingslashit( HWP_PREVIEWS_PLUGIN_URL ) . 'assets/js/hwp-previews.js',
+			[],
+			HWP_PREVIEWS_VERSION,
+			true
+		);
+
+		wp_enqueue_style(
+			'hwp-previews-css',
+			trailingslashit( HWP_PREVIEWS_PLUGIN_URL ) . 'assets/css/hwp-previews.css',
+			[],
+			HWP_PREVIEWS_VERSION
+		);
 	}
 }

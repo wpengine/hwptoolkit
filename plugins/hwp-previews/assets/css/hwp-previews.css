@@ -1,3 +1,9 @@
+.settings_page_hwp-previews #poststuff .postbox .inside h2 {
+	font-size: 1.3em;
+	font-weight: 600;
+	padding-left: 0;
+}
+
 .hwp-previews-tag-cloud {
 	display: flex;
 	flex-wrap: wrap;
@@ -55,4 +61,19 @@
 .hwp-previews-tooltip:focus-within .tooltip-text {
 	visibility: visible;
 	opacity: 1;
+}
+
+.hwp-previews-docs ul li {
+	list-style-type: none;
+	margin-left: 30px;
+	padding-bottom: 16px;
+}
+
+.hwp-previews-docs ul li:before {
+	content: url(../icons/doc.svg);
+	height: 1em;
+	margin-left: -29px;
+	margin-top: -2px;
+	position: absolute;
+	width: 0.5em;
 }

@@ -1,0 +1,58 @@
+name: End-to-End Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'plugins/hwp-previews/**.php'
+      - 'plugins/hwp-previews/**.js'
+      - 'plugins/hwp-previews/**.css'
+      - 'plugins/hwp-previews/**.json'
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "plugins/hwp-previews/**"
+
+jobs:
+  playwright-e2e-tests:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup PHP with Cached Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: 8.2
+          working-directory:  plugins/hwp-previews
+          composer-options: '--no-progress --optimize-autoloader --no-dev'
+
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: plugins/hwp-previews
+
+      - name: Start wp-env
+        run: |
+          npm run wp-env start
+        working-directory: plugins/hwp-previews
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        working-directory: plugins/hwp-previews
+
+      - name: Stop wp-env
+        run: npm run wp-env stop
+        working-directory: plugins/hwp-previews

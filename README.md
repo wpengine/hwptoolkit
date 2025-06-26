@@ -6,8 +6,8 @@ Headless WordPress Toolkit
 
 ## Project Organization
 
-- [`packages`](./packages): Dependency packages to be published on NPM
 - [`plugins`](./plugins): PHP based WordPress Plugins
+- [`packages`](./packages): Dependency packages to be published on NPM
 - [`docs`](./docs): Documentation for the Toolkit
 - [`examples`](./examples): Example code for HWP
 
