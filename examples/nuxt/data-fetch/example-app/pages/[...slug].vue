@@ -2,6 +2,7 @@
 import { uriToTemplate } from '../lib/templateHierarchy'
 import { computed } from 'vue'
 import NotFound from '../components/404.vue'
+
 const uri = useRoute().path || '/'
 
 const { data: templateData, error } = await useAsyncData(`template-${uri}`, () =>
@@ -18,7 +19,7 @@ const component = computed(() => {
 
 <template>
   <component :is="component" v-if="component" :template-data="templateData" />
-  <div v-else-if="error">
-    <NotFound text="Error loading template" />
+  <div v-else="">
+    <NotFound />
   </div>
 </template>

@@ -69,6 +69,12 @@ const POSTS_QUERY = gql`
               slug
             }
           }
+          tags {
+            nodes {
+              name
+              slug
+            }
+          }
           author {
             node {
               name

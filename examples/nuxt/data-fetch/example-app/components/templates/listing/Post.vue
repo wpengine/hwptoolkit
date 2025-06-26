@@ -1,5 +1,5 @@
 <script setup>
-import { formatWordPressUrl, formatDate, createExcerpt } from '../../../lib/utils';
+import { formatDate, createExcerpt, getCategoryLink } from '../../../lib/utils';
 
 const props = defineProps({
   posts: {
@@ -15,8 +15,6 @@ const props = defineProps({
     default: 3
   }
 });
-
-
 </script>
 
 <template>
@@ -33,7 +31,7 @@ const props = defineProps({
 
       <!-- Featured image -->
       <div v-if="post.featuredImage?.node" class="featured-image-container">
-        <NuxtLink :to="formatWordPressUrl(post.uri)">
+        <NuxtLink :to="post.uri">
           <img :src="post.featuredImage.node.sourceUrl" :alt="post.featuredImage.node.altText || post.title"
             class="feature-img" />
         </NuxtLink>
@@ -60,7 +58,7 @@ const props = defineProps({
             <span>Categories:</span>
             <ul class="post-categories">
               <li v-for="(category, index) in post.categories.nodes" :key="category.slug">
-                <NuxtLink :to="category.slug">
+                <NuxtLink :to="getCategoryLink(category.slug)">
                   {{ category.name }}                  
                 </NuxtLink>{{ index < post.categories.nodes.length - 1 ? ', ' : '' }}
               </li>
@@ -70,7 +68,7 @@ const props = defineProps({
             <span>Tags:</span>
             <ul class="post-tags">
               <li v-for="(tag, index) in post.tags.nodes" :key="tag.slug">
-                <NuxtLink :to="'tags/' + tag.slug">
+                <NuxtLink :to="getCategoryLink(tag.slug)">
                   {{ tag.name }}
                 </NuxtLink>{{ index < post.tags.nodes.length - 1 ? ', ' : '' }}
               </li>
@@ -85,7 +83,7 @@ const props = defineProps({
 
       <!-- Read more link -->
       <div class="read-more">
-        <NuxtLink :to="formatWordPressUrl(post.uri)" class="button button-primary ">
+        <NuxtLink :to="post.uri" class="button button-primary button-small">
           Read more →
         </NuxtLink>
       </div>

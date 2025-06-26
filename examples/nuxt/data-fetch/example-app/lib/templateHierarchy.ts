@@ -13,15 +13,40 @@ export type TemplateData = {
   template: WordPressTemplate;
 };
 
+/**
+ * Resolves a URI to its corresponding WordPress template data by querying the GraphQL endpoint
+ * and determining the appropriate template based on the content type and available templates.
+ *
+ * @param params - The function parameters
+ * @param params.uri - The URI path to resolve (e.g., "/about", "/blog/post-slug")
+ *
+ * @returns A promise that resolves to template data containing:
+ *   - uri: The original URI that was resolved
+ *   - seedQuery: Raw data from the WordPress GraphQL query
+ *   - availableTemplates: List of template files available in the system - from server/api/templates.ts
+ *   - possibleTemplates: Templates that could be used for this content type
+ *   - template: The final selected template to render this URI
+ *
+ * @throws {Error} With status 404 if the URI is not found in WordPress
+ * @throws {Error} With status 500 if:
+ *   - GraphQL query fails
+ *   - No templates are available
+ *   - No possible templates match the content type
+ *   - No final template can be determined
+ *
+ * @example
+ * const templateData = await uriToTemplate({ uri: "/about" });
+ */
 export async function uriToTemplate({
   uri,
 }: {
   uri: string;
 }): Promise<TemplateData> {
-  
+
   const config = useRuntimeConfig();
   const wpUrl = config.public.wordpressUrl;
   const graphqlEndpoint = `${wpUrl}/graphql`;
+  
   const { data: seedQueryData, error: errorMessage } = await $fetch<{
     data: any;
     error?: any;
@@ -35,34 +60,46 @@ export async function uriToTemplate({
 
   if (errorMessage) {
     console.error("Error fetching seedQuery:", errorMessage);
-    throw createError({ statusCode: 500, statusMessage: "Error fetching seedQuery" });
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Error fetching seedQuery",
+    });
   }
-  
+
   if (!seedQueryData?.nodeByUri) {
-    
     console.error("HTTP/404 - Not Found in WordPress:", uri);
     throw createError({ statusCode: 404, statusMessage: "Not Found" });
   }
+
+  /* Fetch available templates from the API. Logic located in server/api/templates.ts */
   const availableTemplates = await $fetch(`/api/templates`, {
-    query: { uri }
-  })
+    query: { uri },
+  });
 
   if (!availableTemplates) {
     console.error("No templates found");
-    throw createError({ statusCode: 500, statusMessage: "No available templates" });
+    throw createError({
+      statusCode: 500,
+      statusMessage: "No available templates",
+    });
   }
-
   const possibleTemplates = getPossibleTemplates(seedQueryData.nodeByUri);
 
   if (!possibleTemplates || possibleTemplates.length === 0) {
     console.error("No possible templates found");
-    throw createError({ statusCode: 500, statusMessage: "No possible templates for this URI" });
+    throw createError({
+      statusCode: 500,
+      statusMessage: "No possible templates for this URI",
+    });
   }
   const template = getTemplate(availableTemplates, possibleTemplates);
 
   if (!template) {
     console.error("No template not found for route");
-    throw createError({ statusCode: 500, statusMessage: "No template found for this URI" });
+    throw createError({
+      statusCode: 500,
+      statusMessage: "No template found for this URI",
+    });
   }
 
   return {
@@ -71,56 +108,5 @@ export async function uriToTemplate({
     availableTemplates,
     possibleTemplates,
     template,
-  };
-}
-
-// Nuxt.js composable version for use in pages/components
-export async function useTemplateHierarchy(uri: string) {
-  try {
-    return await uriToTemplate({ uri });
-  } catch (error) {
-    // Handle errors in Nuxt context
-    if (process.client) {
-      // Client-side error handling
-      console.error("Template hierarchy error:", error);
-      await navigateTo("/404");
-    } else {
-      // Server-side error handling
-      throw error;
-    }
-  }
-}
-
-// Reactive composable for template data
-export function useTemplateData(uri: Ref<string> | string) {
-  const uriRef = ref(uri);
-  const templateData = ref<TemplateData | null>(null);
-  const loading = ref(false);
-  const error = ref<Error | null>(null);
-
-  const loadTemplate = async () => {
-    if (!uriRef.value) return;
-
-    loading.value = true;
-    error.value = null;
-
-    try {
-      templateData.value = await uriToTemplate({ uri: uriRef.value });
-    } catch (err) {
-      error.value = err as Error;
-      templateData.value = null;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  // Watch for URI changes
-  watch(uriRef, loadTemplate, { immediate: true });
-
-  return {
-    templateData: readonly(templateData),
-    loading: readonly(loading),
-    error: readonly(error),
-    refresh: loadTemplate,
   };
 }

@@ -41,10 +41,10 @@ const loadMorePosts = async () => {
   if (!pageInfo.value?.hasNextPage || loading.value) {
     return;
   }
-  
+
   loading.value = true;
   emit('loading', true);
-  
+
   try {
     // Execute GraphQL query
     const data = await fetchGraphQL(props.postsQuery, {
@@ -53,16 +53,16 @@ const loadMorePosts = async () => {
       category: props.category || null,
       tag: props.tag || null
     });
-    
+
     const newPostsEdges = data?.posts?.edges || [];
-    
+
     if (newPostsEdges.length > 0) {
       // Create new posts array
       const newPosts = newPostsEdges.map(edge => edge.node);
-      
+
       // Emit the new posts to parent
       emit('update:posts', newPosts);
-      
+
       // Update pageInfo
       pageInfo.value = data.posts.pageInfo;
     } else {
@@ -80,7 +80,6 @@ const loadMorePosts = async () => {
 </script>
 
 <template>
-  <!-- Only show load more button -->
   <div v-if="pageInfo?.hasNextPage" class="load-more">
     <button @click="loadMorePosts" type="button" :disabled="loading">
       {{ loading ? 'Loading...' : 'Load more' }}

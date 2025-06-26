@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\"" 
   },
   "dependencies": {
     "@nuxt/bridge": "^3.4.0",

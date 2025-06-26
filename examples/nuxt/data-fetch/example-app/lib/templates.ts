@@ -27,6 +27,26 @@ export interface WordPressTemplate {
   path: string;
 }
 
+/**
+ * Used in uriToTemplate function to find the correct template for each page visit.
+ * The template hierarchy follows WordPress conventions for template selection.
+ * 
+ * @param node - The SeedNode object (from seedQuery.js) to analyze for template possibilities
+ * @returns An array of possible template names, ordered from most specific to least specific
+ * 
+ * @remarks
+ * The function handles various node types including:
+ * - Custom template assignments
+ * - Front page nodes
+ * - Blog/posts page nodes
+ * - Custom post type archive pages
+ * - Taxonomy term pages (categories, tags, custom taxonomies)
+ * - Author archive pages
+ * - Singular content nodes (posts, pages, custom post types)
+ * 
+ * All template arrays end with "index" as the fallback template.
+ */
+
 export function getPossibleTemplates(node: SeedNode) {
   let possibleTemplates: string[] = [];
 
@@ -164,7 +184,12 @@ export function getPossibleTemplates(node: SeedNode) {
 
   return possibleTemplates;
 }
-
+/**
+ * Searches for the correct template in the available templates based on the possible templates.
+ * @param availableTemplates 
+ * @param possibleTemplates 
+ * @returns {Object} with id and path - correct template from available templates based on possible templates
+ */
 export function getTemplate(
   availableTemplates: WordPressTemplate[] | undefined,
   possibleTemplates: string[] = []

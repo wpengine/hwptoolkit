@@ -64,14 +64,12 @@ const CREATE_COMMENT = gql`
   }
 `;
 
-// Clear messages
 const clearMessages = () => {
   errorMessage.value = '';
   successMessage.value = '';
   showMessage.value = false;
 };
 
-// Show success message
 const showSuccess = (message) => {
   clearMessages();
   successMessage.value = message;
@@ -83,7 +81,6 @@ const showSuccess = (message) => {
   }, 5000);
 };
 
-// Show error message
 const showError = (message) => {
   clearMessages();
   errorMessage.value = message;
@@ -143,7 +140,7 @@ const submitComment = async () => {
     console.log('Comment created:', data.createComment.comment);
     
     // Show success message
-    showSuccess(props.isReply ? 'Your reply has been posted successfully!' : 'Your comment has been posted successfully!');
+    showSuccess(props.isReply ? 'Your reply has been posted successfully and it is waiting for approval!' : 'Your comment has been posted successfully and it is waiting for approval!');
     
     // Emit success event with the new comment
     emit('success', data.createComment.comment);

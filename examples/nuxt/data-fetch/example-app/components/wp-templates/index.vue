@@ -1,23 +1,37 @@
 <script setup>
-const props = defineProps({
-  uri: String,
-  templateData: Object,
-  seedQuery: Object
-});
+import NotFound from '../components/404.vue'
 
-const node = computed(() => props.seedQuery?.nodeByUri);
+const INDEX_QUERY = gql`
+  query indexTemplateNodeQuery($uri: String!) {
+    nodeByUri(uri: $uri) {
+      __typename
+      uri
+      id
+      ... on NodeWithTitle {
+        title
+      }
+      ... on NodeWithContentEditor {
+        content
+      }
+    }
+  }
+`;
+
+const uri = useRoute().path || '/'
+const { data, loading, error } = useGraphQL(INDEX_QUERY, { slug: uri });
+const node = computed(() => data.indexTemplateNodeQuery.response.data.nodeByUri || null);
+
 </script>
 
 <template>
-  <div class="container mx-auto p-4 max-w-3xl py-10">
+  <div class="container">
     <div v-if="node">
-      <h1 class="text-4xl font-bold mb-6">{{ node.title || 'Untitled' }}</h1>
-      <div v-if="node.content" class="prose max-w-none" v-html="node.content"></div>
-      <div v-else class="text-gray-500">No content available.</div>
+      <h1 class="">{{ node.title || 'Untitled' }}</h1>
+      <div v-if="node.content" class="" v-html="node.content"></div>
+      <div v-else class="">No content available.</div>
     </div>
-    <div v-else class="text-center">
-      <h1 class="text-2xl font-bold mb-2">Page Not Found</h1>
-      <NuxtLink to="/" class="text-blue-500 hover:underline">Return home</NuxtLink>
+    <div v-else="">
+      <NotFound />
     </div>
   </div>
 </template>

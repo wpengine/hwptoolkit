@@ -1,4 +1,4 @@
-import { gql } from "./client.js";
+import { gql } from "./client";
 
 export const SEED_QUERY = gql`
   query GetSeedNode(

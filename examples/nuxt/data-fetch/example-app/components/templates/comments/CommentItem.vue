@@ -42,8 +42,6 @@ const avatarUrl = computed(() => {
         <time class="comment-date">{{ formatDate(comment.date) }}</time>
       </div>
       <div v-html="comment.content"></div>
-
-      <!-- Reply button -->
       <div class="comment-footer">
         <button
           @click="$emit('reply', comment.id)"

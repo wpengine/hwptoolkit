@@ -8,7 +8,6 @@ import { flatListToHierarchical } from '../lib/utils';
 // Get current route for active menu item
 const route = useRoute();
 
-// Separate queries like in Home.vue
 const SETTINGS_QUERY = gql`
   query HeaderSettingsQuery {
     generalSettings {
@@ -41,28 +40,26 @@ const NAVIGATION_QUERY = gql`
 `;
 
 // Use unique keys for proper SSR state management
-const { 
-  data: settingsData, 
-  loading: settingsLoading, 
-  error: settingsError 
-} = useGraphQL(SETTINGS_QUERY, {}, { 
+const {
+  data: settingsData,
+  loading: settingsLoading,
+  error: settingsError
+} = useGraphQL(SETTINGS_QUERY, {}, {
   key: 'header-settings',
-  loadingText: 'Loading site title...' 
+  loadingText: 'Loading site title...'
 });
 
-const { 
-  data: navigationData, 
-  loading: navigationLoading, 
-  error: navigationError 
-} = useGraphQL(NAVIGATION_QUERY, {}, { 
+const {
+  data: navigationData,
+} = useGraphQL(NAVIGATION_QUERY, {}, {
   key: 'header-navigation',
-  loadingText: 'Loading navigation...' 
+  loadingText: 'Loading navigation...'
 });
 
 
 const siteInfo = computed(() => {
   const title = settingsData.value?.generalSettings?.title;
-  
+
   return {
     title: title
   };
@@ -92,25 +89,20 @@ const isActive = (item) => {
 </script>
 
 <template>
-  <header class="header">
+  <header class="header" v-if="!settingsLoading">
     <div class="main-header-wrapper">
       <div class="site-title-wrapper">
-        <NuxtLink to="/">          
+        <NuxtLink to="/">
           <template v-if="siteInfo.title">
             {{ siteInfo.title }}
           </template>
         </NuxtLink>
       </div>
-      
-      <nav class="nav">        
+
+      <nav class="nav">
         <!-- Navigation items -->
         <template v-if="menuItems.length > 0">
-          <NavigationItem 
-            v-for="item in menuItems" 
-            :key="item.id" 
-            :item="item" 
-            :is-active="isActive(item)" 
-          />
+          <NavigationItem v-for="item in menuItems" :key="item.id" :item="item" :is-active="isActive(item)" />
         </template>
       </nav>
     </div>
@@ -118,5 +110,5 @@ const isActive = (item) => {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/scss/components/header';
+@use '@/assets/scss/components/header/header';
 </style>
