@@ -11,7 +11,7 @@
 				'click',
 				function () {
 					var headerRow = $( wpGraphQLWebhooks.headerTemplate || wpGraphQLWebhooks.headerRowTemplate );
-					$( '#webhook-headers-container, #webhook-headers' ).append( headerRow );
+					$( '#webhook-headers-container' ).append( headerRow );
 				}
 			);
 

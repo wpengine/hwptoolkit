@@ -51,28 +51,19 @@ class WebhooksAdmin {
 	}
 
 	/**
-	 * Optionally initialize additional admin hooks.
-	 *
-	 * @return void
-	 */
-	public function init(): void {
-		add_action( 'admin_init', [ $this, 'handle_actions' ] );
-	}
-
-	/**
-	 * Registers the top-level "Webhooks" admin menu.
+	 * Registers the webhooks submenu under the GraphQL admin menu.
 	 *
 	 * @return void
 	 */
 	public function add_admin_menu(): void {
-		add_menu_page(
-			__( 'Webhooks', 'wp-graphql-headless-webhooks' ),
+		// Add submenu under GraphQL menu using the correct parent slug
+		add_submenu_page(
+			'graphiql-ide',
+			__( 'GraphQL Webhooks', 'wp-graphql-headless-webhooks' ),
 			__( 'Webhooks', 'wp-graphql-headless-webhooks' ),
 			'manage_options',
 			self::ADMIN_PAGE_SLUG,
-			[ $this, 'render_admin_page' ],
-			'dashicons-rss',
-			25
+			[ $this, 'render_admin_page' ]
 		);
 	}
 
@@ -97,6 +88,11 @@ class WebhooksAdmin {
 	 * @return void
 	 */
 	public function enqueue_assets( string $hook ): void {
+		// Only enqueue on our admin page
+		if ( false === strpos( $hook, self::ADMIN_PAGE_SLUG ) ) {
+			return;
+		}
+
 		wp_enqueue_style(
 			'graphql-webhooks-admin',
 			WPGRAPHQL_HEADLESS_WEBHOOKS_PLUGIN_URL . 'assets/css/admin.css',
