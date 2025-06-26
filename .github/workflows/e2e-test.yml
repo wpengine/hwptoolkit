@@ -5,7 +5,11 @@ on:
     branches:
       - main
     paths:
-      - "plugins/hwp-previews/**"
+      - 'plugins/hwp-previews/**.php'
+      - 'plugins/hwp-previews/**.js'
+      - 'plugins/hwp-previews/**.css'
+      - 'plugins/hwp-previews/**.json'
+
   pull_request:
     branches:
       - main
@@ -29,9 +33,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install composer
-        run: composer install
-        working-directory: plugins/hwp-previews
+      - name: Setup PHP with Cached Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: 8.2
+          working-directory:  plugins/hwp-previews
+          composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Install playwright browsers
         run: npx playwright install --with-deps

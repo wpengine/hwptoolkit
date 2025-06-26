@@ -1,6 +1,7 @@
 {
-	"name": "hwp-previews",
-	"version": "0.0.1",
+	"name": "@wpengine/hwp-previews-wordpress-plugin",
+	"version": "0.0.1-beta",
+	"private": true,
 	"description": "Headless Previews solution for WordPress: fully configurable preview URLs via the settings page.",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
@@ -9,8 +10,8 @@
 		"wp-env": "wp-env"
 	},
 	"keywords": [],
-	"author": "",
-	"license": "GPL-2",
+	"author": "wpengine",
+	"license": "GPL-2.0",
 	"devDependencies": {
 		"@playwright/test": "^1.52.0",
 		"@wordpress/e2e-test-utils-playwright": "^1.25.0",
