@@ -1,9 +1,9 @@
 <script setup>
-import { computed } from 'vue';
-import { useGraphQL, gql } from '../lib/client';
-import { useRoute } from 'vue-router';
-import NavigationItem from './templates/header/NavigationItem.vue';
-import { flatListToHierarchical } from '../lib/utils';
+import { computed } from "vue";
+import { useGraphQL, gql } from "../lib/client";
+import { useRoute } from "vue-router";
+import NavigationItem from "./templates/header/NavigationItem.vue";
+import { flatListToHierarchical } from "../lib/utils";
 
 // Get current route for active menu item
 const route = useRoute();
@@ -43,25 +43,30 @@ const NAVIGATION_QUERY = gql`
 const {
   data: settingsData,
   loading: settingsLoading,
-  error: settingsError
-} = useGraphQL(SETTINGS_QUERY, {}, {
-  key: 'header-settings',
-  loadingText: 'Loading site title...'
-});
+  error: settingsError,
+} = useGraphQL(
+  SETTINGS_QUERY,
+  {},
+  {
+    key: "header-settings",
+    loadingText: "Loading site title...",
+  }
+);
 
-const {
-  data: navigationData,
-} = useGraphQL(NAVIGATION_QUERY, {}, {
-  key: 'header-navigation',
-  loadingText: 'Loading navigation...'
-});
-
+const { data: navigationData } = useGraphQL(
+  NAVIGATION_QUERY,
+  {},
+  {
+    key: "header-navigation",
+    loadingText: "Loading navigation...",
+  }
+);
 
 const siteInfo = computed(() => {
   const title = settingsData.value?.generalSettings?.title;
 
   return {
-    title: title
+    title: title,
   };
 });
 
@@ -80,8 +85,8 @@ const isActive = (item) => {
   if (!item.uri) return false;
 
   // Format the URI for comparison
-  let cleanUri = item.uri.startsWith('/') ? item.uri.substring(1) : item.uri;
-  cleanUri = cleanUri.endsWith('/') ? cleanUri.slice(0, -1) : cleanUri;
+  let cleanUri = item.uri.startsWith("/") ? item.uri.substring(1) : item.uri;
+  cleanUri = cleanUri.endsWith("/") ? cleanUri.slice(0, -1) : cleanUri;
 
   // Compare with current route path
   return `/${cleanUri}` === route.path;
@@ -102,7 +107,12 @@ const isActive = (item) => {
       <nav class="nav">
         <!-- Navigation items -->
         <template v-if="menuItems.length > 0">
-          <NavigationItem v-for="item in menuItems" :key="item.id" :item="item" :is-active="isActive(item)" />
+          <NavigationItem
+            v-for="item in menuItems"
+            :key="item.id"
+            :item="item"
+            :is-active="isActive(item)"
+          />
         </template>
       </nav>
     </div>
@@ -110,5 +120,5 @@ const isActive = (item) => {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/scss/components/header/header';
+@use "@/assets/scss/components/header/header";
 </style>

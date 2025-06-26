@@ -42,11 +42,10 @@ export async function uriToTemplate({
 }: {
   uri: string;
 }): Promise<TemplateData> {
-
   const config = useRuntimeConfig();
   const wpUrl = config.public.wordpressUrl;
   const graphqlEndpoint = `${wpUrl}/graphql`;
-  
+
   const { data: seedQueryData, error: errorMessage } = await $fetch<{
     data: any;
     error?: any;

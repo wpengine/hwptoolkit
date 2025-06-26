@@ -1,11 +1,10 @@
-
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps } from "vue";
 
 const props = defineProps({
   text: {
     type: String,
-    default: '', // Default to empty string, so text only shows if provided
+    default: "", // Default to empty string, so text only shows if provided
   },
   showSpinner: {
     type: Boolean,
@@ -22,5 +21,5 @@ const props = defineProps({
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/scss/components/loading';
+@use "@/assets/scss/components/loading";
 </style>

@@ -8,23 +8,23 @@ export default defineNuxtConfig({
       wordpressUrl: process.env.WORDPRESS_URL || "http://localhost:8890",
     },
   },
-   experimental: {
-    componentIslands: true
+  experimental: {
+    componentIslands: true,
   },
   // Add CSS global files
   css: [
     // Add your global SCSS file
-    '@/assets/scss/global.scss'
+    "@/assets/scss/global.scss",
   ],
-  
+
   vite: {
     css: {
       preprocessorOptions: {
         scss: {
           // Fix: Use @use instead of @import and remove "as *"
-          additionalData: '@use "@/assets/scss/_variables.scss";'
-        }
-      }
-    }
-  }
+          additionalData: '@use "@/assets/scss/_variables.scss";',
+        },
+      },
+    },
+  },
 });

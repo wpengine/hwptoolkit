@@ -1,23 +1,23 @@
 <script setup>
-import { computed, ref } from 'vue';
-import { useGraphQL, gql, fetchGraphQL } from '../lib/client';
-import CommentItem from './templates/comments/CommentItem.vue';
-import CommentForm from './templates/comments/CommentForm.vue';
+import { computed, ref } from "vue";
+import { useGraphQL, gql, fetchGraphQL } from "../lib/client";
+import CommentItem from "./templates/comments/CommentItem.vue";
+import CommentForm from "./templates/comments/CommentForm.vue";
 
 const props = defineProps({
   postId: {
     type: Number,
-    required: true
+    required: true,
   },
   contentType: {
     type: String,
-    default: 'post',
-    validator: (value) => ['post', 'page'].includes(value)
+    default: "post",
+    validator: (value) => ["post", "page"].includes(value),
   },
   commentsPerPage: {
     type: Number,
-    default: 10
-  }
+    default: 10,
+  },
 });
 
 const getCommentsQuery = (contentType) => {
@@ -54,10 +54,10 @@ const getCommentsQuery = (contentType) => {
 
 // Use the function to get the query
 const { data, loading, error, refetch } = useGraphQL(
-  getCommentsQuery(props.contentType), 
-  { 
+  getCommentsQuery(props.contentType),
+  {
     postId: props.postId,
-    first: props.commentsPerPage
+    first: props.commentsPerPage,
   },
   { key: `comments-${props.contentType}-${props.postId}` }
 );
@@ -83,7 +83,6 @@ const comments = computed(() => {
 
 const commentCount = computed(() => content.value?.commentCount || 0);
 
-
 const replyToId = ref(null);
 const showCommentForm = ref(true);
 
@@ -91,17 +90,17 @@ const showCommentForm = ref(true);
 const threadedComments = computed(() => {
   const commentMap = {};
   const rootComments = [];
-  
+
   // First pass: create a map of all comments by ID
-  comments.value.forEach(comment => {
+  comments.value.forEach((comment) => {
     commentMap[comment.id] = {
       ...comment,
-      replies: []
+      replies: [],
     };
   });
-  
+
   // Second pass: build the tree structure
-  comments.value.forEach(comment => {
+  comments.value.forEach((comment) => {
     if (comment.parentId) {
       // This is a reply, add it to its parent's replies array
       if (commentMap[comment.parentId]) {
@@ -112,7 +111,7 @@ const threadedComments = computed(() => {
       rootComments.push(commentMap[comment.id]);
     }
   });
-  
+
   return rootComments;
 });
 
@@ -120,30 +119,30 @@ const loadMoreComments = async () => {
   if (!pageInfo.value.hasNextPage || loadingMore.value) {
     return;
   }
-  
+
   loadingMore.value = true;
-  
+
   try {
     const moreCommentsData = await fetchGraphQL(
       getCommentsQuery(props.contentType),
       {
         postId: props.postId,
         first: props.commentsPerPage,
-        after: pageInfo.value.endCursor
+        after: pageInfo.value.endCursor,
       }
     );
-    
+
     if (moreCommentsData?.[props.contentType]?.comments?.nodes) {
       const newComments = moreCommentsData[props.contentType].comments.nodes;
-      
+
       // Add new comments to existing ones
       allComments.value = [...allComments.value, ...newComments];
-      
+
       // Update pagination info
       pageInfo.value = moreCommentsData[props.contentType].comments.pageInfo;
     }
   } catch (error) {
-    console.error('Error loading more comments:', error);
+    console.error("Error loading more comments:", error);
   } finally {
     loadingMore.value = false;
   }
@@ -153,11 +152,11 @@ const loadMoreComments = async () => {
 const handleReply = (commentId) => {
   replyToId.value = commentId;
   showCommentForm.value = true;
-  
+
   setTimeout(() => {
-    const formElement = document.getElementById('comment-form');
+    const formElement = document.getElementById("comment-form");
     if (formElement) {
-      formElement.scrollIntoView({ behavior: 'smooth' });
+      formElement.scrollIntoView({ behavior: "smooth" });
     }
   }, 100);
 };
@@ -168,61 +167,58 @@ const cancelReply = () => {
 };
 
 const handleCommentSubmit = (commentData) => {
-  console.log('Comment submitted:', commentData);
+  console.log("Comment submitted:", commentData);
 };
 
 const handleCommentSuccess = (newComment) => {
-  console.log('Comment added successfully:', newComment);
-  
+  console.log("Comment added successfully:", newComment);
+
   allComments.value = [];
   pageInfo.value = { hasNextPage: false, endCursor: null };
-  
+
   if (refetch) {
     refetch();
   }
-  
+
   replyToId.value = null;
   showCommentForm.value = true;
 };
 
-
 const handleCommentError = (error) => {
-  console.error('Error submitting comment:', error);
+  console.error("Error submitting comment:", error);
 };
 </script>
 
 <template>
   <section id="comments">
-    <h2>
-      Comments ({{ commentCount }})
-    </h2>
-    
+    <h2>Comments ({{ commentCount }})</h2>
+
     <!-- Loading state -->
     <div v-if="loading">
       <p>Loading comments...</p>
     </div>
-    
+
     <!-- Error state -->
     <div v-else-if="error">
       <p>{{ error.message }}</p>
     </div>
-    
+
     <!-- No comments state -->
     <div v-else-if="comments.length === 0">
       <p>No comments yet. Be the first to share your thoughts!</p>
     </div>
-    
+
     <!-- Comments thread -->
     <div v-else>
       <!-- Root comments with nested replies -->
       <div v-for="comment in threadedComments" :key="comment.id">
         <!-- Root comment -->
-        <CommentItem 
+        <CommentItem
           :comment="comment"
           :is-reply="false"
           @reply="handleReply"
         />
-        
+
         <!-- Nested replies using CommentItem -->
         <div v-if="comment.replies.length > 0">
           <CommentItem
@@ -234,26 +230,29 @@ const handleCommentError = (error) => {
           />
         </div>
       </div>
-      
+
       <!-- Load More Comments Button -->
       <div v-if="pageInfo.hasNextPage" class="load-more-comments">
-        <button 
+        <button
           @click="loadMoreComments"
           :disabled="loadingMore"
           class="load-more-button"
         >
-          {{ loadingMore ? 'Loading...' : 'Load More Comments' }}
+          {{ loadingMore ? "Loading..." : "Load More Comments" }}
         </button>
       </div>
-      
+
       <!-- Comments summary -->
-      <div v-if="!pageInfo.hasNextPage && comments.length > 0" class="comments-summary">
+      <div
+        v-if="!pageInfo.hasNextPage && comments.length > 0"
+        class="comments-summary"
+      >
         <p>Showing all {{ comments.length }} comments</p>
       </div>
     </div>
-    
+
     <!-- Comment form -->
-    <CommentForm 
+    <CommentForm
       v-if="showCommentForm"
       :post-id="Number(postId)"
       :parent-id="replyToId || 0"

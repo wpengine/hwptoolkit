@@ -1,13 +1,13 @@
 <script setup>
-import { computed } from 'vue';
-import { useGraphQL, gql } from '../../../lib/client';
-import Comments from '../../Comments.vue';
+import { computed } from "vue";
+import { useGraphQL, gql } from "../../../lib/client";
+import Comments from "../../Comments.vue";
 
 const props = defineProps({
   slug: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const POST_QUERY = gql`
@@ -55,12 +55,12 @@ const post = computed(() => data.value?.post || null);
 const postId = computed(() => post.value?.databaseId || null);
 
 const formatDate = (dateString) => {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 };
 </script>
@@ -71,7 +71,7 @@ const formatDate = (dateString) => {
     <div v-if="loading" class="py-10 text-center">
       <p>Loading post...</p>
     </div>
-    
+
     <!-- Error state -->
     <div v-else-if="error" class="py-10 text-center">
       <h1 class="text-2xl font-bold text-red-500 mb-2">Error</h1>
@@ -80,13 +80,13 @@ const formatDate = (dateString) => {
         Return to homepage
       </NuxtLink>
     </div>
-    
+
     <!-- Post content -->
     <article v-else-if="post" class="py-10">
       <!-- Post header -->
       <header class="mb-8">
         <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
-        
+
         <!-- Post meta -->
         <div class="flex items-center text-gray-500 mb-6">
           <div v-if="post.author?.node" class="flex items-center mr-6">
@@ -100,9 +100,12 @@ const formatDate = (dateString) => {
           </div>
           <time>{{ formatDate(post.date) }}</time>
         </div>
-        
+
         <!-- Categories -->
-        <div v-if="post.categories?.nodes?.length" class="flex flex-wrap gap-2 mb-6">
+        <div
+          v-if="post.categories?.nodes?.length"
+          class="flex flex-wrap gap-2 mb-6"
+        >
           <NuxtLink
             v-for="category in post.categories.nodes"
             :key="category.name"
@@ -113,18 +116,18 @@ const formatDate = (dateString) => {
           </NuxtLink>
         </div>
       </header>
-      
+
       <!-- Featured image -->
-      <img 
-        v-if="post.featuredImage?.node" 
-        :src="post.featuredImage.node.sourceUrl" 
+      <img
+        v-if="post.featuredImage?.node"
+        :src="post.featuredImage.node.sourceUrl"
         :alt="post.featuredImage.node.altText || post.title"
         class="w-full h-auto rounded-lg mb-8 shadow-md"
       />
-      
+
       <!-- Post content -->
       <div class="prose prose-lg max-w-none mb-8" v-html="post.content"></div>
-      
+
       <!-- Tags -->
       <div v-if="post.tags?.nodes?.length" class="border-t pt-6 mt-8">
         <h3 class="text-lg font-semibold mb-3">Tags:</h3>
@@ -139,11 +142,11 @@ const formatDate = (dateString) => {
           </NuxtLink>
         </div>
       </div>
-      
+
       <!-- Comments section -->
       <Comments v-if="postId" :post-id="postId" />
     </article>
-    
+
     <!-- Not found state -->
     <div v-else class="py-10 text-center">
       <h1 class="text-2xl font-bold mb-2">Post Not Found</h1>
@@ -155,6 +158,4 @@ const formatDate = (dateString) => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,36 +1,36 @@
 <script setup>
-import { ref } from 'vue';
-import { fetchGraphQL } from '../../lib/client';
+import { ref } from "vue";
+import { fetchGraphQL } from "../../lib/client";
 
 const props = defineProps({
   initialPosts: {
     type: Array,
-    required: true
+    required: true,
   },
   initialPageInfo: {
     type: Object,
-    required: true
+    required: true,
   },
   postsPerPage: {
     type: Number,
-    default: 10
+    default: 10,
   },
   postsQuery: {
     type: String,
-    required: true
+    required: true,
   },
   category: {
     type: String,
-    default: ''
+    default: "",
   },
   tag: {
     type: String,
-    default: ''
-  }
+    default: "",
+  },
 });
 
 // Use an event emitter to communicate with parent
-const emit = defineEmits(['update:posts', 'loading']);
+const emit = defineEmits(["update:posts", "loading"]);
 
 const pageInfo = ref(props.initialPageInfo);
 const loading = ref(false);
@@ -43,7 +43,7 @@ const loadMorePosts = async () => {
   }
 
   loading.value = true;
-  emit('loading', true);
+  emit("loading", true);
 
   try {
     // Execute GraphQL query
@@ -51,17 +51,17 @@ const loadMorePosts = async () => {
       first: props.postsPerPage,
       after: pageInfo.value.endCursor,
       category: props.category || null,
-      tag: props.tag || null
+      tag: props.tag || null,
     });
 
     const newPostsEdges = data?.posts?.edges || [];
 
     if (newPostsEdges.length > 0) {
       // Create new posts array
-      const newPosts = newPostsEdges.map(edge => edge.node);
+      const newPosts = newPostsEdges.map((edge) => edge.node);
 
       // Emit the new posts to parent
-      emit('update:posts', newPosts);
+      emit("update:posts", newPosts);
 
       // Update pageInfo
       pageInfo.value = data.posts.pageInfo;
@@ -70,11 +70,11 @@ const loadMorePosts = async () => {
       pageInfo.value = { ...pageInfo.value, hasNextPage: false };
     }
   } catch (err) {
-    console.error('Error loading more posts:', err);
+    console.error("Error loading more posts:", err);
     error.value = err;
   } finally {
     loading.value = false;
-    emit('loading', false);
+    emit("loading", false);
   }
 };
 </script>
@@ -82,7 +82,7 @@ const loadMorePosts = async () => {
 <template>
   <div v-if="pageInfo?.hasNextPage" class="load-more">
     <button @click="loadMorePosts" type="button" :disabled="loading">
-      {{ loading ? 'Loading...' : 'Load more' }}
+      {{ loading ? "Loading..." : "Load more" }}
     </button>
   </div>
 </template>

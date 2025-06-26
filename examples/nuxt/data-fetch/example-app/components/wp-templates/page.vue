@@ -1,8 +1,8 @@
 <script setup>
-import { computed } from 'vue';
-import { useGraphQL, gql } from '../../lib/client';
-import Comments from '../Comments.vue';
-import Loading from '../Loading.vue';
+import { computed } from "vue";
+import { useGraphQL, gql } from "../../lib/client";
+import Comments from "../Comments.vue";
+import Loading from "../Loading.vue";
 
 const PAGE_QUERY = gql`
   query GetPage($slug: ID!) {
@@ -23,16 +23,15 @@ const PAGE_QUERY = gql`
   }
 `;
 
-const uri = useRoute().path || '/'
+const uri = useRoute().path || "/";
 const { data, loading, error } = useGraphQL(PAGE_QUERY, { slug: uri });
 
 const page = computed(() => data.value?.page || null);
 const pageId = computed(() => page.value?.databaseId || null);
 
 // Check if comments are enabled for this page
-const commentsEnabled = computed(() =>
-  page.value?.commentStatus === 'open' ||
-  page.value?.commentCount > 0 // Show section if there are existing comments
+const commentsEnabled = computed(
+  () => page.value?.commentStatus === "open" || page.value?.commentCount > 0 // Show section if there are existing comments
 );
 </script>
 
@@ -57,18 +56,28 @@ const commentsEnabled = computed(() =>
       <h1 class="text-center">{{ page.title }}</h1>
 
       <!-- Featured image -->
-      <img v-if="page.featuredImage?.node" :src="page.featuredImage.node.sourceUrl"
-        :alt="page.featuredImage.node.altText || page.title" class="" />
+      <img
+        v-if="page.featuredImage?.node"
+        :src="page.featuredImage.node.sourceUrl"
+        :alt="page.featuredImage.node.altText || page.title"
+        class=""
+      />
 
       <!-- Page content -->
       <div class="content" v-html="page.content"></div>
 
       <!-- Comments section - only show if comments are enabled -->
-      <Comments v-if="commentsEnabled && pageId" :post-id="pageId" content-type="page" />
+      <Comments
+        v-if="commentsEnabled && pageId"
+        :post-id="pageId"
+        content-type="page"
+      />
 
       <!-- Message if comments are closed but exist -->
-      <div v-else-if="page.commentCount > 0 && page.commentStatus !== 'open'"
-        class="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500">
+      <div
+        v-else-if="page.commentCount > 0 && page.commentStatus !== 'open'"
+        class="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500"
+      >
         <p>Comments are closed for this page.</p>
       </div>
     </article>
@@ -76,5 +85,5 @@ const commentsEnabled = computed(() =>
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/scss/pages/page';
+@use "@/assets/scss/pages/page";
 </style>

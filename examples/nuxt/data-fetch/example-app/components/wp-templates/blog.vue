@@ -1,27 +1,27 @@
 <script setup>
-import { computed, ref } from 'vue';
-import { gql } from '../../lib/client';
-import { capitalizeWords, getPosts } from '../../lib/utils';
-import PostListing from '../templates/listing/Post.vue';
-import LoadMore from '../blog/LoadMore.vue';
+import { computed, ref } from "vue";
+import { gql } from "../../lib/client";
+import { capitalizeWords, getPosts } from "../../lib/utils";
+import PostListing from "../templates/listing/Post.vue";
+import LoadMore from "../blog/LoadMore.vue";
 
 const props = defineProps({
   category: {
     type: String,
-    default: ''
+    default: "",
   },
   tag: {
     type: String,
-    default: ''
+    default: "",
   },
   titlePrefix: {
     type: String,
-    default: 'Blog'
-  }
+    default: "Blog",
+  },
 });
 
 // Get the slug based on category or tag
-const slug = props.category || props.tag || '';
+const slug = props.category || props.tag || "";
 
 // Format title
 const pageTitle = computed(() => {
@@ -35,14 +35,16 @@ const pageTitle = computed(() => {
 });
 
 const POSTS_QUERY = gql`
-  query GetPosts($first: Int = 9, $after: String, $category: String, $tag: String) {
+  query GetPosts(
+    $first: Int = 9
+    $after: String
+    $category: String
+    $tag: String
+  ) {
     posts(
-      first: $first, 
-      after: $after, 
-      where: {
-        categoryName: $category,
-        tag: $tag
-      }
+      first: $first
+      after: $after
+      where: { categoryName: $category, tag: $tag }
     ) {
       pageInfo {
         hasNextPage
@@ -112,7 +114,7 @@ try {
 }
 
 // Extract initial posts and pageInfo
-const allPosts = ref(data?.posts?.edges?.map(edge => edge.node) || []);
+const allPosts = ref(data?.posts?.edges?.map((edge) => edge.node) || []);
 const initialPageInfo = data?.posts?.pageInfo || {};
 
 // Handle new posts from client component
@@ -135,7 +137,7 @@ const handleLoading = (isLoading) => {
     <!-- Error state -->
     <div v-if="error">
       <h2>Error</h2>
-      <p>{{ error.message || 'An error occurred while loading posts' }}</p>
+      <p>{{ error.message || "An error occurred while loading posts" }}</p>
     </div>
 
     <!-- Loading state -->
@@ -154,9 +156,16 @@ const handleLoading = (isLoading) => {
       <PostListing :posts="allPosts" :loading="loading" :cols="3" />
 
       <!-- Client component for pagination (only button) -->
-      <LoadMore :initial-posts="allPosts" :initial-page-info="initialPageInfo" :posts-per-page="postsPerPage"
-        :posts-query="POSTS_QUERY" :category="props.category" :tag="props.tag" @update:posts="handleNewPosts"
-        @loading="handleLoading" />
+      <LoadMore
+        :initial-posts="allPosts"
+        :initial-page-info="initialPageInfo"
+        :posts-per-page="postsPerPage"
+        :posts-query="POSTS_QUERY"
+        :category="props.category"
+        :tag="props.tag"
+        @update:posts="handleNewPosts"
+        @loading="handleLoading"
+      />
     </template>
   </div>
 </template>
