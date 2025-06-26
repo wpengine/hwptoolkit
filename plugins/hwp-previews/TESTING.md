@@ -61,10 +61,22 @@ Currently the plugin has the following suite of tests
 
 ### WPUnit (WordPress-aware Unit/Integration) Tests
 
-Run WPUnit tests (WordPress loaded):
+You can also run WPUnit tests using Composer scripts:
 
 ```bash
-sh bin/local/run-unit-tests.sh coverage
+composer run test:unit
+```
+
+To generate coverage reports:
+
+```bash
+composer run test:unit:coverage
+```
+
+To generate an HTML coverage report:
+
+```bash
+composer run test:unit:coverage-html
 ```
 
 > [!IMPORTANT]
