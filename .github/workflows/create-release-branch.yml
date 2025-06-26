@@ -35,7 +35,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x. # Min version required by the repo
+          node-version: 18.x # Min version required by the repo
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3

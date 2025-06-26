@@ -11,7 +11,7 @@ Tests are organized into suites for integration (wpunit), functional, and accept
 - **functional**: Simulates web requests, runs WordPress in a test environment.
 - **acceptance**: Browser-based tests (WPBrowser/WPWebDriver).
 
-Configuration files for each suite are in the `tests/` directory (e.g., `unit.suite.dist.yml`, `wpunit.suite.dist.yml`).
+Configuration files for each suite are in the `tests/` directory (e.g., `wpunit.suite.dist.yml`).
 
 ---
 
