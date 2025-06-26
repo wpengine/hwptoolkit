@@ -39,7 +39,7 @@ jobs:
       - name: Get changed plugin directory
         id: plugin
         run: |
-          git fetch --prune --unshallow
+          git fetch --prune --unshallow 2>/dev/null || git fetch --prune
           plugin=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/' | head -1 | cut -d/ -f2)
           echo "plugin_slug=$plugin" >> $GITHUB_OUTPUT
 
