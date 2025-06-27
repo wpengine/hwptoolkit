@@ -2,8 +2,8 @@
 # 1. Detects plugins with a quality configuration (phpcs.xml) has changed
 # 2. Runs PHP Code Quality checks on those plugins using the custom action
 # 3. Creates a matrix job for each plugin that has a quality configuration
-# Bonus: This means you can have plugin specific badges e.g. [![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20quality)](https://github.com/wpengine/hwptoolkit/actions)
-
+# Bonus: This means you can have plugin specific badges e.g.
+# [![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks)](https://github.com/wpengine/hwptoolkit/actions)
 
 name: Code Quality
 
@@ -20,7 +20,7 @@ on:
 jobs:
   detect-plugins:
     runs-on: ubuntu-latest
-    name: Detect plugins with quality config
+    name: Detect plugins has php code quality configuration
     outputs:
       plugins: ${{ steps.detect.outputs.plugins }}
       has-plugins: ${{ steps.detect.outputs.has-plugins }}
@@ -82,7 +82,7 @@ jobs:
       matrix:
         plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
       fail-fast: false
-    name: ${{ matrix.plugin }} quality
+    name: ${{ matrix.plugin }} php code quality checks
     steps:
       - name: Checkout
         uses: actions/checkout@v4

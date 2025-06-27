@@ -13,7 +13,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/wpengine/hwptoolkit?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/wpengine/hwptoolkit?style=social)
 [![Testing Integration](https://github.com/wpengine/hwptoolkit/workflows/Testing%20Integration/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22Testing+Integration%22)
-[![Code Quality](https://github.com/wpengine/hwptoolkit/workflows/Code%20Quality/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22Code+Quality%22)
+[![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks)](https://github.com/wpengine/hwptoolkit/actions)
 [![End-to-End Tests](https://github.com/wpengine/hwptoolkit/workflows/End-to-End%20Tests/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22End-to-End+Tests%22)
 -----
 
