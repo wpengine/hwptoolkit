@@ -10,7 +10,7 @@ const props = defineProps({
   replyData: {
     type: Object,
     default: null, // 0 means it's a root comment, not a reply
-  }
+  },
 });
 
 const emit = defineEmits(["submit", "cancel", "success", "error"]);
@@ -179,7 +179,9 @@ const cancelReply = () => {
 <template>
   <div id="comment-form" class="comment-form">
     <h3 class="text-center">
-      {{ replyData ? `Reply to "${replyData.author}" comment` : "Leave a Comment" }}
+      {{
+        replyData ? `Reply to "${replyData.author}" comment` : "Leave a Comment"
+      }}
     </h3>
     <!-- Success/Error Message -->
     <div v-if="showMessage" class="message-container">
@@ -242,7 +244,7 @@ const cancelReply = () => {
         ></textarea>
       </div>
 
-      <div class="gap-4 flex justify-end">
+      <div class="">
         <button
           type="submit"
           class="button button-primary"

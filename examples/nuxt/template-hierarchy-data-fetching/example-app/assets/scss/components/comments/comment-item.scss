@@ -5,6 +5,10 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-bottom: 10px;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
   .comment-header {
     display: flex;
     justify-content: space-between;
@@ -36,4 +40,63 @@
     border-left: 3px solid #007bff;
     margin-left: 15px;
   }
+}
+.comment-meta {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.comment-info {
+  flex: 1;
+}
+
+.comment-author {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.author-link {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.author-link:hover {
+  text-decoration: underline;
+}
+
+.author-name {
+  color: #374151;
+}
+
+.comment-date {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.comment-content {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.comment-content :deep(p) {
+  margin-bottom: 0.5rem;
+}
+
+.comment-content :deep(p:last-child) {
+  margin-bottom: 0;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
 }

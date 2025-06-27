@@ -4,7 +4,7 @@ import { useGraphQL, gql } from "../../lib/client";
 import { formatDate } from "../../lib/utils";
 import Comments from "../Comments.vue";
 import Loading from "../Loading.vue";
-import NotFound from "../components/404.vue";
+import NotFound from "../components/NotFound.vue";
 
 const POST_QUERY = gql`
   query GetPost($slug: ID!) {

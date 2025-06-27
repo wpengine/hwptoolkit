@@ -65,6 +65,9 @@ const loadMorePosts = async () => {
 
       // Update pageInfo
       pageInfo.value = data.posts.pageInfo;
+
+      await nextTick();
+      scrollToNewContent(newPosts.length);
     } else {
       // No new posts found
       pageInfo.value = { ...pageInfo.value, hasNextPage: false };
@@ -75,6 +78,19 @@ const loadMorePosts = async () => {
   } finally {
     loading.value = false;
     emit("loading", false);
+  }
+};
+const scrollToNewContent = async (newPostsCount) => {
+  // Wait for the specified delay
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  try {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight - window.innerHeight,
+      behavior: "smooth",
+    });
+  } catch (error) {
+    console.warn("Error during scroll:", error);
   }
 };
 </script>

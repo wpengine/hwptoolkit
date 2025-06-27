@@ -89,10 +89,10 @@ const showCommentForm = ref(true);
 // Recursive function to build nested comment structure
 const buildCommentTree = (comments, parentId = null) => {
   return comments
-    .filter(comment => comment.parentId === parentId)
-    .map(comment => ({
+    .filter((comment) => comment.parentId === parentId)
+    .map((comment) => ({
       ...comment,
-      replies: buildCommentTree(comments, comment.id)
+      replies: buildCommentTree(comments, comment.id),
     }));
 };
 

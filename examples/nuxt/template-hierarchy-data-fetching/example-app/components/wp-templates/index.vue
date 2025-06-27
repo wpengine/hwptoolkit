@@ -1,5 +1,5 @@
 <script setup>
-import NotFound from "../components/404.vue";
+import NotFound from "../components/NotFound.vue";
 
 const INDEX_QUERY = gql`
   query indexTemplateNodeQuery($uri: String!) {

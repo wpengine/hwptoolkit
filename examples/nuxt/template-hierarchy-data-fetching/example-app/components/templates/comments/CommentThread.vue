@@ -4,23 +4,23 @@ import CommentItem from "./CommentItem.vue";
 defineProps({
   comment: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 });
 
-defineEmits(['reply']);
+defineEmits(["reply"]);
 </script>
 
 <template>
   <div class="comment-thread">
     <!-- The comment itself -->
-    <CommentItem
-      :comment="comment"
-      @reply="$emit('reply', comment)"
-    />
+    <CommentItem :comment="comment" @reply="$emit('reply', comment)" />
 
     <!-- Recursive rendering of nested replies -->
-    <div v-if="comment.replies && comment.replies.length > 0" class="comment-replies">
+    <div
+      v-if="comment.replies && comment.replies.length > 0"
+      class="comment-replies"
+    >
       <CommentThread
         v-for="reply in comment.replies"
         :key="reply.id"

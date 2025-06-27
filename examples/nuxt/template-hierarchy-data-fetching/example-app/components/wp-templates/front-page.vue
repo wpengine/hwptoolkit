@@ -89,13 +89,11 @@ const siteInfo = computed(() => {
     description: description || "Welcome to my site",
   };
 });
-
 </script>
 
 <template>
   <main>
     <section id="hero">
-
       <template v-if="settingsLoading">
         <Loading text="Loading site information..." />
       </template>

@@ -144,12 +144,12 @@ const handleLoading = (isLoading) => {
 
     <!-- Loading state -->
     <div v-else-if="loading && allPosts.length === 0">
-     <Loading />
+      <Loading />
     </div>
 
     <!-- Empty state -->
     <div v-else-if="allPosts.length === 0">
-      <EmptyState text="No posts found"/>
+      <EmptyState text="No posts found" />
     </div>
 
     <!-- Initial SSR and client-side component for pagination -->

@@ -9,6 +9,7 @@
   
   &.button-primary {
     background-color: $primary-color;
+    border-color: $primary-color;
     &:hover {
       background-color: color.scale($primary-color, $lightness: -15%);
     }

@@ -1,7 +1,7 @@
 <script setup>
 import { uriToTemplate } from "../lib/templateHierarchy";
 import { computed } from "vue";
-import NotFound from "../components/404.vue";
+import NotFound from "../components/NotFound.vue";
 
 const uri = useRoute().path || "/";
 
