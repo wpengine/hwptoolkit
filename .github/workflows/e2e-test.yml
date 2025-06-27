@@ -5,21 +5,64 @@ on:
     branches:
       - main
     paths:
-      - 'plugins/hwp-previews/**.php'
-      - 'plugins/hwp-previews/**.js'
-      - 'plugins/hwp-previews/**.css'
-      - 'plugins/hwp-previews/**.json'
-
+      - 'plugins/**.php'
+      - 'plugins/**.js'
+      - 'plugins/**.css'
+      - 'plugins/**.json'
   pull_request:
     branches:
       - main
     paths:
-      - "plugins/hwp-previews/**"
+      - "plugins/**"
 
 jobs:
-  playwright-e2e-tests:
-    runs-on: ubuntu-24.04
+  detect-plugins:
+    runs-on: ubuntu-latest
+    name: Detect plugins with E2E tests
+    outputs:
+      plugins: ${{ steps.detect.outputs.plugins }}
+      has-plugins: ${{ steps.detect.outputs.has-plugins }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          bash .github/scripts/get-plugin-slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+
+      - name: Detect changed plugins with E2E config
+        id: detect
+        run: |
+          if [ -z "${{ steps.plugin.outputs.slug }}" ]; then
+            echo "No plugin slug detected"
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          PLUGIN="${{ steps.plugin.outputs.slug }}"
+
+          # Check for .wp-env.json file in the plugin directory
+          if [ -f "plugins/$PLUGIN/.wp-env.json" ]; then
+            echo "plugins=[\"$PLUGIN\"]" >> $GITHUB_OUTPUT
+            echo "has-plugins=true" >> $GITHUB_OUTPUT
+            echo "✅ Found .wp-env.json for plugin: $PLUGIN"
+          else
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No .wp-env.json found for plugin: $PLUGIN, skipping E2E tests"
+          fi
+
+  playwright-e2e-tests:
+    needs: detect-plugins
+    if: needs.detect-plugins.outputs.has-plugins == 'true'
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
+      fail-fast: false
+    name: ${{ matrix.plugin }} Playwright E2E Tests
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,27 +75,27 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: plugins/${{ matrix.plugin }}
 
       - name: Setup PHP with Cached Composer
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: 8.2
-          working-directory:  plugins/hwp-previews
+          working-directory: plugins/${{ matrix.plugin }}
           composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Install playwright browsers
         run: npx playwright install --with-deps
-        working-directory: plugins/hwp-previews
+        working-directory: plugins/${{ matrix.plugin }}
 
       - name: Start wp-env
-        run: |
-          npm run wp-env start
-        working-directory: plugins/hwp-previews
+        run: npm run wp-env start
+        working-directory: plugins/${{ matrix.plugin }}
 
       - name: Run Playwright tests
         run: npm run test:e2e
-        working-directory: plugins/hwp-previews
+        working-directory: plugins/${{ matrix.plugin }}
 
       - name: Stop wp-env
         run: npm run wp-env stop
-        working-directory: plugins/hwp-previews
+        working-directory: plugins/${{ matrix.plugin }}
