@@ -1,155 +1,104 @@
 # Testing HWP Previews
 
-This plugin uses [Codeception](https://codeception.com/) with [WPBrowser](https://wpbrowser.wptestkit.dev/) for automated testing.  
-Tests are organized into suites for integration (wpunit), functional, and acceptance testing.
+## Table of Contents
+
+- [Overview](#overview)
+	- [Directory Structure](#directory-structure)
+	- [Technologies](#technologies)
+- [Usage](#usage)
+  - [Running Tests](#running-tests)
+  - [GitHub Actions](#github-actions)
+- [Setup Tests Locally](#setup-tests-locally)
 
 ---
 
-## Test Suites
+## Overview
 
-- **wpunit**: Unit/integration tests with WordPress loaded.
-- **functional**: Simulates web requests, runs WordPress in a test environment.
-- **acceptance**: Browser-based tests (WPBrowser/WPWebDriver).
+HWP Previews comes with automated tests for unit, integration, and acceptance (E2E) scenarios.
 
-Configuration files for each suite are in the `tests/` directory (e.g., `wpunit.suite.dist.yml`).
+## Directory Structure
 
----
-
-## Local Test Environment
-
-The plugin provides scripts to set up a local WordPress environment for testing, using Docker and environment variables defined in `.env.dist`.
-
-### Prerequisites
-
-- Docker (for local environment)
-- Composer
-- Node.js (for building assets, if needed)
-
----
-
-## Setup
-
-1. **Copy and configure environment variables:**
-
-   ```bash
-   @TODO
-   cp .env.dist .env
-   # Edit .env as needed for your local setup
-   ```
-
-
-2. **Set up the test WordPress environment:**
-
-   ```bash
-   bin/install-test-env.sh
-   ```
-
-   This script will:
-   - Create the test database (unless `SKIP_DB_CREATE=true`)
-   - Download and install WordPress in the directory specified by `WORDPRESS_ROOT_DIR`
-   - Symlink the plugin into the WordPress plugins directory
-   - Activate the plugin and set up test data
-
----
-
-## Running Tests
-
-Currently the plugin has the following suite of tests
-
-1. WP Unit Tests - (Unit and Integration Tests)
-2. E2E Tests - Playright tests
-
-### WPUnit (WordPress-aware Unit/Integration) Tests
-
-You can also run WPUnit tests using Composer scripts:
-
-```bash
-composer run test:unit
-```
-
-To generate coverage reports:
-
-```bash
-composer run test:unit:coverage
-```
-
-To generate an HTML coverage report:
-
-```bash
-composer run test:unit:coverage-html
-```
-> [!NOTE]
-> HTML code coverage can be found here [tests/_output/coverage/index.html](tests/_output/coverage/index.html)
-
-
-### E2WTests
-
-Run browser-based acceptance tests:
-
-```bash
-sh bin/local/run-e2e-tests.sh coverage
-```
-
-### All Tests
-
-To run all suites:
-
-```bash
-composer run test
-# or
-vendor/bin/codecept run
-```
-
----
-
-## Code Coverage
-
-To generate code coverage reports (requires Xdebug or PCOV):
-
-```bash
-# Example for wpunit suite
-SUITES=wpunit COVERAGE=1 bin/run-codeception.sh
-```
-
-Coverage output will be in `tests/_output/` or as specified by `COVERAGE_OUTPUT`.
-
----
-
-## Useful Scripts
-
-- `bin/install-test-env.sh` — Sets up the WordPress test environment.
-- `bin/run-codeception.sh` — Runs Codeception tests inside the plugin directory.
-- `bin/local/run-unit-tests.sh` — Runs unit tests in Docker.
-- `bin/local/run-qa.sh` — Runs code quality checks (PHPStan, PHPCS, Psalm).
-
----
-
-## Notes
-
-- The test database will be reset during setup. **Do not use a database with important data.**
-- You can customize which suites to run by setting the `SUITES` environment variable.
-- See `.env.dist` for all available environment variables and their descriptions.
-
----
+A list of related files and directories for testing:
 
 ```text
+bin/
+├── install-test-env.sh       # Set up test WP environment
+├── run-codeception.sh        # Run Codeception tests
+├── run-e2e.sh                # Run E2E (Playwright) tests
+├── run-coverage.sh           # Generate coverage reports
+└── local/
+    ├── run-unit-tests.sh     # Run unit tests in Docker with Codeception
+    ├── run-e2e-tests.sh      # Run e2e tests in Docker with Playwright
+    ├── run-qa.sh             # Run php code quality checks with PHPStan, Psalm and PHPCS
+    ├── run-wpunit.sh         # Run WPUnit tests in Docker
+    └── run-functional.sh     # Run functional tests in Docker
+
 tests/
-├── _data/                # Test data (e.g. DB dumps)
-├── _envs/                # Environment configs
-├── _output/              # Test output (logs, coverage)
-├── _support/             # Helper classes, modules
-├── wpunit/               # WPUnit (WordPress-aware unit/integration) test cases
+├── _data/                    # Test data (e.g. DB dumps)
+├── _envs/                    # Environment configs
+├── _output/                  # Test output (logs, coverage)
+├── _support/                 # Helper classes, modules
+├── wpunit/                   # WPUnit (WordPress-aware unit/integration) test cases
 ├── wpunit.suite.dist.yml
 └── wpunit/
-    └── bootstrap.php     # Bootstrap for WPUnit tests
+    └── bootstrap.php         # Bootstrap for WPUnit tests
 
-bin/
-├── install-test-env.sh   # Script to set up test WP environment
-├── run-codeception.sh    # Script to run Codeception tests
-└── local/
-    ├── run-unit-tests.sh # Run unit tests in Docker
-    └── run-qa.sh         # Run code quality checks
-
-.env.dist                 # Example environment variables for testing
-codeception.dist.yml      # Main Codeception config
+.env.dist                     # Example environment variables for testing
+codeception.dist.yml          # Main Codeception config
 ```
+---
+
+## Technologies
+
+We use the following technologies to run our tests:
+
+- [Codeception](https://codeception.com/)
+- [WPBrowser](https://wpbrowser.wptestkit.dev/)
+- [WPUnit](https://github.com/lipemat/wp-unit)
+- [Docker](https://www.docker.com/)
+- [Composer](https://getcomposer.org/)
+- [Playwright](https://playwright.dev/)
+- [npm](https://www.npmjs.com/)
+
+---
+
+## Usage
+
+Currently, the plugin has the following suite of tests:
+
+1. **WP Unit Tests** – Unit and Integration Tests
+2. **E2E Tests** – Acceptance tests
+
+### Running Tests
+
+| Command                                 | Description                                              |
+|------------------------------------------|----------------------------------------------------------|
+| `composer run test:unit:coverage`        | Run WPUnit (unit/integration) tests with coverage report |
+| `composer run test:unit:coverage-html`   | Generate an HTML code coverage report                    |
+| `composer run test:e2e`                  | Run end-to-end (E2E) acceptance tests                    |
+| `composer run test`                      | Run all available test suites                            |
+
+---
+
+## GitHub Actions
+
+We have a few checks which run for a new PR being merged to main
+
+| Workflow                | Description                                 | Link                                                                 |
+|-------------------------|---------------------------------------------|----------------------------------------------------------------------|
+| Code Quality            | Runs static analysis and linting checks     | [View Workflow](../../actions/workflows/code-quality.yml)             |
+| E2E Tests               | Runs Playwright end-to-end acceptance tests | [View Workflow](../../actions/workflows/e2e.yml)                      |
+| Codeception (WPUnit)    | Runs unit and integration tests             | [View Workflow](../../actions/workflows/codeception.yml)              |
+
+
+> **INFO:**  
+> All tests are automatically run on every pull request via GitHub Actions. You can review test results and logs directly in the "Checks" tab of your PR on GitHub.
+
+> **IMPORTANT:**  
+> Test coverage for WP Unit Tests is 95%. Any new code will require tests to be added in order to pass.
+
+---
+
+## Setup Tests Locally
+
+@TODO
