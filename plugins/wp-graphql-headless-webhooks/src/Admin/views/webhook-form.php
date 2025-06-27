@@ -28,9 +28,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="wrap">
 	<h1><?php echo esc_html( $form_title ); ?></h1>
 
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+	<form method="post">
 		<?php wp_nonce_field( 'webhook_save', 'webhook_nonce' ); ?>
-		<input type="hidden" name="action" value="graphql_webhook_save">
+		<input type="hidden" name="action" value="save_webhook">
 		<?php if ( $webhook ) : ?>
 			<input type="hidden" name="webhook_id" value="<?php echo esc_attr( $webhook->id ); ?>">
 		<?php endif; ?>

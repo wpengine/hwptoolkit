@@ -77,38 +77,48 @@ class WebhooksListTable extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		return [
-			'bulk-delete' => __( 'Delete', 'wp-graphql-webhooks' ),
+			'delete' => __( 'Delete', 'wp-graphql-webhooks' ),
 		];
 	}
+
 
 	/**
 	 * Process bulk actions
 	 */
 	public function process_bulk_action() {
-		// Handle bulk delete
-		if ( 'bulk-delete' === $this->current_action() ) {
-			$webhook_ids = isset( $_POST['webhook'] ) ? array_map( 'intval', $_POST['webhook'] ) : [];
-			
-			if ( ! empty( $webhook_ids ) && isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
-				foreach ( $webhook_ids as $id ) {
-					$this->repository->delete( $id );
-				}
-				
-				wp_redirect( add_query_arg( 'deleted', count( $webhook_ids ), remove_query_arg( [ 'action', 'webhook', '_wpnonce' ] ) ) );
-				exit;
+		// Only handle delete action
+		if ( 'delete' !== $this->current_action() ) {
+			return;
+		}
+
+		// Verify nonce
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
+			wp_die( __( 'Security check failed.', 'wp-graphql-webhooks' ) );
+		}
+
+		// Check permissions
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.', 'wp-graphql-headless-webhooks' ) );
+		}
+
+		// Get selected webhooks
+		$webhook_ids = isset( $_REQUEST['webhook'] ) ? array_map( 'intval', (array) $_REQUEST['webhook'] ) : [];
+		if ( empty( $webhook_ids ) ) {
+			return;
+		}
+
+		// Delete webhooks
+		$deleted = 0;
+		foreach ( $webhook_ids as $webhook_id ) {
+			if ( $this->repository->delete( $webhook_id ) ) {
+				$deleted++;
 			}
 		}
-		
-		// Handle single delete
-		if ( 'delete' === $this->current_action() ) {
-			$webhook_id = isset( $_GET['webhook'] ) ? intval( $_GET['webhook'] ) : 0;
-			$nonce = isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : '';
-			
-			if ( $webhook_id && wp_verify_nonce( $nonce, 'delete-webhook-' . $webhook_id ) ) {
-				$this->repository->delete( $webhook_id );
-				wp_redirect( add_query_arg( 'deleted', 1, remove_query_arg( [ 'action', 'webhook', '_wpnonce' ] ) ) );
-				exit;
-			}
+
+		// Redirect with success message
+		if ( $deleted > 0 ) {
+			wp_redirect( add_query_arg( [ 'deleted' => $deleted ], remove_query_arg( [ 'action', 'action2', 'webhook', '_wpnonce' ] ) ) );
+			exit;
 		}
 	}
 
@@ -116,6 +126,7 @@ class WebhooksListTable extends \WP_List_Table {
 	 * Prepare items for display
 	 */
 	public function prepare_items() {
+		// Process bulk actions first
 		$this->process_bulk_action();
 		
 		$per_page = $this->get_items_per_page( 'webhooks_per_page', 20 );
