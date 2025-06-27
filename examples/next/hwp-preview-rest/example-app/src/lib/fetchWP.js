@@ -10,7 +10,6 @@ export async function fetchWP(query, authToken) {
   });
 
   if (!res.ok) {
-    console.error(`Failed to fetch from ${reqUrl}: ${res.status} ${res.statusText}`);
     return null;
   }
 
