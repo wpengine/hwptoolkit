@@ -4,7 +4,7 @@
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
     "https://github.com/wp-graphql/wp-graphql-smart-cache/releases/download/v2.0.0/wpgraphql-smart-cache.zip",
     "https://downloads.wordpress.org/plugin/code-snippets.3.6.8.zip",
-    "../../../plugins/wp-graphql-headless-webhooks"
+    "../../../plugins/wpgraphql-webhooks"
   ],
   "config": {
     "WP_DEBUG": true,
