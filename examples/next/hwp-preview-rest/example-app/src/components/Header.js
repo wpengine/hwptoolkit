@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import LoginForm from "./LoginForm";
+import LoginModal from "./LoginModal";
 import { useAuth } from "@/lib/AuthProvider";
 
 export default function Header() {
@@ -25,11 +25,11 @@ export default function Header() {
             </Link>
 
             {isLogged ? (
-              <button onClick={logout} className='text-lg hover:underline'>
+              <button onClick={logout} className='text-lg hover:underline cursor-pointer'>
                 Logout
               </button>
             ) : (
-              <button onClick={toggleOpen} className='text-lg hover:underline'>
+              <button onClick={toggleOpen} className='text-lg hover:underline cursor-pointer'>
                 Login
               </button>
             )}
@@ -37,7 +37,7 @@ export default function Header() {
         </div>
       </header>
 
-      <LoginForm open={isOpen} onClose={toggleOpen} />
+      <LoginModal open={isOpen} onClose={toggleOpen} />
     </>
   );
 }
