@@ -1,9 +1,9 @@
 # This does the following:
-# 1. Detects plugins with a quality configuration (phpcs.xml) has changed
+# 1. Detects modified plugins that have phpcs.xml configuration
 # 2. Runs PHP Code Quality checks on those plugins using the custom action
 # 3. Creates a matrix job for each plugin that has a quality configuration
 # Bonus: This means you can have plugin specific badges e.g.
-# [![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks)](https://github.com/wpengine/hwptoolkit/actions)
+# [![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks&label=Code%20Quality%20Checks)](https://github.com/wpengine/hwptoolkit/actions)
 
 name: Code Quality
 

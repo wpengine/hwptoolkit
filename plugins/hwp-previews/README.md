@@ -12,8 +12,8 @@
 [![License](https://img.shields.io/badge/license-GPLv2%2B-green)]()
 ![GitHub forks](https://img.shields.io/github/forks/wpengine/hwptoolkit?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/wpengine/hwptoolkit?style=social)
-[![Testing Integration](https://github.com/wpengine/hwptoolkit/workflows/Testing%20Integration/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22Testing+Integration%22)
-[![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks)](https://github.com/wpengine/hwptoolkit/actions)
+[![Testing Integration](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20codeception%20tests&label=Automated%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
+[![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks&label=Code%20Quality%20Checks)](https://github.com/wpengine/hwptoolkit/actions)
 [![End-to-End Tests](https://github.com/wpengine/hwptoolkit/workflows/End-to-End%20Tests/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22End-to-End+Tests%22)
 -----
 
