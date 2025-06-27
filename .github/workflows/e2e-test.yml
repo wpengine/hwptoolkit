@@ -1,3 +1,11 @@
+# This does the following:
+# 1. Detects modified plugins that have .wp-env.json configuration
+# 2. Runs Playwright E2E tests on those plugins using the custom action
+# 3. Creates a matrix job for each plugin that has a quality configuration
+# Bonus: This means you can have plugin specific badges e.g.
+# [![E2E Tests](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20Playwright%20E2E%20Tests&label=End-to-End%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
+
+
 name: End-to-End Tests
 
 on:

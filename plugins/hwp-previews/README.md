@@ -15,7 +15,8 @@
 [![Testing Integration](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20codeception%20tests&label=Automated%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
 [![Code Coverage](https://img.shields.io/badge/coverage-%3E95%25-brightgreen?label=Code%20Coverage)](https://github.com/wpengine/hwptoolkit/actions)
 [![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks&label=Code%20Quality%20Checks)](https://github.com/wpengine/hwptoolkit/actions)
-[![End-to-End Tests](https://github.com/wpengine/hwptoolkit/workflows/End-to-End%20Tests/badge.svg)](https://github.com/wpengine/hwptoolkit/actions?query=workflow%3A%22End-to-End+Tests%22)
+[![End-to-End Tests](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20Playwright%20E2E%20Tests&label=End-to-End%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
+
 -----
 
 
