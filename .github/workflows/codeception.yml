@@ -1,3 +1,10 @@
+# This does the following:
+# 1. Detects modified plugins that have codeception.dist.yml configuration setup
+# 2. Runs  Codeception tests on those plugins using the custom action
+# 3. Creates a matrix job for each plugin that has a quality configuration
+# Bonus: This means you can have plugin specific badges e.g.
+# [![Testing Integration](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20codeception%20tests&label=Automated%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
+
 name: Testing Integration
 
 on:
@@ -18,12 +25,85 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  continuous_integration:
+  detect-plugins:
     runs-on: ubuntu-latest
-    name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
+    name: Detect plugins with test config
+    outputs:
+      plugins: ${{ steps.detect.outputs.plugins }}
+      has-plugins: ${{ steps.detect.outputs.has-plugins }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changed plugins with test config
+        id: detect
+        run: |
+          git fetch --prune --unshallow
+
+          # Get changed files based on event type
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' || true)
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/' || true)
+          fi
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No plugin files changed"
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Extract unique plugin names and check for test config
+          PLUGINS_WITH_CONFIG=()
+          CHECKED_PLUGINS=()
+
+          for file in $CHANGED_FILES; do
+            plugin=$(echo $file | cut -d/ -f2)
+
+            # Skip if we already checked this plugin
+            if [[ " ${CHECKED_PLUGINS[@]} " =~ " $plugin " ]]; then
+              continue
+            fi
+
+            CHECKED_PLUGINS+=("$plugin")
+
+            # Check for both codeception.dist.yml and composer.json
+            if [ -f "plugins/$plugin/codeception.dist.yml" ] && [ -f "plugins/$plugin/composer.json" ]; then
+              PLUGINS_WITH_CONFIG+=("$plugin")
+              echo "✅ Found test config for plugin: $plugin (codeception.dist.yml + composer.json)"
+            else
+              echo "ℹ️ Missing test config for plugin: $plugin, skipping tests"
+              if [ ! -f "plugins/$plugin/codeception.dist.yml" ]; then
+                echo "  - Missing: codeception.dist.yml"
+              fi
+              if [ ! -f "plugins/$plugin/composer.json" ]; then
+                echo "  - Missing: composer.json"
+              fi
+            fi
+          done
+
+          # Convert to JSON array
+          if [ ${#PLUGINS_WITH_CONFIG[@]} -gt 0 ]; then
+            PLUGINS_JSON=$(printf '%s\n' "${PLUGINS_WITH_CONFIG[@]}" | jq -R -s -c 'split("\n")[:-1]')
+            echo "plugins=${PLUGINS_JSON}" >> $GITHUB_OUTPUT
+            echo "has-plugins=true" >> $GITHUB_OUTPUT
+            echo "Found ${#PLUGINS_WITH_CONFIG[@]} plugin(s) with test config: ${PLUGINS_WITH_CONFIG[*]}"
+          else
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            echo "No plugins found with test configuration"
+          fi
+
+  continuous_integration:
+    needs: detect-plugins
+    if: needs.detect-plugins.outputs.has-plugins == 'true'
+    runs-on: ubuntu-latest
+    name: ${{ matrix.plugin }} integration tests (WP ${{ matrix.wordpress }}, PHP ${{ matrix.php }})
 
     strategy:
       matrix:
+        plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
         php: ["8.3","8.2","8.1"]
         wordpress: ["6.8","6.7","6.6","6.5"]
         include:
@@ -35,32 +115,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Get changed plugin directory
-        id: plugin
-        run: |
-          git fetch --prune --unshallow
-          plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
-          echo "slug=$plugin" >> $GITHUB_OUTPUT
-
-      - name: Validate codeception.dist.yml
-        run: |
-          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/codeception.dist.yml" ]; then
-            echo "Exiting as no codeception file found for this plugin - /${{ steps.plugin.outputs.slug }}"
-            exit 1
-          fi
-
-      - name: Validate composer.json
-        run: |
-          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/composer.json" ]; then
-            echo "Exiting as no composer file found for this plugin - ${{ steps.plugin.outputs.slug }}"
-            exit 1
-          fi
-
-      - name: Run Codeception Tests
+      - name: ${{ matrix.plugin }} codeception tests
         uses: ./.github/actions/codeception
         with:
-          working-directory: plugins/${{ steps.plugin.outputs.slug }}
+          working-directory: plugins/${{ matrix.plugin }}
           php: ${{ matrix.php }}
           wordpress: ${{ matrix.wordpress }}
           extensions: json,mbstring
