@@ -31,6 +31,7 @@ export interface WordPressTemplate {
  * Used in uriToTemplate function to find the correct template for each page visit.
  * The template hierarchy follows WordPress conventions for template selection.
  *
+ * url - https://developer.wordpress.org/themes/templates/template-hierarchy/
  * @param node - The SeedNode object (from seedQuery.js) to analyze for template possibilities
  * @returns An array of possible template names, ordered from most specific to least specific
  *
@@ -56,12 +57,12 @@ export function getPossibleTemplates(node: SeedNode) {
 
   // Front page
   if (node.isFrontPage) {
-    possibleTemplates.push("home");
+    possibleTemplates.push("front-page");
   }
 
   // Blog page
   if (node.isPostsPage) {
-    possibleTemplates.push("blog");
+    possibleTemplates.push("home");
   }
 
   // CPT archive page

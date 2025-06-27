@@ -31,7 +31,7 @@ const node = computed(
       <div v-if="node.content" class="" v-html="node.content"></div>
       <div v-else class="">No content available.</div>
     </div>
-    <div v-else="">
+    <div v-else>
       <NotFound />
     </div>
   </div>

@@ -1,5 +1,6 @@
 <script setup>
 import { formatDate, createExcerpt, getCategoryLink } from "../../../lib/utils";
+import Loading from "../../Loading.vue";
 
 const props = defineProps({
   posts: {
@@ -19,8 +20,8 @@ const props = defineProps({
 
 <template>
   <!-- Loading state -->
-  <div v-if="loading && posts.length === 0">
-    <p>Loading posts...</p>
+  <div v-if="loading">
+    <Loading />
   </div>
 
   <!-- Posts listing -->
@@ -108,9 +109,6 @@ const props = defineProps({
         </div>
       </div>
     </article>
-  </div>
-  <div v-else>
-    <p>No posts found</p>
   </div>
 </template>
 

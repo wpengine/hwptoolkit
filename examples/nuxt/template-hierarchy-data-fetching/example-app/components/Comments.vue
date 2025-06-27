@@ -1,8 +1,8 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useGraphQL, gql, fetchGraphQL } from "../lib/client";
-import CommentItem from "./templates/comments/CommentItem.vue";
 import CommentForm from "./templates/comments/CommentForm.vue";
+import CommentThread from "./templates/comments/CommentThread.vue";
 
 const props = defineProps({
   postId: {
@@ -83,36 +83,22 @@ const comments = computed(() => {
 
 const commentCount = computed(() => content.value?.commentCount || 0);
 
-const replyToId = ref(null);
+const replyData = ref(null);
 const showCommentForm = ref(true);
+
+// Recursive function to build nested comment structure
+const buildCommentTree = (comments, parentId = null) => {
+  return comments
+    .filter(comment => comment.parentId === parentId)
+    .map(comment => ({
+      ...comment,
+      replies: buildCommentTree(comments, comment.id)
+    }));
+};
 
 // Convert flat comments list to hierarchical threaded comments
 const threadedComments = computed(() => {
-  const commentMap = {};
-  const rootComments = [];
-
-  // First pass: create a map of all comments by ID
-  comments.value.forEach((comment) => {
-    commentMap[comment.id] = {
-      ...comment,
-      replies: [],
-    };
-  });
-
-  // Second pass: build the tree structure
-  comments.value.forEach((comment) => {
-    if (comment.parentId) {
-      // This is a reply, add it to its parent's replies array
-      if (commentMap[comment.parentId]) {
-        commentMap[comment.parentId].replies.push(commentMap[comment.id]);
-      }
-    } else {
-      // This is a root comment
-      rootComments.push(commentMap[comment.id]);
-    }
-  });
-
-  return rootComments;
+  return buildCommentTree(comments.value);
 });
 
 const loadMoreComments = async () => {
@@ -149,8 +135,11 @@ const loadMoreComments = async () => {
 };
 
 // Handle reply to a specific comment
-const handleReply = (commentId) => {
-  replyToId.value = commentId;
+const handleReply = (comment) => {
+  replyData.value = {
+    author: comment.author.node.name,
+    parentId: comment.id, // Set parentId to the comment being replied to
+  };
   showCommentForm.value = true;
 
   setTimeout(() => {
@@ -162,16 +151,16 @@ const handleReply = (commentId) => {
 };
 
 const cancelReply = () => {
-  replyToId.value = null;
+  replyData.value = null;
   showCommentForm.value = true;
 };
 
 const handleCommentSubmit = (commentData) => {
-  console.log("Comment submitted:", commentData);
+  //console.log("Comment submitted:", commentData);
 };
 
 const handleCommentSuccess = (newComment) => {
-  console.log("Comment added successfully:", newComment);
+  //console.log("Comment added successfully:", newComment);
 
   allComments.value = [];
   pageInfo.value = { hasNextPage: false, endCursor: null };
@@ -180,7 +169,7 @@ const handleCommentSuccess = (newComment) => {
     refetch();
   }
 
-  replyToId.value = null;
+  replyData.value = null;
   showCommentForm.value = true;
 };
 
@@ -210,26 +199,13 @@ const handleCommentError = (error) => {
 
     <!-- Comments thread -->
     <div v-else>
-      <!-- Root comments with nested replies -->
-      <div v-for="comment in threadedComments" :key="comment.id">
-        <!-- Root comment -->
-        <CommentItem
-          :comment="comment"
-          :is-reply="false"
-          @reply="handleReply"
-        />
-
-        <!-- Nested replies using CommentItem -->
-        <div v-if="comment.replies.length > 0">
-          <CommentItem
-            v-for="reply in comment.replies"
-            :key="reply.id"
-            :comment="reply"
-            :is-reply="true"
-            @reply="handleReply"
-          />
-        </div>
-      </div>
+      <!-- Recursive comment rendering -->
+      <CommentThread
+        v-for="comment in threadedComments"
+        :key="comment.id"
+        :comment="comment"
+        @reply="handleReply"
+      />
 
       <!-- Load More Comments Button -->
       <div v-if="pageInfo.hasNextPage" class="load-more-comments">
@@ -255,8 +231,7 @@ const handleCommentError = (error) => {
     <CommentForm
       v-if="showCommentForm"
       :post-id="Number(postId)"
-      :parent-id="replyToId || 0"
-      :is-reply="!!replyToId"
+      :replyData="replyData || null"
       @submit="handleCommentSubmit"
       @success="handleCommentSuccess"
       @error="handleCommentError"

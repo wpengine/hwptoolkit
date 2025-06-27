@@ -80,7 +80,6 @@ const postId = computed(() => post.value?.databaseId || null);
 
       <!-- Post content -->
       <div class="prose prose-lg max-w-none mb-8" v-html="post.content"></div>
-      <!-- Post header -->
 
       <!-- Post meta -->
       <div class="post-meta">

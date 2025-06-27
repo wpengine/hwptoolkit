@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { useGraphQL, gql } from "../../lib/client";
 import PostListing from "../templates/listing/Post.vue";
 import Loading from "../Loading.vue";
+import EmptyState from "../EmptyState.vue";
 
 const HOME_SETTINGS_QUERY = gql`
   query HomeSettingsQuery {
@@ -75,7 +76,6 @@ const {
   }
 );
 
-// Computed properties with consistent fallbacks
 const posts = computed(() => {
   return blogData.value?.posts?.nodes || [];
 });
@@ -90,14 +90,12 @@ const siteInfo = computed(() => {
   };
 });
 
-// Prevent hydration mismatches by ensuring consistent initial state
-const isClient = computed(() => process.import.meta.client);
 </script>
 
 <template>
   <main>
     <section id="hero">
-      <!-- Always render the same structure to prevent hydration mismatches -->
+
       <template v-if="settingsLoading">
         <Loading text="Loading site information..." />
       </template>
@@ -134,9 +132,7 @@ const isClient = computed(() => process.import.meta.client);
         </template>
 
         <template v-else-if="posts.length === 0">
-          <div>
-            <p>No recent posts found.</p>
-          </div>
+          <EmptyState />
         </template>
 
         <template v-else>

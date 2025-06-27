@@ -1,12 +1,12 @@
 {
-  "name": "nuxt-data-fetch",
-  "description": "Nuxt.js example for data fetching",
+  "name": "nuxt-template-hierarchy-data-fetch",
+  "description": "Nuxt.js example for template hierarchy and data fetching",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "example:bootstrap": "npm install & npm run app:install",
     "example:start": "npm run wp:start && npm run app:dev",
-    "example:setup": "npm run example:bootstrap && npm run wp:uploads:unzip && npm run wp:start && npm run wp:db:import && npm run example:stop",
+    "example:setup": "npm run example:bootstrap && npm run wp:uploads:unzip && npm run wp:start && npm run wp:db:import && npm run example:start",
     "example:stop": "npm run wp:stop",
     "example:prune": "npm run wp:destroy && npm run example:setup && npm run example:start",
     "app:dev": "cd example-app  && pwd &&  npm run dev && cd ..",

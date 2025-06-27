@@ -7,14 +7,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  parent: {
-    type: String,
-    default: "", // 0 means it's a root comment, not a reply
-  },
-  isReply: {
-    type: Boolean,
-    default: false,
-  },
+  replyData: {
+    type: Object,
+    default: null, // 0 means it's a root comment, not a reply
+  }
 });
 
 const emit = defineEmits(["submit", "cancel", "success", "error"]);
@@ -104,7 +100,7 @@ const submitComment = async () => {
   clearMessages();
 
   try {
-    const variables = {
+    let variables = {
       commentOn: props.postId,
       content: commentContent.value,
       author: authorName.value,
@@ -113,15 +109,15 @@ const submitComment = async () => {
     };
 
     // Add parent ID for replies (only if it's actually a reply)
-    if (props.parent) {
+    if (props.replyData.parentId) {
       // Convert base64 parentId to the needed format and extract the number
-      let base64ParentId = atob(`${props.parent}`);
+      let base64ParentId = atob(`${props.replyData.parentId}`);
       // Extract number from string like "comment:43"
       let parentNumber = parseInt(base64ParentId.split(":")[1], 10);
       variables.parent = parentNumber;
     }
 
-    console.log("Mutation variables:", variables);
+    //console.log("Mutation variables:", variables);
 
     // Execute the mutation
     const { data, errors } = await useMutation(CREATE_COMMENT, variables);
@@ -135,11 +131,11 @@ const submitComment = async () => {
       throw new Error("Comment submission failed");
     }
 
-    console.log("Comment created:", data.createComment.comment);
+    //console.log("Comment created:", data.createComment.comment);
 
     // Show success message
     showSuccess(
-      props.isReply
+      props.replyData
         ? "Your reply has been posted successfully and it is waiting for approval!"
         : "Your comment has been posted successfully and it is waiting for approval!"
     );
@@ -157,7 +153,7 @@ const submitComment = async () => {
       name: authorName.value,
       content: commentContent.value,
       postId: props.postId,
-      parent: props.parent,
+      parent: props.replyData.parentId,
     });
   } catch (error) {
     console.error("Error submitting comment:", error);
@@ -183,7 +179,7 @@ const cancelReply = () => {
 <template>
   <div id="comment-form" class="comment-form">
     <h3 class="text-center">
-      {{ isReply ? "Reply to Comment" : "Leave a Comment" }}
+      {{ replyData ? `Reply to "${replyData.author}" comment` : "Leave a Comment" }}
     </h3>
     <!-- Success/Error Message -->
     <div v-if="showMessage" class="message-container">
@@ -256,7 +252,7 @@ const cancelReply = () => {
         </button>
 
         <button
-          v-if="isReply"
+          v-if="replyData"
           type="button"
           @click="cancelReply"
           class="button button-secondary"

@@ -194,8 +194,8 @@ export async function useMutation(mutation, variables = {}) {
   const endpoint = `${wpUrl}/graphql`;
 
   try {
-    console.log("Sending GraphQL mutation to:", endpoint);
-    console.log("With variables:", JSON.stringify(variables, null, 2));
+    // console.log("Sending GraphQL mutation to:", endpoint);
+    // console.log("With variables:", JSON.stringify(variables, null, 2));
 
     const response = await fetch(endpoint, {
       method: "POST",
@@ -231,7 +231,7 @@ export async function useMutation(mutation, variables = {}) {
     try {
       // Try to parse as JSON
       const result = JSON.parse(responseText);
-      console.log("GraphQL response:", result);
+      //console.log("GraphQL response:", result);
 
       if (result.errors) {
         console.error("GraphQL returned errors:", result.errors);

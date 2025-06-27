@@ -4,6 +4,8 @@ import { gql } from "../../lib/client";
 import { capitalizeWords, getPosts } from "../../lib/utils";
 import PostListing from "../templates/listing/Post.vue";
 import LoadMore from "../blog/LoadMore.vue";
+import EmptyState from "../EmptyState.vue";
+import Loading from "../Loading.vue";
 
 const props = defineProps({
   category: {
@@ -91,7 +93,7 @@ const POSTS_QUERY = gql`
   }
 `;
 
-const postsPerPage = 6; // Fetch 5 posts initially
+const postsPerPage = 5; // Fetch 5 posts initially
 // Track loading state
 const loading = ref(true);
 const error = ref(null);
@@ -142,12 +144,12 @@ const handleLoading = (isLoading) => {
 
     <!-- Loading state -->
     <div v-else-if="loading && allPosts.length === 0">
-      <p>Loading posts...</p>
+     <Loading />
     </div>
 
     <!-- Empty state -->
     <div v-else-if="allPosts.length === 0">
-      <p>No posts found.</p>
+      <EmptyState text="No posts found"/>
     </div>
 
     <!-- Initial SSR and client-side component for pagination -->

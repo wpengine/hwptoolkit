@@ -10,12 +10,10 @@
   ],
   "env": {
     "development": {
-      "port": 8890,
-      "mysqlPort": 55090
+      "port": 8890
     },
     "tests": {
-      "port": 8891,
-      "mysqlPort": 55091
+      "port": 8891
     }
   },
   "config": {

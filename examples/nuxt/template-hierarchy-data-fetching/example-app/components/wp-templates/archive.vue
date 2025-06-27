@@ -178,7 +178,7 @@ const archive = computed(() => data.value?.archive || null);
 
       <!-- Empty state -->
       <div v-else class="text-center">
-        <EmptyState text="There are no posts available in this archive." />
+        <EmptyState text="There are no posts available in here." />
       </div>
     </div>
 

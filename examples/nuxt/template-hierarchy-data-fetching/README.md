@@ -1,6 +1,6 @@
 # Nuxt Data fetching
 
-In this example we show how to implement the WP Template Hierarchy in Nuxt for use with a Headless WordPress backend using WPGraphQL.
+In this example we show how to implement the WP Template Hierarchy and Data Fetching in Nuxt for use with a Headless WordPress backend using WPGraphQL.
 
 ## Getting Started
 
