@@ -46,6 +46,11 @@ jobs:
           CHECKED_PLUGINS=()
 
           for file in $CHANGED_FILES; do
+            # Skip if this is not a file within a plugin subdirectory
+            if [[ ! "$file" =~ ^plugins/[^/]+/.+ ]]; then
+              continue
+            fi
+            
             plugin=$(echo $file | cut -d/ -f2)
 
             # Skip if we already checked this plugin
