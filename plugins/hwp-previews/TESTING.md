@@ -102,3 +102,8 @@ We have a few checks which run for a new PR being merged to main
 ## Setup Tests Locally
 
 @TODO
+
+
+## Contributing
+
+If you feel like something is missing or you want to add tests or testing documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.
