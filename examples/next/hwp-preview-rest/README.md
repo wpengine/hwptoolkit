@@ -1,6 +1,6 @@
 # Example: Headless WordPress Previews with Nextjs App Router and REST API
 
-> [!INFO]
+> [!NOTE]
 > Check out [HWP Previews WPGraphQL example](https://github.com/wpengine/hwptoolkit/tree/main/examples/next/hwp-preview-wpgraphql) if you need the previews implementation with Nextjs pages router, Draft Mode or WordPress Application Passwords.
 
 ## Overview
