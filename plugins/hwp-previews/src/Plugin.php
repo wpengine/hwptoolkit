@@ -13,6 +13,8 @@ use HWP\Previews\Integration\Faust_Integration;
  *
  * This class serves as the main entry point for the plugin, handling initialization, action and filter hooks.
  *
+ * @link https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews
+ *
  * @package HWP\Previews
  */
 final class Plugin {
