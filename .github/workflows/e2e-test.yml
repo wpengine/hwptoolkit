@@ -69,6 +69,7 @@ jobs:
     name: ${{ needs.detect-plugin.outputs.plugin }} Playwright E2E Tests
     env:
       PLUGIN: ${{ needs.detect-plugin.outputs.plugin }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -81,27 +82,27 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Setup PHP with Cached Composer
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: 8.2
-          working-directory: plugins/${{ env.PLUGIN }}
+          working-directory:  plugins/${{ env.PLUGIN }}
           composer-options: '--no-progress --optimize-autoloader --no-dev'
 
-      - name: Install playwright browsers (${{ env.PLUGIN }})
+      - name: Install playwright browsers
         run: npx playwright install --with-deps
         working-directory: plugins/${{ env.PLUGIN }}
 
-      - name: Start wp-env (${{ env.PLUGIN }})
-        run: npm run wp-env start
+      - name: Start wp-env
+        run: |
+          npm run wp-env start
         working-directory: plugins/${{ env.PLUGIN }}
 
-      - name: Run Playwright tests (${{ env.PLUGIN }})
+      - name: Run Playwright tests
         run: npm run test:e2e
         working-directory: plugins/${{ env.PLUGIN }}
 
-      - name: Stop wp-env (${{ env.PLUGIN }})
+      - name: Stop wp-env
         run: npm run wp-env stop
         working-directory: plugins/${{ env.PLUGIN }}
