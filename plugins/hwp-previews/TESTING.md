@@ -78,9 +78,8 @@ To generate an HTML coverage report:
 ```bash
 composer run test:unit:coverage-html
 ```
-
-> [!IMPORTANT]
-> You can also add coverage e.g. `sh bin/local/run-unit-tests.sh coverage --coverage-html` and the output will be saved in [tests/_output/coverage/dashboard.html](tests/_output/coverage/dashboard.html)
+> [!NOTE]
+> HTML code coverage can be found here [tests/_output/coverage/index.html](tests/_output/coverage/index.html)
 
 
 ### E2WTests

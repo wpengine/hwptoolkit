@@ -1,3 +1,10 @@
+# This does the following:
+# 1. Detects plugins with a quality configuration (phpcs.xml) has changed
+# 2. Runs PHP Code Quality checks on those plugins using the custom action
+# 3. Creates a matrix job for each plugin that has a quality configuration
+# Bonus: This means you can have plugin specific badges e.g. [![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20quality)](https://github.com/wpengine/hwptoolkit/actions)
+
+
 name: Code Quality
 
 on:
@@ -11,30 +18,76 @@ on:
       - 'plugins/**.php'
 
 jobs:
-  run:
+  detect-plugins:
     runs-on: ubuntu-latest
-    name: Check code quality
-
+    name: Detect plugins with quality config
+    outputs:
+      plugins: ${{ steps.detect.outputs.plugins }}
+      has-plugins: ${{ steps.detect.outputs.has-plugins }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get changed plugin directory
-        id: plugin
+      - name: Detect changed plugins with quality config
+        id: detect
         run: |
           git fetch --prune --unshallow
-          plugin=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' | head -1 | cut -d/ -f2)
-          echo "slug=$plugin" >> $GITHUB_OUTPUT
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' || true)
 
-      # We should at least have a phpcs.xml file to run code quality checks
-      - name: Validate phpcs.xml
-        run: |
-          if [ ! -f "plugins/${{ steps.plugin.outputs.slug }}/phpcs.xml" ]; then
-            echo "Exiting as no phpcs.xml file found for /${{ steps.plugin.outputs.slug }}"
-            exit 1
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No plugin files changed"
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
-      - name: PHP Code Quality
+          # Extract unique plugin names and check for phpcs.xml
+          PLUGINS_WITH_CONFIG=()
+          CHECKED_PLUGINS=()
+
+          for file in $CHANGED_FILES; do
+            plugin=$(echo $file | cut -d/ -f2)
+
+            # Skip if we already checked this plugin
+            if [[ " ${CHECKED_PLUGINS[@]} " =~ " $plugin " ]]; then
+              continue
+            fi
+
+            CHECKED_PLUGINS+=("$plugin")
+
+            if [ -f "plugins/$plugin/phpcs.xml" ]; then
+              PLUGINS_WITH_CONFIG+=("$plugin")
+              echo "✅ Found phpcs.xml for plugin: $plugin"
+            else
+              echo "ℹ️ No phpcs.xml found for plugin: $plugin, skipping quality checks"
+            fi
+          done
+
+          # Convert to JSON array
+          if [ ${#PLUGINS_WITH_CONFIG[@]} -gt 0 ]; then
+            PLUGINS_JSON=$(printf '%s\n' "${PLUGINS_WITH_CONFIG[@]}" | jq -R -s -c 'split("\n")[:-1]')
+            echo "plugins=${PLUGINS_JSON}" >> $GITHUB_OUTPUT
+            echo "has-plugins=true" >> $GITHUB_OUTPUT
+            echo "Found ${#PLUGINS_WITH_CONFIG[@]} plugin(s) with quality config: ${PLUGINS_WITH_CONFIG[*]}"
+          else
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            echo "No plugins found with quality configuration"
+          fi
+  quality-checks:
+    needs: detect-plugins
+    if: needs.detect-plugins.outputs.has-plugins == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
+      fail-fast: false
+    name: ${{ matrix.plugin }} quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP Code Quality for ${{ matrix.plugin }}
         uses: ./.github/actions/code-quality
         with:
-          working-directory: plugins/${{ steps.plugin.outputs.slug }}
+          working-directory: plugins/${{ matrix.plugin }}
