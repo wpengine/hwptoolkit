@@ -50,7 +50,8 @@ coverage:
         - /tests/*
         - /vendor/*
         - /src/Templates/*
-    show_only_summary: false
+    show_only_summary: true
+    min_coverage: 95
 modules:
     config:
         REST:
