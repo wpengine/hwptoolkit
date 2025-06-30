@@ -5,7 +5,7 @@ set -e
 BASE_SHA="$1"
 HEAD_SHA="$2"
 
-git fetch --prune --unshallow
+git fetch --prune --unshallow 2>/dev/null || git fetch --prune
 
 # Get changed files in plugins subdirectories
 CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '^plugins/[^/]\+/' || true)
