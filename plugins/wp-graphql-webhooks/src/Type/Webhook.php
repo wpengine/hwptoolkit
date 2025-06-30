@@ -20,52 +20,52 @@ class Webhook {
 	 * @return void
 	 */
 	public static function register(): void {
-		register_graphql_object_type( 'Webhook', [ 
+		register_graphql_object_type( 'Webhook', [
 			'description' => __( 'A Webhook configuration object.', 'wp-graphql-webhooks' ),
-			'fields' => [ 
-				'id' => [ 
+			'fields' => [
+				'id' => [
 					'type' => 'ID',
 					'description' => __( 'The global ID of the webhook.', 'wp-graphql-webhooks' ),
 					'resolve' => function ($webhook) {
 						return (string) $webhook->ID;
 					},
 				],
-				'eventTrigger' => [ 
+				'eventTrigger' => [
 					'type' => 'String',
 					'description' => __( 'The event hook name that triggers this webhook.', 'wp-graphql-webhooks' ),
 					'resolve' => function ($webhook) {
 						return get_post_meta( $webhook->ID, '_event_trigger', true );
 					},
 				],
-				'title' => [ 
+				'title' => [
 					'type' => 'String',
 					'description' => __( 'The title of the webhook.', 'wp-graphql-webhooks' ),
 					'resolve' => function ($webhook) {
 						return get_the_title( $webhook );
 					},
 				],
-				'enabled' => [ 
+				'enabled' => [
 					'type' => 'Boolean',
 					'description' => __( 'Whether the webhook is enabled.', 'wp-graphql-webhooks' ),
 					'resolve' => function ($webhook) {
 						return (bool) get_post_meta( $webhook->ID, '_enabled', true );
 					},
 				],
-				'security' => [ 
+				'security' => [
 					'type' => 'String',
 					'description' => __( 'Security information for the webhook.', 'wp-graphql-webhooks' ),
 					'resolve' => function ($webhook) {
 						return get_post_meta( $webhook->ID, '_security', true );
 					},
 				],
-				'handlerClass' => [ 
+				'handlerClass' => [
 					'type' => 'String',
 					'description' => __( 'The handler class used for dispatching.', 'wp-graphql-webhooks' ),
 					'resolve' => function ($webhook) {
 						return get_post_meta( $webhook->ID, '_handler_class', true );
 					},
 				],
-				'handlerConfig' => [ 
+				'handlerConfig' => [
 					'type' => 'String',
 					'description' => __( 'Configuration for the handler.', 'wp-graphql-webhooks' ),
 					'resolve' => function ($webhook) {

@@ -8,7 +8,11 @@ HEAD_SHA="$2"
 git fetch --prune --unshallow 2>/dev/null || git fetch --prune
 
 # Get changed files in plugins subdirectories
-CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '^plugins/[^/]\+/' || true)
+if [ "$BASE_SHA" = "release" ]; then
+  CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/[^/]\+/' || true)
+else
+  CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '^plugins/[^/]\+/' || true)
+fi
 
 if [ -z "$CHANGED_FILES" ]; then
   echo "No plugin files changed"
