@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.4
+
+### Patch Changes
+
+- [#292](https://github.com/wpengine/hwptoolkit/pull/292) [`8ab4aa5`](https://github.com/wpengine/hwptoolkit/commit/8ab4aa54c9595320e63315aae78dd899f54e81f3) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Updated action and filter docs.
+
 ## 0.0.3
 
 ### Patch Changes
