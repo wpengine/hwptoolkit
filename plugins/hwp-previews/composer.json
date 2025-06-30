@@ -99,7 +99,8 @@
 			"/psalm.xml",
 			"/screenshots",
 			"/tests",
-			"/vendor"
+			"!vendor",
+			"!vendor-prefixed"
 		]
 	},
 	"autoload": {
