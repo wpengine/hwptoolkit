@@ -67,6 +67,24 @@ importers:
         specifier: ^30.18.0
         version: 30.19.0(@playwright/test@1.53.1)(@types/eslint@9.6.1)(@types/node@22.10.10)(@types/webpack@4.41.40)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.12.1(stylelint@16.21.0(typescript@5.8.3)))(type-fest@3.13.1)(typescript@5.8.3)
 
+  plugins/wp-graphql-webhooks:
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.53.1
+        version: 1.53.1
+      '@wordpress/e2e-test-utils-playwright':
+        specifier: ^1.26.0
+        version: 1.26.0(@playwright/test@1.53.1)
+      '@wordpress/env':
+        specifier: ^10.26.0
+        version: 10.26.0(@types/node@22.10.10)
+      '@wordpress/jest-console':
+        specifier: ^8.26.0
+        version: 8.26.0(jest@29.7.0(@types/node@22.10.10))
+      '@wordpress/scripts':
+        specifier: ^30.19.0
+        version: 30.19.0(@playwright/test@1.53.1)(@types/eslint@9.6.1)(@types/node@22.10.10)(@types/webpack@4.41.40)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.12.1(stylelint@16.21.0(typescript@5.8.3)))(type-fest@3.13.1)(typescript@5.8.3)
+
 packages:
 
   '@ampproject/remapping@2.3.0':
@@ -8776,17 +8794,17 @@ snapshots:
   '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9))(webpack@5.99.9)':
     dependencies:
       webpack: 5.99.9(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.99.9))(webpack@5.99.9(webpack-cli@5.1.4))
 
   '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9))(webpack@5.99.9)':
     dependencies:
       webpack: 5.99.9(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.99.9))(webpack@5.99.9(webpack-cli@5.1.4))
 
   '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9))(webpack-dev-server@4.15.2)(webpack@5.99.9)':
     dependencies:
       webpack: 5.99.9(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.99.9))(webpack@5.99.9(webpack-cli@5.1.4))
     optionalDependencies:
       webpack-dev-server: 4.15.2(webpack-cli@5.1.4)(webpack@5.99.9)
 
@@ -9003,7 +9021,7 @@ snapshots:
       url-loader: 4.1.1(webpack@5.99.9)
       webpack: 5.99.9(webpack-cli@5.1.4)
       webpack-bundle-analyzer: 4.10.2
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.99.9))(webpack@5.99.9(webpack-cli@5.1.4))
       webpack-dev-server: 4.15.2(webpack-cli@5.1.4)(webpack@5.99.9)
     transitivePeerDependencies:
       - '@rspack/core'
@@ -9098,7 +9116,7 @@ snapshots:
       url-loader: 4.1.1(webpack@5.99.9)
       webpack: 5.99.9(webpack-cli@5.1.4)
       webpack-bundle-analyzer: 4.10.2
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.99.9))(webpack@5.99.9(webpack-cli@5.1.4))
       webpack-dev-server: 4.15.2(webpack-cli@5.1.4)(webpack@5.99.9)
     transitivePeerDependencies:
       - '@rspack/core'
@@ -14179,7 +14197,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9):
+  webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.99.9))(webpack@5.99.9(webpack-cli@5.1.4)):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9))(webpack@5.99.9)
@@ -14242,7 +14260,7 @@ snapshots:
       ws: 8.18.2
     optionalDependencies:
       webpack: 5.99.9(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.99.9))(webpack@5.99.9(webpack-cli@5.1.4))
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -14284,7 +14302,7 @@ snapshots:
       watchpack: 2.4.4
       webpack-sources: 3.3.3
     optionalDependencies:
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.99.9)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.99.9))(webpack@5.99.9(webpack-cli@5.1.4))
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
