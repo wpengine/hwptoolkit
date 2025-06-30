@@ -21,31 +21,6 @@ setup_before() {
 			curl -L 'https://raw.github.com/Codeception/c3/2.0/c3.php' > "c3.php"
 	fi
 
-	# Enable XDebug or PCOV for code coverage.
-	if [[ "$COVERAGE" == '1' ]]; then
-		if [[ "$USING_XDEBUG" == '1' ]]; then
-			echo "Enabling XDebug 3"
-			cp /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/
-			echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-		else
-			echo "Using pcov/clobber for code coverage"
-			docker-php-ext-enable pcov
-			echo "pcov.enabled=1" >> /usr/local/etc/php/conf.d/docker-php-ext-pcov.ini
-			echo "pcov.directory=${PROJECT_DIR}" >> /usr/local/etc/php/conf.d/docker-php-ext-pcov.ini
-			COMPOSER_MEMORY_LIMIT=-1 composer require pcov/clobber --dev
-			vendor/bin/pcov clobber
-		fi
-	elif [[ -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ]]; then
-		echo "Disabling XDebug"
-		rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-	fi
-
-	# Install the PHP dev-dependencies.
-	if [ ! -d "vendor" ]; then
-  	echo "Running composer install"
-  	COMPOSER_MEMORY_LIMIT=-1 composer install
-  fi
-
 	# Set output permission
 	echo "Setting Codeception output directory permissions"
 	chmod 777 -R tests/_output
@@ -57,12 +32,6 @@ setup_before() {
 run_tests() {
 	if [[ -n "$DEBUG" ]]; then
 		local debug="--debug"
-	fi
-
-	local suites=$1
-	if [[ -z "$SUITES" ]]; then
-		echo "No test suites specified. Must specify variable SUITES."
-		exit 1
 	fi
 
 	if [[ -n "$COVERAGE" ]]; then
@@ -79,25 +48,61 @@ run_tests() {
 		wp maintenance-mode deactivate --allow-root
 	fi
 
-
-	# Suites is the comma separated list of suites/tests to run.
-	echo "Running Test Suite $suites"
+	echo "Running Unit and Integration tests"
 	cd "$PROJECT_DIR"
 
 	# IMPORTANT: Build Codeception classes before running tests
-  echo "Building Codeception test classes"
-  vendor/bin/codecept build -c codeception.dist.yml
+	echo "Building Codeception test classes"
+	vendor/bin/codecept build -c codeception.dist.yml
 
-  if [ $? -ne 0 ]; then
-      echo "Error: Codeception build failed"
-      exit 1
-  fi
+	if [ $? -ne 0 ]; then
+		echo "Error: Codeception build failed"
+		exit 1
+	fi
 
-	XDEBUG_MODE=coverage vendor/bin/codecept run -c codeception.dist.yml ${suites} ${coverage:-} ${debug:-} --no-exit
+	XDEBUG_MODE=coverage vendor/bin/codecept run -c codeception.dist.yml ${suites} ${coverage:-} ${debug:-} ${debug:-}
 	if [ $? -ne 0 ]; then
 			echo "Error: Codeception tests failed with exit code $?"
 			exit 1
 	fi
+
+	# Check code coverage if coverage was requested
+	if [[ -n "$COVERAGE" ]]; then
+
+		if [[ -n "$COVERAGE_OUTPUT" ]]; then
+			coverage_percent=$(grep -oP '(\d+\.\d+)%' "tests/_output/coverage/index.html" | head -1 | tr -d '%')
+		else
+			coverage_percent=$(grep -oP 'line-rate="(\d+\.\d+)"' "tests/_output/coverage.xml" | head -1 | grep -oP '\d+\.\d+')
+			# Convert to percent
+			if [[ -n "$coverage_percent" ]]; then
+				coverage_percent=$(awk "BEGIN { printf \"%.2f\", $coverage_percent * 100 }")
+			fi
+		fi
+		if [[ -z "$coverage_percent" ]]; then
+			echo "Warning: Could not determine code coverage percentage."
+			exit 1
+		fi
+
+		echo "Code coverage percentage found: $coverage_percent"
+
+
+		required_coverage=$(grep 'min_coverage:' codeception.dist.yml | awk '{print $2}')
+
+		if [[ -z "$required_coverage" ]]; then
+			echo "No min_coverage found in codeception.dist.yml. Defaulting to 80%"
+			required_coverage=80
+		fi
+
+		coverage_int=${coverage_percent%.*}
+		if (( coverage_int < required_coverage )); then
+			echo -e "\033[0;31mError: Code coverage is ${coverage_percent}%, which is below the required ${required_coverage}%.\033[0m"
+			exit 1
+		else
+			echo -e "\033[0;32mCode coverage is ${coverage_percent}% (required: ${required_coverage}%)\033[0m"
+		fi
+
+	fi
+
 }
 
 ##
@@ -117,12 +122,11 @@ cleanup_after() {
 		if [[ "$USING_XDEBUG" == '1' ]]; then
 			echo "Disabling XDebug 3"
 			rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-		else
+		else98
 			echo "Disabling pcov/clobber"
 			docker-php-ext-disable pcov
 			sed -i '/pcov.enabled=1/d' /usr/local/etc/php/conf.d/docker-php-ext-pcov.ini
 			sed -i '/pcov.directory=${PROJECT_DIR}/d' /usr/local/etc/php/conf.d/docker-php-ext-pcov.ini
-			COMPOSER_MEMORY_LIMIT=-1 composer remove pcov/clobber --dev
 		fi
 	fi
 
@@ -135,9 +139,7 @@ cleanup_after() {
 echo "Setting up for Codeception tests"
 setup_before
 
-
-# Run the tests
-run_tests $SUITES
+run_tests
 
 # Clean up after running tests.
 echo "Cleaning up after Codeception tests"
@@ -145,8 +147,8 @@ cleanup_after
 
 # Check results and exit accordingly.
 if [ -f "tests/_output/failed" ]; then
-	echo "Uh oh, Codeception tests failed."
+	echo "Codeception tests failed."
 	exit 1
 else
-	echo "Woohoo! Codeception tests completed succesfully!"
+	echo "Codeception tests completed successfully!"
 fi

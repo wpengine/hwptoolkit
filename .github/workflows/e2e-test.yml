@@ -1,3 +1,11 @@
+# This does the following:
+# 1. Detects modified plugins that have .wp-env.json configuration
+# 2. Runs Playwright E2E tests on those plugins using the custom action
+# 3. Creates a matrix job for each plugin that has a quality configuration
+# Bonus: This means you can have plugin specific badges e.g.
+# [![E2E Te](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20Playwright%20E2E%20Tests&label=End-to-End%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
+
+
 name: End-to-End Tests
 
 on:
@@ -5,20 +13,62 @@ on:
     branches:
       - main
     paths:
-      - 'plugins/hwp-previews/**.php'
-      - 'plugins/hwp-previews/**.js'
-      - 'plugins/hwp-previews/**.css'
-      - 'plugins/hwp-previews/**.json'
-
+      - 'plugins/**.php'
+      - 'plugins/**.js'
+      - 'plugins/**.css'
+      - 'plugins/**.json'
   pull_request:
     branches:
       - main
     paths:
-      - "plugins/hwp-previews/**"
+      - "plugins/**"
 
 jobs:
+  detect-plugin:
+    runs-on: ubuntu-latest
+    name: Detect plugin with E2E tests
+    outputs:
+      plugin: ${{ steps.detect.outputs.plugin }}
+      has-plugin: ${{ steps.detect.outputs.has-plugin }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          bash .github/scripts/get-plugin-slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+
+      - name: Detect changed plugin with E2E config
+        id: detect
+        run: |
+          if [ -z "${{ steps.plugin.outputs.slug }}" ]; then
+            echo "No plugin slug detected"
+            echo "plugin=" >> $GITHUB_OUTPUT
+            echo "has-plugin=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          PLUGIN="${{ steps.plugin.outputs.slug }}"
+
+          # Check for .wp-env.json file in the plugin directory
+          if [ -f "plugins/$PLUGIN/.wp-env.json" ]; then
+            echo "plugin=$PLUGIN" >> $GITHUB_OUTPUT
+            echo "has-plugin=true" >> $GITHUB_OUTPUT
+            echo "✅ Found .wp-env.json for plugin: $PLUGIN"
+          else
+            echo "plugin=" >> $GITHUB_OUTPUT
+            echo "has-plugin=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No .wp-env.json found for plugin: $PLUGIN, skipping E2E tests"
+          fi
+
   playwright-e2e-tests:
+    needs: detect-plugin
+    if: needs.detect-plugin.outputs.has-plugin == 'true'
     runs-on: ubuntu-24.04
+    name: ${{ needs.detect-plugin.outputs.plugin }} Playwright E2E Tests
+    env:
+      PLUGIN: ${{ needs.detect-plugin.outputs.plugin }}
 
     steps:
       - name: Checkout code
@@ -37,22 +87,22 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: 8.2
-          working-directory:  plugins/hwp-previews
+          working-directory:  plugins/${{ env.PLUGIN }}
           composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Install playwright browsers
         run: npx playwright install --with-deps
-        working-directory: plugins/hwp-previews
+        working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Start wp-env
         run: |
           npm run wp-env start
-        working-directory: plugins/hwp-previews
+        working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Run Playwright tests
         run: npm run test:e2e
-        working-directory: plugins/hwp-previews
+        working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Stop wp-env
         run: npm run wp-env stop
-        working-directory: plugins/hwp-previews
+        working-directory: plugins/${{ env.PLUGIN }}
