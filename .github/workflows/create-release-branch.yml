@@ -45,7 +45,8 @@ jobs:
       - name: Get changed plugin directory
         id: plugin
         run: |
-          bash .github/scripts/get-plugin-slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+          bash .github/scripts/get-plugin-slug.sh release
+
 
       - name: Validate plugin detection
         continue-on-error: false
