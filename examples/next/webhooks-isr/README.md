@@ -20,7 +20,7 @@ This integration enables seamless communication between a WordPress backend and 
 
 ## Prerequisites
 
-* WordPress site with the wpgraphql-headless-webhooks plugin installed.
+* WordPress site with the wpgraphql-webhooks plugin installed.
 * Next.js project (Node.js v18+ recommended).
 * Environment variables configured for WordPress URL and webhook secret.
 

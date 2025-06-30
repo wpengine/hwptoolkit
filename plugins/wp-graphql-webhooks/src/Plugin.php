@@ -79,11 +79,11 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			$this->services->set( 'event_manager', function () {
 				$repository = $this->services->get( 'repository' );
 				$handler = $this->services->get( 'handler' );
-				
+
 				if ( class_exists( 'WPGraphQL\SmartCache\Document' ) || defined( 'WPGRAPHQL_SMART_CACHE_VERSION' ) ) {
 					return new SmartCacheWebhookManager( $repository, $handler );
 				}
-				
+
 				return new WebhookEventManager( $repository, $handler );
 			} );
 			// Initialize event manager and register hooks
@@ -93,7 +93,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			// Initialize admin UI
 			if ( is_admin() ) {
 				$repository = $this->services->get( 'repository' );
-				
+
 				if ( class_exists( 'WPGraphQL\Webhooks\Admin\WebhooksAdmin' ) ) {
 					$admin = new \WPGraphQL\Webhooks\Admin\WebhooksAdmin( $repository );
 					$admin->init();
@@ -103,7 +103,7 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			// Initialize REST endpoints
 			add_action( 'rest_api_init', function () {
 				$repository = $this->services->get( 'repository' );
-				
+
 				if ( class_exists( 'WPGraphQL\Webhooks\Rest\WebhookTestEndpoint' ) ) {
 					$testEndpoint = new \WPGraphQL\Webhooks\Rest\WebhookTestEndpoint( $repository );
 					$testEndpoint->register_routes();
