@@ -144,12 +144,12 @@ setup_file_permissions() {
 
 setup_plugin() {
 	if [ "${SKIP_WP_SETUP}" = "true" ]; then
-		echo -e "$(warning_message "Skipping wp-graphql-headless-webhooks installation...")"
+		echo -e "$(warning_message "Skipping wp-graphql--webhooks installation...")"
 		return 0
 	fi
 
 	# Add this repo as a plugin to the repo
-	if [ ! -d $WORDPRESS_ROOT_DIR/wp-content/plugins/wp-graphql-headless-webhooks ]; then
+	if [ ! -d $WORDPRESS_ROOT_DIR/wp-content/plugins/wp-graphql-webhooks ]; then
 		echo -e "$(status_message "Symlinking the plugin to the WordPress plugins directory...")"
 
 		cd "$ORIGINAL_PATH"
