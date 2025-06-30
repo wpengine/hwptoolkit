@@ -1,0 +1,19 @@
+{
+	"name": "@wpengine/wpgraphql-webhooks-wordpress-plugin",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Webhooks solution for WordPress",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "wpengine",
+	"license": "GPL-2.0",
+	"devDependencies": {
+		"@playwright/test": "^1.52.0",
+		"@wordpress/e2e-test-utils-playwright": "^1.25.0",
+		"@wordpress/env": "^10.25.0",
+		"@wordpress/jest-console": "^8.25.0",
+		"@wordpress/scripts": "^30.18.0"
+	}
+}
