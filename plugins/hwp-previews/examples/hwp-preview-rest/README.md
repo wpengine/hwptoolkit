@@ -1,11 +1,11 @@
 # Example: Headless WordPress Previews with Nextjs App Router and REST API
 
 > [!NOTE]
-> Check out [HWP Previews WPGraphQL example](https://github.com/wpengine/hwptoolkit/tree/main/examples/next/hwp-preview-wpgraphql) if you need the previews implementation with Nextjs pages router, Draft Mode or WordPress Application Passwords.
+> Check out [HWP Previews WPGraphQL example](../hwp-preview-wpgraphql) if you need the previews implementation with Nextjs pages router, Draft Mode or WordPress Application Passwords.
 
 ## Overview
 
-The purpose of this example is to showcase different use cases of HWP Previews. The example demonstrates the usage of [HWP Previews](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews) with Nextjs App Router and REST API. Example uses credentials authentication to fetch the posts in draft status. Unlike [HWP Previews WPGraphQL example](https://github.com/wpengine/hwptoolkit/tree/main/examples/next/hwp-preview-wpgraphql) this example don't use [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode).
+The purpose of this example is to showcase different use cases of HWP Previews. The example demonstrates the usage of [HWP Previews](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews) with Nextjs App Router and REST API. Example uses credentials authentication to fetch the posts in draft status. Unlike [HWP Previews WPGraphQL example](../hwp-preview-wpgraphql) this example don't use [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode).
 
 The example includes a wp-env setup, which will allow you to build and start this example quickly. With this wp-env setup, you don't need to have a separate WordPress instance or demo data to inspect the example.
 
@@ -79,6 +79,7 @@ Congratulations, WordPress should now be fully set up.
 ### Add environment variable to the Nextjs
 
 Create a .env file under `examples/next/hwp-preview-rest/example-app` and add copy-paste the environment variable below:
+
 
 ```bash
 NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888

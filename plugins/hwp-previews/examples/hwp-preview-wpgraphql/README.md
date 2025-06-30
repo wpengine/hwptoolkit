@@ -7,7 +7,7 @@ This example shows the HWP Previews plugin in action. Example implements the [Dr
 The example includes a wp-env setup, which will allow you to build and start this example quickly. With this wp-env setup, you don't need to have a separate WordPress instance or demo data to inspect the example.
 
 > [!CAUTION]
-> The HWP Previews plugin is currently in an alpha state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible.
+> The HWP Previews plugin is currently in an beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible.
 
 ## What does this example do
 
@@ -62,8 +62,9 @@ The example includes a wp-env setup, which will allow you to build and start thi
 
 ### Build and start the application
 
-- `cd examples/next/hwp-preview-wpgraphql`
+- `cd plugins/hwp-previews/examples/hwp-preview-wpgraphql`
 - Then run `npm run example:build` will build and start your application.
+- Copy .env.local to .env under example-app `cp example-app/.env.local example-app/.env`
 - This does the following:
   - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
   - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
