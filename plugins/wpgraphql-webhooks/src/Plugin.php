@@ -56,13 +56,13 @@ if ( ! class_exists( 'WPGraphQL\Webhooks\Plugin' ) ) :
 			 *
 			 * @param self $instance
 			 */
-			do_action( 'graphql_webhooks_init', self::$instance );
+			do_action( 'wpgraphql_webhooks_init', self::$instance );
 
 			return self::$instance;
 		}
 
 		private function setup(): void {
-			Helper::set_hook_prefix( 'graphql_webhooks' );
+			Helper::set_hook_prefix( 'wpgraphql_webhooks' );
 			WebhookPostType::init();
 
 			$this->services = new PluginServiceLocator();

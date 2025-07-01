@@ -132,9 +132,9 @@
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
-			<property name="prefixes" type="array" value="WPGraphQL\Webhooks, graphql_webhooks"/>
+			<property name="prefixes" type="array" value="WPGraphQL\Webhooks, wpgraphql_webhooks"/>
 			<!-- Value: replace the function, class, and variable prefixes used. Separate multiple prefixes with a comma. -->
-			<property name="prefixes" type="array" value="WPGraphQL\Webhooks, graphql_webhooks" />
+			<property name="prefixes" type="array" value="WPGraphQL\Webhooks, wpgraphql_webhooks" />
 		</properties>
 	</rule>
 

@@ -119,7 +119,7 @@ class WebhookTestEndpoint {
 		$start_time = microtime( true );
 		
 		try {
-			do_action( 'graphql_webhooks_test_event', $webhook, $test_payload );
+			do_action( 'wpgraphql_webhooks_test_event', $webhook, $test_payload );
 			
 			$end_time = microtime( true );
 			$duration = round( ( $end_time - $start_time ) * 1000, 2 ); // Convert to milliseconds

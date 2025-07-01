@@ -104,6 +104,6 @@ class WebhookHandler implements Handler {
 		}
 		
 		// Trigger action after webhook is sent
-		do_action( 'graphql_webhooks_sent', $webhook, $payload, $response );
+		do_action( 'wpgraphql_webhooks_sent', $webhook, $payload, $response );
 	}
 }

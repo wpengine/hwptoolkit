@@ -118,7 +118,7 @@ class SmartCacheWebhookManager implements EventManager {
 
 		error_log( "[Webhook] Triggering webhooks for event: $event with payload: " . var_export( $payload, true ) );
 
-		do_action( 'graphql_webhooks_before_trigger', $event, $payload );
+		do_action( 'wpgraphql_webhooks_before_trigger', $event, $payload );
 
 		$webhooks = $this->repository->get_all();
 		error_log( "[Webhook] Found " . count( $webhooks ) . " webhooks for event: $event" );
@@ -133,7 +133,7 @@ class SmartCacheWebhookManager implements EventManager {
 
 		error_log( "[Webhook] Triggered $triggered_count webhooks for event: $event" );
 
-		do_action( 'graphql_webhooks_after_trigger', $event, $payload );
+		do_action( 'wpgraphql_webhooks_after_trigger', $event, $payload );
 	}
 
 	/**

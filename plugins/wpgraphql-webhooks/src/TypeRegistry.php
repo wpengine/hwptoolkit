@@ -27,7 +27,7 @@ class TypeRegistry {
      * @return void
      */
     public static function init(): void {
-        do_action( 'graphql_webhooks_before_register_types' );
+        do_action( 'wpgraphql_webhooks_before_register_types' );
 
         $classes_to_register = array_merge(
             self::objects(),
@@ -37,7 +37,7 @@ class TypeRegistry {
 
         self::register_types( $classes_to_register );
 
-        do_action( 'graphql_webhooks_after_register_types' );
+        do_action( 'wpgraphql_webhooks_after_register_types' );
     }
 
     /**

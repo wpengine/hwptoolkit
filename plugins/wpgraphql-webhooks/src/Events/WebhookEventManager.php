@@ -65,14 +65,14 @@ class WebhookEventManager implements EventManager {
 			return;
 		}
 
-		do_action( 'graphql_webhooks_before_trigger', $event, $payload );
+		do_action( 'wpgraphql_webhooks_before_trigger', $event, $payload );
 		foreach ( $this->repository->get_all() as $webhook ) {
 			if ( $webhook->event === $event ) {
 				$this->handler->handle( $webhook, $payload );
 			}
 		}
 
-		do_action( 'graphql_webhooks_after_trigger', $event, $payload );
+		do_action( 'wpgraphql_webhooks_after_trigger', $event, $payload );
 	}
 
 	/** Event Handlers **/
