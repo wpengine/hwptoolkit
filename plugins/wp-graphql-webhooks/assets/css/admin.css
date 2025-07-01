@@ -1,0 +1,207 @@
+/**
+ * Minimal custom styles for Webhooks admin
+ * Leveraging WordPress core admin classes
+ */
+
+/* Use core WordPress styles for most elements */
+
+/* Webhook method badge styling */
+.webhook-method {
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: 11px;
+}
+
+/* Header row styling using core form-table classes */
+.webhook-headers .form-table td {
+	padding: 5px 10px 5px 0;
+}
+
+/* Minimal adjustment for header inputs */
+.webhook-header-row {
+	margin-bottom: 10px;
+}
+
+.webhook-header-row input[type="text"] {
+	width: calc(50% - 50px);
+	margin-right: 10px;
+}
+
+/* Use core button styles, just add spacing */
+.test-webhook {
+	margin-right: 5px;
+}
+
+/* Test button states */
+.test-webhook.testing {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.test-webhook.success {
+	color: #46b450;
+}
+
+.test-webhook.error {
+	color: #dc3232;
+}
+
+/* Webhook test result row */
+.webhook-test-result td {
+	padding: 0 !important;
+	background: transparent !important;
+}
+
+.webhook-test-result .notice {
+	margin: 10px;
+	position: relative;
+}
+
+.webhook-test-result .notice.inline {
+	display: block;
+}
+
+/* Test details styling */
+.webhook-test-details {
+	padding: 12px;
+}
+
+.webhook-test-details p {
+	margin: 0.5em 0;
+}
+
+.webhook-test-details strong {
+	font-weight: 600;
+}
+
+/* Status indicators */
+.webhook-test-details .status-success {
+	color: #46b450;
+	font-weight: 600;
+}
+
+.webhook-test-details .status-error {
+	color: #dc3232;
+	font-weight: 600;
+}
+
+/* Expandable details */
+.webhook-test-details details {
+	margin: 10px 0;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 0;
+}
+
+.webhook-test-details summary {
+	padding: 10px;
+	cursor: pointer;
+	background: #f7f7f7;
+	border-bottom: 1px solid #ddd;
+	font-weight: 600;
+}
+
+.webhook-test-details details[open] summary {
+	border-bottom: 1px solid #ddd;
+}
+
+.webhook-test-details pre {
+	margin: 0;
+	padding: 10px;
+	background: #f9f9f9;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+/* Payload and response styling */
+.webhook-test-payload,
+.webhook-response-body {
+	font-family: Consolas, Monaco, monospace;
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+/* Notice dismiss button positioning */
+.webhook-test-result .notice-dismiss {
+	position: absolute;
+	top: 0;
+	right: 1px;
+	padding: 10px 15px;
+	font-size: 13px;
+	line-height: 1.23076923;
+	text-decoration: none;
+}
+
+.webhook-test-result .notice-dismiss:before {
+	content: "\f153";
+	font-family: dashicons;
+	font-size: 20px;
+	font-style: normal;
+	font-weight: 400;
+	height: 20px;
+	width: 20px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Webhook URL column styling */
+.webhook-url {
+	display: block;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 13px;
+	color: #2271b1;
+}
+
+/* Ensure proper column spacing */
+.wp-list-table .column-url {
+	width: 35%;
+	min-width: 200px;
+}
+
+.wp-list-table .column-name {
+	width: 25%;
+}
+
+.wp-list-table .column-event {
+	width: 20%;
+}
+
+.wp-list-table .column-method {
+	width: 10%;
+}
+
+.wp-list-table .column-headers {
+	width: 10%;
+}
+
+/* Row actions test link styling */
+.row-actions .test-webhook {
+	color: #2271b1;
+	text-decoration: none;
+}
+
+.row-actions .test-webhook:hover {
+	color: #135e96;
+	text-decoration: underline;
+}
+
+.row-actions .test-webhook.testing {
+	color: #666;
+	cursor: default;
+	pointer-events: none;
+}
+
+.row-actions .test-webhook.success {
+	color: #46b450;
+}
+
+.row-actions .test-webhook.error {
+	color: #dc3232;
+}

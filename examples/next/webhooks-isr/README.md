@@ -59,36 +59,31 @@ Follow these steps to create a webhook using the UI:
 
 ![Create Webhook view](./screenshots/create_webhook-ui.png)
 
-## Modifying the Webhook Payload to Send Relative Paths
-Add this filter to your WordPress plugin or theme to ensure the webhook payload sends a relative path (required by Next.js revalidate API):
+## Modifying the Webhook Payload (Optional)
+If you need to customize the webhook payload—for example, to add additional data or modify existing fields—you can use the `graphql_webhooks_payload` filter in your WordPress plugin or theme. This is useful when your headless frontend requires specific data formats or extra context in the webhook payload.
+
+For example, you might want to include the current user's ID or a custom meta field in the payload:
 
 ```php
 add_filter( 'graphql_webhooks_payload', function( array $payload, $webhook ) {
-    error_log('[Webhook] Initial payload: ' . print_r($payload, true));
-    if ( ! empty( $payload['post_id'] ) ) {
-        $post_id = $payload['post_id'];
-        error_log('[Webhook] Processing post ID: ' . $post_id);
-        
-        $permalink = get_permalink( $post_id );
-        
-        if ( $permalink ) {
-            // Extract relative path from permalink URL
-            $path = parse_url( $permalink, PHP_URL_PATH );
-            $payload['path'] = $path;
-            error_log('[Webhook] Added relative path: ' . $path);
-        } else {
-            error_log('[Webhook] Warning: Failed to get permalink for post ID: ' . $post_id);
-        }
-    } else {
-        error_log('[Webhook] Notice: No post_id in payload');
+    // Add current user ID to the payload
+    $current_user_id = get_current_user_id();
+    if ( $current_user_id ) {
+        $payload['current_user_id'] = $current_user_id;
     }
-
-    // Log final payload state
-    error_log('[Webhook] Final payload: ' . print_r($payload, true));
+    // Add a custom post meta value if available
+    if ( ! empty( $payload['post_id'] ) ) {
+        $custom_value = get_post_meta( $payload['post_id'], '_my_custom_meta_key', true );
+        if ( $custom_value ) {
+            $payload['custom_meta'] = $custom_value;
+        }
+    }
     
     return $payload;
 }, 10, 2 );
 ```
+
+This filter is optional and should be used only if you want to modify or enrich the payload with custom data. The plugin sends a default payload that works out of the box for most use cases.
 
 ## Testing the Integration with the Example Project
 

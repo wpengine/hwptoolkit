@@ -35,20 +35,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Detect changed plugins with test config
+      - name: Get changed plugin directory
+        id: plugin
+        run: |
+          bash .github/scripts/get-plugin-slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+
+      - name: Detect changed plugins with quality config
         id: detect
         run: |
-          git fetch --prune --unshallow
-
-          # Get changed files based on event type
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^plugins/' || true)
-          else
-            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/' || true)
-          fi
-
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "No plugin files changed"
+          if [ -z "${{ steps.plugin.outputs.slug }}" ]; then
+            echo "No plugin slug detected"
             echo "plugins=[]" >> $GITHUB_OUTPUT
             echo "has-plugins=false" >> $GITHUB_OUTPUT
             exit 0
@@ -88,16 +84,14 @@ jobs:
             fi
           done
 
-          # Convert to JSON array
-          if [ ${#PLUGINS_WITH_CONFIG[@]} -gt 0 ]; then
-            PLUGINS_JSON=$(printf '%s\n' "${PLUGINS_WITH_CONFIG[@]}" | jq -R -s -c 'split("\n")[:-1]')
-            echo "plugins=${PLUGINS_JSON}" >> $GITHUB_OUTPUT
+          if [ -f "plugins/$PLUGIN/codeception.dist.yml" ]; then
+            echo "plugins=[\"$PLUGIN\"]" >> $GITHUB_OUTPUT
             echo "has-plugins=true" >> $GITHUB_OUTPUT
-            echo "Found ${#PLUGINS_WITH_CONFIG[@]} plugin(s) with test config: ${PLUGINS_WITH_CONFIG[*]}"
+            echo "✅ Found codeception.dist.yml for plugin: $PLUGIN"
           else
             echo "plugins=[]" >> $GITHUB_OUTPUT
             echo "has-plugins=false" >> $GITHUB_OUTPUT
-            echo "No plugins found with test configuration"
+            echo "ℹ️ No codeception.dist.yml found for plugin: $PLUGIN, skipping automated tests"
           fi
 
   continuous_integration:

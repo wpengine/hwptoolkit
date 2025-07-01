@@ -45,14 +45,13 @@ jobs:
       - name: Get changed plugin directory
         id: plugin
         run: |
-          git fetch --prune --unshallow 2>/dev/null || git fetch --prune
-          plugin=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/' | head -1 | cut -d/ -f2)
-          echo "plugin_slug=$plugin" >> $GITHUB_OUTPUT
+          bash .github/scripts/get-plugin-slug.sh release
+
 
       - name: Validate plugin detection
         continue-on-error: false
         run: |
-          if [ ! -d "plugins/${{ steps.plugin.outputs.plugin_slug }}" ]; then
+          if [ ! -d "plugins/${{ steps.plugin.outputs.slug }}" ]; then
             echo "Plugin directory does not exist"
             exit 1
           fi
@@ -63,7 +62,7 @@ jobs:
       - name: Create release branch and apply changesets
         run: |
           # Create a unique branch name with timestamp
-          BRANCH_NAME="release/${{ steps.plugin.outputs.plugin_slug }}-$(date +%Y%m%d-%H%M%S)"
+          BRANCH_NAME="release/${{ steps.plugin.outputs.slug }}-$(date +%Y%m%d-%H%M%S)"
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
           # Create and switch to release branch
@@ -81,17 +80,17 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore: apply version bump from changesets for ${{ steps.plugin.outputs.plugin_slug }}"
+            git commit -m "chore: apply version bump from changesets for ${{ steps.plugin.outputs.slug }}"
             git push origin "$BRANCH_NAME"
 
             # Create PR
             gh pr create \
-              --title "Release: ${{ steps.plugin.outputs.plugin_slug }} version bump" \
-              --body "Automated release PR for ${{ steps.plugin.outputs.plugin_slug }} plugin.
+              --title "Release: ${{ steps.plugin.outputs.slug }} version bump" \
+              --body "Automated release PR for ${{ steps.plugin.outputs.slug }} plugin.
 
             This PR applies version bumps from changesets. Once merged, it will trigger the pre-release creation workflow.
 
-            Plugin: ${{ steps.plugin.outputs.plugin_slug }}" \
+            Plugin: ${{ steps.plugin.outputs.slug }}" \
               --base main \
               --head "$BRANCH_NAME"
           fi
