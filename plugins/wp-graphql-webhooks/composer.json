@@ -102,6 +102,7 @@
 			"/bin",
 			"/wp-graphql-webhooks",
 			"/composer.lock",
+			"/examples",
 			"/phpstan.neon.dist",
 			"/README.md"
 		]
