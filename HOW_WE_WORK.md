@@ -51,6 +51,20 @@ We believe in transparent, collaborative development. These guidelines document 
 - Update documentation when knowledge gaps emerge
 - Recognize all types of contributions
 
+
+## Core Meeting Hours
+
+**Core Meeting Hours**
+
+Our team's core meeting hours are:
+
+- **9:00 AM – 1:30 PM** Eastern Daylight Time (EDT)
+- **12:00 PM – 4:30 PM** Central European Summer Time (GMT+1)
+- **1:00 PM – 5:30 PM** Greenwich Mean Time (GMT)
+
+  >[!NOTE]
+  >We are experimenting with these hours and these will change after the summer to accommodate schedule conflicts.
+
 ---
 
 These guidelines evolve as our team and community grow. Suggestions for improvements are welcome.
