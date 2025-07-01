@@ -102,9 +102,9 @@
 			"/.*",
 			"/assets",
 			"/bin",
-			"/wpgraphql-webhooks",
 			"/composer.lock",
 			"/phpstan.neon.dist",
+			"/psalm.xml",
 			"/README.md"
 		]
 	},

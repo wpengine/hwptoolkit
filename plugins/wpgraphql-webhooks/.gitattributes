@@ -6,7 +6,6 @@
 /docs export-ignore
 /phpstan export-ignore
 /tests export-ignore
-/wpgraphql-webhooks export-ignore
 
 /.coveralls export-ignore
 /.distignore export-ignore
@@ -18,4 +17,4 @@
 /composer.lock export-ignore
 /phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
-/wpgraphql-webhooks.php export-ignore
+/psalm.xml export-ignore
