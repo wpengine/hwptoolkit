@@ -78,7 +78,7 @@ add_filter( 'graphql_webhooks_payload', function( array $payload, $webhook ) {
             $payload['custom_meta'] = $custom_value;
         }
     }
-    
+
     return $payload;
 }, 10, 2 );
 ```
@@ -140,8 +140,10 @@ This integration:
 
 ## Setup Repository and Packages
 
+
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && pnpm install`
+- Install composer vendor directory `cd plugins/wp-graphql-webhooks && composer install`
 - Setup a .env file under `examples/next/webhooks-isr/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
 e.g.
 
@@ -152,8 +154,8 @@ echo "WEBHOOK_REVALIDATE_SECRET=your_webhook_secret_token" > examples/next/webho
 
 ## Build and start the application
 
-- `cd examples/next/webhooks-isr`
-- Then run `pnpm example:build` will build and start your application. 
+- `cd plugins/webhooks-isr/examples/next/webhooks-isr`
+- Then run `pnpm example:build` will build and start your application.
 - This does the following:
     - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
     - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)

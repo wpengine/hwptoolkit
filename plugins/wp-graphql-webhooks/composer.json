@@ -99,6 +99,7 @@
 			"/.*",
 			"/assets",
 			"/bin",
+			"/examples",
 			"/wp-graphql-webhooks",
 			"/composer.lock",
 			"/phpstan.neon.dist",
