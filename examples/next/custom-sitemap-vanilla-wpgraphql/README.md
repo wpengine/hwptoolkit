@@ -46,7 +46,7 @@ After following the installation steps, you should have the example sitemap page
 └── wp-env
     ├── db
     │   └── database.sql                       # WordPress database including all demo data for the example
-    └── uploads.zip                            # WordPress content to be used by wp-env
+    └── uploads                                # WordPress content to be used by wp-env
 ```
 
 ## Running the example with wp-env
@@ -80,7 +80,6 @@ echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888\\nNEXT_PUBLIC_URL=http://l
 - `cd examples/next/custom-sitemap-vanilla-wpgraphql`
 - Then run `npm run example:build` will build and start your application.
 - This does the following:
-  - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
   - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
   - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
   - Install Next.js dependencies for `example-app`
@@ -98,7 +97,7 @@ Congratulations, WordPress should now be fully set up.
 
 | Command               | Description                                                                                                             |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `example:build`       | Prepares the environment by unzipping images, starting WordPress, importing the database, and starting the application. |
+| `example:build`       | Prepares the environment by starting WordPress, importing the database, and starting the application. |
 | `example:dev`         | Runs the Next.js development server.                                                                                    |
 | `example:dev:install` | Installs the required Next.js packages.                                                                                 |
 | `example:start`       | Starts WordPress and the Next.js development server.                                                                    |
@@ -110,8 +109,6 @@ Congratulations, WordPress should now be fully set up.
 | `wp:db:query`         | Executes a database query within the WordPress environment.                                                             |
 | `wp:db:export`        | Exports the WordPress database to `wp-env/db/database.sql`.                                                             |
 | `wp:db:import`        | Imports the WordPress database from `wp-env/db/database.sql`.                                                           |
-| `wp:images:unzip`     | Extracts the WordPress uploads directory.                                                                               |
-| `wp:images:zip`       | Compresses the WordPress uploads directory.                                                                             |
 
 > **Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
 
