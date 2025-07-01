@@ -85,8 +85,6 @@ Congratulations, WordPress should now be fully set up.
 | `wp:db:query`         | Executes a database query within the WordPress environment.                                                             |
 | `wp:db:export`        | Exports the WordPress database to `wp-env/db/database.sql`.                                                             |
 | `wp:db:import`        | Imports the WordPress database from `wp-env/db/database.sql`.                                                           |
-| `wp:images:unzip`     | Extracts the WordPress uploads directory.                                                                               |
-| `wp:images:zip`       | Compresses the WordPress uploads directory.                                                                             |
 
 > **Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
 
