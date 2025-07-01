@@ -55,7 +55,6 @@ echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/apollo-au
 - `cd examples/next/apollo-authentication`
 - Then run `npm run example:build` will build and start your application.
 - This does the following:
-  - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
   - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
   - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
   - Install Next.js dependencies for `example-app`
@@ -73,7 +72,7 @@ Congratulations, WordPress should now be fully set up.
 
 | Command               | Description                                                                                                             |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `example:build`       | Prepares the environment by unzipping images, starting WordPress, importing the database, and starting the application. |
+| `example:build`       | Prepares the environment by starting WordPress, importing the database, and starting the application. |
 | `example:dev`         | Runs the Next.js development server.                                                                                    |
 | `example:dev:install` | Installs the required Next.js packages.                                                                                 |
 | `example:start`       | Starts WordPress and the Next.js development server.                                                                    |
