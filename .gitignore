@@ -15,6 +15,7 @@ test-results/
 .wp-env.override.json
 uploads/
 debug.log
+__MACOSX
 
 # Environment
 .env
