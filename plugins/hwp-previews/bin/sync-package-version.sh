@@ -29,22 +29,6 @@ else
     echo -e "${YELLOW}⚠ composer.json not found${NC}"
 fi
 
-# Update README.md
-if [ -f "README.md" ]; then
-    echo "Updating README.md..."
-
-    # Update version badge (handles beta versions)
-    sed -i.bak -E "s/(\[\!\[Version\]\(https:\/\/img\.shields\.io\/badge\/version-)[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?(\]\(\)\))/\1$VERSION\3/g" README.md && rm README.md.bak
-
-    # Update other version references
-    sed -i.bak -E "s/(Stable tag:|Version:)[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?/\1 $VERSION/g" README.md && rm README.md.bak
-    sed -i.bak -E "s/v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?/v$VERSION/g" README.md && rm README.md.bak
-
-    echo -e "${GREEN}✓ Updated README.md${NC}"
-else
-    echo -e "${YELLOW}⚠ README.md not found${NC}"
-fi
-
 # Update readme.txt (WordPress style)
 if [ -f "readme.txt" ]; then
     echo "Updating readme.txt..."
