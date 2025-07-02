@@ -127,7 +127,7 @@ jobs:
         working-directory: ${{ steps.metadata.outputs.PLUGIN_DIR }}
         run: |
           rm -f plugin-build/${{ steps.plugin.outputs.plugin_slug }}.-*.zip
-          composer archive -vvv --format=zip --ignore-filters --file="plugin-build/${{ steps.plugin.outputs.plugin_slug }}" --dir="."
+          composer archive -vvv --format=zip --file="plugin-build/${{ steps.plugin.outputs.plugin_slug }}" --dir="."
 
           # Verify archive was created
           if [ ! -f "plugin-build/${{ steps.plugin.outputs.plugin_slug }}.zip" ]; then
