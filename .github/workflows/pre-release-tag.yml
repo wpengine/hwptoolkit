@@ -10,7 +10,7 @@ on:
     branches:
       - main
     paths:
-      - "plugins/*/*"
+      - "plugins/*/**"
 
 permissions:
   contents: write
@@ -47,14 +47,14 @@ jobs:
       - name: Get changed plugin directory
         id: plugin
         run: |
-          # Get files changed in the merged PR
-          plugin=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/' | head -1 | cut -d/ -f2)
-          if [ -z "$plugin" ]; then
+            # Get files changed in the merged PR, only match plugins/<plugin>/...
+            plugin=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/[^/]\+/' | grep -v '^plugins/composer-packages.json' | head -1 | cut -d/ -f2)
+            if [ -z "$plugin" ]; then
             # Fallback: extract from branch name if no plugin changes detected
             branch_name="${{ github.head_ref }}"
             plugin=$(echo "$branch_name" | sed 's/release\/\([^-]*\)-.*/\1/')
-          fi
-          echo "plugin_slug=$plugin" >> $GITHUB_OUTPUT
+            fi
+            echo "plugin_slug=$plugin" >> $GITHUB_OUTPUT
 
       - name: Validate plugin detection
         run: |
