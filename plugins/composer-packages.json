@@ -1,8 +1,8 @@
 {
   "packages": {
-    "wpengine/previews": {
+    "wpengine/hwp-previews": {
       "0.0.6": {
-        "name": "wpengine/previews",
+        "name": "wpengine/hwp-previews",
         "version": "0.0.6",
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
@@ -28,7 +28,7 @@
         }
       },
       "0.0.5": {
-        "name": "wpengine/previews",
+        "name": "wpengine/hwp-previews",
         "version": "0.0.5",
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
@@ -54,7 +54,7 @@
         }
       },
       "0.0.4": {
-        "name": "wpengine/previews",
+        "name": "wpengine/hwp-previews",
         "version": "0.0.4",
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
