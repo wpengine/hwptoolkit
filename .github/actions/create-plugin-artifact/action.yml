@@ -23,7 +23,7 @@ runs:
       run: |
         echo "${GITHUB_SHA}" > build-sha.txt
         rm -f plugin-build/${{ inputs.slug }}-*.zip
-        composer archive -vvv --format=zip --file="plugin-build/${{ inputs.slug }}" --dir="."
+        composer archive -vvv --format=zip --ignore-filter --file="plugin-build/${{ inputs.slug }}" --dir="."
       shell: bash
 
     - name: Upload plugin artifact
