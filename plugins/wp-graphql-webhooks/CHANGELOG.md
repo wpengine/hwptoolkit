@@ -1,5 +1,11 @@
 # @wpengine/wpgraphql-webhooks-wordpress-plugin
 
+## 0.0.3
+
+### Patch Changes
+
+- [#319](https://github.com/wpengine/hwptoolkit/pull/319) [`1423ec0`](https://github.com/wpengine/hwptoolkit/commit/1423ec0bc8c85e0a01b36450dcd03322463c6bec) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Fixes an issue for the release process to include all plugin files.
+
 ## 0.0.2
 
 ### Patch Changes
