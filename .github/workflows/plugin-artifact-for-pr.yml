@@ -3,10 +3,10 @@ name: Plugin Artifact for PR
 on:
   pull_request:
     paths:
-      - 'plugins/*/*.php'
-      - 'plugins/*/*.js'
-      - 'plugins/*/*.css'
-      - 'plugins/*/*.json'
+      - 'plugins/*/**.php'
+      - 'plugins/*/**.js'
+      - 'plugins/*/**.css'
+      - 'plugins/*/**.json'
 
 jobs:
   create-plugin-artifact:
