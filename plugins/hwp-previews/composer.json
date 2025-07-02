@@ -1,9 +1,9 @@
 {
-	"name": "wpengine/previews",
+	"name": "wpengine/hwp-previews",
 	"type": "wordpress-plugin",
 	"description": "A WordPress plugin for headless previews.",
 	"license": "GPL-2.0",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
