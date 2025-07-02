@@ -140,7 +140,7 @@ update_package_jq() {
     local description="$4"
     local composer_file="$5"
 
-    # Create the new package version object
+    # Create the new package version object and sort versions in descending order
     jq --arg pkg "$package_name" \
        --arg ver "$version" \
        --arg url "$release_url" \
@@ -178,7 +178,11 @@ update_package_jq() {
            "require": {
                "composer/installers": "~1.0 || ~2.0"
            }
-       }' "$composer_file" > "${composer_file}.tmp" && mv "${composer_file}.tmp" "$composer_file"
+       } |
+
+       # Sort versions in descending order (newest first)
+       .packages[$pkg] = (.packages[$pkg] | to_entries | sort_by(.key | [splits("[.]")] | map(tonumber)) | reverse | from_entries)
+       ' "$composer_file" > "${composer_file}.tmp" && mv "${composer_file}.tmp" "$composer_file"
 }
 
 # Function to update package using Python (fallback)
@@ -191,6 +195,7 @@ update_package_python() {
 
     python3 << EOF
 import json
+from packaging import version as pkg_version
 
 # Read the composer file
 with open('$composer_file', 'r') as f:
@@ -231,6 +236,19 @@ data['packages']['$package_name']['$version'] = {
         "composer/installers": "~1.0 || ~2.0"
     }
 }
+
+# Sort versions in descending order (newest first)
+try:
+    package_versions = data['packages']['$package_name']
+    sorted_versions = dict(sorted(
+        package_versions.items(),
+        key=lambda x: pkg_version.parse(x[0]),
+        reverse=True
+    ))
+    data['packages']['$package_name'] = sorted_versions
+except Exception as e:
+    # If sorting fails, continue with unsorted versions
+    print(f"Warning: Could not sort versions: {e}")
 
 # Write back to file with proper formatting
 with open('$composer_file', 'w') as f:
