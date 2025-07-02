@@ -1,0 +1,86 @@
+{
+  "packages": {
+    "wpengine/previews": {
+      "0.0.5": {
+        "name": "wpengine/previews",
+        "version": "0.0.5",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.5/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.4": {
+        "name": "wpengine/previews",
+        "version": "0.0.4",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.4/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      }
+    },
+    "wpengine/wp-graphql-webhooks": {
+      "0.0.2": {
+        "name": "wpengine/wp-graphql-webhooks",
+        "version": "0.0.2",
+        "type": "wordpress-plugin",
+        "description": "Headless webhooks for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.2/wp-graphql-webhooks.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      }
+    }
+  }
+}
