@@ -12,10 +12,10 @@ on:
     branches:
       - main
     paths:
-      - 'plugins/**.php'
+      - 'plugins/*/*.php'
   pull_request:
     paths:
-      - 'plugins/**.php'
+      - 'plugins/*/*.php'
 
 # Cancel previous workflow run groups that have not completed.
 concurrency:

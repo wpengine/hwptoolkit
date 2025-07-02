@@ -21,7 +21,10 @@ on:
     branches:
       - main
     paths:
-      - "plugins/**"
+      - 'plugins/**.php'
+      - 'plugins/**.js'
+      - 'plugins/**.css'
+      - 'plugins/**.json'
 
 jobs:
   detect-plugin:
