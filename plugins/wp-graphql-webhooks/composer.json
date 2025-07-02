@@ -101,9 +101,16 @@
 			"/assets",
 			"/bin",
 			"/composer.lock",
+			"/docker-compose.yml",
 			"/examples",
+			"/package-lock.json",
+			"/package.json",
+			"/phpcs",
 			"/phpstan.neon.dist",
-			"/README.md"
+			"/plugin-build",
+			"psalm.xml",
+			"/README.md",
+			"/Sniffs"
 		]
 	},
 	"provide": {
