@@ -23,7 +23,7 @@ usage() {
     echo "  With custom package name and description:"
     echo "  $0 '0.0.5' 'https://example.com/plugin.zip' 'wpengine/my-plugin' 'My custom plugin description'"
     echo ""
-    echo "Note: Updates plugins/package.json file"
+    echo "Note: Updates plugins/composer-packages.json file"
     exit 1
 }
 
@@ -38,7 +38,7 @@ VERSION="$1"
 RELEASE_URL="$2"
 PACKAGE_NAME="$3"
 DESCRIPTION="$4"
-COMPOSER_FILE="plugins/package.json"
+COMPOSER_FILE="plugins/composer-packages.json"
 
 # Function to extract package name from release URL
 extract_package_name() {
