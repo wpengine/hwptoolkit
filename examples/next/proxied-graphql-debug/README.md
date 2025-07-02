@@ -27,7 +27,17 @@ npm install
 
 ### Environment Variables
 
-Create a `.env` file if your proxy requires environment-specific configs (optional).
+Create a `.env` file and put the content below inside. If your proxy requires environment-specific configs add them too.
+
+```
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
+```
+
+or run the command below to create the .env file:
+
+```bash
+echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/proxied-graphql-debug/example-app/.env
+```
 
 ### Start the Environment
 
