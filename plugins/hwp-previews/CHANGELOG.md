@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.6
+
+### Patch Changes
+
+- [#312](https://github.com/wpengine/hwptoolkit/pull/312) [`456be7e`](https://github.com/wpengine/hwptoolkit/commit/456be7e7e477c547a6bf0a1c004639857ec4717d) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Changes to the github workflow to automate version updates. No existing changes to previews.
+
 ## 0.0.5
 
 ### Patch Changes
