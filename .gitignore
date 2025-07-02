@@ -13,8 +13,9 @@ test-results/
 # WordPress
 .wp-env
 .wp-env.override.json
-uploads/
+uploads.zip
 debug.log
+__MACOSX
 
 # Environment
 .env
@@ -28,3 +29,4 @@ debug.log
 ## Examples
 examples/**/package-lock.json
 examples/**/__MACOSX
+``

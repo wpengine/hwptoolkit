@@ -17,7 +17,7 @@ This example shows you how to wire up a full headless WordPress backend—comple
   - Fetch your form schema with `useGravityForm` and render all fields via a dynamic `<component :is="resolveFieldComponent(field)" … />` pattern.
 
 - **Out-of-the-box data**
-  - Includes a SQL dump of WP + Gravity Forms data and a zipped uploads folder so you can dive right in.
+  - Includes a SQL dump of WP + Gravity Forms data so you can dive right in.
 
 ## Project Structure
 
@@ -33,11 +33,10 @@ example-app/
 wp-env/
 │ ├── db/
 │ │ └── database.sql # WordPress + Gravity Forms schema & data
-│ ├── setup/
-│ │ └── .htaccess # CORS + pretty-permalinks for wp-env
-│ └── uploads.zip # wp-content/uploads media files
+│ └── setup/
+│   └── .htaccess # CORS + pretty-permalinks for wp-env
 ├── .wp-env.json # @wordpress/env configuration
-├── package.json # wp-env + Nuxt dev scripts
+└── package.json # wp-env + Nuxt dev scripts
 
 ````
 
@@ -61,7 +60,7 @@ echo "NUXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > example-app/.env
 
 ### Quick Start
 
-1. Unzip uploads, start WP, import DB, then launch Nuxt:
+1. Start WP, import DB, then launch Nuxt:
 
    ```bash
    npm run example:build
@@ -75,9 +74,6 @@ echo "NUXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > example-app/.env
 
    # Import DB
    npm run wp:db:import
-
-   # Unzip uploads
-   npm run wp:images:unzip
 
    # Start Nuxt dev server
    npm run dev
@@ -93,7 +89,7 @@ By the end, you will have:
 
 | Command                   | Description                                                      |
 | ------------------------- | ---------------------------------------------------------------- |
-| `npm run example:build`   | Unzip media → start WP env → import DB → launch Nuxt dev server  |
+| `npm run example:build`   | Start WP env → import DB → launch Nuxt dev server  |
 | `npm run example:start`   | Start WP env, then Nuxt dev server                               |
 | `npm run example:stop`    | Stop the WordPress environment (wp-env stop)                     |
 | `npm run example:prune`   | Destroy & rebuild the WP environment, then restart—all in one go |
@@ -101,7 +97,6 @@ By the end, you will have:
 | `npm run wp:stop`         | @wordpress/env stop                                              |
 | `npm run wp:db:import`    | Import the SQL dump into the running WP container                |
 | `npm run wp:db:export`    | Export the current WP database back to wp-env/db/database.sql    |
-| `npm run wp:images:unzip` | Clear & unzip wp-env/uploads.zip → populates wp-content/uploads  |
 | `npm run dev`             | Start the Nuxt 3 development server on port 3000                 |
 
 > **Tip:** You can also run any arbitrary WP-CLI command inside the container via `npm run wp:cli -- <wp-cli-command>`

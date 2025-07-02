@@ -100,6 +100,7 @@
 			"/.*",
 			"/assets",
 			"/bin",
+			"/examples",
 			"/wp-graphql-webhooks",
 			"/composer.lock",
 			"/examples",

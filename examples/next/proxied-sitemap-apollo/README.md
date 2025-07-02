@@ -48,7 +48,7 @@ Proxying Sitemap Requests:
 ## Setup Repository and Packages
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
-- Install packages `cd hwptoolkit && pnpm install`
+- Install packages `cd hwptoolkit && npm install`
 - Setup a .env file under `examples/next/proxied-sitemap-apollo/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
 e.g.
 
@@ -69,9 +69,8 @@ If you don't define it explicitly, the default value of http://localhost:3000 wi
 ## Build and start the application
 
 - `cd examples/next/proxied-sitemap-apollo`
-- Then run `pnpm example:build` will build and start your application. 
+- Then run `npm run example:build` will build and start your application. 
 - This does the following:
-    - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
     - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
     - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
     - Install Next.js dependencies for `example-app`
@@ -95,7 +94,7 @@ http://localhost:3000/sitemap.xml
 
 | Command                | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| `example:build`        | Prepares the environment by unzipping images, starting WordPress, importing the database, and starting the application. |
+| `example:build`        | Prepares the environment by starting WordPress, importing the database, and starting the application. |
 | `example:dev`          | Runs the Next.js development server.                                       |
 | `example:dev:install`  | Installs the required Next.js packages.                                    |
 | `example:start`        | Starts WordPress and the Next.js development server.                       |
@@ -107,11 +106,8 @@ http://localhost:3000/sitemap.xml
 | `wp:db:query`          | Executes a database query within the WordPress environment.                |
 | `wp:db:export`         | Exports the WordPress database to `wp-env/db/database.sql`.                |
 | `wp:db:import`         | Imports the WordPress database from `wp-env/db/database.sql`.              |
-| `wp:images:unzip`      | Extracts the WordPress uploads directory.                                  |
-| `wp:images:zip`        | Compresses the WordPress uploads directory.                                |
 
-
->**Note** You can run `pnpm wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
+>**Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
 
 ### Database access
 

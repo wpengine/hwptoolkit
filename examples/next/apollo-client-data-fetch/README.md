@@ -53,8 +53,7 @@ This example demonstrates various approaches to integrate WordPress as a headles
 └── wp-env
     ├── db
     │   └── database.sql                # WordPress database including all demo data for
-    ├── setup
-    └── uploads.zip                     # WordPress content to be used by wp-env
+    └── setup
 ```
 
 ## Running the example with wp-env
@@ -62,7 +61,6 @@ This example demonstrates various approaches to integrate WordPress as a headles
 ### Prerequisites
 
 - Node.js (v18+ recommended)
-- [pnpm](https://pnpm.io/)
 - [Docker](https://www.docker.com/) (if you plan on running the example see details below)
 
 **Note** Please make sure you have all prerequisites installed as mentioned above and Docker running (`docker ps`)
@@ -70,7 +68,7 @@ This example demonstrates various approaches to integrate WordPress as a headles
 ### Setup Repository and Packages
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
-- Install packages `cd hwptoolkit && pnpm install`
+- Install packages `cd hwptoolkit && npm install`
 - Setup a .env file under `examples/next/apollo-client-data-fetch/example-app` and add these values inside:
 
 ```bash
@@ -87,9 +85,8 @@ echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888\\nNEXT_PRIVACY_POLICY_URI=
 ### Build and start the application
 
 - `cd examples/next/apollo-client-data-fetch`
-- Then run `pnpm example:build` will build and start your application.
+- Then run `npm run example:build` will build and start your application.
 - This does the following:
-  - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
   - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
   - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
   - Install Next.js dependencies for `example-app`
@@ -107,7 +104,7 @@ Congratulations, WordPress should now be fully set up.
 
 | Command               | Description                                                                                                             |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `example:build`       | Prepares the environment by unzipping images, starting WordPress, importing the database, and starting the application. |
+| `example:build`       | Prepares the environment by starting WordPress, importing the database, and starting the application. |
 | `example:dev`         | Runs the Next.js development server.                                                                                    |
 | `example:dev:install` | Installs the required Next.js packages.                                                                                 |
 | `example:start`       | Starts WordPress and the Next.js development server.                                                                    |
@@ -119,10 +116,8 @@ Congratulations, WordPress should now be fully set up.
 | `wp:db:query`         | Executes a database query within the WordPress environment.                                                             |
 | `wp:db:export`        | Exports the WordPress database to `wp-env/db/database.sql`.                                                             |
 | `wp:db:import`        | Imports the WordPress database from `wp-env/db/database.sql`.                                                           |
-| `wp:images:unzip`     | Extracts the WordPress uploads directory.                                                                               |
-| `wp:images:zip`       | Compresses the WordPress uploads directory.                                                                             |
 
-> **Note** You can run `pnpm wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
+> **Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
 
 ### Database access
 
