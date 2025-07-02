@@ -29,9 +29,9 @@
             }
         },
         "wpengine/wp-graphql-webhooks": {
-            "0.0.2": {
+            "0.0.1": {
                 "name": "wpengine/wp-graphql-webhooks",
-                "version": "0.0.2",
+                "version": "0.0.1",
                 "type": "wordpress-plugin",
                 "description": "Headless webhooks for WPGraphQL",
                 "homepage": "https://github.com/wpengine/hwptoolkit",
