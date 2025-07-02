@@ -13,18 +13,18 @@ on:
     branches:
       - main
     paths:
-      - 'plugins/**.php'
-      - 'plugins/**.js'
-      - 'plugins/**.css'
-      - 'plugins/**.json'
+      - 'plugins/*/*.php'
+      - 'plugins/*/*.js'
+      - 'plugins/*/*.css'
+      - 'plugins/*/*.json'
   pull_request:
     branches:
       - main
     paths:
-      - 'plugins/**.php'
-      - 'plugins/**.js'
-      - 'plugins/**.css'
-      - 'plugins/**.json'
+      - 'plugins/*/*.php'
+      - 'plugins/*/*.js'
+      - 'plugins/*/*.css'
+      - 'plugins/*/*.json'
 
 jobs:
   detect-plugin:
