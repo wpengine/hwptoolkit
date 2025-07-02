@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.7
+
+### Patch Changes
+
+- [#315](https://github.com/wpengine/hwptoolkit/pull/315) [`a59bd2b`](https://github.com/wpengine/hwptoolkit/commit/a59bd2b22e76b0c10044b4c0cd5bc0e15e23e4bf) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Fixed previews composer name to "hwp-previews" to fix composer install issue.
+
 ## 0.0.6
 
 ### Patch Changes
