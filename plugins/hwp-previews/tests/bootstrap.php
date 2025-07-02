@@ -3,6 +3,8 @@
  * This is a global bootstrap file for autoloading.
  *
  * @package Tests\HWP\Previews
+ *
+ * @link https://github.com/wpengine/hwptoolkit/blob/main/plugins/hwp-previews/TESTING.md
  */
 
 // Ensure proper autoloading

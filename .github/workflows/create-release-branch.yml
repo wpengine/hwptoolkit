@@ -71,6 +71,21 @@ jobs:
           # Apply version bumps from changesets
           pnpm changeset version
 
+          # Run version script for the plugin if it exists
+          if [ -f "plugins/${{ steps.plugin.outputs.slug }}/package.json" ]; then
+            echo "Checking for version script in plugins/${{ steps.plugin.outputs.slug }}/package.json"
+            if cat "plugins/${{ steps.plugin.outputs.slug }}/package.json" | grep -q '"version".*:'; then
+              echo "Running version script for ${{ steps.plugin.outputs.slug }}"
+              cd "plugins/${{ steps.plugin.outputs.slug }}"
+              npm run version
+              cd ../..
+            else
+              echo "No version script found for ${{ steps.plugin.outputs.slug }}"
+            fi
+          else
+            echo "No package.json found for plugin ${{ steps.plugin.outputs.slug }}"
+          fi
+
           # Configure git
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
