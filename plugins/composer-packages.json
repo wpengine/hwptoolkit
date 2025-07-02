@@ -1,32 +1,6 @@
 {
   "packages": {
     "wpengine/hwp-previews": {
-      "0.0.7": {
-        "name": "wpengine/hwp-previews",
-        "version": "0.0.7",
-        "type": "wordpress-plugin",
-        "description": "A WordPress plugin for headless previews.",
-        "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
-        "authors": [
-          {
-            "name": "WP Engine Headless OSS Development Team",
-            "email": "headless-oss@wpengine.com",
-            "homepage": "https://wpengine.com/"
-          }
-        ],
-        "support": {
-          "issues": "https://github.com/wpengine/hwptoolkit/issues",
-          "email": "support@wpengine.com"
-        },
-        "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.7/hwp-previews.zip",
-          "type": "zip"
-        },
-        "require": {
-          "composer/installers": "~1.0 || ~2.0"
-        }
-      },
       "0.0.6": {
         "name": "wpengine/hwp-previews",
         "version": "0.0.6",
