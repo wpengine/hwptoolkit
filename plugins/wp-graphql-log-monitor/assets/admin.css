@@ -1,10 +1,8 @@
-/* assets/admin.css */
-/* .wpgraphql-monitor-dashboard {
-  max-width: 1200px;
-  margin: 20px 0;
-} */
-
 /* Stats Cards */
+.graphql-log-monitor-dashboard {
+  margin-top: 20px;
+}
+
 .stats-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
