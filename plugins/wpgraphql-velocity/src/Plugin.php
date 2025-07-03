@@ -1,8 +1,10 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 namespace WPGraphQL\Velocity;
+
+use WPGraphQL\Velocity\Analysis\HooksService;
 
 /**
  * Plugin class for WPGraphQL Velocity.
@@ -39,15 +41,19 @@ final class Plugin {
 		 *
 		 * @param \WPGraphQL\Velocity\Plugin $instance the instance of the plugin class.
 		 */
-		do_action( 'wpgraphql_velocity__init', self::$instance );
+		do_action( 'wpgraphql_velocity_init', self::$instance );
 
 		return self::$instance;
 	}
 
 	/**
 	 * Initialize the plugin admin, frontend & api functionality.
+	 *
+	 * @param $response \GraphQL\Executor\ExecutionResult
 	 */
 	public function setup(): void {
+		// We could also add admin here too which is why we moved to its own service
+		HooksService::init();
 	}
 
 	/**
