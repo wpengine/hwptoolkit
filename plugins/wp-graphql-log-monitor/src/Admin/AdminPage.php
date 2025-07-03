@@ -37,7 +37,7 @@ class AdminPage {
     public function render_admin_page() {
         ?>
         <div class="wrap">
-            <h1>WpGraphQL Query Monitor</h1>
+            <h1>WPGraphQL Log Monitor</h1>
             
             <div class="graphql-log-monitor-dashboard">
                 <div class="stats-row">

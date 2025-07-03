@@ -60,7 +60,7 @@ class Plugin {
     public function wpgraphql_missing_notice() {
         ?>
         <div class="notice notice-error">
-            <p><?php _e('WpGraphQL Query Monitor requires WpGraphQL plugin to be installed and activated.', 'graphql-log-monitor'); ?></p>
+            <p><?php _e('WPGraphQL Log Monitor requires WPGraphQL plugin to be installed and activated.', 'graphql-log-monitor'); ?></p>
         </div>
         <?php
     }
