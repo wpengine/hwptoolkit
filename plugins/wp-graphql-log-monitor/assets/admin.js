@@ -1,4 +1,3 @@
-// assets/admin.js
 (function ($) {
   "use strict";
 
