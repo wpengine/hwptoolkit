@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<psalm
+	errorLevel="3"
+	resolveFromConfigFile="true"
+	xmlns="https://getpsalm.org/schema/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+	findUnusedBaselineEntry="true"
+	findUnusedCode="false"
+>
+	<projectFiles>
+		<file name="wpgraphql-velocity.php"/>
+		<file name="vendor/autoload.php"/>
+		<directory name="src"/>
+	</projectFiles>
+
+	<plugins>
+		<pluginClass class="PsalmWordPress\Plugin"/>
+	</plugins>
+
+	<issueHandlers>
+		<!-- Noting we had issues with trying to set stubs and also using issueHandlers for particular constants-->
+		<UndefinedConstant errorLevel="suppress">
+			<errorLevel type="suppress">
+				<directory name="src"/>
+			</errorLevel>
+		</UndefinedConstant>
+	</issueHandlers>
+</psalm>
