@@ -9,7 +9,7 @@
     "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
     "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
     "frontend:install": "npm --prefix example-app/ install",
-    "frontend:dev": "npm --prefix example-app/ dev",
+    "frontend:dev": "npm --prefix example-app/ run dev",
     "start": "npm run wp:start && npm run frontend:dev"
   },
   "devDependencies": {
