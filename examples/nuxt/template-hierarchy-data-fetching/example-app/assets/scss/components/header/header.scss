@@ -1,0 +1,27 @@
+.header {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  height: 4rem;
+}
+
+.main-header-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-title-wrapper a {
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
