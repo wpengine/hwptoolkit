@@ -32,7 +32,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('WPGRAPHQL_MONITOR_VERSION', '1.0.0');
+define('WPGRAPHQL_MONITOR_VERSION', '0.0.1');
 define('WPGRAPHQL_MONITOR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WPGRAPHQL_MONITOR_PLUGIN_URL', plugin_dir_url(__FILE__));
 
