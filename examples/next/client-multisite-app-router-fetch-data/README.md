@@ -103,7 +103,7 @@ An example mulitsite headless WordPress application using Next.js App Router and
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && npm install`
-- Setup a .env file under `examples/next/client-multisite-app-router-fetch-data/example-app` with 
+- Setup a .env file under `examples/next/client-multisite-app-router-fetch-data/example-app` with the following variables:
 
 ```
 NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
@@ -125,7 +125,7 @@ echo "NEXT_PUBLIC_MOVIE_WORDPRESS_URL=http://localhost:8888/movies" >> examples/
 ## Build and start the application
 
 - `cd examples/next/client-multisite-app-router-fetch-data`
-- Then run `npm run example:build` will build and start your application.)
+- Then run `npm run example:build` will build and start your application.
 - This does the following:
     - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
     - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)

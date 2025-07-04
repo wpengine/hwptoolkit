@@ -8,7 +8,7 @@
 
 -----
 
-[![Version](https://img.shields.io/badge/version-0.0.1-beta)]()
+[![Version](https://img.shields.io/github/v/release/wpengine/hwptoolkit?include_prereleases&label=previews&filter=%40wpengine%2Fhwp-previews-wordpress-plugin-*)](https://github.com/wpengine/hwptoolkit/releases)
 [![License](https://img.shields.io/badge/license-GPLv2%2B-green)]()
 ![GitHub forks](https://img.shields.io/github/forks/wpengine/hwptoolkit?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/wpengine/hwptoolkit?style=social)
@@ -16,7 +16,6 @@
 [![Code Coverage](https://img.shields.io/badge/coverage-%3E95%25-brightgreen?label=Code%20Coverage)](https://github.com/wpengine/hwptoolkit/actions)
 [![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks&label=Code%20Quality%20Checks)](https://github.com/wpengine/hwptoolkit/actions)
 [![End-to-End Tests](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20Playwright%20E2E%20Tests&label=End-to-End%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
-
 -----
 
 
