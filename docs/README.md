@@ -18,6 +18,7 @@
 | Title                              | Description                  |
 |------------------------------------|------------------------------|
 | [Automatic Persisted Queries in Next.js Pages Router](how-to/nextjs-pages-router/enable-apq/index.md) | Learn how to reduce latency and network strain in GraphQL queries using Automatic Persisted Queries (APQ) by hashing and reusing query hashes. |
+| [Install Toolkit Plugins via Composer](how-to/install-toolkit-plugins/index.md) | Step-by-step guide to installing and activating HWP Toolkit plugins in your WordPress environment using Composer. |
 
 
 ## Contributing
