@@ -1,11 +1,11 @@
 {
 	"name": "@wpengine/wpgraphql-webhooks-wordpress-plugin",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"private": true,
 	"description": "Webhooks solution for WordPress",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"version": "./scripts/sync-versions.sh"
+		"version": "./bin/sync-package-version.sh"
 	},
 	"keywords": [],
 	"author": "wpengine",

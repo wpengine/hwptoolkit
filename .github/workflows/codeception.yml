@@ -12,10 +12,10 @@ on:
     branches:
       - main
     paths:
-      - 'plugins/**.php'
+      - 'plugins/*/**.php'
   pull_request:
     paths:
-      - 'plugins/**.php'
+      - 'plugins/*/**.php'
 
 # Cancel previous workflow run groups that have not completed.
 concurrency:
@@ -38,7 +38,11 @@ jobs:
       - name: Get changed plugin directory
         id: plugin
         run: |
-          bash .github/scripts/get-plugin-slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+          if [ "${{ github.event_name }}" = "push" ]; then
+            bash .github/scripts/get_plugin_slug.sh main
+          else
+            bash .github/scripts/get_plugin_slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+          fi
 
       - name: Detect changed plugins with quality config
         id: detect

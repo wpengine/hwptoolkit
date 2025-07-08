@@ -1,6 +1,6 @@
 {
 	"name": "@wpengine/hwp-previews-wordpress-plugin",
-	"version": "0.0.4",
+	"version": "0.0.7",
 	"private": true,
 	"description": "Headless Previews solution for WordPress: fully configurable preview URLs via the settings page.",
 	"scripts": {
@@ -8,7 +8,7 @@
 		"test:e2e": "wp-scripts test-playwright --config tests/e2e/playwright.config.js",
 		"test:e2e:debug": "npm run test:e2e -- --debug",
 		"wp-env": "wp-env",
-		"version": "./scripts/sync-versions.sh"
+		"version": "./bin/sync-package-version.sh"
 	},
 	"keywords": [],
 	"author": "wpengine",

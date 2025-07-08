@@ -3,10 +3,10 @@ name: Plugin Artifact for PR
 on:
   pull_request:
     paths:
-      - 'plugins/**.php'
-      - 'plugins/**.js'
-      - 'plugins/**.css'
-      - 'plugins/**.json'
+      - 'plugins/*/**.php'
+      - 'plugins/*/**.js'
+      - 'plugins/*/**.css'
+      - 'plugins/*/**.json'
 
 jobs:
   create-plugin-artifact:
@@ -20,7 +20,7 @@ jobs:
       - name: Get changed plugin directory
         id: plugin
         run: |
-          bash .github/scripts/get-plugin-slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+          bash .github/scripts/get_plugin_slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
 
       - name: Create plugin artifact
         uses: ./.github/actions/create-plugin-artifact

@@ -8,7 +8,7 @@ on:
     branches:
       - main
     paths:
-      - "plugins/**"
+      - "plugins/*/**"
 
 permissions:
   contents: write # Allow actions to read and write repository contents
@@ -45,7 +45,7 @@ jobs:
       - name: Get changed plugin directory
         id: plugin
         run: |
-          bash .github/scripts/get-plugin-slug.sh release
+          bash .github/scripts/get_plugin_slug.sh release
 
 
       - name: Validate plugin detection
@@ -70,6 +70,53 @@ jobs:
 
           # Apply version bumps from changesets
           pnpm changeset version
+
+          # Only run if both package.json and composer.json exist for the plugin
+          if [ -f "plugins/${{ steps.plugin.outputs.slug }}/package.json" ] && [ -f "plugins/${{ steps.plugin.outputs.slug }}/composer.json" ]; then
+            echo "Both package.json and composer.json found for ${{ steps.plugin.outputs.slug }}"
+
+            # Run version script for the plugin if it exists
+            if cat "plugins/${{ steps.plugin.outputs.slug }}/package.json" | grep -q '"version".*:'; then
+              echo "Running version script for ${{ steps.plugin.outputs.slug }}"
+              cd "plugins/${{ steps.plugin.outputs.slug }}"
+              npm run version
+              cd ../..
+            else
+              echo "No version script found for ${{ steps.plugin.outputs.slug }}"
+            fi
+
+            # Get new version from plugin's package.json
+            NEW_VERSION=$(jq -r '.version' "plugins/${{ steps.plugin.outputs.slug }}/package.json")
+
+            # Build the download URL
+            # e.g. https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.5/hwp-previews.zip
+            # Get the "name" field from plugin's package.json and URL encode it
+            PKG_NAME=$(jq -r '.name' "plugins/${{ steps.plugin.outputs.slug }}/package.json")
+            ENCODED_PKG_NAME=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "$PKG_NAME")
+
+            # Format is [github-repository]/releases/download/[encoded-package-name]-[version]/[plugin-slug].zip
+            RELEASE_URL="https://github.com/wpengine/hwptoolkit/releases/download/${ENCODED_PKG_NAME}-${NEW_VERSION}/${{ steps.plugin.outputs.slug }}.zip"
+
+            # Get plugin description from plugin's composer.json
+            DESCRIPTION=$(jq -r '.description // empty' "plugins/${{ steps.plugin.outputs.slug }}/composer.json")
+
+            # Run the composer package update script
+            # Get the "name" field from plugin's composer.json
+            COMPOSER_NAME=$(jq -r '.name' "plugins/${{ steps.plugin.outputs.slug }}/composer.json")
+            if [ -n "$NEW_VERSION" ] && [ -n "$RELEASE_URL" ] && [ -n "$COMPOSER_NAME" ] && [ -n "$DESCRIPTION" ]; then
+              .github/scripts/update_composer_package.sh "$NEW_VERSION" "$RELEASE_URL" "$COMPOSER_NAME" "$DESCRIPTION"
+            else
+              echo "Error: Missing required values for update_composer_package.sh"
+              echo "NEW_VERSION: $NEW_VERSION"
+              echo "RELEASE_URL: $RELEASE_URL"
+              echo "COMPOSER_NAME: $COMPOSER_NAME"
+              echo "DESCRIPTION: $DESCRIPTION"
+              exit 1
+            fi
+
+          else
+            echo "package.json and/or composer.json not found for plugin ${{ steps.plugin.outputs.slug }}. Skipping version and composer update steps."
+          fi
 
           # Configure git
           git config user.name "github-actions"
