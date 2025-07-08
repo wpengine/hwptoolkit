@@ -93,7 +93,6 @@ jobs:
 
       - name: Install pnpm
         run: pnpm install
-        working-directory:  plugins/${{ env.PLUGIN }}
 
       - name: Setup PHP with Cached Composer
         uses: ./.github/actions/setup-php-composer
