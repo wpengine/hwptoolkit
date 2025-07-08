@@ -91,6 +91,10 @@ jobs:
         with:
           version: 10 # Min version required by the repo
 
+      - name: Install pnpm
+        run: pnpm install
+        working-directory:  plugins/${{ env.PLUGIN }}
+
       - name: Setup PHP with Cached Composer
         uses: ./.github/actions/setup-php-composer
         with:
@@ -104,13 +108,13 @@ jobs:
 
       - name: Start wp-env
         run: |
-          pnpm run wp-env start
+          pnpm wp-env start
         working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Run Playwright tests
-        run: pnpm run test:e2e
+        run: pnpm test:e2e
         working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Stop wp-env
-        run: pnpm run wp-env stop
+        run: pnpm wp-env stop
         working-directory: plugins/${{ env.PLUGIN }}
