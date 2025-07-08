@@ -10,7 +10,12 @@
 		"wp-env": "wp-env",
 		"version": "./bin/sync-package-version.sh"
 	},
-	"keywords": [],
+	"keywords": [
+		"wordpress",
+		"headless",
+		"previews",
+		"plugin"
+	],
 	"author": "wpengine",
 	"license": "GPL-2.0",
 	"devDependencies": {
