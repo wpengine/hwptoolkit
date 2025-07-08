@@ -430,35 +430,6 @@
     });
   }
 
-  // Export functionality
-  function exportLogs(format) {
-    const exportData = {
-      action: "export_logs",
-      nonce: wpgraphqlMonitor.nonce,
-      format: format,
-    };
-
-    // Create a form and submit it to trigger download
-    const form = $("<form>", {
-      method: "POST",
-      action: wpgraphqlMonitor.ajax_url,
-    });
-
-    $.each(exportData, function (key, value) {
-      form.append(
-        $("<input>", {
-          type: "hidden",
-          name: key,
-          value: value,
-        })
-      );
-    });
-
-    $("body").append(form);
-    form.submit();
-    form.remove();
-  }
-
   // Real-time updates
   function startRealTimeUpdates() {
     // Check if page is visible
@@ -558,42 +529,11 @@
     });
   }
 
-  // Performance monitoring alerts
-  function checkPerformanceAlerts() {
-    // Check for slow queries
-    $("#query-logs-table tbody tr").each(function () {
-      const row = $(this);
-      const executionTimeText = row.find("td:nth-child(3)").text();
-      const executionTime = parseFloat(executionTimeText.replace(" ms", ""));
-
-      if (executionTime > 5000) {
-        // 5 seconds
-        row.addClass("critical-query");
-        if (!row.find(".alert-icon").length) {
-          row.find("td:nth-child(3)").prepend('<span class="alert-icon">⚠️</span>');
-        }
-      } else if (executionTime > 2000) {
-        // 2 seconds
-        row.addClass("warning-query");
-      }
-    });
-  }
-
   // Initialize dashboard
   function initializeDashboard() {
     initDashboard();
     initializeFilters();
     startRealTimeUpdates();
-
-    // Add keyboard shortcuts
-    $(document).keydown(function (e) {
-      // Ctrl+R or Cmd+R to refresh
-      if ((e.ctrlKey || e.metaKey) && e.keyCode === 82) {
-        e.preventDefault();
-        loadQueryLogs();
-        loadStats();
-      }
-    });
   }
 
   // Update the document ready function

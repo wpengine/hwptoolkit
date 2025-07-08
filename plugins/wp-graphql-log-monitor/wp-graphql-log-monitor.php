@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:WPGraphQL Query Monitor
+ * Plugin Name:WPGraphQL Log Monitor
  * Plugin URI: https://github.com/wpengine/hwptoolkit
  * GitHub Plugin URI: https://github.com/wpengine/hwptoolkit
  * Description: Monitor and analyze WPGraphQL queries with detailed logging and performance insights.
