@@ -10,14 +10,12 @@
 		"wp-env": "wp-env",
 		"version": "./bin/sync-package-version.sh"
 	},
-	"keywords": [],
+	"keywords": [
+		"wordpress",
+		"headless",
+		"previews",
+		"plugin"
+	],
 	"author": "wpengine",
-	"license": "GPL-2.0",
-	"devDependencies": {
-		"@playwright/test": "^1.52.0",
-		"@wordpress/e2e-test-utils-playwright": "^1.25.0",
-		"@wordpress/env": "^10.25.0",
-		"@wordpress/jest-console": "^8.25.0",
-		"@wordpress/scripts": "^30.18.0"
-	}
+	"license": "GPL-2.0"
 }

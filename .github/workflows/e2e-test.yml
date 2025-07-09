@@ -85,10 +85,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10 # Min version required by the repo
+
+      - name: Install pnpm
+        run: pnpm install
 
       - name: Setup PHP with Cached Composer
         uses: ./.github/actions/setup-php-composer
@@ -98,18 +102,18 @@ jobs:
           composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Install playwright browsers
-        run: npx playwright install --with-deps
+        run: pnpm dlx playwright install --with-deps
         working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Start wp-env
         run: |
-          npm run wp-env start
+          pnpm wp-env start
         working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Run Playwright tests
-        run: npm run test:e2e
+        run: pnpm test:e2e
         working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Stop wp-env
-        run: npm run wp-env stop
+        run: pnpm wp-env stop
         working-directory: plugins/${{ env.PLUGIN }}
