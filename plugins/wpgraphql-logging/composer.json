@@ -1,0 +1,165 @@
+{
+	"name": "wpengine/wpgraphql-logging",
+	"type": "wordpress-plugin",
+  	"description": "A POC plugin for logging WPGraphQL queries.",
+	"license": "GPL-2.0",
+	"version": "0.0.1",
+	"authors": [
+		{
+			"name": "WP Engine Headless OSS Development Team",
+			"email": "headless-oss@wpengine.com",
+			"homepage": "https://wpengine.com/"
+		}
+	],
+	"keywords": [
+		"package",
+		"dependency",
+		"autoload",
+		"headless",
+		"wordpress",
+		"plugin",
+		"wpgraphql",
+		"performance",
+		"graphql",
+		"logging",
+		"wpgraphql-logging",
+		"monolog"
+	],
+	"require": {
+		"php": "^7.4 || ^8.0",
+		"monolog/monolog": "^2.10"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"require-dev": {
+		"10up/wp_mock": "^1.1",
+		"automattic/vipwpcs": "^3.0",
+		"codeception/lib-innerbrowser": "^1.0",
+		"codeception/module-asserts": "^1.0",
+		"codeception/module-cli": "^1.0",
+		"codeception/module-db": "^1.0",
+		"codeception/module-filesystem": "^1.0",
+		"codeception/module-phpbrowser": "^1.0",
+		"codeception/module-rest": "^2.0",
+		"codeception/module-webdriver": "^1.0",
+		"codeception/util-universalframework": "^1.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"humanmade/psalm-plugin-wordpress": "^3.1",
+		"johnpbloch/wordpress-core": "^6.8",
+		"lucatume/wp-browser": "^3.5",
+		"mockery/mockery": "^1.5",
+		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
+		"phpcompatibility/phpcompatibility-wp": "^2.0",
+		"phpstan/phpstan-strict-rules": "^2.0",
+		"slevomat/coding-standard": "^8.0",
+		"szepeviktor/phpstan-wordpress": "^2.0",
+		"wp-cli/wp-cli-bundle": "^2.8.1",
+		"wp-graphql/wp-graphql-testcase": "^3.0.1"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		},
+		"optimize-autoloader": true,
+		"platform": {
+			"php": "7.4"
+		},
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
+	"extra": {
+		"phpstan": {
+			"includes": [
+				"phpstan/rules.neon"
+			]
+		}
+	},
+	"archive": {
+		"name": "wpgraphql-logging",
+		"exclude": [
+			"/.DS_Store",
+			"/.docker/",
+			"/.env.dist",
+			"/ACTIONS_AND_FILTERS.md",
+			"/TESTING.md",
+			"/Thumbs.db",
+			"/artifacts",
+			"/auth.json",
+			"/bin",
+			"/c3.php",
+			"/codeception.dist.yml",
+			"/docker",
+			"/docker-compose.yml",
+			"/docs",
+			"/examples",
+			"/node_modules",
+			"/package-lock.json",
+			"/package.json",
+			"/phpcs",
+			"/phpcs-cache.json",
+			"/phpcs.xml",
+			"/phpstan",
+			"/phpstan.neon.dist",
+			"/plugin-build",
+			"/psalm.xml",
+			"/screenshots",
+			"/tests",
+			"!vendor",
+			"!vendor-prefixed"
+		]
+	},
+	"autoload": {
+		"psr-4": {
+			"WPGraphQL\\Logging\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"WPGraphQL\\Logging\\Unit\\": "tests/unit/",
+			"WPGraphQL\\Logging\\Functional\\": "tests/functional/",
+			"WPGraphQL\\Logging\\Integration\\": "tests/integration/",
+			"WPGraphQL\\Logging\\PHPStan\\": "phpstan/",
+			"HWPStandard\\": "phpcs/HWPStandard"
+		}
+	},
+	"scripts": {
+		"install-test-env": "bash bin/install-test-env.sh",
+		"delete-vendor-files": "rm -rf composer.lock vendor src/vendor-prefixed/*",
+		"docker:build": "bash bin/build-docker.sh",
+		"docker:start": "@docker:build && @docker:up",
+		"docker:stop": "docker compose down --volumes",
+		"docker:up": " sh -c 'composer docker:stop' && docker compose --env-file .env up --detach",
+		"lint": "vendor/bin/phpcs",
+		"phpcs-i": [
+			"php ./vendor/bin/phpcs -i"
+		],
+		"check-cs": [
+			"php ./vendor/bin/phpcs"
+		],
+		"fix-cs": [
+			"php ./vendor/bin/phpcbf"
+		],
+		"phpstan": [
+			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
+		],
+		"php:psalm": "psalm",
+		"php:psalm:info": "psalm --show-info=true",
+		"php:psalm:fix": "psalm --alter",
+		"qa": "sh bin/local/run-qa.sh",
+		"test": [
+			"sh bin/local/run-unit-tests.sh coverage",
+			"sh bin/local/run-e2e-tests.sh"
+		],
+		"test:unit:coverage": "sh bin/local/run-unit-tests.sh coverage",
+		"test:unit:coverage-html": "sh bin/local/run-unit-tests.sh coverage --coverage-html",
+		"test:e2e": "sh bin/local/run-e2e-tests.sh"
+	},
+	"support": {
+		"docs": "https://github.com/wpengine/hwptoolkit/tree/main/docs",
+		"email": "headless-oss@wpengine.com",
+		"forum": "https://github.com/wpengine/hwptoolkit/discussions",
+		"issues": "https://github.com/wpengine/hwptoolkit/issues",
+		"security": "https://github.com/wpengine/hwptoolkit/blob/main/SECURITY.md"
+	}
+}
