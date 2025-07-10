@@ -185,9 +185,11 @@ class Faust_Integration {
 	 * Check if Faust rewrites are enabled.
 	 */
 	public function is_faust_rewrites_enabled(): bool {
-		return $this->get_faust_enabled()
-			&& function_exists( '\WPE\FaustWP\Settings\is_rewrites_enabled' )
-			&& \WPE\FaustWP\Settings\is_rewrites_enabled();
+		if ( $this->get_faust_enabled() && function_exists( '\WPE\FaustWP\Settings\is_rewrites_enabled' ) ) {
+			return \WPE\FaustWP\Settings\is_rewrites_enabled();
+		}
+		
+		return false;
 	}
 
 	/**
@@ -252,7 +254,7 @@ class Faust_Integration {
 				// Remove Faust's redirect callback.
 				remove_action( 'template_redirect', 'WPE\FaustWP\Deny_Public_Access\deny_public_access', 99 );
 			}
-		}, 10 );
+		}, 10, 0 );
 	}
 
 	/**
