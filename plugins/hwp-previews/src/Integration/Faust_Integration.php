@@ -202,7 +202,60 @@ class Faust_Integration {
 		// Remove FaustWP post preview link filter to avoid conflicts with our custom preview link generation.
 		remove_filter( 'preview_post_link', 'WPE\FaustWP\Replacement\post_preview_link', 1000 );
 
+		// Prevent Faust from redirecting preview URLs to the frontend in iframe mode.
+		$this->disable_faust_redirects();
+
 		$this->display_faust_admin_notice();
+	}
+
+	/**
+	 * Disable Faust's redirect functionality for preview URLs.
+	 */
+	protected function disable_faust_redirects(): void {
+		add_action( 'template_redirect', function(): void {
+			// Only run for preview URLs (e.g., ?p=ID&preview=true)
+			if ( isset( $_GET['preview'] ) && $_GET['preview'] === 'true' ) {
+				// Remove Faust's redirect callback
+				remove_action( 'template_redirect', 'WPE\FaustWP\Deny_Public_Access\deny_public_access', 99 );
+			}
+		}, 10 );
+	}
+
+	/**
+	 * Check if Faust rewrites are enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_faust_rewrites_enabled(): bool {
+		return $this->get_faust_enabled()
+			&& function_exists('\WPE\FaustWP\Settings\is_rewrites_enabled')
+			&& \WPE\FaustWP\Settings\is_rewrites_enabled();
+	}
+
+	/**
+	 * Replace Faust preview rewrites with the home URL.
+	 *
+	 * @param string $url The URL to be rewritten.
+	 *
+	 * @return string
+	 */
+	public function replace_faust_preview_rewrite($url): string {
+		if ( function_exists( '\WPE\FaustWP\Settings\faustwp_get_setting' ) ) {
+			$frontend_uri = \WPE\FaustWP\Settings\faustwp_get_setting( 'frontend_uri' );
+
+			// Return the URL as is if frontend uri is empty.
+			if ( ! $frontend_uri ) {
+				return $url;
+			}
+
+			$frontend_uri = trailingslashit( $frontend_uri );
+			$home_url     = trailingslashit( get_home_url() );
+
+
+			return str_replace( $frontend_uri, get_home_url(),  $url );
+		}
+
+		return $url;
 	}
 
 	/**
