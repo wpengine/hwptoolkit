@@ -186,7 +186,7 @@ class Faust_Integration {
 	 */
 	public function is_faust_rewrites_enabled(): bool {
 		if ( $this->get_faust_enabled() && function_exists( '\WPE\FaustWP\Settings\is_rewrites_enabled' ) ) {
-			return \WPE\FaustWP\Settings\is_rewrites_enabled();
+			return (bool) \WPE\FaustWP\Settings\is_rewrites_enabled();
 		}
 		
 		return false;
