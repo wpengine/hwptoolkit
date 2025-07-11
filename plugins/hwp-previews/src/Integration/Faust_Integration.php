@@ -198,22 +198,22 @@ class Faust_Integration {
 	 * @param string $url The URL to be rewritten.
 	 */
 	public function replace_faust_preview_rewrite($url): string {
-		if ( function_exists( '\WPE\FaustWP\Settings\faustwp_get_setting' ) ) {
-			$frontend_uri = \WPE\FaustWP\Settings\faustwp_get_setting( 'frontend_uri' );
-
-			// Return the URL as is if frontend uri is empty.
-			if ( ! $frontend_uri ) {
-				return $url;
-			}
-
-			$frontend_uri = trailingslashit( $frontend_uri );
-			$home_url     = trailingslashit( get_home_url() );
-
-
-			return str_replace( $frontend_uri, $home_url, $url );
+		if ( ! function_exists( '\WPE\FaustWP\Settings\faustwp_get_setting' ) ) {
+			return $url;
 		}
 
-		return $url;
+		$frontend_uri = \WPE\FaustWP\Settings\faustwp_get_setting( 'frontend_uri' );
+
+		// Return the URL as is if frontend uri is empty.
+		if ( ! $frontend_uri ) {
+			return $url;
+		}
+
+		$frontend_uri = trailingslashit( $frontend_uri );
+		$home_url     = trailingslashit( get_home_url() );
+
+
+		return str_replace( $frontend_uri, $home_url, $url );
 	}
 
 	/**
