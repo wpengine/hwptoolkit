@@ -13,7 +13,7 @@ test-results/
 # WordPress
 .wp-env
 .wp-env.override.json
-uploads.zip
+uploads/
 debug.log
 __MACOSX
 
