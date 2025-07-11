@@ -28,6 +28,7 @@ class AnalysisService {
 
 	public function analyze_response(TrackerService $tracker_service, $response)  {
 
+
 		$this->tracker_service = $tracker_service;
 
 
@@ -55,16 +56,19 @@ class AnalysisService {
 	 */
 	public function get_analysis($response): array {
 
-//		return [
-//			'complexity' => [
-//				'analysis' => 'This query is complex and may take a long time to execute.',
-//				'level'    => 'warning',
-//			],
-//			'pagination' => [
-//				'analysis' => 'This query is paginated, good job.',
-//				'level'    => 'success',
-//			],
-//		];
+		// @TODO
+		// This is a placeholder for the actual analysis logic.
+
+		return [
+			'complexity' => [
+				'analysis' => 'Fake Analysis: This query is complex and may take a long time to execute.',
+				'level'    => 'warning',
+			],
+			'pagination' => [
+				'analysis' => 'Fake Analysis: This query is paginated, good job.',
+				'level'    => 'success',
+			],
+		];
 
 		$data_sources = $this->get_data_sources($response);
 		if (! is_array( $data_sources ) || empty( $data_sources ) ) {
