@@ -22,7 +22,6 @@ An example headless WordPress application using Next.js App Router and the fetch
 ## Prerequisites
 
 - Node.js (v18+ recommended)
-- [pnpm](https://pnpm.io/)
 - [Docker](https://www.docker.com/) (if you plan on running the example see details below)
 
 
@@ -41,8 +40,7 @@ An example headless WordPress application using Next.js App Router and the fetch
 │   ├── wp-env.json
 │   ├── db/                 # Example database export to be imported for the example setup
 │   ├── setup/              # .htaccess file to fix a CORS issue
-│   ├── uploads.zip         # Zipped wp-content/uploads directory for the example application
-│   ├── uploads/            # Unzipped wp-content/uploads directory when the example application is run.
+│   ├── uploads/            # wp-content/uploads directory when the example application is run.
 ├── package.json            # Scripts for running the example application
 ```
 
@@ -98,7 +96,7 @@ Here are some screenshots of the application:
 ## Setup Repository and Packages
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
-- Install packages `cd hwptoolkit && pnpm install
+- Install packages `cd hwptoolkit && npm install
 - Setup a .env file under `examples/next/client-app-router-fetch-data/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
 e.g.
 
@@ -109,9 +107,8 @@ echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/client-ap
 ## Build and start the application
 
 - `cd examples/next/client-app-router-fetch-data`
-- Then run `pnpm example:build` will build and start your application. 
+- Then run `npm run example:build` will build and start your application. 
 - This does the following:
-    - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
     - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
     - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
     - Install Next.js dependencies for `example-app`
@@ -131,7 +128,7 @@ Congratulations, WordPress should now be fully set up.
 
 | Command                | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| `example:build`        | Prepares the environment by unzipping images, starting WordPress, importing the database, and starting the application. |
+| `example:build`        | Prepares the environment by starting WordPress, importing the database, and starting the application. |
 | `example:dev`          | Runs the Next.js development server.                                       |
 | `example:dev:install`  | Installs the required Next.js packages.                                    |
 | `example:start`        | Starts WordPress and the Next.js development server.                       |
@@ -143,11 +140,8 @@ Congratulations, WordPress should now be fully set up.
 | `wp:db:query`          | Executes a database query within the WordPress environment.                |
 | `wp:db:export`         | Exports the WordPress database to `wp-env/db/database.sql`.                |
 | `wp:db:import`         | Imports the WordPress database from `wp-env/db/database.sql`.              |
-| `wp:images:unzip`      | Extracts the WordPress uploads directory.                                  |
-| `wp:images:zip`        | Compresses the WordPress uploads directory.                                |
 
-
->**Note** You can run `pnpm wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
+>**Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
 
 ### Database access
 

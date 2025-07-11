@@ -22,18 +22,28 @@ A debugging utility for proxied GraphQL APIs within WordPress environments, offe
 
 Run:
 ```
-pnpm install
+npm install
 ```
 
 ### Environment Variables
 
-Create a `.env` file if your proxy requires environment-specific configs (optional).
+Create a `.env` file and put the content below inside. If your proxy requires environment-specific configs add them too.
+
+```
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
+```
+
+or run the command below to create the .env file:
+
+```bash
+echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/proxied-graphql-debug/example-app/.env
+```
 
 ### Start the Environment
 
 To start WordPress and run your proxy/debugger setup:
 ```
-pnpm example:build
+npm run example:build
 ```
 
 ## How It Works
@@ -60,19 +70,18 @@ The complexity estimator:
 ```
 git clone https://github.com/wpengine/hwptoolkit.git
 cd hwptoolkit
-pnpm install
+npm install
 ```
 
 ### Build and Start Application
 
 ```
 cd examples/next/graphql-proxy-debug
-pnpm example:build
+npm run example:build
 ```
 
 This will:
 
-- Unzip `wp-env/uploads.zip` to `wp-env/uploads`
 - Start [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
 - Import the database from `wp-env/db/database.sql`
 - Install Next.js dependencies for `example-app`
@@ -88,7 +97,7 @@ This will:
 
 | Command                | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| `example:build`        | Prepares the environment, unzips images, starts WordPress, imports the database, and starts the application. |
+| `example:build`        | Prepares the environment, starts WordPress, imports the database, and starts the application. |
 | `example:dev`          | Runs the Next.js development server.                                       |
 | `example:dev:install`  | Installs required Next.js packages.                                         |
 | `example:start`        | Starts WordPress and the Next.js dev server.                                |
@@ -100,11 +109,8 @@ This will:
 | `wp:db:query`          | Executes a database query in WordPress.                                     |
 | `wp:db:export`         | Exports the WordPress database to `wp-env/db/database.sql`.                 |
 | `wp:db:import`         | Imports the WordPress database from `wp-env/db/database.sql`.               |
-| `wp:images:unzip`      | Extracts the WordPress uploads directory.                                   |
-| `wp:images:zip`        | Compresses the WordPress uploads directory.                                 |
-| `complexity:test`      | Runs a test script for query complexity estimation.                         |
 
->**Note:** You can run `pnpm wp-env` and use other [wp-env](https://www.npmjs.com/package/@wordpress/env) commands as needed.
+>**Note:** You can run `npm run wp-env` and use other [wp-env](https://www.npmjs.com/package/@wordpress/env) commands as needed.
 
 ## Database Access (Optional)
 
