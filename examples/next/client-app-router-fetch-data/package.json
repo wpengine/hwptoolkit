@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An example headless WordPress application using Next.js App Router and the fetch API to fetch data from WordPress using WPGraphQL.",
   "scripts": {
-    "example:build": "npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:start",
+    "example:build": "npm run wp:images:unzip && npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
     "example:start": "npm run wp:start && npm run example:dev",
     "example:stop": "npm run wp:stop",
@@ -15,6 +15,8 @@
     "wp:db:query": "wp-env run cli -- wp db query",
     "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
     "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
+    "wp:images:unzip": "rm -rf wp-env/uploads/ && unzip wp-env/uploads.zip -d wp-env;",
+    "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads",
     "wp-env": "wp-env"
   },
   "keywords": [
