@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HWP\Previews\Hooks;
 
 use HWP\Previews\Admin\Settings\Fields\Settings_Field_Collection;
+use HWP\Previews\Integration\Faust_Integration;
 use HWP\Previews\Preview\Parameter\Preview_Parameter_Registry;
 use HWP\Previews\Preview\Post\Post_Editor_Service;
 use HWP\Previews\Preview\Post\Post_Preview_Service;
@@ -226,6 +227,13 @@ class Preview_Hooks {
 
 		// If the iframe option is enabled, we need to resolve preview on the template redirect level.
 		if ( $post_type_service->is_iframe() ) {
+			$faust_helper = new Faust_Integration();
+
+			// If Faust post & category rewrites enabled, we should revert the preview link rewrites.
+			if ( $faust_helper->is_faust_rewrites_enabled() ) {
+				return $faust_helper->replace_faust_preview_rewrite( $preview_link );
+			}
+
 			return $preview_link;
 		}
 
