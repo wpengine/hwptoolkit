@@ -168,7 +168,7 @@ class WebhooksAdmin {
 	 * @return bool True if nonce is valid, false otherwise.
 	 */
 	private function verify_nonce( string $nonce_name, string $action ): bool {
-		if ( ! isset( $_REQUEST[ $nonce_name ] ) || ! wp_verify_nonce( $_REQUEST[ $nonce_name ], $action ) ) {
+		if ( ! isset( $_REQUEST[ $nonce_name ] ) || ! wp_verify_nonce( wp_unslash( $_REQUEST[ $nonce_name ] ), $action ) ) {
 			wp_die( __( 'Security check failed.', 'wp-graphql-webhooks' ) );
 			return false;
 		}
@@ -181,11 +181,6 @@ class WebhooksAdmin {
 	 * @return void
 	 */
 	public function handle_webhook_save() {
-		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'webhook_nonce', 'webhook_save' ) ) {
-			wp_die( __( 'Unauthorized', 'wp-graphql-webhooks' ) );
-		}
-
-		$webhook_id = isset( $_POST['webhook_id'] ) ? intval( $_POST['webhook_id'] ) : 0;
 		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'webhook_nonce', 'webhook_save' ) ) {
 			wp_die( __( 'Unauthorized', 'wp-graphql-webhooks' ) );
 		}
@@ -375,7 +370,7 @@ class WebhooksAdmin {
 			] );
 		}
 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! $this->verify_admin_permission() ) {
 			wp_send_json_error( [ 
 				'message' => __( 'You do not have permission to test webhooks.', 'wp-graphql-webhooks' ),
 				'error_code' => 'insufficient_permissions'

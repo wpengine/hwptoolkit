@@ -92,13 +92,13 @@ class WebhooksListTable extends \WP_List_Table {
 		}
 
 		// Verify nonce
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
-			wp_die( __( 'Security check failed.', 'wp-graphql-webhooks' ) );
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'bulk-' . $this->_args['plural'] ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'wp-graphql-webhooks' ) );
 		}
 
 		// Check permissions
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', 'wp-graphql-webhooks' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-graphql-webhooks' ) );
 		}
 
 		// Get selected webhooks
@@ -137,8 +137,8 @@ class WebhooksListTable extends \WP_List_Table {
 		$total_items = count( $webhooks );
 		
 		// Handle sorting
-		$orderby = ! empty( $_GET['orderby'] ) ? $_GET['orderby'] : 'name';
-		$order = ! empty( $_GET['order'] ) ? $_GET['order'] : 'asc';
+		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_key( $_GET['orderby'] ) : 'name';
+		$order = ! empty( $_GET['order'] ) ? sanitize_key( $_GET['order'] ) : 'asc';
 		
 		usort( $webhooks, function( $a, $b ) use ( $orderby, $order ) {
 			$result = 0;
@@ -253,7 +253,7 @@ class WebhooksListTable extends \WP_List_Table {
 	 * Display when no items
 	 */
 	public function no_items() {
-		_e( 'No webhooks found.', 'wp-graphql-webhooks' );
+		esc_html_e( 'No webhooks found.', 'wp-graphql-webhooks' );
 	}
 
 	/**

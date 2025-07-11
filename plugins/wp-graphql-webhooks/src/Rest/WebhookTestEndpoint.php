@@ -86,15 +86,16 @@ class WebhookTestEndpoint {
 
 		// Log test initiation
 		$test_timestamp = current_time( 'mysql' );
-		error_log( "\n========== WEBHOOK TEST INITIATED ==========" );
-		error_log( "Timestamp: {$test_timestamp}" );
-		error_log( "Webhook ID: {$webhook_id}" );
-		error_log( "Webhook Name: {$webhook->name}" );
-		error_log( "Target URL: {$webhook->url}" );
-		error_log( "HTTP Method: {$webhook->method}" );
-		error_log( "Event: {$webhook->event}" );
-		error_log( "Headers: " . wp_json_encode( $webhook->headers ) );
-		error_log( "==========================================\n" );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( "\n========== WEBHOOK TEST INITIATED ==========" );
+			error_log( "Timestamp: {$test_timestamp}" );
+			error_log( "Webhook ID: {$webhook_id}" );
+			error_log( "Webhook Name: {$webhook->name}" );
+			// Do not log sensitive URL and headers
+			error_log( "HTTP Method: {$webhook->method}" );
+			error_log( "Event: {$webhook->event}" );
+			error_log( "==========================================\n" );
+		}
 
 		// Create test payload
 		$test_payload = [
@@ -107,7 +108,7 @@ class WebhookTestEndpoint {
 			],
 			'test_data' => [
 				'message' => 'This is a test webhook payload',
-				'triggered_by' => wp_get_current_user()->user_login,
+				'triggered_by' => 'admin',
 				'site_url' => get_site_url(),
 			],
 		];
@@ -124,11 +125,13 @@ class WebhookTestEndpoint {
 			$end_time = microtime( true );
 			$duration = round( ( $end_time - $start_time ) * 1000, 2 ); // Convert to milliseconds
 			
-			error_log( "\n========== WEBHOOK TEST COMPLETED ==========" );
-			error_log( "✅ SUCCESS: Test webhook dispatched" );
-			error_log( "Duration: {$duration}ms" );
-			error_log( "Completed at: " . current_time( 'mysql' ) );
-			error_log( "==========================================\n" );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( "\n========== WEBHOOK TEST COMPLETED ==========" );
+				error_log( "✅ SUCCESS: Test webhook dispatched" );
+				error_log( "Duration: {$duration}ms" );
+				error_log( "Completed at: " . current_time( 'mysql' ) );
+				error_log( "==========================================\n" );
+			}
 
 			return new WP_REST_Response(
 				[
@@ -147,10 +150,12 @@ class WebhookTestEndpoint {
 				200
 			);
 		} catch ( \Exception $e ) {
-			error_log( "\n========== WEBHOOK TEST ERROR ==========" );
-			error_log( "❌ ERROR: " . $e->getMessage() );
-			error_log( "Stack trace: " . $e->getTraceAsString() );
-			error_log( "========================================\n" );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( "\n========== WEBHOOK TEST ERROR ==========" );
+				error_log( "❌ ERROR: " . $e->getMessage() );
+				// Do not log stack trace as it may contain sensitive information
+				error_log( "========================================\n" );
+			}
 
 			return new WP_Error(
 				'webhook_test_failed',

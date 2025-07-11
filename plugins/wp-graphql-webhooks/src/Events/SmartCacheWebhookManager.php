@@ -116,7 +116,9 @@ class SmartCacheWebhookManager implements EventManager {
 			$payload['uri'] = $payload['path'] ?? '';
 		}
 
-		error_log( "[Webhook] Triggering webhooks for event: $event with payload: " . var_export( $payload, true ) );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( "[Webhook] Triggering webhooks for event: $event with payload: " . var_export( $payload, true ) );
+		}
 
 		do_action( 'graphql_webhooks_before_trigger', $event, $payload );
 
@@ -240,7 +242,7 @@ class SmartCacheWebhookManager implements EventManager {
 		}
 
 		if ( ! empty( $permalink ) && is_string( $permalink ) && ! is_wp_error( $permalink ) ) {
-			$parsed_path = parse_url( $permalink, PHP_URL_PATH );
+			$parsed_path = wp_parse_url( $permalink, PHP_URL_PATH );
 			if ( $parsed_path !== false ) {
 				$path = $parsed_path;
 				error_log( "[Webhook] Final path for key $key: $path" );
