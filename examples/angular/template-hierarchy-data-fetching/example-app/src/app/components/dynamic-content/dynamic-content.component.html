@@ -1,0 +1,25 @@
+<!-- Debug info (remove in production) -->
+<div class="debug-info" *ngIf="false">
+  <pre>{{ getDebugInfo() | json }}</pre>
+</div>
+
+<!-- Loading state -->
+<div *ngIf="isLoading()" class="loading-container">
+  <div class="spinner"></div>
+  <p>Loading content...</p>
+</div>
+
+<!-- Error state -->
+<div *ngIf="hasError() && !isLoading()" class="error-container">
+  <app-not-found></app-not-found>
+</div>
+
+<!-- Dynamic content -->
+<ng-container *ngIf="componentToRender() && !isLoading() && !hasError()">
+  <ng-container
+    *ngComponentOutlet="
+      componentToRender();
+      inputs: { seedQuery: templateData()?.seedQuery, templateData: templateData() }
+    ">
+  </ng-container>
+</ng-container>

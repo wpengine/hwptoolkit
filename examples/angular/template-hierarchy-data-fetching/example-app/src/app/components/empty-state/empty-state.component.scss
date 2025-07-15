@@ -1,0 +1,37 @@
+.empty-state-container {
+  padding: 3rem 2rem;
+  color: #6c757d;
+  
+  &.text-center {
+    text-align: center;
+  }
+
+  .loading-text {
+    font-size: 1.125rem;
+    margin: 0;
+    color: #718096;
+    line-height: 1.5;
+  }
+}
+
+// Alternative more comprehensive empty state styles
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+
+  // Optional: Add an icon
+  &::before {
+    content: "📭";
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+
+  .loading-text {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}

@@ -1,0 +1,86 @@
+<header class="header">
+  <div class="main-header-wrapper">
+    <div class="site-title-wrapper">
+      <a routerLink="/" class="site-title">
+        <h1 *ngIf="siteInfo()?.title && !settingsLoading()">
+          {{ siteInfo().title }}
+        </h1>
+      </a>
+    </div>
+    <nav class="nav">
+      <div *ngIf="navigationLoading()" class="nav-loading">
+        <span>Loading navigation...</span>
+      </div>
+      <ng-container *ngFor="let item of menuItems()">
+        <ng-container
+          *ngTemplateOutlet="
+            menuItemTemplate;
+            context: { $implicit: item, level: 0 }
+          "
+        >
+        </ng-container>
+      </ng-container>
+
+      <!-- Recursive menu item template -->
+      <ng-template #menuItemTemplate let-item let-level="level">
+        <div
+          class="group relative dropdown-item-container"
+          [class]="'nav-item-level-' + level"
+          [class.has-children]="item.children && item.children.length > 0"
+        >
+          <a
+            [href]="item.uri"
+            [target]="item.target || '_self'"
+            [class]="
+              'nav-link nav-link-level-' +
+              level +
+              ' ' +
+              (item.cssClasses?.join(' ') || '')
+            "
+            [class.active]="isActive(item)"
+            [title]="item.description || item.title"
+            (click)="onMenuItemClick(item); $event.preventDefault()"
+          >
+            {{ item.label }}
+            <span
+              *ngIf="item.children && item.children.length > 0"
+              class="dropdown-indicator"
+              [class]="'dropdown-indicator-level-' + level"
+            >
+              ▼
+            </span>
+          </a>
+
+          <!-- Recursive dropdown menu for children -->
+          <div *ngIf="item.children && item.children.length > 0"
+              class="dropdown"
+              [class]="dropdownClass(level)">
+            <ul
+              *ngIf="item.children && item.children.length > 0"
+              class="dropdown-item-container"
+            >
+              <ng-container *ngFor="let child of item.children">
+                <ng-container
+                  *ngTemplateOutlet="
+                    menuItemTemplate;
+                    context: { $implicit: child, level: level + 1 }
+                  "
+                >
+                </ng-container>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </ng-template>
+    </nav>
+  </div>
+</header>
+
+<div *ngIf="settingsLoading()" class="header-loading">
+  <div class="loading-spinner"></div>
+  <span>Loading header...</span>
+</div>
+
+<div *ngIf="error()" class="header-error">
+  <p>{{ error() }}</p>
+</div>

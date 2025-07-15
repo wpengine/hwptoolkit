@@ -1,0 +1,6 @@
+<div class="empty-state-container text-center">
+  <p *ngIf="text; else defaultText" class="loading-text">{{ text }}</p>
+  <ng-template #defaultText>
+    <p class="loading-text">Nothing to see here yet.</p>
+  </ng-template>
+</div>
