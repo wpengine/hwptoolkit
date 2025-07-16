@@ -104,7 +104,6 @@ function wpgraphql_debug_extensions_dependencies_not_ready(): array {
 function wpgraphql_debug_extensions_init(): void {
     wpgraphql_debug_extensions_constants();
     $not_ready = wpgraphql_debug_extensions_dependencies_not_ready();
-
     if ( $not_ready === [] && defined( 'WPGRAPHQL_DEBUG_EXTENSIONS_PLUGIN_DIR' ) ) {
         // Load text domain at the init hook
         add_action( 'init', 'WPGraphQL\Debug\wpgraphql_debug_extensions_load_textdomain' );
