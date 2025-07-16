@@ -109,6 +109,8 @@ function wpgraphql_debug_extensions_init(): void {
         // Load text domain at the init hook
         add_action( 'init', 'WPGraphQL\Debug\wpgraphql_debug_extensions_load_textdomain' );
 
+        $plugin = new \WPGraphQL\Debug\Plugin();
+		$plugin::instance();
         return;
     }
 
