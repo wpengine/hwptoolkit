@@ -1,0 +1,36 @@
+@use "variables" as *;
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $gutter;
+  @media screen and (max-width: $breakpoint-medium) {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+}
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.grid {
+  display: grid;
+  gap: $gutter;
+  box-sizing: border-box;
+}
+@for $i from 1 through 6 {
+  .cols-#{$i} {
+    grid-template-columns: repeat($i, 1fr);
+
+    @media screen and (max-width: $breakpoint-medium) {
+      grid-template-columns: 1fr;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.flex-column {
+  flex-direction: column;
+}

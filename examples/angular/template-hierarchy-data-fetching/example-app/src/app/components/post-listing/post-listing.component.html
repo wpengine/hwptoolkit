@@ -1,0 +1,102 @@
+<!-- Loading state -->
+<div *ngIf="loading">
+  <app-loading text="Loading posts..."></app-loading>
+</div>
+
+<!-- Posts listing -->
+<div
+  class="grid blog-listing"
+  [class]="'cols-' + cols"
+  *ngIf="!loading && posts.length > 0"
+>
+  <!-- Individual post -->
+  <article *ngFor="let post of posts; trackBy: trackByPostId" class="post-card">
+    <!-- Featured image -->
+    <div *ngIf="post.featuredImage?.node" class="featured-image-container">
+      <a [routerLink]="post.uri">
+        <img
+          [src]="post.featuredImage?.node?.sourceUrl"
+          [alt]="post.featuredImage?.node?.altText || post.title"
+          class="feature-img"
+          loading="lazy"
+        />
+      </a>
+    </div>
+
+    <div class="post-card-content">
+      <header>
+        <h3 class="post-title">
+          <a [routerLink]="post.uri">
+            {{ post.title }}
+          </a>
+        </h3>
+
+        <div>
+          <div class="post-meta">
+            <div *ngIf="post.author?.node" class="author">
+              <img
+                *ngIf="post.author?.node?.avatar?.url"
+                [src]="post.author?.node?.avatar?.url"
+                [alt]="post.author?.node?.name"
+                width="24"
+                height="24"
+                class="author-avatar"
+                loading="lazy"
+              />
+              <span class="author-name">{{ post.author?.node?.name }}</span>
+            </div>
+            <time>{{ formatDate(post.date) }}</time>
+          </div>
+
+          <!-- Categories -->
+          <div *ngIf="hasCategories(post)" class="categories-container">
+            <span>Categories:</span>
+            <ul class="post-categories">
+              <li
+                *ngFor="let category of post.categories!.nodes; let i = index"
+                [attr.key]="category.slug"
+              >
+                <a [routerLink]="getCategoryLink(category.slug)">
+                  {{ category.name }} </a
+                >{{ !isLastItem(i, post.categories!.nodes) ? ", " : "" }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Tags -->
+          <div *ngIf="hasTags(post)" class="tags-container">
+            <span>Tags:</span>
+            <ul class="post-tags">
+              <li
+                *ngFor="let tag of post.tags!.nodes; let i = index"
+                [attr.key]="tag.slug"
+              >
+                <a [routerLink]="getTagLink(tag.slug)">
+                  {{ tag.name }} </a
+                >{{ !isLastItem(i, post.tags!.nodes) ? ", " : "" }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Excerpt -->
+      <div
+        [innerHTML]="createExcerpt(post.excerpt, 150)"
+        class="post-excerpt"
+      ></div>
+
+      <!-- Read more link -->
+      <div class="read-more">
+        <a [routerLink]="post.uri" class="button button-primary button-small">
+          Read more →
+        </a>
+      </div>
+    </div>
+  </article>
+</div>
+
+<!-- Empty state -->
+<div *ngIf="!loading && posts.length === 0" class="empty-state">
+  <p>No posts found.</p>
+</div>

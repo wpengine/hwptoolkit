@@ -1,0 +1,61 @@
+<main>
+  <section id="hero">
+    <!-- Loading state for settings -->
+    <ng-container *ngIf="settingsLoading()">
+      <app-loading text="Loading site information..."></app-loading>
+    </ng-container>
+
+    <!-- Error state for settings -->
+    <div *ngIf="settingsError() && !settingsLoading()">
+      <h1>My WordPress Site</h1>
+      <p>Welcome to my site</p>
+      <small>Error loading site data: {{ settingsError()?.message }}</small>
+    </div>
+
+    <!-- Success state for settings -->
+    <div *ngIf="!settingsLoading() && !settingsError()">
+      <h1>{{ siteInfo().title }}</h1>
+      <p>{{ siteInfo().description }}</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <section id="recent-posts">
+      <h2>Recent Posts</h2>
+
+      <!-- Error state for blog posts -->
+      <div *ngIf="blogError() && !blogLoading()">
+        <p>Failed to load posts</p>
+        <p>{{ blogError()?.message }}</p>
+        <button class="btn btn-primary btn-sm" (click)="refreshData()">
+          Try Again
+        </button>
+      </div>
+
+      <!-- Loading state for blog posts -->
+      <ng-container *ngIf="blogLoading() && !blogError()">
+        <app-loading text="Loading recent posts..."></app-loading>
+      </ng-container>
+
+      <!-- Empty state -->
+      <ng-container *ngIf="!blogLoading() && !blogError() && posts().length === 0">
+        <app-empty-state></app-empty-state>
+      </ng-container>
+
+      <!-- Posts listing -->
+      <ng-container *ngIf="!blogLoading() && !blogError() && posts().length > 0">
+        <app-post-listing 
+          [posts]="posts()" 
+          [loading]="false" 
+          [cols]="4">
+        </app-post-listing>
+      </ng-container>
+    </section>
+
+    <div class="text-center">
+      <a routerLink="/blog" class="button button-primary button-large">
+        View All Blog Posts →
+      </a>
+    </div>
+  </div>
+</main>
