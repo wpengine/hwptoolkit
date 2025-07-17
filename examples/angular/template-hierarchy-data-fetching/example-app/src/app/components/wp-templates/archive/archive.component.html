@@ -1,0 +1,54 @@
+<main class="container">
+  <!-- Loading state -->
+  <div *ngIf="loading()" class="text-center">
+    <app-loading text="Loading archive..."></app-loading>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error() && !loading()" class="text-center error-container">
+    <h1 class="error-title">Error</h1>
+    <p class="error-message">{{ error()?.message || 'Failed to load archive' }}</p>
+    <button (click)="retry()" class="btn btn-primary">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Archive content -->
+  <div *ngIf="archive() && !loading() && !error()">
+    <header class="archive-header">
+      <h1 class="archive-title">{{ archive()!.name }}</h1>
+      <div 
+        *ngIf="hasDescription()" 
+        class="archive-description"
+        [innerHTML]="archive()!.description">
+      </div>
+      <div class="archive-meta">
+        <span class="archive-type-badge">{{ getArchiveType() }}</span>
+        <span class="posts-count">{{ posts().length }} {{ posts().length === 1 ? 'post' : 'posts' }}</span>
+      </div>
+    </header>
+
+    <!-- Posts listing -->
+    <div *ngIf="hasContent()">
+      <app-post-listing
+        [posts]="posts()"
+        [loading]="false"
+        [cols]="3">
+      </app-post-listing>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!hasContent()" class="text-center">
+      <app-empty-state text="There are no posts available in here."></app-empty-state>
+    </div>
+  </div>
+
+  <!-- Fallback when no archive data -->
+  <div *ngIf="!archive() && !loading() && !error()" class="fallback-container">
+    <h1 class="fallback-title">Archive Not Found</h1>
+    <p class="fallback-message">The requested archive could not be found.</p>
+    <a routerLink="/" class="btn btn-primary">
+      Return Home
+    </a>
+  </div>
+</main>

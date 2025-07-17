@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GraphQLService, GraphQLStateService, gql } from '../../shared/utils/graphql.service';
+import { GraphQLService, GraphQLStateService, gql } from '../../utils/graphql.service';
 
 interface Post {
   id: string;

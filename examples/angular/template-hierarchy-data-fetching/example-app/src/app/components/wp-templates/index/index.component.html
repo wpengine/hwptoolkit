@@ -1,0 +1,40 @@
+<div class="container">
+  <!-- Loading state -->
+  <div *ngIf="loading()" class="text-center py-10">
+    <app-loading text="Loading page..."></app-loading>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error() && !loading()" class="py-10 text-center error-container">
+    <h1 class="error-title">Error</h1>
+    <p class="error-message">{{ error()?.message || 'Failed to load page' }}</p>
+    <div class="error-actions">
+      <button (click)="retry()" class="btn btn-primary mr-4">
+        Try Again
+      </button>
+      <a routerLink="/" class="btn btn-secondary">
+        Return to Homepage
+      </a>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div *ngIf="hasNode() && !loading() && !error()">
+    <h1 class="page-title">{{ getNodeTitle() }}</h1>asd
+    
+    <div 
+      *ngIf="hasContent()" 
+      class="page-content prose prose-lg max-w-none"
+      [innerHTML]="node()!.content">
+    </div>
+    
+    <div *ngIf="!hasContent()" class="no-content">
+      <p>No content available.</p>
+    </div>
+  </div>
+
+  <!-- Not found fallback -->
+  <div *ngIf="!hasNode() && !loading() && !error()">
+    <app-not-found></app-not-found>
+  </div>
+</div>

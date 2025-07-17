@@ -103,7 +103,7 @@ export function createExcerpt(content: string, length = 150) {
  * @param options - Configuration options for the conversion
  * @param options.idKey - The property name that contains the unique identifier for each item (default: "id")
  * @param options.parentKey - The property name that contains the parent identifier for each item (default: "parentId")
- * @param options.childrenKey - The property name to use for storing children in the tree structure (default: "children")
+ * @param options.childrenKey - The property name to use for storing children in the  tree structure (default: "children")
  * @returns A hierarchical tree structure where each item contains its children in the specified children property
  */
 export function flatListToHierarchical(

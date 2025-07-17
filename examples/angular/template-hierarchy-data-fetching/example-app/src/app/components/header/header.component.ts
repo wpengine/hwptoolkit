@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { GraphQLService, gql } from '../../shared/utils/graphql.service';
+import { GraphQLService, gql } from '../../utils/graphql.service';
 
 interface MenuItem {
   id: string;

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LoadingComponent } from '../loading/loading.component';
-import { Post } from '../../shared/interfaces/post.interface';
+import { Post } from '../../interfaces/post.interface';
 
 @Component({
   selector: 'app-post-listing',

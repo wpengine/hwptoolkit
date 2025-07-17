@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { getPosts, capitalizeWords } from '../../../shared/utils/utils';
+import { getPosts, capitalizeWords } from '../../../utils/utils';
 import { LoadingComponent } from '../../loading/loading.component';
 import { EmptyStateComponent } from '../../empty-state/empty-state.component';
 import { PostListingComponent } from '../../post-listing/post-listing.component';
@@ -9,7 +9,7 @@ import {
   Post,
   PageInfo,
   PostsResponse,
-} from '../../../shared/interfaces/post.interface';
+} from '../../../interfaces/post.interface';
 
 // Define your GraphQL query
 const POSTS_QUERY = `
@@ -87,8 +87,6 @@ export class HomeComponent implements OnInit {
   @Input() category: string = '';
   @Input() tag: string = '';
   @Input() titlePrefix: string = 'Blog';
-  @Input() seedQuery?: any; // Data from template hierarchy if available
-
   // State signals - now using shared Post interface
   allPosts = signal<Post[]>([]);
   initialPageInfo = signal<PageInfo | null>(null);
@@ -115,14 +113,7 @@ export class HomeComponent implements OnInit {
     this.currentSlug = this.category || this.tag || '';
 
     // If we have seedQuery data from template hierarchy, use it
-    if (this.seedQuery?.posts) {
-      console.log('📋 Using seed query data for home/blog');
-      this.processPosts(this.seedQuery);
-      this.loading.set(false);
-    } else {
-      // Otherwise, fetch the posts data
-      await this.loadPosts();
-    }
+    await this.loadPosts();
   }
   /**
    * Load posts using the getPosts utility function

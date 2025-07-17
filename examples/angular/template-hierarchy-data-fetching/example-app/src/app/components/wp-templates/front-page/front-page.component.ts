@@ -1,7 +1,7 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, Input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { GraphQLService, gql } from '../../../shared/utils/graphql.service';
+import { GraphQLService, gql } from '../../../utils/graphql.service';
 import { LoadingComponent } from '../../loading/loading.component';
 import { EmptyStateComponent } from '../../empty-state/empty-state.component';
 import { PostListingComponent } from '../../post-listing/post-listing.component';
