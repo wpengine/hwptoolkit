@@ -80,9 +80,6 @@ if ( ! class_exists( 'WPGraphQL\Debug\Plugin' ) ) :
 
 				// Ensure that the received instance is indeed a QueryAnalyzer.
 				if ( $query_analyzer_instance instanceof OriginalQueryAnalyzer ) {
-					// Create an instance of your custom QueryAnalyzer.
-					// Pass the core QueryAnalyzer instance to its constructor
-					// so your extension can access its methods and properties.
 					$debug_analyzer = new QueryAnalyzer( $query_analyzer_instance );
 
 					// Initialize your extension. This is where it will register its own hooks
