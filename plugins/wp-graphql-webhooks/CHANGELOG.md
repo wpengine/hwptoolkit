@@ -1,5 +1,16 @@
 # @wpengine/wpgraphql-webhooks-wordpress-plugin
 
+## 0.0.4
+
+### Patch Changes
+
+- [#336](https://github.com/wpengine/hwptoolkit/pull/336) [`cff50ab`](https://github.com/wpengine/hwptoolkit/commit/cff50abcdaccecbefe4969312df14f94d11663d7) Thanks [@josephfusco](https://github.com/josephfusco)! - fix: security improvements for webhooks plugin
+
+  - Enhanced input validation and sanitization
+  - Improved output escaping
+  - Strengthened authorization checks
+  - Added additional security hardening measures
+
 ## 0.0.3
 
 ### Patch Changes
