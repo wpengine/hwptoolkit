@@ -22,12 +22,14 @@ class WebhookHandler implements Handler {
 	public function handle( Webhook $webhook, array $payload ): void {
 		// Log webhook dispatch initiation
 		$dispatch_timestamp = current_time( 'mysql' );
-		error_log( "\n========== WEBHOOK DISPATCH ==========" );
-		error_log( "Timestamp: {$dispatch_timestamp}" );
-		error_log( "Webhook: {$webhook->name} (ID: {$webhook->id})" );
-		error_log( "Event: {$webhook->event}" );
-		error_log( "Target URL: {$webhook->url}" );
-		error_log( "Method: {$webhook->method}" );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( "\n========== WEBHOOK DISPATCH ==========" );
+			error_log( "Timestamp: {$dispatch_timestamp}" );
+			error_log( "Webhook: {$webhook->name} (ID: {$webhook->id})" );
+			error_log( "Event: {$webhook->event}" );
+			error_log( "Target URL: {$webhook->url}" );
+			error_log( "Method: {$webhook->method}" );
+		}
 		
 		$args = [ 
 			'headers' => $webhook->headers ?: [ 'Content-Type' => 'application/json' ],
@@ -52,7 +54,9 @@ class WebhookHandler implements Handler {
 		if ( strtoupper( $webhook->method ) === 'GET' ) {
 			$url = add_query_arg( $payload, $webhook->url );
 			$args['method'] = 'GET';
-			error_log( "Payload (GET query params): " . wp_json_encode( $payload ) );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( "Payload (GET query params): " . wp_json_encode( $payload ) );
+			}
 		} else {
 			$url = $webhook->url;
 			$args['method'] = strtoupper( $webhook->method );
@@ -63,20 +67,28 @@ class WebhookHandler implements Handler {
 				$args['headers']['Content-Type'] = 'application/json';
 			}
 			
-			error_log( "Payload ({$args['method']} body): " . $args['body'] );
-			error_log( "Payload size: " . strlen( $args['body'] ) . " bytes" );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( "Payload ({$args['method']} body): " . $args['body'] );
+				error_log( "Payload size: " . strlen( $args['body'] ) . " bytes" );
+			}
 		}
 		
 		// Log headers
-		error_log( "Headers: " . wp_json_encode( $args['headers'] ) );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( "Headers: " . wp_json_encode( $args['headers'] ) );
+		}
 		
 		// For test mode or debugging, optionally use blocking mode
 		if ( apply_filters( 'graphql_webhooks_test_mode', false, $webhook ) ) {
 			$args['blocking'] = true;
-			error_log( "Test mode enabled - using blocking request" );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( "Test mode enabled - using blocking request" );
+			}
 		}
 		
-		error_log( "====================================\n" );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( "====================================\n" );
+		}
 		
 		// Send the webhook
 		$start_time = microtime( true );
@@ -85,7 +97,7 @@ class WebhookHandler implements Handler {
 		$duration = round( ( $end_time - $start_time ) * 1000, 2 );
 		
 		// Log response if in blocking mode
-		if ( $args['blocking'] ) {
+		if ( $args['blocking'] && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			if ( is_wp_error( $response ) ) {
 				error_log( "\n========== WEBHOOK ERROR ==========" );
 				error_log( "❌ ERROR: " . $response->get_error_message() );
