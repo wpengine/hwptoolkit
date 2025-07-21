@@ -43,7 +43,6 @@ class Complexity {
 		try {
 			$ast = Parser::parse( $query );
 		} catch (SyntaxError $error) {
-			// Re-throw or handle as appropriate for your error logging.
 			throw $error;
 		}
 
