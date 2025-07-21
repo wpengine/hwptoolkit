@@ -26,7 +26,7 @@ class PluginServiceLocator implements ServiceLocator {
 
     public function get(string $name) {
         if (!isset($this->factories[$name])) {
-            throw new UnexpectedValueException("Service not found: {$name}");
+            throw new UnexpectedValueException( esc_html( "Service not found: {$name}" ) );
         }
 
         if (!isset($this->instances[$name])) {
