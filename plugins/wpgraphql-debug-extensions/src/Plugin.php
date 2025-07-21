@@ -81,8 +81,6 @@ if ( ! class_exists( 'WPGraphQL\Debug\Plugin' ) ) :
 				// Ensure that the received instance is indeed a QueryAnalyzer.
 				if ( $query_analyzer_instance instanceof OriginalQueryAnalyzer ) {
 					$debug_analyzer = new QueryAnalyzer( $query_analyzer_instance );
-
-					// Initialize your extension. This is where it will register its own hooks
 					$debug_analyzer->init();
 
 					$initialized = true;
