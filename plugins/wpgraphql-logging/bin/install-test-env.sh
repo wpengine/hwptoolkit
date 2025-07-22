@@ -144,12 +144,12 @@ setup_file_permissions() {
 
 setup_plugin() {
 	if [ "${SKIP_WP_SETUP}" = "true" ]; then
-		echo -e "$(warning_message "Skipping wpgraphql-Logging installation...")"
+		echo -e "$(warning_message "Skipping wpgraphql-logging installation...")"
 		return 0
 	fi
 
 	# Add this repo as a plugin to the repo
-	if [ ! -d $WORDPRESS_ROOT_DIR/wp-content/plugins/wpgraphql-Logging ]; then
+	if [ ! -d $WORDPRESS_ROOT_DIR/wp-content/plugins/wpgraphql-logging ]; then
 		echo -e "$(status_message "Symlinking the plugin to the WordPress plugins directory...")"
 
 		cd "$ORIGINAL_PATH"

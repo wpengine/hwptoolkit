@@ -114,6 +114,9 @@ else
         --admin_email=admin@example.com \
         --allow-root
 
+	# Install WP-GraphQL plugin via WP-CLI
+	docker exec wpgraphql-logging-wordpress-1 wp plugin install wp-graphql --activate --allow-root
+
     if [ $? -eq 0 ]; then
         echo "✓ WordPress installed successfully"
     else
@@ -124,11 +127,13 @@ fi
 
 # Install and activate the plugin if needed
 echo "Checking plugin activation..."
-if docker exec wpgraphql-logging-wordpress-1 wp plugin is-active wpgraphql-Logging --allow-root 2>/dev/null; then
+if docker exec wpgraphql-logging-wordpress-1 wp plugin is-active wpgraphql-logging --allow-root 2>/dev/null; then
     echo "✓ Plugin is active"
 else
     echo "Activating plugin..."
-    docker exec wpgraphql-logging-wordpress-1 wp plugin activate wpgraphql-Logging --allow-root
+	# Install WP-GraphQL plugin via WP-CLI
+	docker exec wpgraphql-logging-wordpress-1 wp plugin install wp-graphql --activate --allow-root
+    docker exec wpgraphql-logging-wordpress-1 wp plugin activate wpgraphql-logging --allow-root
 fi
 
 # Verify coverage driver is working
@@ -155,7 +160,7 @@ echo ""
 echo "🎉 Docker environment setup complete!"
 echo ""
 echo "You can now run tests with:"
-echo "  docker exec -e COVERAGE=1 -e SUITES=wpunit -w /var/www/html/wp-content/plugins/wpgraphql-Logging wpgraphql-logging-wordpress-1 bin/run-codeception.sh"
+echo "  docker exec -e COVERAGE=1 -e SUITES=wpunit -w /var/www/html/wp-content/plugins/wpgraphql-logging wpgraphql-logging-wordpress-1 bin/run-codeception.sh"
 echo ""
 echo "Or without coverage:"
-echo "  docker exec -e SUITES=wpunit -w /var/www/html/wp-content/plugins/wpgraphql-Logging wpgraphql-logging-wordpress-1 bin/run-codeception.sh"
+echo "  docker exec -e SUITES=wpunit -w /var/www/html/wp-content/plugins/wpgraphql-logging wpgraphql-logging-wordpress-1 bin/run-codeception.sh"

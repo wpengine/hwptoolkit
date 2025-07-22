@@ -24,4 +24,4 @@ if [[ "$1" == "coverage" ]]; then
 	fi
 fi
 
-docker exec $COVERAGE_ARG $COVERAGE_OUTPUT_ARG -e SUITES=wpunit -w /var/www/html/wp-content/plugins/wpgraphql-Logging wpgraphql-logging-wordpress-1 bin/run-codeception.sh
+docker exec $COVERAGE_ARG $COVERAGE_OUTPUT_ARG -e SUITES=wpunit -w /var/www/html/wp-content/plugins/wpgraphql-logging wpgraphql-logging-wordpress-1 bin/run-codeception.sh

@@ -3,20 +3,20 @@
  * Plugin Name: WPGraphQL Logging
  * Plugin URI: https://github.com/wpengine/hwptoolkit
  * GitHub Plugin URI: https://github.com/wpengine/hwptoolkit
- * Description: A POC plugin for logging data for WPGraphQL.
+ * Description: A WPGraphQL logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
  * Version: 0.0.1
  * Text Domain: wpgraphql-logging
  * Domain Path: /languages
- * Requires at least: 6.0
- * Tested up to: 6.8.1
- * Requires PHP: 7.4+
+ * Requires at least: 6.5
+ * Tested up to: 6.8.2
+ * Requires PHP: 8.1+
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: wp-graphql
- * WPGraphQL requires at least: 1.8.0
+ * WPGraphQL requires at least: 2.3.0
  * WPGraphQL tested up to: 2.3.3
  *
  * @package WPGraphQL\Logging

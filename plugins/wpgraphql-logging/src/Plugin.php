@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
-use WPGraphQL\Logging\Database\LoggingEntity;
-use WPGraphQL\Logging\Logging\WPGraphQLLoggingService;
-
 /**
  * Plugin class for WPGraphQL Logging.
  *
@@ -51,23 +48,7 @@ final class Plugin {
 	 * Initialize the plugin admin, frontend & api functionality.
 	 */
 	public function setup(): void {
-
-		// @TODO POC
-		// Might be better to move to a hooks class
-		add_action( 'wpgraphql_logging_activate', [ $this, 'setup_database' ], 1, 0 );
-
-		WPGraphQLLoggingService::init();
-	}
-
-	/**
-	 * Setups the database for the plugin.
-	 */
-	public function setup_database(): void {
-		$database = new LoggingEntity();
-		$schema   = $database->get_schema();
-		global $wpdb;
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta( $schema );
+		// @TODO
 	}
 
 	/**

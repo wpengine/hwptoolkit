@@ -1,7 +1,7 @@
 {
 	"name": "wpengine/wpgraphql-logging",
 	"type": "wordpress-plugin",
-  	"description": "A POC plugin for logging WPGraphQL queries.",
+  	"description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
 	"license": "GPL-2.0",
 	"version": "0.0.1",
 	"authors": [
@@ -26,27 +26,26 @@
 		"monolog"
 	],
 	"require": {
-		"php": "^7.4 || ^8.0",
-		"monolog/monolog": "^2.10"
+		"php": "^8.1",
+		"monolog/monolog": "^3.9"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"require-dev": {
-		"10up/wp_mock": "^1.1",
 		"automattic/vipwpcs": "^3.0",
-		"codeception/lib-innerbrowser": "^1.0",
-		"codeception/module-asserts": "^1.0",
-		"codeception/module-cli": "^1.0",
-		"codeception/module-db": "^1.0",
-		"codeception/module-filesystem": "^1.0",
-		"codeception/module-phpbrowser": "^1.0",
-		"codeception/module-rest": "^2.0",
-		"codeception/module-webdriver": "^1.0",
+		"codeception/lib-innerbrowser": "^4.0",
+		"codeception/module-asserts": "^3.0",
+		"codeception/module-cli": "^2.0",
+		"codeception/module-db": "^3.0",
+		"codeception/module-filesystem": "^3.0",
+		"codeception/module-phpbrowser": "^3.0",
+		"codeception/module-rest": "^3.0",
+		"codeception/module-webdriver": "^4.0",
 		"codeception/util-universalframework": "^1.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"humanmade/psalm-plugin-wordpress": "^3.1",
 		"johnpbloch/wordpress-core": "^6.8",
-		"lucatume/wp-browser": "^3.5",
+		"lucatume/wp-browser": "^4.0",
 		"mockery/mockery": "^1.5",
 		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
@@ -63,7 +62,7 @@
 		},
 		"optimize-autoloader": true,
 		"platform": {
-			"php": "7.4"
+			"php": "8.1"
 		},
 		"preferred-install": "dist",
 		"sort-packages": true
