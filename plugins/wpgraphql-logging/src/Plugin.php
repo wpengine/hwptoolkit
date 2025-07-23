@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
+use WPGraphQL\Logging\Hooks\PluginHooks;
+
 /**
  * Plugin class for WPGraphQL Logging.
  *
@@ -48,7 +50,7 @@ final class Plugin {
 	 * Initialize the plugin admin, frontend & api functionality.
 	 */
 	public function setup(): void {
-		// @TODO
+		PluginHooks::init();
 	}
 
 	/**

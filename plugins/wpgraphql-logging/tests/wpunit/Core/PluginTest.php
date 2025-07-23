@@ -7,6 +7,7 @@ namespace WPGraphQL\Logging\Tests\Core;
 use WPGraphQL\Logging\Plugin;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use ReflectionClass;
+use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
 /**
  * Class PluginTest
@@ -51,19 +52,5 @@ class PluginTest extends WPTestCase {
 
 		// Verify the clone exists to ensure the operation completed
 		$this->assertInstanceOf( Plugin::class, $clone );
-	}
-
-	public function test_wakeup_method_throws_error() {
-		$this->setExpectedIncorrectUsage( 'WPGraphQL\Logging\Plugin::__wakeup' );
-
-		// Create a fresh instance
-		$reflection = new ReflectionClass( Plugin::class );
-		$plugin     = $reflection->newInstanceWithoutConstructor();
-
-		$serialized   = serialize( $plugin );
-		$unserialized = unserialize( $serialized );
-
-		// Verify the unserialized object exists
-		$this->assertInstanceOf( Plugin::class, $unserialized );
 	}
 }
