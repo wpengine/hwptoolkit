@@ -59,7 +59,7 @@ if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
 function wpgraphql_debug_extensions_constants(): void {
     // Plugin version.
     if ( ! defined( 'WPGRAPHQL_DEBUG_EXTENSIONS_VERSION' ) ) {
-        define( 'WPGRAPHQL_DEBUG_EXTENSIONS_VERSION', '0.0.3' );
+        define( 'WPGRAPHQL_DEBUG_EXTENSIONS_VERSION', '0.0.1' );
     }
 
     // Plugin Folder Path.
