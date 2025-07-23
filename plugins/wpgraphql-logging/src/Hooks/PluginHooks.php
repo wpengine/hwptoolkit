@@ -44,7 +44,7 @@ class PluginHooks {
 	 * Register actions and filters.
 	 */
 	protected function register(): void {
-		add_action( 'wpgraphql_logging_activate', [ self::class, 'activate_plugin' ] );
-		add_action( 'wpgraphql_logging_deactivate', [ self::class, 'deactivate_plugin' ] );
+		add_action( 'wpgraphql_logging_activate', [ self::class, 'activate_plugin' ], 10, 0 );
+		add_action( 'wpgraphql_logging_deactivate', [ self::class, 'deactivate_plugin' ], 10, 0 );
 	}
 }

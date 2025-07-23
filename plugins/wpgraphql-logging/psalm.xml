@@ -10,6 +10,8 @@
 >
 	<projectFiles>
 		<file name="wpgraphql-logging.php"/>
+		<file name="activation.php"/>
+		<file name="deactivation.php"/>
 		<file name="vendor/autoload.php"/>
 		<directory name="src"/>
 	</projectFiles>
@@ -25,5 +27,11 @@
 				<directory name="src"/>
 			</errorLevel>
 		</UndefinedConstant>
+
+		<MissingFile errorLevel="suppress">
+			<errorLevel type="suppress">
+				<file name="src/Logger/Database/DatabaseEntity.php"/>
+			</errorLevel>
+		</MissingFile>
 	</issueHandlers>
 </psalm>

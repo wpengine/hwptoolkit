@@ -45,9 +45,15 @@ class DatabaseEntity {
 
 	/**
 	 * Creates the logging table in the database.
+	 *
+	 * @throws \RuntimeException If ABSPATH is not defined.
 	 */
 	public static function create_table(): void {
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		if ( ! defined( 'ABSPATH' ) ) {
+			throw new \RuntimeException( 'ABSPATH is not defined.' );
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php'; // @phpstan-ignore-line
 		$schema = self::get_schema();
 		dbDelta( $schema );
 	}
