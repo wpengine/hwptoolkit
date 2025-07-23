@@ -81,18 +81,11 @@
           </a>
         </div>
       </div>
-
-      <!-- Comment count -->
-      <div *ngIf="post()!.commentCount > 0" class="comment-count">
-        <span class="meta-label">Comments:</span>
-        <span>{{ post()!.commentCount }}</span>
-      </div>
     </footer>
 
-    <!-- Comments section -->
-    <div *ngIf="postId()" class="comments-section">
-      <app-comments [postId]="postId()!"></app-comments>
-    </div>
+    <!-- Comments section -->    
+    <app-comments [postId]="postId()!"></app-comments>
+    
   </article>
 
   <!-- Not found fallback -->

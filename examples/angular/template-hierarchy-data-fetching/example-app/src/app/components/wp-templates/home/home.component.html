@@ -1,57 +1,44 @@
-<main>
-  <div class="container">
-    <!-- Page Title -->
-    <section class="page-header">
-      <h1>{{ pageTitle() }}</h1>   
-    </section>
+<div class="container">
+  <header class="page-header text-center mt-4">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
 
-    <!-- Loading state (initial load) -->
-    <section *ngIf="loading() && allPosts().length === 0">
-      <app-loading text="Loading posts..."></app-loading>
-    </section>
+  <section *ngIf="loading() && allPosts().length === 0">
+    <app-loading text="Loading posts..."></app-loading>
+  </section>
 
-    <!-- Error state -->
-    <section *ngIf="error() && !loading()">
-      <div class="error-container">
-        <h2>Error Loading Posts</h2>
-        <p>{{ error() }}</p>
-        <button 
-          (click)="refreshPosts()" 
-          class="btn btn-primary">
-          Try Again
-        </button>
+  <section *ngIf="error() && !loading()">
+    <div class="error-container">
+      <h2>Error Loading Posts</h2>
+      <p>{{ error() }}</p>
+      <button (click)="refreshPosts()" class="button button-primary">
+        Try Again
+      </button>
+    </div>
+  </section>
+
+  <section *ngIf="!loading() && !error() && allPosts().length > 0">
+
+    <app-post-listing [posts]="allPosts()" [loading]="false" [cols]="3">
+    </app-post-listing>
+
+    <div class="load-more-section text-center" *ngIf="hasMorePosts()">
+      <div *ngIf="loadingMore()" class="loading-more">
+        <app-loading text="Loading more posts..."></app-loading>
       </div>
-    </section>
 
-    <!-- Posts listing -->
-    <section *ngIf="!loading() && !error() && allPosts().length > 0">
-      <app-post-listing 
-        [posts]="allPosts()" 
-        [loading]="false" 
-        [cols]="3">
-      </app-post-listing>
+      <button
+        *ngIf="!loadingMore()"
+        (click)="loadMorePosts()"
+        class="button button-primary button-large"
+      >
+        Load More
+        <span class="posts-count">({{ getPostsCount() }} loaded)</span>
+      </button>
+    </div>
+  </section>
 
-      <!-- Load More Section -->
-      <div class="load-more-section" *ngIf="hasMorePosts()">
-        <div *ngIf="loadingMore()" class="loading-more">
-          <app-loading text="Loading more posts..."></app-loading>
-        </div>
-        
-        <button 
-          *ngIf="!loadingMore()" 
-          (click)="loadMorePosts()" 
-          class="btn btn-primary btn-large">
-          Load More Posts
-          <span class="posts-count">({{ getPostsCount() }} loaded)</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- Empty state -->
-    <section *ngIf="!loading() && !error() && allPosts().length === 0">
-      <app-empty-state 
-        [text]="'No ' + (category ? 'posts found in this category' : tag ? 'posts found with this tag' : 'blog posts found') + '.'">
-      </app-empty-state>
-    </section>
-  </div>
-</main>
+  <section *ngIf="!loading() && !error() && allPosts().length === 0">
+    <app-empty-state [text]="'No posts found.'"> </app-empty-state>
+  </section>
+</div>

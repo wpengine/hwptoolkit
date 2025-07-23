@@ -1,0 +1,154 @@
+<form
+  id="comment-form"
+  class="comment-form"
+  (ngSubmit)="onSubmit($event)"
+  #commentForm="ngForm"
+>
+  <!-- Reply indication -->
+  <div *ngIf="replyData" class="reply-to">    
+      <div>Replying to <strong>{{ replyData.author }}</strong></div>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isSubmitting()" class="submitting-overlay">
+    <p>Submitting your comment...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="formError()" class="error-message">
+    <p>{{ formError()?.message || "Error submitting comment" }}</p>
+    <button type="button" (click)="clearError()" class="close-error">×</button>
+  </div>
+
+  <!-- Success message -->
+  <div *ngIf="showSuccess()" class="success-message">
+    <p>Comment submitted successfully but waiting for approval!</p>
+  </div>
+
+  <!-- Author name -->
+  <div class="form-group">
+    <label for="author">Name *</label>
+    <input
+      type="text"
+      id="author"
+      name="author"
+      [(ngModel)]="formData.author"
+      required
+      maxlength="245"
+      placeholder="Your name"
+      [disabled]="isSubmitting()"
+      #authorField="ngModel"
+    />
+    <div
+      *ngIf="authorField.invalid && commentForm.submitted && !isSubmitting()"
+      class="field-error"
+    >
+      <span *ngIf="authorField.errors?.['required']">Name is required</span>
+      <span *ngIf="authorField.errors?.['maxlength']"
+        >Name must be less than 245 characters</span
+      >
+    </div>
+  </div>
+
+  <!-- Author email -->
+  <div class="form-group">
+    <label for="email">Email *</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      [(ngModel)]="formData.email"
+      required
+      maxlength="100"
+      placeholder="your@email.com"
+      [disabled]="isSubmitting()"
+      #emailField="ngModel"
+    />
+    <div
+      *ngIf="emailField.invalid && commentForm.submitted && !isSubmitting()"
+      class="field-error"
+    >
+      <span *ngIf="emailField.errors?.['required']">Email is required</span>
+      <span *ngIf="emailField.errors?.['email']"
+        >Please enter a valid email</span
+      >
+      <span *ngIf="emailField.errors?.['maxlength']"
+        >Email must be less than 100 characters</span
+      >
+    </div>
+  </div>
+
+  <!-- Author website (optional) -->
+  <div class="form-group">
+    <label for="url">Website</label>
+    <input
+      type="url"
+      id="url"
+      name="url"
+      [(ngModel)]="formData.url"
+      maxlength="200"
+      placeholder="https://yourwebsite.com"
+      [disabled]="isSubmitting()"
+      #urlField="ngModel"
+    />
+    <div
+      *ngIf="urlField.invalid && commentForm.submitted && !isSubmitting()"
+      class="field-error"
+    >
+      <span *ngIf="urlField.errors?.['url']">Please enter a valid URL</span>
+      <span *ngIf="urlField.errors?.['maxlength']"
+        >URL must be less than 200 characters</span
+      >
+    </div>
+  </div>
+
+  <!-- Comment content -->
+  <div class="form-group">
+    <label for="content">Comment *</label>
+    <textarea
+      id="content"
+      name="content"
+      [(ngModel)]="formData.content"
+      required
+      rows="6"
+      placeholder="Write your comment here..."
+      [disabled]="isSubmitting()"
+      #contentField="ngModel"
+    ></textarea>
+    <div
+      *ngIf="contentField.invalid && commentForm.submitted && !isSubmitting()"
+      class="field-error"
+    >
+      <span *ngIf="contentField.errors?.['required']"
+        >Comment content is required</span
+      >
+    </div>
+  </div>
+
+  <!-- Submit button -->
+  <div class="form-actions text-center">
+    <button
+      type="submit"
+      [disabled]="commentForm.invalid || isSubmitting()"
+      class="button button-primary submit-comment"
+    >
+      {{
+        isSubmitting()
+          ? "Submitting..."
+          : replyData
+          ? "Post Reply"
+          : "Post Comment"
+      }}
+    </button>
+
+    <button
+      *ngIf="replyData"
+      type="button"
+      (click)="onCancel()"
+      class="button button-secondary cancel-comment"
+      [disabled]="isSubmitting()"
+    >
+      Cancel Reply
+    </button>
+  </div>
+</form>

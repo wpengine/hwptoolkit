@@ -58,28 +58,6 @@ export class GraphQLService {
   }
 
   /**
-   * Execute a GraphQL mutation
-   * @param mutation - The GraphQL mutation string
-   * @param variables - Variables for the GraphQL mutation
-   * @returns Observable with the GraphQL response
-   */
-  mutate<T = any>(mutation: string, variables: Record<string, any> = {}): Observable<GraphQLMutationResult<T>> {
-    const body = JSON.stringify({ query: mutation, variables });
-
-    return this.http.post<GraphQLResponse<T>>(this.endpoint, body, this.httpOptions)
-      .pipe(
-        map(response => ({
-          data: response.data,
-          errors: response.errors || null
-        })),
-        catchError(error => {
-          console.error('Error executing GraphQL mutation:', error);
-          return throwError(() => ({ data: null, errors: [error] }));
-        })
-      );
-  }
-
-  /**
    * Execute a GraphQL query with caching
    * @param query - The GraphQL query string
    * @param variables - Variables for the GraphQL query
@@ -193,45 +171,6 @@ export class GraphQLStateService {
         variables.set(newVars);
         return execute();
       }
-    };
-  }
-
-  /**
-   * Create a reactive GraphQL mutation
-   * @param mutation - The GraphQL mutation string
-   * @returns Object with mutation state and execute function
-   */
-  createMutation<T = any>(mutation: string) {
-    const data = signal<T | null>(null);
-    const loading = signal<boolean>(false);
-    const error = signal<Error | null>(null);
-
-    const execute = (variables: Record<string, any> = {}) => {
-      loading.set(true);
-      error.set(null);
-
-      return this.graphqlService.mutate<T>(mutation, variables).pipe(
-        tap({
-          next: (result) => {
-            data.set(result.data);
-            if (result.errors) {
-              error.set(new Error(result.errors[0]?.message || 'Mutation failed'));
-            }
-            loading.set(false);
-          },
-          error: (err) => {
-            error.set(err);
-            loading.set(false);
-          }
-        })
-      );
-    };
-
-    return {
-      data: data.asReadonly(),
-      loading: loading.asReadonly(),
-      error: error.asReadonly(),
-      execute
     };
   }
 }

@@ -50,14 +50,14 @@
 
           <!-- Categories -->
           <div *ngIf="hasCategories(post)" class="categories-container">
-            <span>Categories:</span>
+            <span>{{ post.categories!.nodes.length === 1 ? 'Category:' : 'Categories:' }}</span>
             <ul class="post-categories">
               <li
                 *ngFor="let category of post.categories!.nodes; let i = index"
                 [attr.key]="category.slug"
               >
                 <a [routerLink]="getCategoryLink(category.slug)">
-                  {{ category.name }} </a
+                  {{ category.name }}</a
                 >{{ !isLastItem(i, post.categories!.nodes) ? ", " : "" }}
               </li>
             </ul>

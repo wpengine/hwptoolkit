@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { GraphQLService, gql } from '../../utils/graphql.service';
@@ -38,7 +38,7 @@ interface NavigationResponse {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent implements OnInit {
   // Reactive signals for component state
@@ -48,17 +48,11 @@ export class HeaderComponent implements OnInit {
   navigationLoading = signal<boolean>(false);
   error = signal<string | null>(null);
 
-  constructor(
-    private graphqlService: GraphQLService,
-    private router: Router
-  ) {}
+  constructor(private graphqlService: GraphQLService, private router: Router) {}
 
   ngOnInit() {
-    // Load data with a delay to avoid change detection issues
-    setTimeout(() => {
-      this.loadSiteSettings();
-      this.loadNavigation();
-    }, 0);
+    this.loadSiteSettings();
+    this.loadNavigation();
   }
 
   private loadSiteSettings() {
@@ -76,7 +70,7 @@ export class HeaderComponent implements OnInit {
     `;
 
     this.settingsLoading.set(true);
-    
+
     this.graphqlService.query<SiteSettings>(SETTINGS_QUERY, {}).subscribe({
       next: (data: SiteSettings) => {
         if (data?.generalSettings?.title) {
@@ -88,7 +82,7 @@ export class HeaderComponent implements OnInit {
         console.error('Error loading site settings:', error);
         this.error.set('Failed to load site settings');
         this.settingsLoading.set(false);
-      }
+      },
     });
   }
 
@@ -122,20 +116,24 @@ export class HeaderComponent implements OnInit {
     `;
 
     this.navigationLoading.set(true);
-    
-    this.graphqlService.query<NavigationResponse>(NAVIGATION_QUERY, {}).subscribe({
-      next: (data: NavigationResponse) => {
-        if (data?.menu?.menuItems?.nodes) {
-          const hierarchicalMenu = this.flatListToHierarchical(data.menu.menuItems.nodes);
-          this.menuItems.set(hierarchicalMenu);
-        }
-        this.navigationLoading.set(false);
-      },
-      error: (error: any) => {
-        console.error('Error loading navigation:', error);       
-        this.navigationLoading.set(false);
-      }
-    });
+
+    this.graphqlService
+      .query<NavigationResponse>(NAVIGATION_QUERY, {})
+      .subscribe({
+        next: (data: NavigationResponse) => {
+          if (data?.menu?.menuItems?.nodes) {
+            const hierarchicalMenu = this.flatListToHierarchical(
+              data.menu.menuItems.nodes
+            );
+            this.menuItems.set(hierarchicalMenu);
+          }
+          this.navigationLoading.set(false);
+        },
+        error: (error: any) => {
+          console.error('Error loading navigation:', error);
+          this.navigationLoading.set(false);
+        },
+      });
   }
 
   private flatListToHierarchical(items: MenuItem[]): MenuItem[] {
@@ -143,14 +141,14 @@ export class HeaderComponent implements OnInit {
     const roots: MenuItem[] = [];
 
     // First pass: create map of all items
-    items.forEach(item => {
+    items.forEach((item) => {
       map.set(item.id, { ...item, children: [] });
     });
 
     // Second pass: build hierarchy
-    items.forEach(item => {
+    items.forEach((item) => {
       const mappedItem = map.get(item.id)!;
-      
+
       if (item.parentId && map.has(item.parentId)) {
         const parent = map.get(item.parentId)!;
         if (!parent.children) {
@@ -166,15 +164,17 @@ export class HeaderComponent implements OnInit {
   }
   isActive(item: MenuItem): boolean {
     if (!item.uri) return false;
-    
+
     // Format the URI for comparison
     let cleanUri = item.uri.startsWith('/') ? item.uri.substring(1) : item.uri;
     cleanUri = cleanUri.endsWith('/') ? cleanUri.slice(0, -1) : cleanUri;
-    
+
     // Compare with current route path
     const currentPath = this.router.url;
-    const cleanCurrentPath = currentPath.startsWith('/') ? currentPath.substring(1) : currentPath;
-    
+    const cleanCurrentPath = currentPath.startsWith('/')
+      ? currentPath.substring(1)
+      : currentPath;
+
     return `/${cleanUri}` === currentPath || cleanUri === cleanCurrentPath;
   }
 

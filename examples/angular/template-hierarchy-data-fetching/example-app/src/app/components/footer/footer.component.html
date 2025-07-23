@@ -1,24 +1,9 @@
 <footer class="footer">
   <div class="footer-content">
-    <div class="footer-section">
-      <h3>{{ title }}</h3>
-      <p>Building amazing web experiences with Angular.</p>
-    </div>
-    <div class="footer-section">
-      <h4>Quick Links</h4>
-      <ul>
-        <li *ngFor="let link of quickLinks">
-          <a [href]="link.href">{{ link.label }}</a>
-        </li>
-      </ul>
-    </div>
-    <div class="footer-section">
-      <h4>Contact</h4>
-      <p>Email: <span [innerHTML]="contactInfo.email"></span></p>
-      <p>Phone: {{ contactInfo.phone }}</p>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>&copy; {{ currentYear }} {{ title }}. All rights reserved.</p>
+    <p>
+      &copy; {{ currentYear }}
+      <span *ngIf="siteInfo()?.title && !settingsLoading()">{{ siteInfo().title }}</span
+      >. All rights reserved.
+    </p>
   </div>
 </footer>

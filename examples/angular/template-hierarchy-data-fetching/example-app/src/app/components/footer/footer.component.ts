@@ -1,26 +1,55 @@
-import { Component, Input } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { GraphQLService, gql } from '../../utils/graphql.service';
 
+interface SiteSettings {
+  generalSettings: {
+    title: string;
+  };
+}
 @Component({
   selector: 'app-footer',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.scss'
+  styleUrl: './footer.component.scss',
 })
 export class FooterComponent {
-  @Input() title: string = 'HeadlessWP Toolkit';
-  
+  siteInfo = signal<{ title: string }>({ title: 'HeadlessWP Toolkit' });
+  settingsLoading = signal<boolean>(false);
+
   currentYear = new Date().getFullYear();
-  
-  quickLinks = [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Service', href: '#' },
-    { label: 'Support', href: '#' }
-  ];
-  
-  contactInfo = {
-    email: 'contact&#64;example.com',
-    phone: '(555) 123-4567'
-  };
+  constructor(private graphqlService: GraphQLService) {}
+  ngOnInit() {
+    this.loadSiteSettings();
+  }
+  private loadSiteSettings() {
+    if (!this.graphqlService) {
+      console.error('GraphQLService is not available');
+      return;
+    }
+
+    const SETTINGS_QUERY = gql`
+      query HeaderSettingsQuery {
+        generalSettings {
+          title
+        }
+      }
+    `;
+
+    this.settingsLoading.set(true);
+
+    this.graphqlService.query<SiteSettings>(SETTINGS_QUERY, {}).subscribe({
+      next: (data: SiteSettings) => {
+        if (data?.generalSettings?.title) {
+          this.siteInfo.set({ title: data.generalSettings.title });
+        }
+        this.settingsLoading.set(false);
+      },
+      error: (error: any) => {
+        console.error('Error loading site settings:', error);
+        this.settingsLoading.set(false);
+      },
+    });
+  }
 }

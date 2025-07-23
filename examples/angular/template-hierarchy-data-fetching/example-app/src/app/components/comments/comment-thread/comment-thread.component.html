@@ -1,0 +1,57 @@
+<div class="comment-thread">
+  <div class="comment-item">
+    <div class="comment-avatar">
+      <img
+        *ngIf="comment.author.node.avatar?.url; else defaultAvatar"
+        [src]="comment.author.node.avatar!.url"
+        [alt]="comment.author.node.name"
+        class="avatar-image"
+        loading="lazy"
+      />
+      <ng-template #defaultAvatar>
+        <div class="avatar-placeholder">
+          {{ getInitials(comment.author.node.name) }}
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="comment-content">
+      <div class="comment-header">
+        <h4 class="comment-author">
+          <a
+            *ngIf="comment.author.node.url; else authorName"
+            [href]="comment.author.node.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ comment.author.node.name }}
+          </a>
+          <ng-template #authorName>
+            {{ comment.author.node.name }}
+          </ng-template>
+        </h4>
+        <time class="comment-date">{{ formatDate(comment.date) }}</time>
+      </div>
+
+      <div class="comment-body" [innerHTML]="comment.content"></div>
+
+      <div class="comment-actions">
+        <button type="button" (click)="onReply()" class="button button-small button-secondary reply-button">
+          Reply
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nested replies -->
+  <div
+    *ngIf="comment.replies && comment.replies.length > 0"
+    class="comment-replies"
+  >
+    <app-comment-thread
+      *ngFor="let replyComment of comment.replies; trackBy: trackByCommentId"
+      [comment]="replyComment"
+      (reply)="onNestedReply($event)"
+    ></app-comment-thread>
+  </div>
+</div>

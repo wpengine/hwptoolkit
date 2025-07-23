@@ -16,15 +16,14 @@
   <!-- Archive content -->
   <div *ngIf="archive() && !loading() && !error()">
     <header class="archive-header">
-      <h1 class="archive-title">{{ archive()!.name }}</h1>
+      <h1 class="archive-title">{{ getArchiveType() }}: {{ archive()!.name }}</h1>
       <div 
         *ngIf="hasDescription()" 
         class="archive-description"
         [innerHTML]="archive()!.description">
       </div>
       <div class="archive-meta">
-        <span class="archive-type-badge">{{ getArchiveType() }}</span>
-        <span class="posts-count">{{ posts().length }} {{ posts().length === 1 ? 'post' : 'posts' }}</span>
+        <span class="posts-count">{{ posts().length === 0 ? 'No posts found' : posts().length + ' ' + (posts().length === 1 ? 'post' : 'posts') + ' found' }}</span>
       </div>
     </header>
 
