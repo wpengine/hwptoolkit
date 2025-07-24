@@ -191,7 +191,6 @@ class DatabaseEntity {
 
 	/**
 	 * Creates the logging table in the database.
-	 *
 	 */
 	public static function create_table(): void {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
