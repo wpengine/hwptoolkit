@@ -7,12 +7,13 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:my-app": "node dist/my-app/server/server.mjs"
+    "serve:ssr:my-app": "node dist/my-app/server/server.mjs",
+    "prettier": "prettier --write \"src/**/*.{ts,html,css,scss}\""
   },
   "prettier": {
     "overrides": [
       {
-        "files": "*.html",
+        "files": "src/**/*.{ts,html,css,scss}",
         "options": {
           "parser": "angular"
         }
@@ -30,6 +31,7 @@
     "@angular/router": "^20.0.0",
     "@angular/ssr": "^20.0.5",
     "express": "^5.1.0",
+    "prettier": "^3.6.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

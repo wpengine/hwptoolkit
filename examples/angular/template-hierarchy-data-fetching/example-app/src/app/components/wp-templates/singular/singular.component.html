@@ -7,14 +7,10 @@
   <!-- Error state -->
   <div *ngIf="error() && !loading()" class="py-10 text-center error-container">
     <h1 class="error-title">Error</h1>
-    <p class="error-message">{{ error()?.message || 'Failed to load post' }}</p>
+    <p class="error-message">{{ error()?.message || "Failed to load post" }}</p>
     <div class="error-actions">
-      <button (click)="retry()" class="btn btn-primary mr-4">
-        Try Again
-      </button>
-      <a routerLink="/" class="btn btn-secondary">
-        Return to Homepage
-      </a>
+      <button (click)="retry()" class="btn btn-primary mr-4">Try Again</button>
+      <a routerLink="/" class="btn btn-secondary"> Return to Homepage </a>
     </div>
   </div>
 
@@ -23,7 +19,7 @@
     <!-- Post header -->
     <header class="post-header">
       <h1 class="post-title">{{ post()!.title }}</h1>
-      
+
       <!-- Post meta info -->
       <div class="post-meta-header">
         <div *ngIf="hasAuthor()" class="author-info">
@@ -32,7 +28,8 @@
             [src]="post()!.author!.node.avatar!.url"
             [alt]="post()!.author!.node.name"
             class="author-avatar"
-            loading="lazy" />
+            loading="lazy"
+          />
           <span class="author-name">By {{ post()!.author!.node.name }}</span>
         </div>
         <time class="post-date">{{ formatDate(post()!.date) }}</time>
@@ -45,14 +42,15 @@
         [src]="post()!.featuredImage!.node.sourceUrl"
         [alt]="post()!.featuredImage!.node.altText || post()!.title"
         class="featured-image"
-        loading="lazy" />
+        loading="lazy"
+      />
     </div>
 
     <!-- Post content -->
-    <div 
+    <div
       class="post-content prose prose-lg max-w-none"
-      [innerHTML]="post()!.content">
-    </div>
+      [innerHTML]="post()!.content"
+    ></div>
 
     <!-- Post meta -->
     <footer class="post-footer">
@@ -63,8 +61,10 @@
           <a
             *ngFor="let category of post()!.categories!.nodes; let i = index"
             [routerLink]="getCategoryLink(category)"
-            class="category-link">
-            {{ category.name }}{{ !isLastItem(i, post()!.categories!.nodes) ? ',' : '' }}
+            class="category-link"
+          >
+            {{ category.name
+            }}{{ !isLastItem(i, post()!.categories!.nodes) ? "," : "" }}
           </a>
         </div>
       </div>
@@ -76,16 +76,16 @@
           <a
             *ngFor="let tag of post()!.tags!.nodes; let i = index"
             [routerLink]="getTagLink(tag)"
-            class="tag-link">
-            {{ tag.name }}{{ !isLastItem(i, post()!.tags!.nodes) ? ',' : '' }}
+            class="tag-link"
+          >
+            {{ tag.name }}{{ !isLastItem(i, post()!.tags!.nodes) ? "," : "" }}
           </a>
         </div>
       </div>
     </footer>
 
-    <!-- Comments section -->    
+    <!-- Comments section -->
     <app-comments [postId]="postId()!"></app-comments>
-    
   </article>
 
   <!-- Not found fallback -->

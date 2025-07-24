@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './empty-state.component.html',
-  styleUrl: './empty-state.component.scss'
+  styleUrl: './empty-state.component.scss',
 })
 export class EmptyStateComponent {
   @Input() text: string = ''; // Default to empty string, so text only shows if provided

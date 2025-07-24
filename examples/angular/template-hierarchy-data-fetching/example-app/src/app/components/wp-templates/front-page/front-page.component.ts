@@ -60,21 +60,21 @@ interface HomeBlogPostsResponse {
   selector: 'app-front-page',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
-    LoadingComponent, 
-    EmptyStateComponent, 
-    PostListingComponent
+    CommonModule,
+    RouterModule,
+    LoadingComponent,
+    EmptyStateComponent,
+    PostListingComponent,
   ],
   templateUrl: './front-page.component.html',
-  styleUrl: './front-page.component.scss'
+  styleUrl: './front-page.component.scss',
 })
 export class FrontPageComponent implements OnInit {
   // Signals for reactive state
   settingsLoading = signal(true);
   settingsError = signal<any>(null);
   settingsData = signal<HomeSettingsResponse | null>(null);
-  
+
   blogLoading = signal(true);
   blogError = signal<any>(null);
   blogData = signal<HomeBlogPostsResponse | null>(null);
@@ -133,7 +133,7 @@ export class FrontPageComponent implements OnInit {
     const settings = this.settingsData()?.generalSettings;
     return {
       title: settings?.title || 'My WordPress Site',
-      description: settings?.description || 'Welcome to my site'
+      description: settings?.description || 'Welcome to my site',
     };
   });
 
@@ -146,42 +146,46 @@ export class FrontPageComponent implements OnInit {
 
   private loadSiteSettings() {
     console.log('🔍 Loading site settings...');
-    
+
     this.settingsLoading.set(true);
     this.settingsError.set(null);
 
-    this.graphqlService.query<HomeSettingsResponse>(this.HOME_SETTINGS_QUERY, {}).subscribe({
-      next: (data) => {
-        console.log('✅ Home Settings loaded:', data);
-        this.settingsData.set(data);
-        this.settingsLoading.set(false);
-      },
-      error: (error) => {
-        console.error('❌ Error loading home settings:', error);
-        this.settingsError.set(error);
-        this.settingsLoading.set(false);
-      }
-    });
+    this.graphqlService
+      .query<HomeSettingsResponse>(this.HOME_SETTINGS_QUERY, {})
+      .subscribe({
+        next: (data) => {
+          console.log('✅ Home Settings loaded:', data);
+          this.settingsData.set(data);
+          this.settingsLoading.set(false);
+        },
+        error: (error) => {
+          console.error('❌ Error loading home settings:', error);
+          this.settingsError.set(error);
+          this.settingsLoading.set(false);
+        },
+      });
   }
 
   private loadBlogPosts() {
     console.log('🔍 Loading recent blog posts...');
-    
+
     this.blogLoading.set(true);
     this.blogError.set(null);
 
-    this.graphqlService.query<HomeBlogPostsResponse>(this.HOME_BLOG_POSTS_QUERY, {}).subscribe({
-      next: (data) => {
-        console.log('✅ Home Blog Posts loaded:', data);
-        this.blogData.set(data);
-        this.blogLoading.set(false);
-      },
-      error: (error) => {
-        console.error('❌ Error loading blog posts:', error);
-        this.blogError.set(error);
-        this.blogLoading.set(false);
-      }
-    });
+    this.graphqlService
+      .query<HomeBlogPostsResponse>(this.HOME_BLOG_POSTS_QUERY, {})
+      .subscribe({
+        next: (data) => {
+          console.log('✅ Home Blog Posts loaded:', data);
+          this.blogData.set(data);
+          this.blogLoading.set(false);
+        },
+        error: (error) => {
+          console.error('❌ Error loading blog posts:', error);
+          this.blogError.set(error);
+          this.blogLoading.set(false);
+        },
+      });
   }
 
   refreshData() {

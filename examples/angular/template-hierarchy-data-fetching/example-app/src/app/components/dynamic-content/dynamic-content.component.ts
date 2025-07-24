@@ -45,23 +45,23 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
   private templateComponentMap: { [key: string]: () => Promise<any> } = {
     'front-page': () =>
       import('../wp-templates/front-page/front-page.component').then(
-        (m) => m.FrontPageComponent
+        (m) => m.FrontPageComponent,
       ),
     home: () =>
       import('../wp-templates/home/home.component').then(
-        (m) => m.HomeComponent
+        (m) => m.HomeComponent,
       ),
     page: () =>
       import('../wp-templates/page/page.component').then(
-        (m) => m.PageComponent
+        (m) => m.PageComponent,
       ),
     singular: () =>
       import('../wp-templates/singular/singular.component').then(
-        (m) => m.SingularComponent
+        (m) => m.SingularComponent,
       ),
     archive: () =>
       import('../wp-templates/archive/archive.component').then(
-        (m) => m.ArchiveComponent
+        (m) => m.ArchiveComponent,
       ),
   };
 
@@ -69,7 +69,7 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private templateHierarchyService: TemplateHierarchyService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   ngOnInit(): void {
@@ -79,7 +79,7 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
     this.routerEventsSubscription = this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destroy$) // Automatically unsubscribe on destroy
+        takeUntil(this.destroy$), // Automatically unsubscribe on destroy
       )
       .subscribe((event: NavigationEnd) => {
         console.log('🔄 Router navigation detected:', event.url);
@@ -191,7 +191,7 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
 
           console.log(
             '✅ Component loaded:',
-            componentClass.constructor?.name || componentClass.name
+            componentClass.constructor?.name || componentClass.name,
           );
 
           // Check if we're still on the same route
@@ -208,7 +208,7 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
           console.warn('⚠️ No component mapped for template:', templateId);
           console.log(
             'Available templates:',
-            Object.keys(this.templateComponentMap)
+            Object.keys(this.templateComponentMap),
           );
 
           // Fallback to 404

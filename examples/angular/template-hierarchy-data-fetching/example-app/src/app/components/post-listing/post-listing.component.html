@@ -48,9 +48,10 @@
             <time>{{ formatDate(post.date) }}</time>
           </div>
 
-          <!-- Categories -->
           <div *ngIf="hasCategories(post)" class="categories-container">
-            <span>{{ post.categories!.nodes.length === 1 ? 'Category:' : 'Categories:' }}</span>
+            <span>{{
+              post.categories!.nodes.length === 1 ? "Category:" : "Categories:"
+            }}</span>
             <ul class="post-categories">
               <li
                 *ngFor="let category of post.categories!.nodes; let i = index"
@@ -63,16 +64,16 @@
             </ul>
           </div>
 
-          <!-- Tags -->
           <div *ngIf="hasTags(post)" class="tags-container">
-            <span>Tags:</span>
+            <span>{{
+              post.tags!.nodes.length === 1 ? "Tag:" : "Tags:"
+            }}</span>
             <ul class="post-tags">
               <li
                 *ngFor="let tag of post.tags!.nodes; let i = index"
                 [attr.key]="tag.slug"
               >
-                <a [routerLink]="getTagLink(tag.slug)">
-                  {{ tag.name }} </a
+                <a [routerLink]="getTagLink(tag.slug)"> {{ tag.name }}</a
                 >{{ !isLastItem(i, post.tags!.nodes) ? ", " : "" }}
               </li>
             </ul>
@@ -80,13 +81,11 @@
         </div>
       </header>
 
-      <!-- Excerpt -->
       <div
         [innerHTML]="createExcerpt(post.excerpt, 150)"
         class="post-excerpt"
       ></div>
 
-      <!-- Read more link -->
       <div class="read-more">
         <a [routerLink]="post.uri" class="button button-primary button-small">
           Read more →

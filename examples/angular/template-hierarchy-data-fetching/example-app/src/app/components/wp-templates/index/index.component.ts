@@ -14,7 +14,9 @@ interface NodeWithContentEditor {
   content: string;
 }
 
-interface IndexNode extends Partial<NodeWithTitle>, Partial<NodeWithContentEditor> {
+interface IndexNode
+  extends Partial<NodeWithTitle>,
+    Partial<NodeWithContentEditor> {
   __typename: string;
   uri: string;
   id: string;
@@ -27,14 +29,9 @@ interface IndexResponse {
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    LoadingComponent,
-    NotFoundComponent
-  ],
+  imports: [CommonModule, RouterModule, LoadingComponent, NotFoundComponent],
   templateUrl: './index.component.html',
-  styleUrl: './index.component.scss'
+  styleUrl: './index.component.scss',
 })
 export class IndexComponent implements OnInit {
   @Input() templateData?: any;
@@ -69,17 +66,17 @@ export class IndexComponent implements OnInit {
 
   hasContent = computed(() => {
     const currentNode = this.node();
-    return !!(currentNode?.content?.trim());
+    return !!currentNode?.content?.trim();
   });
 
   constructor(
     private graphqlService: GraphQLService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     console.log('📄 Index component initialized');
-    
+
     // Use seed query if available
     if (this.seedQuery?.nodeByUri) {
       console.log('📋 Using seed query data for index');
@@ -93,24 +90,26 @@ export class IndexComponent implements OnInit {
   private loadIndex(): void {
     // Get URI from router or template data
     const uri = this.templateData?.uri || this.router.url || '/';
-    
+
     console.log('🔍 Loading index for URI:', uri);
-    
+
     this.loading.set(true);
     this.error.set(null);
 
-    this.graphqlService.query<IndexResponse>(this.INDEX_QUERY, { uri }).subscribe({
-      next: (response) => {
-        console.log('✅ Index data loaded:', response);
-        this.data.set(response);
-        this.loading.set(false);
-      },
-      error: (error) => {
-        console.error('❌ Error loading index:', error);
-        this.error.set(error);
-        this.loading.set(false);
-      }
-    });
+    this.graphqlService
+      .query<IndexResponse>(this.INDEX_QUERY, { uri })
+      .subscribe({
+        next: (response) => {
+          console.log('✅ Index data loaded:', response);
+          this.data.set(response);
+          this.loading.set(false);
+        },
+        error: (error) => {
+          console.error('❌ Error loading index:', error);
+          this.error.set(error);
+          this.loading.set(false);
+        },
+      });
   }
 
   /**

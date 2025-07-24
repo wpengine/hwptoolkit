@@ -1,24 +1,24 @@
 #hero {
-    background: #000;
-    background-size: cover;
-    height: 50vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-align: center;
-    
-    h1 {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-    
-    p {
-        font-size: 1.5rem;
-        max-width: 600px;
-        margin: auto;
-    }
+  background: #000;
+  background-size: cover;
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.5rem;
+    max-width: 600px;
+    margin: auto;
+  }
 }
 #recent-posts {
-    margin-top: 3rem;
+  margin-top: 3rem;
 }

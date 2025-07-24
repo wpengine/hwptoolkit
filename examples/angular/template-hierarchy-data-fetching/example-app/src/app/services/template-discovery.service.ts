@@ -8,12 +8,12 @@ interface TemplateInfo {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TemplateDiscoveryService {
   private apiUrl = 'http://localhost:3000/api/templates'; // Fixed endpoint
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAvailableTemplates(): Observable<TemplateInfo[]> {
     return this.http.get<TemplateInfo[]>(this.apiUrl);

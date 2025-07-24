@@ -1,54 +1,15 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  signal,
-  computed,
-  effect,
-} from '@angular/core';
+import { Component, Input, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CommentFormComponent } from './comment-form/comment-form.component';
 import { CommentThreadComponent } from './comment-thread/comment-thread.component';
 import { GraphQLService, gql } from '../../utils/graphql.service';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { LoadingComponent } from '../loading/loading.component';
-interface CommentAuthor {
-  node: {
-    name: string;
-    url?: string;
-    avatar?: {
-      url: string;
-    };
-  };
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  date: string;
-  author: CommentAuthor;
-  parentId?: string;
-  replies?: Comment[];
-}
-
-interface PageInfo {
-  hasNextPage: boolean;
-  endCursor: string | null;
-}
-
-interface CommentData {
-  id: string;
-  commentCount: number;
-  comments: {
-    pageInfo: PageInfo;
-    nodes: Comment[];
-  };
-}
-
-interface ReplyData {
-  author: string;
-  parentId: string;
-}
+import {
+  Comment,
+  ReplyData,
+  PageInfo,
+} from '../../interfaces/comment.interface';
 
 @Component({
   selector: 'app-comments',
@@ -68,25 +29,20 @@ export class CommentsComponent implements OnInit {
   @Input() contentType: string = 'post';
   @Input() commentsPerPage: number = 10;
 
-  // Reactive state using signals
   private data = signal<any>(null);
   loading = signal<boolean>(true);
   error = signal<any>(null);
 
-  // Additional state for pagination
   allComments = signal<Comment[]>([]);
   pageInfo = signal<PageInfo>({ hasNextPage: false, endCursor: null });
   loadingMore = signal<boolean>(false);
 
-  // Reply and form state
   replyData = signal<ReplyData | null>(null);
   showCommentForm = signal<boolean>(true);
 
-  // Computed properties
   content = computed(() => this.data()?.[this.contentType] || null);
 
   comments = computed(() => {
-    // Simply return allComments - no side effects allowed in computed
     return this.allComments();
   });
 
@@ -102,67 +58,47 @@ export class CommentsComponent implements OnInit {
     this.loadInitialComments();
   }
 
-  /**
-   * Load initial comments
-   */
   private async loadInitialComments(): Promise<void> {
     try {
       this.loading.set(true);
       this.error.set(null);
 
-      // Use actual GraphQL service to load comments
-      await this.loadComments();
+      const query = this.getCommentsQuery(this.contentType);
+      const variables = {
+        postId: this.postId,
+        first: this.commentsPerPage,
+        after: null, // Always null for initial load
+      };
+
+      return new Promise((resolve, reject) => {
+        this.graphqlService.query<any>(query, variables).subscribe({
+          next: (response) => {
+            this.data.set(response);
+
+            const contentData = response[this.contentType];
+            if (contentData?.comments?.nodes) {
+              this.allComments.set([...contentData.comments.nodes]);
+              this.pageInfo.set(contentData.comments.pageInfo);
+            }
+
+            this.loading.set(false);
+            resolve();
+          },
+          error: (error) => {
+            console.error('❌ Error loading comments:', error);
+            this.error.set(error);
+            this.loading.set(false);
+            reject(error);
+          },
+        });
+      });
     } catch (error) {
       console.error('Error loading comments:', error);
       this.error.set(error);
-    } finally {
       this.loading.set(false);
     }
   }
 
-  /**
-   * Load comments using GraphQL service
-   */
-  private async loadComments(): Promise<void> {
-    const query = this.getCommentsQuery(this.contentType);
-    const variables = {
-      postId: this.postId,
-      first: this.commentsPerPage,
-      after: null, // Always null for initial load
-    };
-
-    console.log('📤 Loading comments with variables:', variables);
-
-    return new Promise((resolve, reject) => {
-      this.graphqlService.query<any>(query, variables).subscribe({
-        next: (response) => {
-          console.log('✅ Comments loaded successfully:', response);
-
-          // Set the data for computed properties
-          this.data.set(response);
-
-          // Extract comments data and update signals
-          const contentData = response[this.contentType];
-          if (contentData?.comments?.nodes) {
-            // Set initial comments
-            this.allComments.set([...contentData.comments.nodes]);
-            this.pageInfo.set(contentData.comments.pageInfo);
-          }
-
-          resolve();
-        },
-        error: (error) => {
-          console.error('❌ Error loading comments:', error);
-          this.error.set(error);
-          reject(error);
-        },
-      });
-    });
-  }
-
-  /**
-   * Get the GraphQL query for comments
-   */
   private getCommentsQuery(contentType: string): string {
     return gql`
       query GetComments($postId: ID!, $first: Int, $after: String) {
@@ -200,7 +136,7 @@ export class CommentsComponent implements OnInit {
    */
   private buildCommentTree(
     comments: Comment[],
-    parentId: string | null = null
+    parentId: string | null = null,
   ): Comment[] {
     return comments
       .filter((comment) => comment.parentId === parentId)
@@ -211,7 +147,7 @@ export class CommentsComponent implements OnInit {
   }
 
   /**
-   * Load more comments (pagination)
+   * Load more comments with load more button
    */
   async loadMoreComments(): Promise<void> {
     if (!this.pageInfo().hasNextPage || this.loadingMore()) {
@@ -228,48 +164,37 @@ export class CommentsComponent implements OnInit {
         after: this.pageInfo().endCursor,
       };
 
-      console.log('📤 Loading more comments with variables:', variables);
-
       return new Promise((resolve, reject) => {
         this.graphqlService.query<any>(query, variables).subscribe({
           next: (response) => {
-            console.log('✅ More comments loaded successfully:', response);
-
             const moreCommentsData = response[this.contentType];
 
             if (moreCommentsData?.comments?.nodes) {
               const newComments = moreCommentsData.comments.nodes;
 
-              // Add new comments to existing ones
               this.allComments.update((existing) => [
                 ...existing,
                 ...newComments,
               ]);
 
-              // Update pagination info
               this.pageInfo.set(moreCommentsData.comments.pageInfo);
             }
 
             resolve();
           },
           error: (error) => {
-            console.error('❌ Error loading more comments:', error);
             this.error.set(error);
             reject(error);
           },
         });
       });
     } catch (error) {
-      console.error('Error loading more comments:', error);
       this.error.set(error);
     } finally {
       this.loadingMore.set(false);
     }
   }
 
-  /**
-   * Handle reply to a specific comment
-   */
   handleReply(replyData: { author: string; parentId: string }): void {
     this.replyData.set({
       author: replyData.author,
@@ -285,17 +210,11 @@ export class CommentsComponent implements OnInit {
     }, 100);
   }
 
-  /**
-   * Cancel reply
-   */
   cancelReply(): void {
     this.replyData.set(null);
     this.showCommentForm.set(true);
   }
 
-  /**
-   * Handle comment form submission
-   */
   handleCommentSubmit(commentData: any): void {
     console.log('Comment submitted:', commentData);
   }
@@ -305,12 +224,5 @@ export class CommentsComponent implements OnInit {
    */
   trackByCommentId(index: number, comment: Comment): string {
     return comment.id;
-  }
-
-  /**
-   * Validator for content type (used for input validation)
-   */
-  private isValidContentType(value: string): boolean {
-    return ['post', 'page'].includes(value);
   }
 }

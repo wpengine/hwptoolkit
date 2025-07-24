@@ -52,9 +52,11 @@
           </a>
 
           <!-- Recursive dropdown menu for children -->
-          <div *ngIf="item.children && item.children.length > 0"
-              class="dropdown"
-              [class]="dropdownClass(level)">
+          <div
+            *ngIf="item.children && item.children.length > 0"
+            class="dropdown"
+            [class]="dropdownClass(level)"
+          >
             <ul
               *ngIf="item.children && item.children.length > 0"
               class="dropdown-item-container"

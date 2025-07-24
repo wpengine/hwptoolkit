@@ -36,7 +36,11 @@
       <div class="comment-body" [innerHTML]="comment.content"></div>
 
       <div class="comment-actions">
-        <button type="button" (click)="onReply()" class="button button-small button-secondary reply-button">
+        <button
+          type="button"
+          (click)="onReply()"
+          class="button button-small button-secondary reply-button"
+        >
           Reply
         </button>
       </div>

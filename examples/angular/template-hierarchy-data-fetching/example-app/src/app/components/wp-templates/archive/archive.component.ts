@@ -57,10 +57,10 @@ interface ArchiveResponse {
     RouterModule,
     LoadingComponent,
     EmptyStateComponent,
-    PostListingComponent
+    PostListingComponent,
   ],
   templateUrl: './archive.component.html',
-  styleUrl: './archive.component.scss'
+  styleUrl: './archive.component.scss',
 })
 export class ArchiveComponent implements OnInit {
   @Input() templateData?: any;
@@ -205,17 +205,17 @@ export class ArchiveComponent implements OnInit {
   posts = computed(() => {
     const archiveData = this.archive();
     if (!archiveData) return [];
-    
+
     // Handle different archive types
     if (archiveData.contentNodes?.nodes) {
       return archiveData.contentNodes.nodes;
     }
-    
+
     // Handle User archives (posts field)
     if (archiveData.posts?.nodes) {
       return archiveData.posts.nodes;
     }
-    
+
     return [];
   });
 
@@ -225,12 +225,12 @@ export class ArchiveComponent implements OnInit {
 
   constructor(
     private graphqlService: GraphQLService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     console.log('🏛️ Archive component initialized');
-    
+
     // Use seed query if available
     if (this.seedQuery?.archive) {
       console.log('📋 Using seed query data for archive');
@@ -243,24 +243,26 @@ export class ArchiveComponent implements OnInit {
 
   private loadArchive(): void {
     const uri = this.templateData?.uri || this.router.url;
-    
+
     console.log('🔍 Loading archive for URI:', uri);
-    
+
     this.loading.set(true);
     this.error.set(null);
 
-    this.graphqlService.query<ArchiveResponse>(this.archiveQuery, { uri }).subscribe({
-      next: (response) => {
-        console.log('✅ Archive data loaded:', response);
-        this.data.set(response);
-        this.loading.set(false);
-      },
-      error: (error) => {
-        console.error('❌ Error loading archive:', error);
-        this.error.set(error);
-        this.loading.set(false);
-      }
-    });
+    this.graphqlService
+      .query<ArchiveResponse>(this.archiveQuery, { uri })
+      .subscribe({
+        next: (response) => {
+          console.log('✅ Archive data loaded:', response);
+          this.data.set(response);
+          this.loading.set(false);
+        },
+        error: (error) => {
+          console.error('❌ Error loading archive:', error);
+          this.error.set(error);
+          this.loading.set(false);
+        },
+      });
   }
 
   /**
@@ -276,7 +278,7 @@ export class ArchiveComponent implements OnInit {
   getArchiveType(): string {
     const archiveData = this.archive();
     if (!archiveData) return 'Archive';
-    
+
     switch (archiveData.__typename) {
       case 'Category':
         return 'Category';
@@ -294,6 +296,6 @@ export class ArchiveComponent implements OnInit {
    */
   hasDescription(): boolean {
     const archiveData = this.archive();
-    return !!(archiveData?.description?.trim());
+    return !!archiveData?.description?.trim();
   }
 }

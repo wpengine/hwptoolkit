@@ -2,7 +2,9 @@
   <div class="footer-content">
     <p>
       &copy; {{ currentYear }}
-      <span *ngIf="siteInfo()?.title && !settingsLoading()">{{ siteInfo().title }}</span
+      <span *ngIf="siteInfo()?.title && !settingsLoading()">{{
+        siteInfo().title
+      }}</span
       >. All rights reserved.
     </p>
   </div>

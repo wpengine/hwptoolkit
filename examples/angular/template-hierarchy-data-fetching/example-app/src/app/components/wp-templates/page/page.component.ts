@@ -31,11 +31,11 @@ interface PageResponse {
   standalone: true,
   imports: [CommonModule, RouterModule, LoadingComponent, CommentsComponent],
   templateUrl: './page.component.html',
-  styleUrl: './page.component.scss'
+  styleUrl: './page.component.scss',
 })
 export class PageComponent implements OnInit {
   @Input() seedQuery?: any; // Data from template hierarchy if available
-  @Input() slug?: string;   // Optional slug override
+  @Input() slug?: string; // Optional slug override
 
   // Signals for reactive state
   loading = signal(true);
@@ -64,7 +64,7 @@ export class PageComponent implements OnInit {
 
   // Computed properties
   page = computed(() => this.pageData());
-  
+
   pageId = computed(() => {
     const page = this.page();
     return page?.databaseId || null;
@@ -73,19 +73,26 @@ export class PageComponent implements OnInit {
   // Check if comments are enabled for this page
   commentsEnabled = computed(() => {
     const page = this.page();
-    return page?.commentStatus === 'open' || (page?.commentCount && page.commentCount > 0);
+    return (
+      page?.commentStatus === 'open' ||
+      (page?.commentCount && page.commentCount > 0)
+    );
   });
 
   // Check if comments exist but are closed
   commentsClosedButExist = computed(() => {
     const page = this.page();
-    return page?.commentCount && page.commentCount > 0 && page.commentStatus !== 'open';
+    return (
+      page?.commentCount &&
+      page.commentCount > 0 &&
+      page.commentStatus !== 'open'
+    );
   });
 
   constructor(
     private graphqlService: GraphQLService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -102,7 +109,7 @@ export class PageComponent implements OnInit {
 
   private loadPageData() {
     const uri = this.getPageSlug();
-    
+
     if (!uri) {
       this.error.set('No page slug provided');
       this.loading.set(false);
@@ -110,27 +117,29 @@ export class PageComponent implements OnInit {
     }
 
     console.log('🔍 Loading page data for slug:', uri);
-    
+
     this.loading.set(true);
     this.error.set(null);
 
-    this.graphqlService.query<PageResponse>(this.PAGE_QUERY, { slug: uri }).subscribe({
-      next: (data) => {
-        console.log('✅ Page data loaded:', data);
-        
-        if (data?.page) {
-          this.pageData.set(data.page);
-        } else {
-          this.error.set('Page not found');
-        }
-        this.loading.set(false);
-      },
-      error: (error) => {
-        console.error('❌ Error loading page:', error);
-        this.error.set(error.message || 'Failed to load page');
-        this.loading.set(false);
-      }
-    });
+    this.graphqlService
+      .query<PageResponse>(this.PAGE_QUERY, { slug: uri })
+      .subscribe({
+        next: (data) => {
+          console.log('✅ Page data loaded:', data);
+
+          if (data?.page) {
+            this.pageData.set(data.page);
+          } else {
+            this.error.set('Page not found');
+          }
+          this.loading.set(false);
+        },
+        error: (error) => {
+          console.error('❌ Error loading page:', error);
+          this.error.set(error.message || 'Failed to load page');
+          this.loading.set(false);
+        },
+      });
   }
 
   private getPageSlug(): string {

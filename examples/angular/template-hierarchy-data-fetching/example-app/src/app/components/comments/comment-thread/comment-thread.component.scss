@@ -1,6 +1,6 @@
 .comment-thread {
   margin-bottom: 1rem;
-    border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
   .comment-item {
     display: flex;
     gap: 1rem;
@@ -107,7 +107,6 @@
           color: #e53e3e;
         }
       }
-
     }
   }
 
@@ -135,7 +134,6 @@
 .comment-thread:not(.comment-thread .comment-thread) {
   border-bottom: 1px solid #e2e8f0;
   padding-bottom: 1.5rem;
-
 }
 
 // Responsive design

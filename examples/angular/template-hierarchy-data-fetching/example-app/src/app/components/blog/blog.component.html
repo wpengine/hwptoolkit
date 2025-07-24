@@ -2,16 +2,18 @@
   <div class="blog-header">
     <h2>Latest Blog Posts</h2>
     <div class="blog-actions">
-      <button 
-        class="btn btn-secondary" 
+      <button
+        class="btn btn-secondary"
         (click)="refreshPosts()"
-        [disabled]="loading()">
+        [disabled]="loading()"
+      >
         Refresh
       </button>
-      <button 
-        class="btn btn-primary" 
+      <button
+        class="btn btn-primary"
         (click)="loadMorePosts()"
-        [disabled]="loading()">
+        [disabled]="loading()"
+      >
         Load More
       </button>
     </div>
@@ -26,62 +28,72 @@
   <!-- Error State -->
   <div *ngIf="error()" class="error">
     <p>Error loading posts: {{ error() }}</p>
-    <button class="btn btn-primary" (click)="refreshPosts()">
-      Try Again
-    </button>
+    <button class="btn btn-primary" (click)="refreshPosts()">Try Again</button>
   </div>
 
   <!-- Posts List -->
   <div *ngIf="!loading() && !error() && posts().length > 0" class="posts-grid">
-    <article 
-      *ngFor="let post of posts()" 
+    <article
+      *ngFor="let post of posts()"
       class="post-card"
-      [attr.data-post-id]="post.id">
-      
+      [attr.data-post-id]="post.id"
+    >
       <div class="post-content">
         <h3 class="post-title">{{ post.title }}</h3>
-        
+
         <div class="post-meta">
-          <span class="post-date">{{ post.date | date:'mediumDate' }}</span>
-          <span *ngIf="post.author" class="post-author">by {{ post.author.node.name }}</span>
+          <span class="post-date">{{ post.date | date: "mediumDate" }}</span>
+          <span *ngIf="post.author" class="post-author"
+            >by {{ post.author.node.name }}</span
+          >
         </div>
 
         <!-- Featured Image -->
         <div *ngIf="post.featuredImage" class="post-image">
-          <img 
-            [src]="post.featuredImage.node.sourceUrl" 
+          <img
+            [src]="post.featuredImage.node.sourceUrl"
             [alt]="post.featuredImage.node.altText || post.title"
-            loading="lazy">
-        </div>
-        
-        <div 
-          class="post-excerpt" 
-          [innerHTML]="post.excerpt">
+            loading="lazy"
+          />
         </div>
 
+        <div class="post-excerpt" [innerHTML]="post.excerpt"></div>
+
         <!-- Categories and Tags -->
-        <div class="post-taxonomy" *ngIf="post.categories?.nodes || post.tags?.nodes">
-          <div *ngIf="post.categories?.nodes && (post.categories?.nodes?.length ?? 0) > 0" class="post-categories">
+        <div
+          class="post-taxonomy"
+          *ngIf="post.categories?.nodes || post.tags?.nodes"
+        >
+          <div
+            *ngIf="
+              post.categories?.nodes &&
+              (post.categories?.nodes?.length ?? 0) > 0
+            "
+            class="post-categories"
+          >
             <span class="taxonomy-label">Categories:</span>
-            <span 
-              *ngFor="let category of post.categories?.nodes; let last = last" 
-              class="taxonomy-item">
+            <span
+              *ngFor="let category of post.categories?.nodes; let last = last"
+              class="taxonomy-item"
+            >
               {{ category.name }}<span *ngIf="!last">, </span>
             </span>
           </div>
-          <div *ngIf="post.tags?.nodes && (post.tags?.nodes?.length ?? 0) > 0" class="post-tags">
+          <div
+            *ngIf="post.tags?.nodes && (post.tags?.nodes?.length ?? 0) > 0"
+            class="post-tags"
+          >
             <span class="taxonomy-label">Tags:</span>
-            <span 
-              *ngFor="let tag of post.tags?.nodes; let last = last" 
-              class="taxonomy-item">
+            <span
+              *ngFor="let tag of post.tags?.nodes; let last = last"
+              class="taxonomy-item"
+            >
               {{ tag.name }}<span *ngIf="!last">, </span>
             </span>
           </div>
         </div>
-        
-        <a 
-          [href]="post.uri || '/posts/' + post.slug" 
-          class="read-more">
+
+        <a [href]="post.uri || '/posts/' + post.slug" class="read-more">
           Read More
         </a>
       </div>
@@ -89,7 +101,10 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="!loading() && !error() && posts().length === 0" class="empty-state">
+  <div
+    *ngIf="!loading() && !error() && posts().length === 0"
+    class="empty-state"
+  >
     <p>No posts found.</p>
   </div>
 </div>

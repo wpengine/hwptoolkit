@@ -11,7 +11,6 @@ import {
   PostsResponse,
 } from '../../../interfaces/post.interface';
 
-// Define your GraphQL query
 const POSTS_QUERY = `
   query GetPosts(
     $first: Int = 9
@@ -83,11 +82,11 @@ const POSTS_QUERY = `
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  // Inputs correspond to props
+
   @Input() category: string = '';
   @Input() tag: string = '';
   @Input() titlePrefix: string = 'Blog';
-  // State signals - now using shared Post interface
+
   allPosts = signal<Post[]>([]);
   initialPageInfo = signal<PageInfo | null>(null);
   loading = signal<boolean>(true);
@@ -109,10 +108,6 @@ export class HomeComponent implements OnInit {
   constructor() {}
 
   async ngOnInit(): Promise<void> {
-    // Determine the slug based on category or tag input
-    this.currentSlug = this.category || this.tag || '';
-
-    // If we have seedQuery data from template hierarchy, use it
     await this.loadPosts();
   }
   /**
@@ -127,22 +122,13 @@ export class HomeComponent implements OnInit {
         this.loadingMore.set(true);
       }
 
-      console.log('🔍 Loading posts...', {
-        category: this.category,
-        tag: this.tag,
-        after,
-        pageSize: this.postsPerPage,
-      });
-
       // Use getPosts utility function
       const data = await getPosts({
         query: POSTS_QUERY,
-        slug: this.currentSlug,
+        slug: '',
         pageSize: this.postsPerPage,
         after,
       });
-
-      console.log('✅ Posts loaded:', data);
 
       if (data?.posts) {
         this.processPosts(data);
@@ -150,7 +136,6 @@ export class HomeComponent implements OnInit {
         this.error.set('No posts data received');
       }
     } catch (error: any) {
-      console.error('❌ Error loading posts:', error);
       this.error.set(error.message || 'Failed to load posts');
     } finally {
       this.loading.set(false);
@@ -158,9 +143,6 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  /**
-   * Process posts data from API response
-   */
   private processPosts(data: PostsResponse): void {
     if (data.posts?.edges) {
       const newPosts = data.posts.edges.map((edge) => edge.node);
@@ -177,9 +159,6 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  /**
-   * Load more posts (pagination)
-   */
   async loadMorePosts(): Promise<void> {
     const pageInfo = this.initialPageInfo();
     if (pageInfo?.hasNextPage && pageInfo.endCursor && !this.loadingMore()) {
@@ -187,26 +166,17 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  /**
-   * Refresh all posts
-   */
   async refreshPosts(): Promise<void> {
     this.allPosts.set([]);
     this.initialPageInfo.set(null);
     await this.loadPosts();
   }
 
-  /**
-   * Check if there are more posts to load
-   */
   hasMorePosts(): boolean {
     const pageInfo = this.initialPageInfo();
     return pageInfo?.hasNextPage || false;
   }
 
-  /**
-   * Get current posts count
-   */
   getPostsCount(): number {
     return this.allPosts().length;
   }
@@ -220,10 +190,6 @@ export class HomeComponent implements OnInit {
     this.allPosts.update((currentPosts) => [...currentPosts, ...newPosts]);
   }
 
-  /**
-   * Handles loading state changes from the LoadMoreComponent.
-   * @param isLoading - Boolean indicating if the LoadMoreComponent is loading
-   */
   handleLoading(isLoading: boolean): void {
     this.loadingMore.set(isLoading);
   }

@@ -62,10 +62,10 @@ interface PostResponse {
     RouterModule,
     LoadingComponent,
     NotFoundComponent,
-    CommentsComponent
+    CommentsComponent,
   ],
   templateUrl: './singular.component.html',
-  styleUrl: './singular.component.scss'
+  styleUrl: './singular.component.scss',
 })
 export class SingularComponent implements OnInit {
   @Input() templateData?: any;
@@ -128,12 +128,12 @@ export class SingularComponent implements OnInit {
   constructor(
     private graphqlService: GraphQLService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
     console.log('📄 Singular component initialized');
-    
+
     // Use seed query if available
     if (this.seedQuery?.post) {
       console.log('📋 Using seed query data for post');
@@ -147,33 +147,35 @@ export class SingularComponent implements OnInit {
   private loadPost(): void {
     // Get slug from route or template data
     let slug = '';
-    
+
     if (this.templateData?.slug) {
       slug = this.templateData.slug;
     } else {
       // Extract slug from current URL path
       const path = this.router.url;
-      const segments = path.split('/').filter(segment => segment);
+      const segments = path.split('/').filter((segment) => segment);
       slug = segments[segments.length - 1] || '';
     }
-    
+
     console.log('🔍 Loading post for slug:', slug);
-    
+
     this.loading.set(true);
     this.error.set(null);
 
-    this.graphqlService.query<PostResponse>(this.POST_QUERY, { slug }).subscribe({
-      next: (response) => {
-        console.log('✅ Post data loaded:', response);
-        this.data.set(response);
-        this.loading.set(false);
-      },
-      error: (error) => {
-        console.error('❌ Error loading post:', error);
-        this.error.set(error);
-        this.loading.set(false);
-      }
-    });
+    this.graphqlService
+      .query<PostResponse>(this.POST_QUERY, { slug })
+      .subscribe({
+        next: (response) => {
+          console.log('✅ Post data loaded:', response);
+          this.data.set(response);
+          this.loading.set(false);
+        },
+        error: (error) => {
+          console.error('❌ Error loading post:', error);
+          this.error.set(error);
+          this.loading.set(false);
+        },
+      });
   }
 
   /**
@@ -184,7 +186,7 @@ export class SingularComponent implements OnInit {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 
@@ -193,7 +195,9 @@ export class SingularComponent implements OnInit {
    */
   hasCategories(): boolean {
     const currentPost = this.post();
-    return !!(currentPost?.categories?.nodes && currentPost.categories.nodes.length > 0);
+    return !!(
+      currentPost?.categories?.nodes && currentPost.categories.nodes.length > 0
+    );
   }
 
   /**
@@ -209,7 +213,7 @@ export class SingularComponent implements OnInit {
    */
   hasFeaturedImage(): boolean {
     const currentPost = this.post();
-    return !!(currentPost?.featuredImage?.node?.sourceUrl);
+    return !!currentPost?.featuredImage?.node?.sourceUrl;
   }
 
   /**
@@ -217,7 +221,7 @@ export class SingularComponent implements OnInit {
    */
   hasAuthor(): boolean {
     const currentPost = this.post();
-    return !!(currentPost?.author?.node);
+    return !!currentPost?.author?.node;
   }
 
   /**
@@ -225,7 +229,7 @@ export class SingularComponent implements OnInit {
    */
   hasAuthorAvatar(): boolean {
     const currentPost = this.post();
-    return !!(currentPost?.author?.node?.avatar?.url);
+    return !!currentPost?.author?.node?.avatar?.url;
   }
 
   /**

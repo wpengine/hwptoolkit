@@ -1,8 +1,7 @@
 <main>
   <section id="hero">
-    <!-- Loading state for settings -->
     <ng-container *ngIf="settingsLoading()">
-      <app-loading text="Loading site information..."></app-loading>
+      <app-loading text="Loading site..."></app-loading>
     </ng-container>
 
     <!-- Error state for settings -->
@@ -38,16 +37,17 @@
       </ng-container>
 
       <!-- Empty state -->
-      <ng-container *ngIf="!blogLoading() && !blogError() && posts().length === 0">
+      <ng-container
+        *ngIf="!blogLoading() && !blogError() && posts().length === 0"
+      >
         <app-empty-state></app-empty-state>
       </ng-container>
 
       <!-- Posts listing -->
-      <ng-container *ngIf="!blogLoading() && !blogError() && posts().length > 0">
-        <app-post-listing 
-          [posts]="posts()" 
-          [loading]="false" 
-          [cols]="4">
+      <ng-container
+        *ngIf="!blogLoading() && !blogError() && posts().length > 0"
+      >
+        <app-post-listing [posts]="posts()" [loading]="false" [cols]="4">
         </app-post-listing>
       </ng-container>
     </section>

@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { GraphQLService, gql } from '../../utils/graphql.service';
-
+import { flatListToHierarchical } from '../../utils/utils';
 interface MenuItem {
   id: string;
   label: string;
@@ -48,7 +48,10 @@ export class HeaderComponent implements OnInit {
   navigationLoading = signal<boolean>(false);
   error = signal<string | null>(null);
 
-  constructor(private graphqlService: GraphQLService, private router: Router) {}
+  constructor(
+    private graphqlService: GraphQLService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.loadSiteSettings();
@@ -123,7 +126,7 @@ export class HeaderComponent implements OnInit {
         next: (data: NavigationResponse) => {
           if (data?.menu?.menuItems?.nodes) {
             const hierarchicalMenu = this.flatListToHierarchical(
-              data.menu.menuItems.nodes
+              data.menu.menuItems.nodes,
             );
             this.menuItems.set(hierarchicalMenu);
           }
@@ -135,32 +138,41 @@ export class HeaderComponent implements OnInit {
         },
       });
   }
+  // Convert flat list of menu items to hierarchical structure
 
+   
+  // private flatListToHierarchical(items: MenuItem[]): MenuItem[] {
+  //   const map = new Map<string, MenuItem>();
+  //   const roots: MenuItem[] = [];
+
+  //   // First pass: create map of all items
+  //   items.forEach((item) => {
+  //     map.set(item.id, { ...item, children: [] });
+  //   });
+
+  //   // Second pass: build hierarchy
+  //   items.forEach((item) => {
+  //     const mappedItem = map.get(item.id)!;
+
+  //     if (item.parentId && map.has(item.parentId)) {
+  //       const parent = map.get(item.parentId)!;
+  //       if (!parent.children) {
+  //         parent.children = [];
+  //       }
+  //       parent.children.push(mappedItem);
+  //     } else {
+  //       roots.push(mappedItem);
+  //     }
+  //   });
+
+  //   return roots;
+  // }
   private flatListToHierarchical(items: MenuItem[]): MenuItem[] {
-    const map = new Map<string, MenuItem>();
-    const roots: MenuItem[] = [];
-
-    // First pass: create map of all items
-    items.forEach((item) => {
-      map.set(item.id, { ...item, children: [] });
+    return flatListToHierarchical(items, {
+      idKey: 'id',
+      parentKey: 'parentId',
+      childrenKey: 'children',
     });
-
-    // Second pass: build hierarchy
-    items.forEach((item) => {
-      const mappedItem = map.get(item.id)!;
-
-      if (item.parentId && map.has(item.parentId)) {
-        const parent = map.get(item.parentId)!;
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(mappedItem);
-      } else {
-        roots.push(mappedItem);
-      }
-    });
-
-    return roots;
   }
   isActive(item: MenuItem): boolean {
     if (!item.uri) return false;

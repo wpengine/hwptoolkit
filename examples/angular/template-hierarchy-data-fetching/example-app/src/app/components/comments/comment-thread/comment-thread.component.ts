@@ -23,11 +23,11 @@ export interface Comment {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './comment-thread.component.html',
-  styleUrls: ['./comment-thread.component.scss']
+  styleUrls: ['./comment-thread.component.scss'],
 })
 export class CommentThreadComponent {
   @Input() comment!: Comment;
-  @Output() reply = new EventEmitter<{author: string, parentId: string}>();
+  @Output() reply = new EventEmitter<{ author: string; parentId: string }>();
 
   /**
    * Handle reply button click
@@ -35,14 +35,14 @@ export class CommentThreadComponent {
   onReply(): void {
     this.reply.emit({
       author: this.comment.author.node.name,
-      parentId: this.comment.id
+      parentId: this.comment.id,
     });
   }
 
   /**
    * Handle nested reply events
    */
-  onNestedReply(replyData: {author: string, parentId: string}): void {
+  onNestedReply(replyData: { author: string; parentId: string }): void {
     this.reply.emit(replyData);
   }
 
@@ -56,7 +56,7 @@ export class CommentThreadComponent {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 
@@ -66,7 +66,7 @@ export class CommentThreadComponent {
   getInitials(name: string): string {
     return name
       .split(' ')
-      .map(word => word.charAt(0))
+      .map((word) => word.charAt(0))
       .join('')
       .substring(0, 2)
       .toUpperCase();

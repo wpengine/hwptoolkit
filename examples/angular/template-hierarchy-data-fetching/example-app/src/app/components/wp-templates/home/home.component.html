@@ -18,7 +18,6 @@
   </section>
 
   <section *ngIf="!loading() && !error() && allPosts().length > 0">
-
     <app-post-listing [posts]="allPosts()" [loading]="false" [cols]="3">
     </app-post-listing>
 

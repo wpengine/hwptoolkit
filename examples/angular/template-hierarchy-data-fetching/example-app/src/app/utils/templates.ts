@@ -51,28 +51,28 @@ export interface WordPressTemplate {
 export function getPossibleTemplates(node: SeedNode) {
   let possibleTemplates: string[] = [];
 
-  if (node.template?.templateName && node.template.templateName !== "Default") {
+  if (node.template?.templateName && node.template.templateName !== 'Default') {
     possibleTemplates.push(`template-${node.template.templateName}`);
   }
 
   // Front page
   if (node.isFrontPage) {
-    possibleTemplates.push("front-page");
+    possibleTemplates.push('front-page');
   }
 
   // Blog page
   if (node.isPostsPage) {
-    possibleTemplates.push("home");
+    possibleTemplates.push('home');
   }
 
   // CPT archive page
   // eslint-disable-next-line no-underscore-dangle
-  if (node.__typename === "ContentType" && node.isPostsPage === false) {
+  if (node.__typename === 'ContentType' && node.isPostsPage === false) {
     if (node.name) {
       possibleTemplates.push(`archive-${node.name}`);
     }
 
-    possibleTemplates.push("archive");
+    possibleTemplates.push('archive');
   }
 
   // Archive Page
@@ -80,7 +80,7 @@ export function getPossibleTemplates(node: SeedNode) {
     const { taxonomyName } = node;
 
     switch (taxonomyName) {
-      case "category": {
+      case 'category': {
         if (node.slug) {
           possibleTemplates.push(`category-${node.slug}`);
         }
@@ -93,7 +93,7 @@ export function getPossibleTemplates(node: SeedNode) {
 
         break;
       }
-      case "post_tag": {
+      case 'post_tag': {
         if (node.slug) {
           possibleTemplates.push(`tag-${node.slug}`);
         }
@@ -114,7 +114,7 @@ export function getPossibleTemplates(node: SeedNode) {
 
           if (node.databaseId) {
             possibleTemplates.push(
-              `taxonomy-${taxonomyName}-${node.databaseId}`
+              `taxonomy-${taxonomyName}-${node.databaseId}`,
             );
           }
 
@@ -141,12 +141,12 @@ export function getPossibleTemplates(node: SeedNode) {
   // Singular page
   if (node.isContentNode) {
     if (
-      node?.contentType?.node?.name !== "page" &&
-      node?.contentType?.node?.name !== "post"
+      node?.contentType?.node?.name !== 'page' &&
+      node?.contentType?.node?.name !== 'post'
     ) {
       if (node.contentType?.node?.name && node.slug) {
         possibleTemplates.push(
-          `single-${node.contentType?.node?.name}-${node.slug}`
+          `single-${node.contentType?.node?.name}-${node.slug}`,
         );
       }
 
@@ -155,7 +155,7 @@ export function getPossibleTemplates(node: SeedNode) {
       }
     }
 
-    if (node?.contentType?.node?.name === "page") {
+    if (node?.contentType?.node?.name === 'page') {
       if (node.slug) {
         possibleTemplates.push(`page-${node.slug}`);
       }
@@ -167,10 +167,10 @@ export function getPossibleTemplates(node: SeedNode) {
       possibleTemplates.push(`page`);
     }
 
-    if (node?.contentType?.node?.name === "post") {
+    if (node?.contentType?.node?.name === 'post') {
       if (node.slug) {
         possibleTemplates.push(
-          `single-${node.contentType.node.name}-${node.slug}`
+          `single-${node.contentType.node.name}-${node.slug}`,
         );
       }
 
@@ -181,7 +181,7 @@ export function getPossibleTemplates(node: SeedNode) {
     possibleTemplates.push(`singular`);
   }
 
-  possibleTemplates.push("index");
+  possibleTemplates.push('index');
 
   return possibleTemplates;
 }
@@ -193,12 +193,12 @@ export function getPossibleTemplates(node: SeedNode) {
  */
 export function getTemplate(
   availableTemplates: WordPressTemplate[] | undefined,
-  possibleTemplates: string[] = []
+  possibleTemplates: string[] = [],
 ): WordPressTemplate | undefined {
   // eslint-disable-next-line no-plusplus
   for (const possibleTemplate of possibleTemplates) {
     const templateFromConfig = availableTemplates?.find(
-      (template) => template.id === possibleTemplate
+      (template) => template.id === possibleTemplate,
     );
 
     if (!templateFromConfig) {
@@ -207,7 +207,7 @@ export function getTemplate(
 
     return templateFromConfig;
   }
-  
+
   // Return undefined if no template is found
   return undefined;
 }

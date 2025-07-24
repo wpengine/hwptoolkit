@@ -1,4 +1,4 @@
-import { gql } from "./graphql.service";
+import { gql } from './graphql.service';
 
 export const SEED_QUERY = gql`
   query GetSeedNode(

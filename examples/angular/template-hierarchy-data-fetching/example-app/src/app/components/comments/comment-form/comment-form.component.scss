@@ -1,16 +1,16 @@
 #comment-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background-color: #f9f9f9;
-    padding: 1rem;
-    margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  margin-top: 1rem;
 }
 .message-container {
   margin-bottom: 1rem;
 }
 .reply-to {
-   text-align: center;
+  text-align: center;
 }
 .success-message,
 .error-message {
@@ -74,7 +74,8 @@
 .error-message .dismiss-button {
   color: #721c24;
 }
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;

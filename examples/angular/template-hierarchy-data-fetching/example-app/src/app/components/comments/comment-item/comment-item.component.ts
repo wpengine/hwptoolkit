@@ -1,36 +1,25 @@
-import { Component, Input, Output, EventEmitter, computed } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface CommentAuthor {
-  node: {
-    name: string;
-    url?: string;
-    avatar?: {
-      url: string;
-    };
-  };
-}
-
-export interface Comment {
-  id: string;
-  content: string;
-  date: string;
-  author: CommentAuthor;
-  parentId?: string;
-}
+import { Comment } from '../../../interfaces/comment.interface';
+import { formatDate } from '../../../utils/utils';
 
 @Component({
   selector: 'app-comment-item',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './comment-item.component.html',
-  styleUrl: './comment-item.component.scss'
+  styleUrl: './comment-item.component.scss',
 })
 export class CommentItemComponent {
   @Input() comment!: Comment;
   @Output() reply = new EventEmitter<Comment>();
 
-  // Computed properties using Angular signals
   avatarUrl = computed(() => {
     return (
       this.comment?.author?.node?.avatar?.url ||
@@ -46,23 +35,10 @@ export class CommentItemComponent {
     return this.comment?.author?.node?.url;
   });
 
-  /**
-   * Format date for display
-   */
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    return formatDate(dateString);
   }
 
-  /**
-   * Handle reply button click
-   */
   onReply(): void {
     this.reply.emit(this.comment);
   }

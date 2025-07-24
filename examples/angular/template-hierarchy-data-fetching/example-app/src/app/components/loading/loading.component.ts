@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './loading.component.html',
-  styleUrl: './loading.component.scss'
+  styleUrl: './loading.component.scss',
 })
 export class LoadingComponent {
   @Input() text: string = ''; // Default to empty string, so text only shows if provided

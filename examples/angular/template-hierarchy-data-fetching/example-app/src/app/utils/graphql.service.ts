@@ -1,5 +1,9 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, from } from 'rxjs';
 import { map, catchError, tap, shareReplay } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -9,7 +13,7 @@ import { environment } from '../../environments/environment';
  * Provides methods for executing GraphQL queries and mutations
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GraphQLService {
   private wpUrl = environment.wordpressUrl || 'http://localhost:8892';
@@ -17,8 +21,8 @@ export class GraphQLService {
 
   private httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
+      'Content-Type': 'application/json',
+    }),
   };
 
   constructor(private http: HttpClient) {}
@@ -29,7 +33,10 @@ export class GraphQLService {
    * @param variables - Variables for the GraphQL query
    * @returns Observable with the GraphQL response
    */
-  query<T = any>(query: string, variables: Record<string, any> = {}): Observable<T> {
+  query<T = any>(
+    query: string,
+    variables: Record<string, any> = {},
+  ): Observable<T> {
     const body = JSON.stringify({ query, variables });
 
     // Debug: Log the raw request being sent
@@ -37,23 +44,26 @@ export class GraphQLService {
       endpoint: this.endpoint,
       method: 'POST',
       headers: this.httpOptions.headers,
-      body: body
+      body: body,
     });
 
-    return this.http.post<GraphQLResponse<T>>(this.endpoint, body, this.httpOptions)
+    return this.http
+      .post<GraphQLResponse<T>>(this.endpoint, body, this.httpOptions)
       .pipe(
-        tap(response => {
+        tap((response) => {
           // Debug: Log the raw HTTP response
           console.log('📡 GraphQL HTTP Response:', response.data);
         }),
-        map(response => {
+        map((response) => {
           if (response.errors) {
             console.error('GraphQL returned errors:', response.errors);
-            throw new Error(response.errors[0]?.message || 'GraphQL query failed');
+            throw new Error(
+              response.errors[0]?.message || 'GraphQL query failed',
+            );
           }
           return response.data;
-        }), 
-        catchError(this.handleError)
+        }),
+        catchError(this.handleError),
       );
   }
 
@@ -65,12 +75,12 @@ export class GraphQLService {
    * @returns Observable with cached GraphQL response
    */
   cachedQuery<T = any>(
-    query: string, 
-    variables: Record<string, any> = {}, 
-    cacheTime: number = 5 * 60 * 1000
+    query: string,
+    variables: Record<string, any> = {},
+    cacheTime: number = 5 * 60 * 1000,
   ): Observable<T> {
     return this.query<T>(query, variables).pipe(
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
   }
 
@@ -83,7 +93,8 @@ export class GraphQLService {
     } else {
       // Server-side error
       if (error.headers.get('content-type')?.includes('text/html')) {
-        errorMessage = 'Received HTML response instead of JSON from GraphQL endpoint';
+        errorMessage =
+          'Received HTML response instead of JSON from GraphQL endpoint';
         console.error('HTML response received:', error.error);
       } else {
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
@@ -100,9 +111,9 @@ export class GraphQLService {
  * Provides reactive state management for GraphQL queries
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class GraphQLStateService { 
+export class GraphQLStateService {
   constructor(private graphqlService: GraphQLService) {}
 
   /**
@@ -111,7 +122,10 @@ export class GraphQLStateService {
    * @param initialVariables - Initial variables for the query
    * @returns Object with reactive state signals
    */
-  createQuery<T = any>(query: string, initialVariables: Record<string, any> = {}) {
+  createQuery<T = any>(
+    query: string,
+    initialVariables: Record<string, any> = {},
+  ) {
     const data = signal<T | null>(null);
     const loading = signal<boolean>(false);
     const error = signal<Error | null>(null);
@@ -128,7 +142,10 @@ export class GraphQLStateService {
       console.group('🔍 GraphQL Query Debug');
       console.log('📤 Query:', query);
       console.log('📋 Variables:', variables());
-      console.log('🌐 Endpoint:', `${environment.wordpressUrl || 'http://localhost:8892'}/graphql`);
+      console.log(
+        '🌐 Endpoint:',
+        `${environment.wordpressUrl || 'http://localhost:8892'}/graphql`,
+      );
       console.groupEnd();
 
       return this.graphqlService.query<T>(query, variables()).pipe(
@@ -137,9 +154,12 @@ export class GraphQLStateService {
             // Debug: Log successful response
             console.group('✅ GraphQL Query Success');
             console.log('📥 Response Data:', result);
-            console.log('🔧 Query was:', query.substring(0, 100) + (query.length > 100 ? '...' : ''));
+            console.log(
+              '🔧 Query was:',
+              query.substring(0, 100) + (query.length > 100 ? '...' : ''),
+            );
             console.groupEnd();
-            
+
             data.set(result);
             loading.set(false);
           },
@@ -147,14 +167,17 @@ export class GraphQLStateService {
             // Debug: Log error response
             console.group('❌ GraphQL Query Error');
             console.error('🚨 Error:', err);
-            console.log('🔧 Failed Query:', query.substring(0, 100) + (query.length > 100 ? '...' : ''));
+            console.log(
+              '🔧 Failed Query:',
+              query.substring(0, 100) + (query.length > 100 ? '...' : ''),
+            );
             console.log('📋 Variables used:', variables());
             console.groupEnd();
-            
+
             error.set(err);
             loading.set(false);
-          }
-        })
+          },
+        }),
       );
     };
 
@@ -170,7 +193,7 @@ export class GraphQLStateService {
       setVariables: (newVars: Record<string, any>) => {
         variables.set(newVars);
         return execute();
-      }
+      },
     };
   }
 }
@@ -182,8 +205,8 @@ export class GraphQLStateService {
  * @returns Promise with the GraphQL response
  */
 export async function fetchGraphQL<T = any>(
-  query: string, 
-  variables: Record<string, any> = {}
+  query: string,
+  variables: Record<string, any> = {},
 ): Promise<T> {
   const wpUrl = environment.wordpressUrl || 'http://localhost:8892';
   const endpoint = `${wpUrl}/graphql`;
@@ -205,7 +228,9 @@ export async function fetchGraphQL<T = any>(
     });
 
     if (!response.ok) {
-      throw new Error(`Network error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Network error: ${response.status} ${response.statusText}`,
+      );
     }
 
     const result: GraphQLResponse<T> = await response.json();
@@ -217,7 +242,9 @@ export async function fetchGraphQL<T = any>(
 
     if (result.errors) {
       console.error('GraphQL Error:', result.errors);
-      throw new Error(result.errors[0]?.message || 'Failed to fetch data from WordPress');
+      throw new Error(
+        result.errors[0]?.message || 'Failed to fetch data from WordPress',
+      );
     }
 
     return result.data;
@@ -225,10 +252,13 @@ export async function fetchGraphQL<T = any>(
     // Debug: Log the error
     console.group('❌ Standalone GraphQL Fetch Error');
     console.error('🚨 Error:', error);
-    console.log('🔧 Failed Query:', query.substring(0, 100) + (query.length > 100 ? '...' : ''));
+    console.log(
+      '🔧 Failed Query:',
+      query.substring(0, 100) + (query.length > 100 ? '...' : ''),
+    );
     console.log('📋 Variables used:', variables);
     console.groupEnd();
-    
+
     console.error('Error fetching from WordPress:', error);
     throw error;
   }
@@ -241,8 +271,8 @@ export async function fetchGraphQL<T = any>(
  * @returns Promise with the mutation result
  */
 export async function executeMutation<T = any>(
-  mutation: string, 
-  variables: Record<string, any> = {}
+  mutation: string,
+  variables: Record<string, any> = {},
 ): Promise<GraphQLMutationResult<T>> {
   const wpUrl = environment.wordpressUrl || 'http://localhost:8080';
   const endpoint = `${wpUrl}/graphql`;
@@ -262,7 +292,9 @@ export async function executeMutation<T = any>(
       console.error('Received HTML response instead of JSON');
       const htmlContent = await response.text();
       console.error('HTML response preview:', htmlContent.substring(0, 200));
-      throw new Error('Received HTML response from GraphQL endpoint. Check server configuration.');
+      throw new Error(
+        'Received HTML response from GraphQL endpoint. Check server configuration.',
+      );
     }
 
     const responseText = await response.text();

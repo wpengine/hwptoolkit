@@ -1,3 +1,21 @@
+
+export interface Post {
+  id: string;
+  title: string;
+  date: string;
+  uri: string;
+  excerpt: string;
+  slug?: string;
+  featuredImage?: FeaturedImage;
+  author?: Author;
+  categories?: {
+    nodes: Category[];
+  };
+  tags?: {
+    nodes: Tag[];
+  };
+}
+
 export interface Author {
   node: {
     name: string;
@@ -21,23 +39,6 @@ export interface FeaturedImage {
   node: {
     sourceUrl: string;
     altText?: string;
-  };
-}
-
-export interface Post {
-  id: string;
-  title: string;
-  date: string;
-  uri: string;
-  excerpt: string;
-  slug?: string;
-  featuredImage?: FeaturedImage;
-  author?: Author;
-  categories?: {
-    nodes: Category[];
-  };
-  tags?: {
-    nodes: Tag[];
   };
 }
 

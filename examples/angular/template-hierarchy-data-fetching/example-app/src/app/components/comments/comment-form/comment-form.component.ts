@@ -9,19 +9,10 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { gql, executeMutation } from '../../../utils/graphql.service';
-
-
-export interface ReplyData {
-  author: string;
-  parentId: string;
-}
-
-export interface CommentFormData {
-  author: string;
-  email: string;
-  url: string;
-  content: string;
-}
+import {
+  ReplyData,
+  CommentFormData,
+} from '../../../interfaces/comment.interface';
 
 @Component({
   selector: 'app-comment-form',
@@ -133,14 +124,11 @@ export class CommentFormComponent {
         }
       }
 
-      const result = await executeMutation(
-        this.CREATE_COMMENT,
-        variables
-      );
+      const result = await executeMutation(this.CREATE_COMMENT, variables);
 
       if (result.errors && result.errors.length > 0) {
         throw new Error(
-          result.errors[0]?.message || 'Failed to submit comment'
+          result.errors[0]?.message || 'Failed to submit comment',
         );
       }
 
@@ -151,9 +139,7 @@ export class CommentFormComponent {
       this.showSuccess.set(true);
 
       this.resetForm();
-
     } catch (error: any) {
-
       const errorMessage = error.message || 'Failed to submit comment';
       const commentError = new Error(errorMessage);
 

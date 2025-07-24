@@ -1,4 +1,4 @@
-import { fetchGraphQL } from "./graphql.service";
+import { fetchGraphQL } from './graphql.service';
 
 /**
  * Fetches posts from the GraphQL API.
@@ -108,7 +108,7 @@ export function createExcerpt(content: string, length = 150) {
  */
 export function flatListToHierarchical(
   data: any[] = [],
-  { idKey = 'id', parentKey = 'parentId', childrenKey = 'children' } = {}
+  { idKey = 'id', parentKey = 'parentId', childrenKey = 'children' } = {},
 ) {
   const tree: any[] = [];
   const childrenOf: Record<string | number, any[]> = {};

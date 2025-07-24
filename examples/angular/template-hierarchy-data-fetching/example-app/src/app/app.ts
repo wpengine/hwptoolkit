@@ -5,12 +5,7 @@ import { DynamicContentComponent } from './components/dynamic-content/dynamic-co
 
 @Component({
   selector: 'app-root',
-  imports: [
-    HeaderComponent,
-    DynamicContentComponent,
-    FooterComponent,
-  ],
-  templateUrl: './app.html'
+  imports: [HeaderComponent, DynamicContentComponent, FooterComponent],
+  templateUrl: './app.html',
 })
-export class App {  
-}
+export class App {}
