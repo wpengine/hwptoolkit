@@ -17,7 +17,7 @@ use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
  */
 class PluginTest extends WPTestCase {
 
-	public function test_instance_from_function_in_hwp_previews() {
+	public function test_instance_from_function_in_wpgraphql_logging_plugin_init() {
 		$instance = wpgraphql_logging_plugin_init();
 		$this->assertTrue( $instance instanceof Plugin );
 	}

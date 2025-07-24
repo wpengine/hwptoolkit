@@ -26,7 +26,7 @@ class PluginHooksTest extends WPTestCase {
 		DatabaseEntity::drop_table();
 	}
 
-	public function test_instance_from_function_in_hwp_previews() {
+	public function test_instance_from_plugin_instance() {
 		$instance = PluginHooks::init();
 		$this->assertTrue( $instance instanceof PluginHooks );
 	}
