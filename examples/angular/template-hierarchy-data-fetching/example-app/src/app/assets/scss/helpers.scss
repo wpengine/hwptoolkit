@@ -1,0 +1,64 @@
+.text-center {
+  text-align: center;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+// Gap mixin
+
+// Margin mixin
+@mixin margin($direction, $size) {
+  margin-#{$direction}: $size;
+}
+
+// Margin sizes
+$spacers: (
+  1: 0.25rem,
+  2: 0.5rem,
+  3: 1rem,
+  4: 1.5rem,
+  5: 2rem,
+  6: 3rem,
+  7: 4rem,
+  8: 5rem,
+);
+@mixin gap($size) {
+  gap: $size;
+}
+
+// Generate gap classes
+@each $key, $value in $spacers {
+  .gap-#{$key} {
+    @include gap($value);
+  }
+}
+// Generate margin classes
+@each $key, $value in $spacers {
+  // Top margin
+  .mt-#{$key} {
+    @include margin(top, $value);
+  }
+
+  // Bottom margin
+  .mb-#{$key} {
+    @include margin(bottom, $value);
+  }
+
+  // Left margin
+  .ml-#{$key} {
+    @include margin(left, $value);
+  }
+
+  // Right margin
+  .mr-#{$key} {
+    @include margin(right, $value);
+  }
+}

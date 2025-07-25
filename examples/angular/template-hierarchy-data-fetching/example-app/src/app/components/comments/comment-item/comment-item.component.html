@@ -1,0 +1,41 @@
+<article class="comment-item">
+  <div class="comment-meta">
+    <img
+      [src]="avatarUrl()"
+      [alt]="authorName() + '\'s avatar'"
+      class="comment-avatar"
+      loading="lazy"
+    />
+    <div class="comment-info">
+      <div class="comment-author">
+        <a
+          *ngIf="authorUrl(); else authorNameTemplate"
+          [href]="authorUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="author-link"
+        >
+          {{ authorName() }}
+        </a>
+        <ng-template #authorNameTemplate>
+          <span class="author-name">{{ authorName() }}</span>
+        </ng-template>
+      </div>
+      <time class="comment-date" [attr.datetime]="comment.date">
+        {{ formatDate(comment.date) }}
+      </time>
+    </div>
+  </div>
+
+  <div class="comment-content" [innerHTML]="comment.content"></div>
+
+  <div class="comment-actions">
+    <button
+      (click)="onReply()"
+      class="button button-secondary button-small reply-button"
+      type="button"
+    >
+      Reply
+    </button>
+  </div>
+</article>
