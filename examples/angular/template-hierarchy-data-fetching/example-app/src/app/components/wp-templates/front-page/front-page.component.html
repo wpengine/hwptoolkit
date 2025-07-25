@@ -4,14 +4,6 @@
       <app-loading text="Loading site..."></app-loading>
     </ng-container>
 
-    <!-- Error state for settings -->
-    <div *ngIf="settingsError() && !settingsLoading()">
-      <h1>My WordPress Site</h1>
-      <p>Welcome to my site</p>
-      <small>Error loading site data: {{ settingsError()?.message }}</small>
-    </div>
-
-    <!-- Success state for settings -->
     <div *ngIf="!settingsLoading() && !settingsError()">
       <h1>{{ siteInfo().title }}</h1>
       <p>{{ siteInfo().description }}</p>
@@ -22,7 +14,6 @@
     <section id="recent-posts">
       <h2>Recent Posts</h2>
 
-      <!-- Error state for blog posts -->
       <div *ngIf="blogError() && !blogLoading()">
         <p>Failed to load posts</p>
         <p>{{ blogError()?.message }}</p>
@@ -31,23 +22,20 @@
         </button>
       </div>
 
-      <!-- Loading state for blog posts -->
       <ng-container *ngIf="blogLoading() && !blogError()">
         <app-loading text="Loading recent posts..."></app-loading>
       </ng-container>
 
-      <!-- Empty state -->
       <ng-container
-        *ngIf="!blogLoading() && !blogError() && posts().length === 0"
+        *ngIf="!blogLoading() && !blogError() && blogPosts().length === 0"
       >
-        <app-empty-state></app-empty-state>
+        <app-empty-state text="No recent posts available"></app-empty-state>
       </ng-container>
 
-      <!-- Posts listing -->
       <ng-container
-        *ngIf="!blogLoading() && !blogError() && posts().length > 0"
+        *ngIf="!blogLoading() && !blogError() && blogPosts().length > 0"
       >
-        <app-post-listing [posts]="posts()" [loading]="false" [cols]="4">
+        <app-post-listing [posts]="blogPosts()" [loading]="false" [cols]="4">
         </app-post-listing>
       </ng-container>
     </section>

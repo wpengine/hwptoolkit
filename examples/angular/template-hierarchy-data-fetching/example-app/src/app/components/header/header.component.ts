@@ -138,35 +138,6 @@ export class HeaderComponent implements OnInit {
         },
       });
   }
-  // Convert flat list of menu items to hierarchical structure
-
-   
-  // private flatListToHierarchical(items: MenuItem[]): MenuItem[] {
-  //   const map = new Map<string, MenuItem>();
-  //   const roots: MenuItem[] = [];
-
-  //   // First pass: create map of all items
-  //   items.forEach((item) => {
-  //     map.set(item.id, { ...item, children: [] });
-  //   });
-
-  //   // Second pass: build hierarchy
-  //   items.forEach((item) => {
-  //     const mappedItem = map.get(item.id)!;
-
-  //     if (item.parentId && map.has(item.parentId)) {
-  //       const parent = map.get(item.parentId)!;
-  //       if (!parent.children) {
-  //         parent.children = [];
-  //       }
-  //       parent.children.push(mappedItem);
-  //     } else {
-  //       roots.push(mappedItem);
-  //     }
-  //   });
-
-  //   return roots;
-  // }
   private flatListToHierarchical(items: MenuItem[]): MenuItem[] {
     return flatListToHierarchical(items, {
       idKey: 'id',
@@ -192,11 +163,9 @@ export class HeaderComponent implements OnInit {
 
   onMenuItemClick(item: MenuItem) {
     if (item.uri) {
-      // Handle external links
       if (item.target === '_blank' || item.uri.startsWith('http')) {
         window.open(item.uri, item.target || '_self');
       } else {
-        // Navigate internally
         this.router.navigate([item.uri]);
       }
     }

@@ -1,12 +1,30 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import {
   HttpClient,
   HttpHeaders,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError, from } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { map, catchError, tap, shareReplay } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+
+// Type definitions
+interface GraphQLResponse<T = any> {
+  data: T;
+  errors?: GraphQLError[];
+}
+
+interface GraphQLError {
+  message: string;
+  locations?: Array<{ line: number; column: number }>;
+  path?: string[];
+  extensions?: Record<string, any>;
+}
+
+interface GraphQLMutationResult<T = any> {
+  data: T | null;
+  errors: GraphQLError[] | Error[] | null;
+}
 
 /**
  * GraphQL Client Service for Angular
@@ -266,6 +284,7 @@ export async function fetchGraphQL<T = any>(
 
 /**
  * Standalone function for GraphQL mutations
+ * Used for submitting comments in this example
  * @param mutation - The GraphQL mutation string
  * @param variables - Variables for the mutation
  * @returns Promise with the mutation result
@@ -330,22 +349,4 @@ export function gql(strings: TemplateStringsArray, ...values: any[]): string {
   return strings.reduce((result, string, i) => {
     return result + string + (values[i] || '');
   }, '');
-}
-
-// Type definitions
-interface GraphQLResponse<T = any> {
-  data: T;
-  errors?: GraphQLError[];
-}
-
-interface GraphQLError {
-  message: string;
-  locations?: Array<{ line: number; column: number }>;
-  path?: string[];
-  extensions?: Record<string, any>;
-}
-
-interface GraphQLMutationResult<T = any> {
-  data: T | null;
-  errors: GraphQLError[] | Error[] | null;
 }

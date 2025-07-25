@@ -10,63 +10,7 @@ import {
   PageInfo,
   PostsResponse,
 } from '../../../interfaces/post.interface';
-
-const POSTS_QUERY = `
-  query GetPosts(
-    $first: Int = 9
-    $after: String
-    $category: String
-    $tag: String
-  ) {
-    posts(
-      first: $first
-      after: $after
-      where: { categoryName: $category, tag: $tag }
-    ) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      edges {
-        cursor
-        node {
-          id
-          title
-          date
-          excerpt
-          uri
-          slug
-          featuredImage {
-            node {
-              sourceUrl
-              altText
-            }
-          }
-          categories {
-            nodes {
-              name
-              slug
-            }
-          }
-          tags {
-            nodes {
-              name
-              slug
-            }
-          }
-          author {
-            node {
-              name
-              avatar {
-                url
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { POSTS_QUERY } from '../../../utils/postQuery';
 
 @Component({
   selector: 'app-home',
@@ -121,8 +65,7 @@ export class HomeComponent implements OnInit {
       } else {
         this.loadingMore.set(true);
       }
-
-      // Use getPosts utility function
+      
       const data = await getPosts({
         query: POSTS_QUERY,
         slug: '',

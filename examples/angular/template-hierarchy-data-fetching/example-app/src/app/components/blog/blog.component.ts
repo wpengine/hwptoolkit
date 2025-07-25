@@ -1,10 +1,10 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  GraphQLStateService,
-  gql,
+  GraphQLStateService
 } from '../../utils/graphql.service';
 import { Post, PostsResponse  } from '../../interfaces/post.interface';
+import { POSTS_QUERY } from '../../utils/postQuery';
 
 @Component({
   selector: 'app-blog',
@@ -28,65 +28,9 @@ export class BlogComponent implements OnInit {
 
   ngOnInit() {
     this.postsQuery = this.graphqlState.createQuery<PostsResponse>(
-      gql`
-        query GetPosts(
-          $first: Int = 9
-          $after: String
-          $category: String
-          $tag: String
-        ) {
-          posts(
-            first: $first
-            after: $after
-            where: { categoryName: $category, tag: $tag }
-          ) {
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
-            edges {
-              cursor
-              node {
-                id
-                title
-                date
-                excerpt
-                uri
-                slug
-                featuredImage {
-                  node {
-                    sourceUrl
-                    altText
-                  }
-                }
-                categories {
-                  nodes {
-                    name
-                    slug
-                  }
-                }
-                tags {
-                  nodes {
-                    name
-                    slug
-                  }
-                }
-                author {
-                  node {
-                    name
-                    avatar {
-                      url
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      `,
+      POSTS_QUERY,
       { first: 10 },
     );
-
 
     this.postsData = this.postsQuery.data;
     this.loading = this.postsQuery.loading;
@@ -109,13 +53,10 @@ export class BlogComponent implements OnInit {
       }
     };
 
-    // Update posts when data changes
-    // For now, we'll call this periodically or on data updates
     updatePosts();
   }
 
   loadMorePosts() {
-    // Example of refetching with new variables
     this.postsQuery.setVariables({ first: 20 }).subscribe({
       next: (result: any) => console.log('Loaded more posts:', result),
       error: (err: any) => console.error('Error loading more posts:', err),
@@ -123,7 +64,6 @@ export class BlogComponent implements OnInit {
   }
 
   refreshPosts() {
-    // Example of refetching with same variables
     this.postsQuery.refetch().subscribe({
       next: (result: any) => console.log('Refreshed posts:', result),
       error: (err: any) => console.error('Error refreshing posts:', err),
