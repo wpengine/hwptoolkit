@@ -6,6 +6,7 @@ namespace WPGraphQL\Logging\Logger;
 
 use Monolog\Handler\HandlerInterface;
 use Monolog\Logger;
+use Monolog\Processor\MemoryPeakUsageProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\ProcessorInterface;
@@ -220,7 +221,7 @@ class LoggerService {
 	public static function get_default_processors(): array {
 		$default_processors = [
 			new MemoryUsageProcessor(), // Logs memory usage data.
-			new MemoryUsageProcessor(), // Logs memory peak data.
+			new MemoryPeakUsageProcessor(), // Logs memory peak data.
 			new WebProcessor(), // Logs web request data. e.g. IP address, request method, URI, etc.
 			new ProcessIdProcessor(), // Logs the process ID.
 			new WPGraphQLQueryProcessor(), // Custom processor to capture GraphQL request data.

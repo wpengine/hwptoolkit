@@ -51,7 +51,7 @@ class WPGraphQLQueryProcessor implements ProcessorInterface {
 		/**
 		 * @psalm-suppress HookNotFound
 		 */
-		add_action( 'graphql_process_http_request_response', [ self::class, 'clear_request_data' ], 10, 0 );
+		add_action( 'graphql_process_http_request_response', [ self::class, 'clear_request_data' ], 999, 0 );
 	}
 
 	/**
