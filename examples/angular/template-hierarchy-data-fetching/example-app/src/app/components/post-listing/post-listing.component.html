@@ -50,7 +50,7 @@
 
           <div *ngIf="hasCategories(post)" class="categories-container">
             <span>{{
-              post.categories!.nodes.length === 1 ? "Category:" : "Categories:"
+              post.categories!.nodes.length === 1 ? 'Category:' : 'Categories:'
             }}</span>
             <ul class="post-categories">
               <li
@@ -59,22 +59,20 @@
               >
                 <a [routerLink]="getCategoryLink(category.slug)">
                   {{ category.name }}</a
-                >{{ !isLastItem(i, post.categories!.nodes) ? ", " : "" }}
+                >{{ !isLastItem(i, post.categories!.nodes) ? ', ' : '' }}
               </li>
             </ul>
           </div>
 
           <div *ngIf="hasTags(post)" class="tags-container">
-            <span>{{
-              post.tags!.nodes.length === 1 ? "Tag:" : "Tags:"
-            }}</span>
+            <span>{{ post.tags!.nodes.length === 1 ? 'Tag:' : 'Tags:' }}</span>
             <ul class="post-tags">
               <li
                 *ngFor="let tag of post.tags!.nodes; let i = index"
                 [attr.key]="tag.slug"
               >
                 <a [routerLink]="getTagLink(tag.slug)"> {{ tag.name }}</a
-                >{{ !isLastItem(i, post.tags!.nodes) ? ", " : "" }}
+                >{{ !isLastItem(i, post.tags!.nodes) ? ', ' : '' }}
               </li>
             </ul>
           </div>

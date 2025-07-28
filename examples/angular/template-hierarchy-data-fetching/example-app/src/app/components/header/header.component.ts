@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { GraphQLService, gql } from '../../utils/graphql.service';
+import { fetchGraphQLSSR, gql } from '../../utils/graphql.service';
 import { flatListToHierarchical } from '../../utils/utils';
 interface MenuItem {
   id: string;
@@ -48,10 +48,7 @@ export class HeaderComponent implements OnInit {
   navigationLoading = signal<boolean>(false);
   error = signal<string | null>(null);
 
-  constructor(
-    private graphqlService: GraphQLService,
-    private router: Router,
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.loadSiteSettings();
@@ -59,11 +56,6 @@ export class HeaderComponent implements OnInit {
   }
 
   private loadSiteSettings() {
-    if (!this.graphqlService) {
-      console.error('GraphQLService is not available');
-      return;
-    }
-
     const SETTINGS_QUERY = gql`
       query HeaderSettingsQuery {
         generalSettings {
@@ -74,27 +66,21 @@ export class HeaderComponent implements OnInit {
 
     this.settingsLoading.set(true);
 
-    this.graphqlService.query<SiteSettings>(SETTINGS_QUERY, {}).subscribe({
-      next: (data: SiteSettings) => {
+    fetchGraphQLSSR<SiteSettings>(SETTINGS_QUERY, {})
+      .then((data) => {
         if (data?.generalSettings?.title) {
           this.siteInfo.set({ title: data.generalSettings.title });
         }
         this.settingsLoading.set(false);
-      },
-      error: (error: any) => {
+      })
+      .catch((error) => {
         console.error('Error loading site settings:', error);
         this.error.set('Failed to load site settings');
         this.settingsLoading.set(false);
-      },
-    });
+      });
   }
 
   private loadNavigation() {
-    if (!this.graphqlService) {
-      console.error('GraphQLService is not available');
-      return;
-    }
-
     const NAVIGATION_QUERY = gql`
       query HeaderNavigationQuery($after: String = null) {
         menu(id: "primary", idType: LOCATION) {
@@ -120,22 +106,19 @@ export class HeaderComponent implements OnInit {
 
     this.navigationLoading.set(true);
 
-    this.graphqlService
-      .query<NavigationResponse>(NAVIGATION_QUERY, {})
-      .subscribe({
-        next: (data: NavigationResponse) => {
-          if (data?.menu?.menuItems?.nodes) {
-            const hierarchicalMenu = this.flatListToHierarchical(
-              data.menu.menuItems.nodes,
-            );
-            this.menuItems.set(hierarchicalMenu);
-          }
-          this.navigationLoading.set(false);
-        },
-        error: (error: any) => {
-          console.error('Error loading navigation:', error);
-          this.navigationLoading.set(false);
-        },
+    fetchGraphQLSSR<NavigationResponse>(NAVIGATION_QUERY, {})
+      .then((data) => {
+        if (data?.menu?.menuItems?.nodes) {
+          const hierarchicalMenu = this.flatListToHierarchical(
+            data.menu.menuItems.nodes
+          );
+          this.menuItems.set(hierarchicalMenu);
+        }
+        this.navigationLoading.set(false);
+      })
+      .catch((error) => {
+        console.error('Error loading navigation:', error);
+        this.navigationLoading.set(false);
       });
   }
   private flatListToHierarchical(items: MenuItem[]): MenuItem[] {

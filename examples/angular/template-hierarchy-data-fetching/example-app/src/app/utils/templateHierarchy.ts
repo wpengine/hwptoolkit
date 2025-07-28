@@ -38,7 +38,7 @@ export class TemplateHierarchyService {
 
   constructor(
     private http: HttpClient,
-    private templateDiscoveryService: TemplateDiscoveryService,
+    private templateDiscoveryService: TemplateDiscoveryService
   ) {}
 
   /**
@@ -92,7 +92,7 @@ export class TemplateHierarchyService {
       }
 
       const possibleTemplates = getPossibleTemplates(
-        seedQueryResponse.data.nodeByUri,
+        seedQueryResponse.data.nodeByUri
       );
 
       if (!possibleTemplates || possibleTemplates.length === 0) {
@@ -127,7 +127,7 @@ export class TemplateHierarchyService {
 
   private async fetchSeedQuery(
     uri: string,
-    cancelToken: Subject<void>,
+    cancelToken: Subject<void>
   ): Promise<GraphQLResponse> {
     const body = {
       query: SEED_QUERY,
@@ -154,11 +154,10 @@ export class TemplateHierarchyService {
               }
               console.error('Error in GraphQL HTTP request:', error);
               return throwError(
-                () =>
-                  new Error(`GraphQL HTTP request failed: ${error.message}`),
+                () => new Error(`GraphQL HTTP request failed: ${error.message}`)
               );
-            }),
-          ),
+            })
+          )
       );
 
       if (response.errors && response.errors.length > 0) {
@@ -174,10 +173,10 @@ export class TemplateHierarchyService {
   }
 
   private async fetchAvailableTemplates(
-    cancelToken: Subject<void>,
+    cancelToken: Subject<void>
   ): Promise<Array<{ id: string; path: string }>> {
     console.log(
-      '📤 Fetching available templates from TemplateDiscoveryService',
+      '📤 Fetching available templates from TemplateDiscoveryService'
     );
     try {
       const templates = await firstValueFrom(
@@ -191,23 +190,23 @@ export class TemplateHierarchyService {
             }
             console.error(
               'Error in TemplateDiscoveryService HTTP request:',
-              error,
+              error
             );
             return throwError(
               () =>
                 new Error(
-                  `Template discovery HTTP request failed: ${error.message}`,
-                ),
+                  `Template discovery HTTP request failed: ${error.message}`
+                )
             );
-          }),
-        ),
+          })
+        )
       );
       console.log('📥 Available templates:', templates);
       return templates;
     } catch (error: any) {
       console.error(
         'Error fetching available templates from backend (after pipe):',
-        error,
+        error
       );
       console.log('🔄 Using fallback templates');
 
@@ -260,9 +259,9 @@ export async function uriToTemplate({
   uri: string;
 }): Promise<TemplateData> {
   console.warn(
-    '⚠️ uriToTemplate function is deprecated. Use TemplateHierarchyService instead.',
+    '⚠️ uriToTemplate function is deprecated. Use TemplateHierarchyService instead.'
   );
   throw new Error(
-    'This function requires dependency injection. Use TemplateHierarchyService instead.',
+    'This function requires dependency injection. Use TemplateHierarchyService instead.'
   );
 }

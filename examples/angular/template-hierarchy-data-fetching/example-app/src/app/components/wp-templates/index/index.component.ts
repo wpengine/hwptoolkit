@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { GraphQLService, gql } from '../../../utils/graphql.service';
+import { fetchGraphQLSSR, gql } from '../../../utils/graphql.service';
 import { LoadingComponent } from '../../loading/loading.component';
 import { NotFoundComponent } from '../../not-found/not-found.component';
+import { EmptyStateComponent } from '../../empty-state/empty-state.component';
 
-// Define interfaces for the index data structure
 interface NodeWithTitle {
   title: string;
 }
@@ -29,20 +29,21 @@ interface IndexResponse {
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoadingComponent, NotFoundComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    LoadingComponent,
+    NotFoundComponent,
+    EmptyStateComponent,
+  ],
   templateUrl: './index.component.html',
   styleUrl: './index.component.scss',
 })
 export class IndexComponent implements OnInit {
-  @Input() templateData?: any;
-  @Input() seedQuery?: any;
-
-  // State signals
   data = signal<IndexResponse | null>(null);
   loading = signal(true);
   error = signal<any>(null);
 
-  // GraphQL Query
   private INDEX_QUERY = gql`
     query indexTemplateNodeQuery($uri: String!) {
       nodeByUri(uri: $uri) {
@@ -59,7 +60,6 @@ export class IndexComponent implements OnInit {
     }
   `;
 
-  // Computed properties using Angular signals
   node = computed(() => {
     return this.data()?.nodeByUri || null;
   });
@@ -69,54 +69,28 @@ export class IndexComponent implements OnInit {
     return !!currentNode?.content?.trim();
   });
 
-  constructor(
-    private graphqlService: GraphQLService,
-    private router: Router,
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    console.log('📄 Index component initialized');
-
-    // Use seed query if available
-    if (this.seedQuery?.nodeByUri) {
-      console.log('📋 Using seed query data for index');
-      this.data.set({ nodeByUri: this.seedQuery.nodeByUri });
-      this.loading.set(false);
-    } else {
-      this.loadIndex();
-    }
+    this.loadIndex();
   }
 
   private loadIndex(): void {
-    // Get URI from router or template data
-    const uri = this.templateData?.uri || this.router.url || '/';
-
-    console.log('🔍 Loading index for URI:', uri);
+    const uri = this.router.url;
 
     this.loading.set(true);
     this.error.set(null);
 
-    this.graphqlService
-      .query<IndexResponse>(this.INDEX_QUERY, { uri })
-      .subscribe({
-        next: (response) => {
-          console.log('✅ Index data loaded:', response);
-          this.data.set(response);
-          this.loading.set(false);
-        },
-        error: (error) => {
-          console.error('❌ Error loading index:', error);
-          this.error.set(error);
-          this.loading.set(false);
-        },
+    fetchGraphQLSSR<IndexResponse>(this.INDEX_QUERY, { uri })
+      .then((response) => {
+        this.data.set(response);
+      })
+      .catch((error) => {
+        this.error.set(error);
+      })
+      .finally(() => {
+        this.loading.set(false);
       });
-  }
-
-  /**
-   * Retry loading the index
-   */
-  retry(): void {
-    this.loadIndex();
   }
 
   /**

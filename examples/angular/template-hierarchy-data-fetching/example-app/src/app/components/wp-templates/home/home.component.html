@@ -21,19 +21,19 @@
     <app-post-listing [posts]="allPosts()" [loading]="false" [cols]="3">
     </app-post-listing>
 
-    <div class="load-more-section text-center" *ngIf="hasMorePosts()">
+    <div class="load-more-section text-center asd" *ngIf="hasMorePosts()">
       <div *ngIf="loadingMore()" class="loading-more">
         <app-loading text="Loading more posts..."></app-loading>
       </div>
 
-      <button
-        *ngIf="!loadingMore()"
-        (click)="loadMorePosts()"
-        class="button button-primary button-large"
+      <app-load-more
+        [initialPosts]="allPosts()"
+        [initialPageInfo]="initialPageInfo()"
+        (newPostsLoaded)="handleNewPosts($event)"
+        (pageInfoUpdated)="handlePageInfoUpdate($event)"
+        (loadingStateChanged)="handleLoading($event)"
       >
-        Load More
-        <span class="posts-count">({{ getPostsCount() }} loaded)</span>
-      </button>
+      </app-load-more>
     </div>
   </section>
 

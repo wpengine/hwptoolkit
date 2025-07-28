@@ -3,7 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LoadingComponent } from '../loading/loading.component';
 import { Post } from '../../interfaces/post.interface';
-import { formatDate, createExcerpt, getCategoryLink, getTagLink } from '../../utils/utils';
+import {
+  formatDate,
+  createExcerpt,
+  getCategoryLink,
+  getTagLink,
+} from '../../utils/utils';
 
 @Component({
   selector: 'app-post-listing',

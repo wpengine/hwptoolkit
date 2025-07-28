@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-not-found',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './not-found.component.html',
-  styleUrls: ['./not-found.component.css'],
+  styleUrl: './not-found.component.scss',
 })
 export class NotFoundComponent {
-  // This component handles the display of a "Not Found" page
+  @Input() title: string = 'Page Not Found';
+  @Input() text: string =
+    'Sorry, the page you are looking for does not exist. Please check the URL.';
 }

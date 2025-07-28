@@ -1,6 +1,8 @@
 export interface Post {
   id: string;
+  databaseId?: number;
   title: string;
+  content?: string;
   date: string;
   uri: string;
   excerpt: string;

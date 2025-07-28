@@ -1,4 +1,4 @@
-import { fetchGraphQL } from './graphql.service';
+import { fetchGraphQLSSR } from './graphql.service';
 
 /**
  * Fetches posts from the GraphQL API.
@@ -26,14 +26,14 @@ export async function getPosts({
   revalidate?: boolean;
 }) {
   if (!slug) {
-    return await fetchGraphQL(query, {
+    return await fetchGraphQLSSR(query, {
       first: pageSize,
       after,
     });
   }
 
   const querySlug = typeof slug === 'string' ? slug : String(slug);
-  return await fetchGraphQL(query, {
+  return await fetchGraphQLSSR(query, {
     slug: querySlug,
     first: pageSize,
     after,
@@ -108,7 +108,7 @@ export function createExcerpt(content: string, length = 150) {
  */
 export function flatListToHierarchical(
   data: any[] = [],
-  { idKey = 'id', parentKey = 'parentId', childrenKey = 'children' } = {},
+  { idKey = 'id', parentKey = 'parentId', childrenKey = 'children' } = {}
 ) {
   const tree: any[] = [];
   const childrenOf: Record<string | number, any[]> = {};

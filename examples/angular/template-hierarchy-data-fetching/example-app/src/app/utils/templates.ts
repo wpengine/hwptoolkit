@@ -114,7 +114,7 @@ export function getPossibleTemplates(node: SeedNode) {
 
           if (node.databaseId) {
             possibleTemplates.push(
-              `taxonomy-${taxonomyName}-${node.databaseId}`,
+              `taxonomy-${taxonomyName}-${node.databaseId}`
             );
           }
 
@@ -146,7 +146,7 @@ export function getPossibleTemplates(node: SeedNode) {
     ) {
       if (node.contentType?.node?.name && node.slug) {
         possibleTemplates.push(
-          `single-${node.contentType?.node?.name}-${node.slug}`,
+          `single-${node.contentType?.node?.name}-${node.slug}`
         );
       }
 
@@ -170,7 +170,7 @@ export function getPossibleTemplates(node: SeedNode) {
     if (node?.contentType?.node?.name === 'post') {
       if (node.slug) {
         possibleTemplates.push(
-          `single-${node.contentType.node.name}-${node.slug}`,
+          `single-${node.contentType.node.name}-${node.slug}`
         );
       }
 
@@ -193,12 +193,12 @@ export function getPossibleTemplates(node: SeedNode) {
  */
 export function getTemplate(
   availableTemplates: WordPressTemplate[] | undefined,
-  possibleTemplates: string[] = [],
+  possibleTemplates: string[] = []
 ): WordPressTemplate | undefined {
   // eslint-disable-next-line no-plusplus
   for (const possibleTemplate of possibleTemplates) {
     const templateFromConfig = availableTemplates?.find(
-      (template) => template.id === possibleTemplate,
+      (template) => template.id === possibleTemplate
     );
 
     if (!templateFromConfig) {

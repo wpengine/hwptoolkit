@@ -6,11 +6,9 @@
 
   <!-- Error state -->
   <div *ngIf="error() && !loading()" class="text-center error-container">
-    <h1 class="error-title">Error</h1>
-    <p class="error-message">
-      {{ error()?.message || "Failed to load archive" }}
-    </p>
-    <button (click)="retry()" class="btn btn-primary">Try Again</button>
+    <app-not-found
+      [text]="error()?.message || 'Failed to load archive data.'"
+    ></app-not-found>
   </div>
 
   <!-- Archive content -->
@@ -27,11 +25,11 @@
       <div class="archive-meta">
         <span class="posts-count">{{
           posts().length === 0
-            ? "No posts found"
+            ? 'No posts found'
             : posts().length +
-              " " +
-              (posts().length === 1 ? "post" : "posts") +
-              " found"
+              ' ' +
+              (posts().length === 1 ? 'post' : 'posts') +
+              ' found'
         }}</span>
       </div>
     </header>
@@ -52,8 +50,8 @@
 
   <!-- Fallback when no archive data -->
   <div *ngIf="!archive() && !loading() && !error()" class="fallback-container">
-    <h1 class="fallback-title">Archive Not Found</h1>
-    <p class="fallback-message">The requested archive could not be found.</p>
-    <a routerLink="/" class="btn btn-primary"> Return Home </a>
+    <app-empty-state
+      text="No archive data available. Please check back later."
+    ></app-empty-state>
   </div>
 </main>

@@ -15,7 +15,7 @@
   </div>
 
   <div *ngIf="formError()" class="error-message">
-    <p>{{ formError()?.message || "Error submitting comment" }}</p>
+    <p>{{ formError()?.message || 'Error submitting comment' }}</p>
     <button type="button" (click)="clearError()" class="close-error">×</button>
   </div>
 
@@ -127,10 +127,10 @@
     >
       {{
         isSubmitting()
-          ? "Submitting..."
+          ? 'Submitting...'
           : replyData
-            ? "Post Reply"
-            : "Post Comment"
+            ? 'Post Reply'
+            : 'Post Comment'
       }}
     </button>
 

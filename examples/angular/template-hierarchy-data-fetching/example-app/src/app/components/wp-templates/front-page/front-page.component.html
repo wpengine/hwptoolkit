@@ -15,11 +15,9 @@
       <h2>Recent Posts</h2>
 
       <div *ngIf="blogError() && !blogLoading()">
-        <p>Failed to load posts</p>
-        <p>{{ blogError()?.message }}</p>
-        <button class="btn btn-primary btn-sm" (click)="refreshData()">
-          Try Again
-        </button>
+        <app-empty-state
+          text="Failed to load recent posts. Please try again later."
+        ></app-empty-state>
       </div>
 
       <ng-container *ngIf="blogLoading() && !blogError()">

@@ -1,12 +1,12 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { GraphQLService, gql } from '../../../utils/graphql.service';
+import { fetchGraphQLSSR, gql } from '../../../utils/graphql.service';
 import { getPosts } from '../../../utils/utils';
 import { LoadingComponent } from '../../loading/loading.component';
 import { EmptyStateComponent } from '../../empty-state/empty-state.component';
 import { PostListingComponent } from '../../post-listing/post-listing.component';
-import { Post, PostsResponse } from '../../../interfaces/post.interface';
+import { Post } from '../../../interfaces/post.interface';
 import { POSTS_QUERY } from '../../../utils/postQuery';
 
 interface GeneralSettings {
@@ -16,12 +16,12 @@ interface GeneralSettings {
 
 interface HomeSettingsResponse {
   generalSettings: GeneralSettings;
-} 
+}
 
 @Component({
   selector: 'app-front-page',
   standalone: true,
-    imports: [
+  imports: [
     CommonModule,
     RouterModule,
     LoadingComponent,
@@ -32,8 +32,7 @@ interface HomeSettingsResponse {
   styleUrl: './front-page.component.scss',
 })
 export class FrontPageComponent implements OnInit {
-
-  settingsLoading =   signal(true);
+  settingsLoading = signal(true);
   settingsError = signal<any>(null);
   settingsData = signal<HomeSettingsResponse | null>(null);
 
@@ -58,35 +57,29 @@ export class FrontPageComponent implements OnInit {
     };
   });
 
-  constructor(private graphqlService: GraphQLService) {}
-
   ngOnInit() {
     this.loadSiteSettings();
     this.loadBlogPosts();
   }
 
   private loadSiteSettings() {
-    console.log('🔍 Loading site settings...');
-
     this.settingsLoading.set(true);
     this.settingsError.set(null);
 
-    this.graphqlService
-      .query<HomeSettingsResponse>(this.HOME_SETTINGS_QUERY, {})
-      .subscribe({
-        next: (data) => {
-          this.settingsData.set(data);
-          this.settingsLoading.set(false);
-        },
-        error: (error) => {
-          this.settingsError.set(error);
-          this.settingsLoading.set(false);
-        },
+    fetchGraphQLSSR<HomeSettingsResponse>(this.HOME_SETTINGS_QUERY, {})
+      .then((data) => {
+        this.settingsData.set(data);
+      })
+      .catch((error) => {
+        this.settingsError.set(error);
+      })
+      .finally(() => {
+        this.settingsLoading.set(false);
       });
   }
 
   private async loadBlogPosts(after: string | null = null): Promise<void> {
-    try {    
+    try {
       this.blogLoading.set(true);
       this.blogError.set(null);
 
@@ -96,9 +89,10 @@ export class FrontPageComponent implements OnInit {
         pageSize: 4,
         after: null,
       });
-      console.log('🔍 Loaded blog posts:', data);
       if (data?.posts) {
-        const newPosts = data.posts.edges.map((edge: { node: Post }) => edge.node);
+        const newPosts = data.posts.edges.map(
+          (edge: { node: Post }) => edge.node
+        );
         this.blogPosts.set(newPosts);
       } else {
         this.blogError.set('No posts data received');
@@ -107,12 +101,6 @@ export class FrontPageComponent implements OnInit {
       this.blogError.set(error.message || 'Failed to load posts');
     } finally {
       this.blogLoading.set(false);
-    } 
+    }
   }
-
-  refreshData() {
-    this.loadSiteSettings();
-    this.loadBlogPosts();
-  }
-
 }

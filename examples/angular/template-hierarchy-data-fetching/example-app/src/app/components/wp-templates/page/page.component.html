@@ -8,14 +8,7 @@
   <div *ngIf="error() && !loading()" class="py-10 text-center">
     <h1 class="text-2xl font-bold text-red-500 mb-2">Error</h1>
     <p class="mb-4">{{ error() }}</p>
-    <div class="space-x-4">
-      <button (click)="goHome()" class="text-blue-500 hover:underline">
-        Return to homepage
-      </button>
-      <button (click)="refreshPage()" class="btn btn-sm btn-primary">
-        Try Again
-      </button>
-    </div>
+    <app-not-found></app-not-found>
   </div>
 
   <!-- Page content -->
@@ -55,18 +48,13 @@
         <p>Comments are closed for this page.</p>
         <small class="text-muted">
           This page has {{ page()!.commentCount }}
-          {{ page()!.commentCount === 1 ? "comment" : "comments" }}.
+          {{ page()!.commentCount === 1 ? 'comment' : 'comments' }}.
         </small>
       </div>
     </div>
   </article>
 
-  <!-- Empty state (no page found) -->
-  <div *ngIf="!page() && !loading() && !error()" class="empty-state">
-    <h2>Page Not Found</h2>
-    <p>The requested page could not be found.</p>
-    <button (click)="goHome()" class="btn btn-primary">
-      Return to Homepage
-    </button>
+  <div *ngIf="!page() && !loading() && !error()">
+    <app-not-found></app-not-found>
   </div>
 </div>

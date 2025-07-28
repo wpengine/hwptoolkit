@@ -1,5 +1,5 @@
-@use "../variables" as *;
-@use "sass:color";
+@use '../variables' as *;
+@use 'sass:color';
 
 .button {
   padding: 0.5rem $gutter * 1.5;

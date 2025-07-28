@@ -1,37 +1,12 @@
-import { Component, OnInit, Input, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { GraphQLService, gql } from '../../../utils/graphql.service';
-import { LoadingComponent } from '../../loading/loading.component';
-import { EmptyStateComponent } from '../../empty-state/empty-state.component';
+import { fetchGraphQLSSR, gql } from '../../../utils/graphql.service';
+import { Post } from '../../../interfaces/post.interface';
 import { PostListingComponent } from '../../post-listing/post-listing.component';
-
-// Define interfaces for the archive data structure
-interface Post {
-  id: string;
-  uri: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  featuredImage?: {
-    node: {
-      sourceUrl: string;
-      altText?: string;
-    };
-  };
-  categories?: {
-    nodes: Array<{
-      name: string;
-      slug: string;
-    }>;
-  };
-  tags?: {
-    nodes: Array<{
-      name: string;
-      slug: string;
-    }>;
-  };
-}
+import { LoadingComponent } from '../../loading/loading.component';
+import { NotFoundComponent } from '../../not-found/not-found.component';
+import { EmptyStateComponent } from '../../empty-state/empty-state.component';
 
 interface ArchiveNode {
   __typename: string;
@@ -57,21 +32,17 @@ interface ArchiveResponse {
     RouterModule,
     LoadingComponent,
     EmptyStateComponent,
+    NotFoundComponent,
     PostListingComponent,
   ],
   templateUrl: './archive.component.html',
   styleUrl: './archive.component.scss',
 })
 export class ArchiveComponent implements OnInit {
-  @Input() templateData?: any;
-  @Input() seedQuery?: any;
-
-  // State signals
   data = signal<ArchiveResponse | null>(null);
   loading = signal(true);
   error = signal<any>(null);
 
-  // GraphQL Query
   private archiveQuery = gql`
     query ArchiveTemplateNodeQuery($uri: String!) {
       archive: nodeByUri(uri: $uri) {
@@ -223,55 +194,29 @@ export class ArchiveComponent implements OnInit {
     return this.posts().length > 0;
   });
 
-  constructor(
-    private graphqlService: GraphQLService,
-    private router: Router,
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    console.log('🏛️ Archive component initialized');
-
-    // Use seed query if available
-    if (this.seedQuery?.archive) {
-      console.log('📋 Using seed query data for archive');
-      this.data.set({ archive: this.seedQuery.archive });
-      this.loading.set(false);
-    } else {
-      this.loadArchive();
-    }
+    this.loadArchive();
   }
 
   private loadArchive(): void {
-    const uri = this.templateData?.uri || this.router.url;
-
-    console.log('🔍 Loading archive for URI:', uri);
+    const uri = this.router.url;
 
     this.loading.set(true);
     this.error.set(null);
 
-    this.graphqlService
-      .query<ArchiveResponse>(this.archiveQuery, { uri })
-      .subscribe({
-        next: (response) => {
-          console.log('✅ Archive data loaded:', response);
-          this.data.set(response);
-          this.loading.set(false);
-        },
-        error: (error) => {
-          console.error('❌ Error loading archive:', error);
-          this.error.set(error);
-          this.loading.set(false);
-        },
+    fetchGraphQLSSR<ArchiveResponse>(this.archiveQuery, { uri })
+      .then((response) => {
+        this.data.set(response);
+      })
+      .catch((error) => {
+        this.error.set(error);
+      })
+      .finally(() => {
+        this.loading.set(false);
       });
   }
-
-  /**
-   * Retry loading the archive
-   */
-  retry(): void {
-    this.loadArchive();
-  }
-
   /**
    * Get archive type for display
    */

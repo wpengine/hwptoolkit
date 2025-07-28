@@ -8,9 +8,6 @@
       </a>
     </div>
     <nav class="nav">
-      <div *ngIf="navigationLoading()" class="nav-loading">
-        <span>Loading navigation...</span>
-      </div>
       <ng-container *ngFor="let item of menuItems()">
         <ng-container
           *ngTemplateOutlet="

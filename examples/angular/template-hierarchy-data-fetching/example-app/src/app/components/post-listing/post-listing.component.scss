@@ -1,4 +1,4 @@
-@use "../../assets/scss/variables" as *;
+@use '../../assets/scss/variables' as *;
 .post-card {
   overflow: auto;
   margin-bottom: $gutter * 2;
@@ -36,7 +36,7 @@
       }
     }
     time {
-      color: #666; 
+      color: #666;
       font-size: 0.65rem;
     }
   }

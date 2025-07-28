@@ -1,6 +1,6 @@
 {
-  "name": "my-app",
-  "version": "0.0.0",
+  "name": "template-hierarchy-data-fetching",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,11 +11,28 @@
     "prettier": "prettier --write \"src/**/*.{ts,html,css,scss}\""
   },
   "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 80,
+    "tabWidth": 2,
     "overrides": [
       {
-        "files": "src/**/*.{ts,html,css,scss}",
+        "files": ["src/**/*.ts", "src/**/*.html"],
+        "options": {
+          "parser": "typescript"
+        }
+      },
+      {
+        "files": ["src/**/*.html"],
         "options": {
           "parser": "angular"
+        }
+      },
+      {
+        "files": ["src/**/*.{css,scss}"],
+        "options": {
+          "parser": "css"
         }
       }
     ]

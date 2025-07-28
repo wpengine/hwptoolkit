@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { getPosts, capitalizeWords } from '../../../utils/utils';
+import { getPosts } from '../../../utils/utils';
 import { LoadingComponent } from '../../loading/loading.component';
 import { EmptyStateComponent } from '../../empty-state/empty-state.component';
 import { PostListingComponent } from '../../post-listing/post-listing.component';
@@ -11,6 +11,7 @@ import {
   PostsResponse,
 } from '../../../interfaces/post.interface';
 import { POSTS_QUERY } from '../../../utils/postQuery';
+import { LoadMoreComponent } from '../../load-more/load-more.component';
 
 @Component({
   selector: 'app-home',
@@ -21,16 +22,12 @@ import { POSTS_QUERY } from '../../../utils/postQuery';
     LoadingComponent,
     EmptyStateComponent,
     PostListingComponent,
+    LoadMoreComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-
-  @Input() category: string = '';
-  @Input() tag: string = '';
-  @Input() titlePrefix: string = 'Blog';
-
   allPosts = signal<Post[]>([]);
   initialPageInfo = signal<PageInfo | null>(null);
   loading = signal<boolean>(true);
@@ -38,25 +35,15 @@ export class HomeComponent implements OnInit {
   loadingMore = signal<boolean>(false);
 
   postsPerPage: number = 9;
-  private currentSlug: string = '';
 
-  // Computed property for page title
   pageTitle = computed(() => {
-    const capitalizedSlug = capitalizeWords(this.currentSlug);
-    if (capitalizedSlug) {
-      return `${this.titlePrefix}: ${capitalizedSlug}`;
-    }
-    return this.titlePrefix;
+    return 'Blog';
   });
 
-  constructor() {}
-
-  async ngOnInit(): Promise<void> {
-    await this.loadPosts();
+  ngOnInit(): void {
+    this.loadPosts();
   }
-  /**
-   * Load posts using the getPosts utility function
-   */
+
   private async loadPosts(after: string | null = null): Promise<void> {
     try {
       if (!after) {
@@ -65,7 +52,7 @@ export class HomeComponent implements OnInit {
       } else {
         this.loadingMore.set(true);
       }
-      
+
       const data = await getPosts({
         query: POSTS_QUERY,
         slug: '',
@@ -135,5 +122,12 @@ export class HomeComponent implements OnInit {
 
   handleLoading(isLoading: boolean): void {
     this.loadingMore.set(isLoading);
+  }
+
+  /**
+   * Handle page info updates from blog component
+   */
+  handlePageInfoUpdate(pageInfo: PageInfo): void {
+    this.initialPageInfo.set(pageInfo);
   }
 }

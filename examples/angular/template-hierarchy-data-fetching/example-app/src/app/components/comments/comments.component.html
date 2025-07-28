@@ -1,7 +1,6 @@
 <section id="comments">
   <h2>Comments ({{ commentCount() }})</h2>
 
-  <!-- Loading state -->
   <div *ngIf="loading()">
     <app-loading text="Loading comments..."></app-loading>
   </div>
@@ -11,14 +10,6 @@
       text="No comments yet. Be the first to share your thoughts!"
     ></app-empty-state>
   </div>
-
-  <app-comment-form
-    *ngIf="showCommentForm()"
-    [postId]="postId"
-    [replyData]="replyData() || null"
-    (submit)="handleCommentSubmit($event)"
-    (cancel)="cancelReply()"
-  ></app-comment-form>
 
   <div *ngIf="!loading() && !error() && comments().length > 0">
     <app-comment-thread
@@ -33,7 +24,7 @@
         [disabled]="loadingMore()"
         class="load-more-button"
       >
-        {{ loadingMore() ? "Loading..." : "Load More Comments" }}
+        {{ loadingMore() ? 'Loading...' : 'Load More Comments' }}
       </button>
     </div>
 
@@ -44,4 +35,11 @@
       <p>Showing all {{ comments().length }} comments</p>
     </div>
   </div>
+  <app-comment-form
+    *ngIf="showCommentForm()"
+    [postId]="postId"
+    [replyData]="replyData() || null"
+    (submit)="handleCommentSubmit($event)"
+    (cancel)="cancelReply()"
+  ></app-comment-form>
 </section>

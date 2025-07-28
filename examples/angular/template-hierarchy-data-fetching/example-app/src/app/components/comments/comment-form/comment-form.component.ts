@@ -128,7 +128,7 @@ export class CommentFormComponent {
 
       if (result.errors && result.errors.length > 0) {
         throw new Error(
-          result.errors[0]?.message || 'Failed to submit comment',
+          result.errors[0]?.message || 'Failed to submit comment'
         );
       }
 

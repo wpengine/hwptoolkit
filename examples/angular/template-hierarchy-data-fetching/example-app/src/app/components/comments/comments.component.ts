@@ -136,7 +136,7 @@ export class CommentsComponent implements OnInit {
    */
   private buildCommentTree(
     comments: Comment[],
-    parentId: string | null = null,
+    parentId: string | null = null
   ): Comment[] {
     return comments
       .filter((comment) => comment.parentId === parentId)

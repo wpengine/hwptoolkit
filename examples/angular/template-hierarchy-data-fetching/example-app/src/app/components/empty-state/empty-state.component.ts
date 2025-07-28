@@ -9,5 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './empty-state.component.scss',
 })
 export class EmptyStateComponent {
-  @Input() text: string = ''; // Default to empty string, so text only shows if provided
+  @Input() text: string = '';
 }
