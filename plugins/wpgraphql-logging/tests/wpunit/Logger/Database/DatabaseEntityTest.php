@@ -73,9 +73,9 @@ class DatabaseEntityTest extends WPTestCase
 		$this->assertEquals($log_data['context'], $entity->get_context(), 'The context should match the saved data.');
 		$this->assertEquals($log_data['extra'], $entity->get_extra(), 'The extra data should match the saved data.');
 
-		// Test for a field which doesn't exist
-		$this->expectException(\BadMethodCallException::class);
-		$entity->get_nonexistent_field();
+		$this->assertNotEmpty($entity->get_datetime(), 'The datetime should not be empty.');
+		$this->assertIsInt($entity->get_id(), 'The ID should be an integer.');
+		$this->assertGreaterThan(0, $entity->get_id(), 'The ID should be greater than 0.');
 	}
 
 	public function test_find_returns_null_for_nonexistent_id(): void

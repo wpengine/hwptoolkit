@@ -25,9 +25,8 @@ parameters:
     # Configuration
     level: 8
     phpVersion:
-          min: 70400
+          min: 80100
           max: 80400
     paths:
         - wpgraphql-logging.php
         - src/
-

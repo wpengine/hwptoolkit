@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
+use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Hooks\PluginHooks;
 
 /**
@@ -51,6 +52,7 @@ final class Plugin {
 	 */
 	public function setup(): void {
 		PluginHooks::init();
+		QueryEventLifecycle::init();
 	}
 
 	/**

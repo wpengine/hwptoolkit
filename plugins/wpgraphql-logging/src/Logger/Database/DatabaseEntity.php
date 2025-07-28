@@ -153,6 +153,68 @@ class DatabaseEntity {
 	}
 
 	/**
+	 * Gets the ID of the log entry.
+	 */
+	public function get_id(): ?int {
+		return $this->id;
+	}
+
+	/**
+	 * Gets the channel of the log entry.
+	 */
+	public function get_channel(): string {
+		return $this->channel;
+	}
+
+	/**
+	 * Gets the logging level of the log entry.
+	 */
+	public function get_level(): int {
+		return $this->level;
+	}
+
+	/**
+	 * Gets the name of the logging level of the log entry.
+	 */
+	public function get_level_name(): string {
+		return $this->level_name;
+	}
+
+	/**
+	 * Gets the message of the log entry.
+	 */
+	public function get_message(): string {
+		return $this->message;
+	}
+
+	/**
+	 * Gets the context of the log entry.
+	 *
+	 * @return array<string, mixed> The context of the log entry.
+	 */
+	public function get_context(): array {
+		return $this->context;
+	}
+
+	/**
+	 * Gets the extra data of the log entry.
+	 *
+	 * @return array<string, mixed> The extra data of the log entry.
+	 */
+	public function get_extra(): array {
+		return $this->extra;
+	}
+
+	/**
+	 * Gets the datetime of the log entry.
+	 *
+	 * @return string The datetime of the log entry in MySQL format.
+	 */
+	public function get_datetime(): string {
+		return $this->datetime;
+	}
+
+	/**
 	 * Gets the name of the logging table.
 	 */
 	public static function get_table_name(): string {
@@ -193,7 +255,7 @@ class DatabaseEntity {
 	 * Creates the logging table in the database.
 	 */
 	public static function create_table(): void {
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php'; // @phpstan-ignore-line
 		dbDelta( self::get_schema() );
 	}
 
@@ -250,30 +312,9 @@ class DatabaseEntity {
 		$log->level      = (int) $row['level'];
 		$log->level_name = $row['level_name'];
 		$log->message    = $row['message'];
-		$log->context    = $row['context'] ? json_decode( $row['context'], true ) : [];
-		$log->extra      = $row['extra'] ? json_decode( $row['extra'], true ) : [];
+		$log->context    = ( isset( $row['context'] ) && '' !== $row['context'] ) ? json_decode( $row['context'], true ) : [];
+		$log->extra      = ( isset( $row['extra'] ) && '' !== $row['extra'] ) ? json_decode( $row['extra'], true ) : [];
 		$log->datetime   = $row['datetime'];
 		return $log;
-	}
-
-	/**
-	 * Magic method to handle dynamic getters like get_level().
-	 *
-	 * @param string       $name The name of the method called.
-	 * @param array<mixed> $arguments The arguments passed to the method.
-	 *
-	 * @throws \BadMethodCallException If the method does not exist.
-	 *
-	 * @return mixed The value of the property if it exists, otherwise throws an exception.
-	 */
-	public function __call(string $name, array $arguments) {
-		if ( strpos( $name, 'get_' ) === 0 ) {
-			$property = substr( $name, 4 );
-			if ( property_exists( $this, $property ) ) {
-				return $this->$property;
-			}
-		}
-		$name = $this->sanitize_text_field( $name );
-		throw new \BadMethodCallException( sprintf( 'Method %s does not exist.', esc_html( $name ) ) );
 	}
 }

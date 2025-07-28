@@ -6,6 +6,13 @@ namespace WPGraphQL\Logging\Hooks;
 
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
+/**
+ * Hooks for the WPGraphQL Logging plugin.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
+ */
 class PluginHooks {
 	/**
 	 * The single instance of the class.
