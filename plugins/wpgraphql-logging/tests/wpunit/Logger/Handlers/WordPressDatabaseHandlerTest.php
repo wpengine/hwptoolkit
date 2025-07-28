@@ -34,9 +34,28 @@ class WordPressDatabaseHandlerTest extends WPTestCase
 		$this->log_data = [
 			'channel'    => 'wpgraphql_logging',
 			'level'      => Level::Info,
-			'message'    => 'Test log message',
-			'context'    => ['test_key' => 'test_value'],
-			'extra'      => ['extra_key' => 'extra_value'],
+			'message'    => 'WPGraphQL Outgoing Response',
+			'context'    => [
+				'site_url'      => 'http://test.local',
+				'wp_version'    => '6.8.2',
+				'wp_debug_mode' => true,
+				'plugin_version'=> '0.0.1'
+			],
+			'extra'      => [
+				'ip' => '127.0.0.1',
+				'url' => '/index.php?graphql',
+				'server' => 'test.local',
+				'referrer' => 'http://test.local/wp-admin/admin.php?page=graphiql-ide',
+				'process_id' => 5819,
+				'http_method' => 'POST',
+				'memory_usage' => '14 MB',
+				'wpgraphql_query' => 'query GetPost($uri: ID!) { post(id: $uri, idType: URI) { title content } }',
+				'memory_peak_usage' => '14 MB',
+				'wpgraphql_variables' => [
+					'uri' => 'hello-world'
+				],
+				'wpgraphql_operation_name' => 'GetPost'
+			],
 			'datetime'   => new DateTimeImmutable(),
 		];
 

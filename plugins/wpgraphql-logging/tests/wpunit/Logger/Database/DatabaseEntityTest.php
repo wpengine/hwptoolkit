@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Tests\Database;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
+use DateTimeImmutable;
 use ReflectionClass;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
@@ -47,14 +48,28 @@ class DatabaseEntityTest extends WPTestCase
 			'channel'    => 'wpgraphql_logging',
 			'level'      => 200,
 			'level_name' => 'INFO',
-			'message'    => 'query GetPosts { posts { nodes { id title content } } }',
+			'message'    => 'WPGraphQL Outgoing Response',
 			'context'    => [
-				'operation' => 'query',
-				'name'      => 'GetPosts',
-				'memory'    => '4MB',
-				'usage'     => 'fetch posts data'
+				'site_url'      => 'http://test.local',
+				'wp_version'    => '6.8.2',
+				'wp_debug_mode' => true,
+				'plugin_version'=> '0.0.1'
 			],
-			'extra'      => ['ip' => '127.0.0.1'],
+			'extra'      => [
+				'ip' => '127.0.0.1',
+				'url' => '/index.php?graphql',
+				'server' => 'test.local',
+				'referrer' => 'http://test.local/wp-admin/admin.php?page=graphiql-ide',
+				'process_id' => 5819,
+				'http_method' => 'POST',
+				'memory_usage' => '14 MB',
+				'wpgraphql_query' => 'query GetPost($uri: ID!) { post(id: $uri, idType: URI) { title content } }',
+				'memory_peak_usage' => '14 MB',
+				'wpgraphql_variables' => [
+					'uri' => 'hello-world'
+				],
+				'wpgraphql_operation_name' => 'GetPost'
+			]
 		];
 
         // Create and save the entity
