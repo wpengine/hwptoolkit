@@ -43,7 +43,9 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ]; then
             bash .github/scripts/get_plugin_slug.sh main
           else
-            bash .github/scripts/get_plugin_slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+            bash .github/scripts/get_plugin_slug.sh \
+              ${{ github.event.pull_request.base.sha }} \
+              ${{ github.event.pull_request.head.sha }}
           fi
 
       - name: Detect changed plugin with E2E config
