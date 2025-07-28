@@ -61,7 +61,7 @@ jobs:
             echo "has-plugins=false" >> $GITHUB_OUTPUT
             echo "ℹ️ No phpcs.xml found for plugin: $PLUGIN, skipping quality checks"
           fi
-      - name: Detect changed plugins with quality config
+      - name: Detect PHP version from composer.json
         id: detect-php-version
         run: |
           PLUGIN="${{ steps.plugin.outputs.slug }}"
