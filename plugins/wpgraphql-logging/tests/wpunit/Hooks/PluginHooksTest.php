@@ -10,10 +10,12 @@ use ReflectionClass;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
 /**
- * Class PluginTest
+ * Class PluginHooksTest
  *
- * Tests for the Plugin class
+ * Tests for the PluginHooks class.
  *
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
  */
 class PluginHooksTest extends WPTestCase {
 

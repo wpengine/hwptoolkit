@@ -12,7 +12,10 @@ use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 /**
  * Class DatabaseEntityTest
  *
- * Tests for the DatabaseEntity class
+ * Tests for the DatabaseEntity class.
+ *
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
  */
 class DatabaseEntityTest extends WPTestCase
 {
