@@ -210,10 +210,6 @@
 				<element value="Iterator"/>
 				<element value="Generator"/>
 			</property>
-			<!-- PHP 7.4 specific settings -->
-			<property name="enableMixedTypeHint" value="false"/>
-			<property name="enableUnionTypeHint" value="false"/>
-			<property name="enableIntersectionTypeHint" value="false"/>
 		</properties>
 	</rule>
 	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">
