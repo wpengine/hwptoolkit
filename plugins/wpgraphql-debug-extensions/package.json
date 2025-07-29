@@ -1,8 +1,8 @@
 {
-	"name": "@wpengine/wpgraphql-webhooks-wordpress-plugin",
-	"version": "0.0.4",
+	"name": "@wpengine/wpgraphql-debug-extensions-wordpress-plugin",
+	"version": "0.0.1",
 	"private": true,
-	"description": "Webhooks solution for WordPress",
+	"description": "Debug Extensions for WordPress",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"version": "./bin/sync-package-version.sh"

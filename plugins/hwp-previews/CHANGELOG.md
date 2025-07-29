@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.8
+
+### Patch Changes
+
+- [#333](https://github.com/wpengine/hwptoolkit/pull/333) [`cf0a040`](https://github.com/wpengine/hwptoolkit/commit/cf0a0405ae04e0355745a81bf53b3c9065f10739) Thanks [@ahuseyn](https://github.com/ahuseyn)! - 1. Disables Faust front-end redirects for preview url's to solve the iframe conflict. 2. Introduced methods in Faust_Integration to replace Faust-generated preview URLs with the site’s home URL as needed.
+
 ## 0.0.7
 
 ### Patch Changes

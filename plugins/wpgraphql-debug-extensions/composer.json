@@ -1,9 +1,9 @@
 {
-	"name": "wpengine/wp-graphql-webhooks",
-	"description": "Headless webhooks for WPGraphQL",
+	"name": "wpengine/wpgraphql-debug-extensions",
+	"description": "Debug extensions for WPGraphQL",
 	"type": "library",
 	"license": "GPL-2.0",
-	"version": "0.0.4",
+	"version": "0.0.1",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
@@ -54,13 +54,13 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"WPGraphQL\\Webhooks\\": "src/"
+			"WPGraphQL\\Debug\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
 			"HWPStandard\\": "phpcs/HWPStandard",
-			"WPGraphQL\\Webhooks\\Rules\\": "phpstan/Rules/"
+			"WPGraphQL\\Debug\\Rules\\": "phpstan/Rules/"
 		}
 	},
 	"extra": {
@@ -95,7 +95,7 @@
 		"php:psalm:fix": "psalm --alter"
 	},
 	"archive": {
-		"name": "wp-graphql-webhooks",
+		"name": "wpgraphql-debug-extensions",
 		"exclude": [
 			"/.*",
 			"/assets",
