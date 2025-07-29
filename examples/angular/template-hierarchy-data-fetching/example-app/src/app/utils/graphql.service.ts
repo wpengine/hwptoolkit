@@ -27,7 +27,7 @@ interface GraphQLMutationResult<T = any> {
 }
 
 /**
- * GraphQL Client Service for CSR (Client-Side Rendering)
+ * GraphQL fetching using HTTP client
  * Uses Angular HttpClient for reactive queries.
  * Used for fetching data in - load more posts in Blogs and load more Comments.
  */
@@ -58,20 +58,19 @@ export class GraphQLService {
   ): Observable<T> {
     const body = JSON.stringify({ query, variables });
 
-    console.log('🌐 CSR GraphQL Request:', {
-      endpoint: this.endpoint,
-      variables,
-    });
+    //console.log('🌐 CSR GraphQL Request:', {
+    //   endpoint: this.endpoint,
+    //   variables,
+    // });
 
     return this.http
       .post<GraphQLResponse<T>>(this.endpoint, body, this.httpOptions)
       .pipe(
         tap((response) => {
-          console.log('📡 CSR GraphQL Response:', response.data);
+          //console.log('📡 HTTP GraphQL Response:', response.data);
         }),
         map((response) => {
           if (response.errors) {
-            console.error('GraphQL returned errors:', response.errors);
             throw new Error(
               response.errors[0]?.message || 'GraphQL query failed'
             );
@@ -91,30 +90,25 @@ export class GraphQLService {
       if (error.headers.get('content-type')?.includes('text/html')) {
         errorMessage =
           'Received HTML response instead of JSON from GraphQL endpoint';
-        console.error('HTML response received:', error.error);
       } else {
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
       }
     }
-
-    console.error('CSR GraphQL Service Error:', errorMessage);
     return throwError(() => new Error(errorMessage));
   };
 }
 
 /**
- * GraphQL SSR Service
- * Uses native fetch for server-side rendering
- * Used for most fetching operations in the app. Pages, posts, comments, etc.
+ * Standard GraphQL Fetch Function
  */
-export async function fetchGraphQLSSR<T = any>(
+export async function fetchGraphQL<T = any>(
   query: string,
   variables: Record<string, any> = {}
 ): Promise<T> {
   const wpUrl = environment.wordpressUrl || 'http://localhost:8892';
   const endpoint = `${wpUrl}/graphql`;
 
-  console.log('🔍 SSR GraphQL Request:', { endpoint, variables });
+  //console.log('🔍 GraphQL Request:', { endpoint, variables });
 
   try {
     const response = await fetch(endpoint, {
@@ -133,10 +127,9 @@ export async function fetchGraphQLSSR<T = any>(
 
     const result: GraphQLResponse<T> = await response.json();
 
-    console.log('✅ SSR GraphQL Response:', result.data);
+    //console.log('✅ GraphQL Response:', result.data);
 
     if (result.errors) {
-      console.error('SSR GraphQL Error:', result.errors);
       throw new Error(
         result.errors[0]?.message || 'Failed to fetch data from WordPress'
       );
@@ -144,7 +137,7 @@ export async function fetchGraphQLSSR<T = any>(
 
     return result.data;
   } catch (error) {
-    console.error('❌ SSR GraphQL Error:', error);
+    //console.error('❌ GraphQL Error:', error);
     throw error;
   }
 }
@@ -160,7 +153,7 @@ export async function executeMutation<T = any>(
   const wpUrl = environment.wordpressUrl || 'http://localhost:8892';
   const endpoint = `${wpUrl}/graphql`;
 
-  console.log('🚀 Mutation Request:', { endpoint, variables });
+  //console.log('🚀 Mutation Request:', { endpoint, variables });
 
   try {
     const response = await fetch(endpoint, {
@@ -173,7 +166,6 @@ export async function executeMutation<T = any>(
 
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('text/html')) {
-      console.error('Received HTML response instead of JSON');
       throw new Error(
         'Received HTML response from GraphQL endpoint. Check server configuration.'
       );
@@ -181,14 +173,14 @@ export async function executeMutation<T = any>(
 
     const result: GraphQLResponse<T> = await response.json();
 
-    console.log('✅ Mutation Response:', result);
+    //console.log('✅ Mutation Response:', result);
 
     return {
       data: result.data,
       errors: result.errors || null,
     };
   } catch (error) {
-    console.error('❌ Mutation Error:', error);
+    //console.error('❌ Mutation Error:', error);
     return { data: null, errors: [error as Error] };
   }
 }

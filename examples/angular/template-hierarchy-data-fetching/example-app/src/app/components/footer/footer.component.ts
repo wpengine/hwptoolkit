@@ -24,11 +24,6 @@ export class FooterComponent {
     this.loadSiteSettings();
   }
   private loadSiteSettings() {
-    if (!this.graphqlService) {
-      console.error('GraphQLService is not available');
-      return;
-    }
-
     const SETTINGS_QUERY = gql`
       query HeaderSettingsQuery {
         generalSettings {
@@ -47,7 +42,6 @@ export class FooterComponent {
         this.settingsLoading.set(false);
       },
       error: (error: any) => {
-        console.error('Error loading site settings:', error);
         this.settingsLoading.set(false);
       },
     });

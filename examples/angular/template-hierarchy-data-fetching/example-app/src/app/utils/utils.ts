@@ -1,4 +1,4 @@
-import { fetchGraphQLSSR } from './graphql.service';
+import { fetchGraphQL } from './graphql.service';
 
 /**
  * Fetches posts from the GraphQL API.
@@ -26,14 +26,14 @@ export async function getPosts({
   revalidate?: boolean;
 }) {
   if (!slug) {
-    return await fetchGraphQLSSR(query, {
+    return await fetchGraphQL(query, {
       first: pageSize,
       after,
     });
   }
 
   const querySlug = typeof slug === 'string' ? slug : String(slug);
-  return await fetchGraphQLSSR(query, {
+  return await fetchGraphQL(query, {
     slug: querySlug,
     first: pageSize,
     after,

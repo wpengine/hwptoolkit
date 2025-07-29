@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { fetchGraphQLSSR, gql } from '../../../utils/graphql.service';
+import { fetchGraphQL, gql } from '../../../utils/graphql.service';
 import { getPosts } from '../../../utils/utils';
 import { LoadingComponent } from '../../loading/loading.component';
 import { EmptyStateComponent } from '../../empty-state/empty-state.component';
@@ -66,7 +66,7 @@ export class FrontPageComponent implements OnInit {
     this.settingsLoading.set(true);
     this.settingsError.set(null);
 
-    fetchGraphQLSSR<HomeSettingsResponse>(this.HOME_SETTINGS_QUERY, {})
+    fetchGraphQL<HomeSettingsResponse>(this.HOME_SETTINGS_QUERY, {})
       .then((data) => {
         this.settingsData.set(data);
       })

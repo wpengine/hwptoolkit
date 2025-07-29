@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { fetchGraphQLSSR, gql } from '../../utils/graphql.service';
+import { fetchGraphQL, gql } from '../../utils/graphql.service';
 import { flatListToHierarchical } from '../../utils/utils';
 interface MenuItem {
   id: string;
@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit {
 
     this.settingsLoading.set(true);
 
-    fetchGraphQLSSR<SiteSettings>(SETTINGS_QUERY, {})
+    fetchGraphQL<SiteSettings>(SETTINGS_QUERY, {})
       .then((data) => {
         if (data?.generalSettings?.title) {
           this.siteInfo.set({ title: data.generalSettings.title });
@@ -74,7 +74,6 @@ export class HeaderComponent implements OnInit {
         this.settingsLoading.set(false);
       })
       .catch((error) => {
-        console.error('Error loading site settings:', error);
         this.error.set('Failed to load site settings');
         this.settingsLoading.set(false);
       });
@@ -106,7 +105,7 @@ export class HeaderComponent implements OnInit {
 
     this.navigationLoading.set(true);
 
-    fetchGraphQLSSR<NavigationResponse>(NAVIGATION_QUERY, {})
+    fetchGraphQL<NavigationResponse>(NAVIGATION_QUERY, {})
       .then((data) => {
         if (data?.menu?.menuItems?.nodes) {
           const hierarchicalMenu = this.flatListToHierarchical(
@@ -117,7 +116,6 @@ export class HeaderComponent implements OnInit {
         this.navigationLoading.set(false);
       })
       .catch((error) => {
-        console.error('Error loading navigation:', error);
         this.navigationLoading.set(false);
       });
   }

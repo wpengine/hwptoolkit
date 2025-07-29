@@ -22,7 +22,7 @@ export interface ReplyData {
   parentId: string;
 }
 
-export interface PageInfo {
+export interface CommentPageInfo {
   hasNextPage: boolean;
   endCursor: string | null;
 }
@@ -32,4 +32,16 @@ export interface CommentFormData {
   email: string;
   url: string;
   content: string;
+}
+export interface CommentResponse {
+  comments: {
+    pageInfo: {
+      hasNextPage: boolean;
+      endCursor: string | null;
+    };
+    edges: {
+      cursor: string;
+      node: Comment;
+    }[];
+  };
 }

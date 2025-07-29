@@ -67,8 +67,6 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log('🚀 DynamicContentComponent initialized');
-
     // Subscribe to router events with proper cleanup
     this.routerEventsSubscription = this.router.events
       .pipe(
@@ -76,7 +74,7 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$) // Automatically unsubscribe on destroy
       )
       .subscribe((event: NavigationEnd) => {
-        console.log('🔄 Router navigation detected:', event.url);
+        //console.log('🔄 Router navigation detected:', event.url);
         this.loadContent();
       });
 
@@ -85,7 +83,7 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('🧹 DynamicContentComponent destroyed');
+    //console.log('🧹 DynamicContentComponent destroyed');
 
     // Cancel template hierarchy service requests
     this.templateHierarchyService.cancelAllRequests();
@@ -110,14 +108,7 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       const actualPath = window.location.pathname;
 
-      // If router shows '/' but we're actually on a different path, use the actual path
-      if (routerUrl === '/' && actualPath !== '/') {
-        console.log('🔍 Router URL mismatch detected:', {
-          routerUrl,
-          actualPath,
-        });
-        return actualPath;
-      }
+      if (routerUrl === '/' && actualPath !== '/') return actualPath;
     }
 
     return routerUrl;
@@ -128,12 +119,11 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
 
     // Cancel any existing request
     if (this.currentRequest) {
-      console.log('🚫 Cancelling previous request');
       this.currentRequest = null;
     }
 
     try {
-      console.group('🎯 Loading Dynamic Content');
+      //console.group('🎯 Loading Dynamic Content');
 
       // Clear everything immediately to prevent stacking
       this.componentToRender.set(null);
@@ -143,7 +133,6 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
 
       // Check if component is still alive
       if (this.destroy$.closed) {
-        console.log('🚫 Component destroyed, aborting request');
         return;
       }
 
@@ -158,36 +147,28 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
 
       // Check if this request is still current and component is alive
       if (this.destroy$.closed || !this.currentRequest) {
-        console.log('🚫 Request cancelled or component destroyed');
         return;
       }
 
-      console.log('✅ Template data resolved:', resolvedTemplateData);
+      //console.log('✅ Template data resolved:', resolvedTemplateData);
 
       if (resolvedTemplateData?.template) {
         const templateId = resolvedTemplateData.template.id;
-        console.log('🎨 Template ID:', templateId);
+        //console.log('🎨 Template ID:', templateId);
 
         // Get the dynamic import function
         const importFunction = this.templateComponentMap[templateId];
 
         if (importFunction) {
-          console.log('📦 Loading component for template:', templateId);
+          //console.log('📦 Loading component for template:', templateId);
 
           // Dynamically import the component
           const componentClass = await importFunction();
 
           // Final check before setting state
           if (this.destroy$.closed) {
-            console.log('🚫 Component destroyed during import');
             return;
           }
-
-          console.log(
-            '✅ Component loaded:',
-            componentClass.constructor?.name || componentClass.name
-          );
-
           // Check if we're still on the same route
           const currentUri = this.getCurrentUri();
           if (
@@ -199,11 +180,10 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
             this.templateData.set(resolvedTemplateData);
           }
         } else {
-          console.warn('⚠️ No component mapped for template:', templateId);
-          console.log(
-            'Available templates:',
-            Object.keys(this.templateComponentMap)
-          );
+          //console.log(
+          //   'Available templates:',
+          //   Object.keys(this.templateComponentMap)
+          // );
 
           // Fallback to 404
           const currentUri = this.getCurrentUri();
@@ -213,7 +193,6 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
           }
         }
       } else {
-        console.error('❌ No template data resolved');
         const currentUri = this.getCurrentUri();
         if (currentUri === uri && !this.destroy$.closed) {
           this.componentToRender.set(NotFoundComponent);
@@ -223,43 +202,19 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
     } catch (error) {
       // Check if component is still alive before setting error state
       if (!this.destroy$.closed) {
-        console.error('❌ Error loading content:', error);
         const currentUri = this.getCurrentUri();
         if (currentUri === uri) {
           this.componentToRender.set(NotFoundComponent);
           this.hasError.set(true);
         }
-      } else {
-        console.log('🚫 Component destroyed, ignoring error');
       }
     } finally {
       // Only update loading state if component is still alive
       if (!this.destroy$.closed) {
         this.isLoading.set(false);
-        console.groupEnd();
+        //console.groupEnd();
       }
       this.currentRequest = null;
     }
-  }
-
-  // Helper method for debugging
-  getDebugInfo() {
-    const debugInfo: any = {
-      isLoading: this.isLoading(),
-      hasError: this.hasError(),
-      componentToRender: this.componentToRender()?.name || 'None',
-      templateData: this.templateData(),
-      currentUrl: this.router.url,
-      resolvedUri: this.getCurrentUri(),
-      isBrowser: isPlatformBrowser(this.platformId),
-      isDestroyed: this.destroy$.closed,
-    };
-
-    // Only add window path in browser
-    if (isPlatformBrowser(this.platformId)) {
-      debugInfo.actualPath = window.location.pathname;
-    }
-
-    return debugInfo;
   }
 }

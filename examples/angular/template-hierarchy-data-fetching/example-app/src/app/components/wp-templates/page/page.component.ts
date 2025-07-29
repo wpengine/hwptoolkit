@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { gql, fetchGraphQLSSR } from '../../../utils/graphql.service';
+import { gql, fetchGraphQL } from '../../../utils/graphql.service';
 import { LoadingComponent } from '../../loading/loading.component';
 import { CommentsComponent } from '../../comments/comments.component';
 import { NotFoundComponent } from '../../not-found/not-found.component';
@@ -105,10 +105,9 @@ export class PageComponent implements OnInit {
     }
 
     this.loading.set(true);
-    fetchGraphQLSSR<PageResponse>(this.PAGE_QUERY, { slug: uri })
+    fetchGraphQL<PageResponse>(this.PAGE_QUERY, { slug: uri })
       .then((data) => {
         if (data?.page) {
-          //console.log('✅ Page data loaded:', data);
           this.pageData.set(data.page);
         } else {
           this.error.set('Page not found');
@@ -116,8 +115,10 @@ export class PageComponent implements OnInit {
         this.loading.set(false);
       })
       .catch((error) => {
-        //console.error('❌ Error loading page:', error);
         this.error.set(error.message || 'Failed to load page');
+      })
+      .finally(() => {
+        // Ensure loading state is reset even if an error occurs
         this.loading.set(false);
       });
   }

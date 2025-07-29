@@ -13,20 +13,13 @@ import { RouterModule } from '@angular/router';
 import { GraphQLService } from '../../utils/graphql.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
-import { PostListingComponent } from '../post-listing/post-listing.component';
 import { POSTS_QUERY } from '../../utils/postQuery';
 import { Post, PageInfo, PostsResponse } from '../../interfaces/post.interface';
 
 @Component({
   selector: 'app-load-more',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    LoadingComponent,
-    EmptyStateComponent,
-    PostListingComponent,
-  ],
+  imports: [CommonModule, RouterModule, LoadingComponent, EmptyStateComponent],
   templateUrl: './load-more.component.html',
   styleUrl: './load-more.component.scss',
 })
@@ -58,10 +51,6 @@ export class LoadMoreComponent implements OnInit {
     // Watch for initial page info changes
     effect(() => {
       if (this.initialPageInfo()) {
-        console.log(
-          '✅ Setting initial page info from effect:',
-          this.initialPageInfo()
-        );
         this.pageInfo.set(this.initialPageInfo());
       }
     });
@@ -77,9 +66,6 @@ export class LoadMoreComponent implements OnInit {
     if (!currentPageInfo?.hasNextPage || this.loadingMore()) {
       return;
     }
-
-    console.log('🔍 Loading more posts...');
-
     this.loadingMore.set(true);
     this.error.set(null);
 

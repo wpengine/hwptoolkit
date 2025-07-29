@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { fetchGraphQLSSR, gql } from '../../../utils/graphql.service';
+import { fetchGraphQL, gql } from '../../../utils/graphql.service';
 import { LoadingComponent } from '../../loading/loading.component';
 import { NotFoundComponent } from '../../not-found/not-found.component';
 import { EmptyStateComponent } from '../../empty-state/empty-state.component';
@@ -81,7 +81,7 @@ export class IndexComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    fetchGraphQLSSR<IndexResponse>(this.INDEX_QUERY, { uri })
+    fetchGraphQL<IndexResponse>(this.INDEX_QUERY, { uri })
       .then((response) => {
         this.data.set(response);
       })

@@ -45,7 +45,7 @@ export class TemplateHierarchyService {
    * Cancel all pending requests from this service
    */
   cancelAllRequests(): void {
-    console.log('🚫 Cancelling all TemplateHierarchyService requests');
+    //console.log('🚫 Cancelling all TemplateHierarchyService requests');
     this.cancelRequests$.next();
   }
 
@@ -57,9 +57,8 @@ export class TemplateHierarchyService {
     cancelToken?: Subject<void>;
   }): Promise<TemplateData> {
     try {
-      console.group('🎯 Template Hierarchy Resolution');
-      console.log('📍 URI:', uri);
-      console.log('🌐 GraphQL Endpoint:', this.graphqlEndpoint);
+      //console.log('📍 URI:', uri);
+      //console.log('🌐 GraphQL Endpoint:', this.graphqlEndpoint);
 
       // Use the provided cancel token or the service-level one
       const cancellation$ = cancelToken || this.cancelRequests$;
@@ -68,26 +67,21 @@ export class TemplateHierarchyService {
 
       // Check if cancelled before proceeding
       if (cancellation$.closed) {
-        console.log('🚫 Operation cancelled after seed query');
         throw new Error('Operation cancelled');
       }
 
       if (!seedQueryResponse.data?.nodeByUri) {
-        console.error('❌ HTTP/404 - Not Found in WordPress:', uri);
         throw new Error(`URI not found in WordPress: ${uri}`);
       }
 
       const availableTemplates =
         await this.fetchAvailableTemplates(cancellation$);
 
-      // Check if cancelled before proceeding
       if (cancellation$.closed) {
-        console.log('🚫 Operation cancelled after template fetch');
         throw new Error('Operation cancelled');
       }
 
       if (!availableTemplates || availableTemplates.length === 0) {
-        console.error('❌ No templates found');
         throw new Error('No available templates');
       }
 
@@ -96,20 +90,18 @@ export class TemplateHierarchyService {
       );
 
       if (!possibleTemplates || possibleTemplates.length === 0) {
-        console.error('❌ No possible templates found for content type');
         throw new Error('No possible templates for this URI');
       }
 
       const template = getTemplate(availableTemplates, possibleTemplates);
 
       if (!template) {
-        console.error('❌ No template found for route');
         throw new Error('No template found for this URI');
       }
 
-      console.log('✅ Template resolved:', template);
-      console.log('📋 Possible templates:', possibleTemplates);
-      console.groupEnd();
+      //console.log('✅ Template resolved:', template);
+      //console.log('📋 Possible templates:', possibleTemplates);
+      //console.groupEnd();
 
       return {
         uri,
@@ -119,8 +111,7 @@ export class TemplateHierarchyService {
         template,
       };
     } catch (error) {
-      console.groupEnd();
-      console.error('❌ Template hierarchy resolution failed:', error);
+      //console.groupEnd();
       throw error;
     }
   }
@@ -134,7 +125,7 @@ export class TemplateHierarchyService {
       variables: { uri },
     };
 
-    console.log('📤 Fetching seed query for URI:', uri);
+    //console.log('📤 Fetching seed query for URI:', uri);
 
     try {
       const response = await firstValueFrom(
@@ -149,10 +140,8 @@ export class TemplateHierarchyService {
             catchError((error: HttpErrorResponse) => {
               // Check if it's a cancellation
               if (cancelToken.closed) {
-                console.log('🚫 HTTP request cancelled');
                 return throwError(() => new Error('Request cancelled'));
               }
-              console.error('Error in GraphQL HTTP request:', error);
               return throwError(
                 () => new Error(`GraphQL HTTP request failed: ${error.message}`)
               );
@@ -161,13 +150,11 @@ export class TemplateHierarchyService {
       );
 
       if (response.errors && response.errors.length > 0) {
-        console.error('GraphQL errors:', response.errors);
         throw new Error(`GraphQL error: ${response.errors[0].message}`);
       }
 
       return response;
     } catch (error: any) {
-      console.error('Error fetching seed query (after pipe):', error);
       throw new Error(`Failed to fetch seed query: ${error.message || error}`);
     }
   }
@@ -175,9 +162,6 @@ export class TemplateHierarchyService {
   private async fetchAvailableTemplates(
     cancelToken: Subject<void>
   ): Promise<Array<{ id: string; path: string }>> {
-    console.log(
-      '📤 Fetching available templates from TemplateDiscoveryService'
-    );
     try {
       const templates = await firstValueFrom(
         this.templateDiscoveryService.getAvailableTemplates().pipe(
@@ -185,13 +169,9 @@ export class TemplateHierarchyService {
           catchError((error: HttpErrorResponse) => {
             // Check if it's a cancellation
             if (cancelToken.closed) {
-              console.log('🚫 Template discovery request cancelled');
               return throwError(() => new Error('Request cancelled'));
             }
-            console.error(
-              'Error in TemplateDiscoveryService HTTP request:',
-              error
-            );
+
             return throwError(
               () =>
                 new Error(
@@ -201,67 +181,10 @@ export class TemplateHierarchyService {
           })
         )
       );
-      console.log('📥 Available templates:', templates);
+      //console.log('📥 Available templates:', templates);
       return templates;
     } catch (error: any) {
-      console.error(
-        'Error fetching available templates from backend (after pipe):',
-        error
-      );
-      console.log('🔄 Using fallback templates');
-
-      // Return fallback templates instead of throwing if cancelled
-      if (error.message === 'Request cancelled') {
-        throw error;
-      }
-
-      return this.getDefaultTemplates();
+      throw error;
     }
   }
-
-  private getDefaultTemplates(): Array<{ id: string; path: string }> {
-    return [
-      { id: 'index', path: '/src/app/components/wp-templates/index' },
-      { id: 'single', path: '/src/app/components/wp-templates/single' },
-      { id: 'page', path: '/src/app/components/wp-templates/page' },
-      { id: 'singular', path: '/src/app/components/wp-templates/singular' },
-      { id: 'archive', path: '/src/app/components/wp-templates/archive' },
-      { id: 'front-page', path: '/src/app/components/wp-templates/front-page' },
-      { id: 'home', path: '/src/app/components/wp-templates/home' },
-    ];
-  }
-
-  async checkUriExists(uri: string): Promise<boolean> {
-    try {
-      const response = await this.fetchSeedQuery(uri, new Subject<void>());
-      return !!response.data?.nodeByUri;
-    } catch {
-      return false;
-    }
-  }
-
-  async getTemplateSuggestions(uri: string): Promise<string[]> {
-    try {
-      const response = await this.fetchSeedQuery(uri, new Subject<void>());
-      if (response.data?.nodeByUri) {
-        return getPossibleTemplates(response.data.nodeByUri);
-      }
-      return [];
-    } catch {
-      return [];
-    }
-  }
-}
-
-export async function uriToTemplate({
-  uri,
-}: {
-  uri: string;
-}): Promise<TemplateData> {
-  console.warn(
-    '⚠️ uriToTemplate function is deprecated. Use TemplateHierarchyService instead.'
-  );
-  throw new Error(
-    'This function requires dependency injection. Use TemplateHierarchyService instead.'
-  );
 }

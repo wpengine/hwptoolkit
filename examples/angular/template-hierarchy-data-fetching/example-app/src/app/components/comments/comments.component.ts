@@ -2,13 +2,14 @@ import { Component, Input, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CommentFormComponent } from './comment-form/comment-form.component';
 import { CommentThreadComponent } from './comment-thread/comment-thread.component';
-import { GraphQLService, gql } from '../../utils/graphql.service';
+import { GraphQLService, gql, fetchGraphQL } from '../../utils/graphql.service';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { LoadingComponent } from '../loading/loading.component';
 import {
   Comment,
   ReplyData,
-  PageInfo,
+  CommentPageInfo,
+  CommentResponse,
 } from '../../interfaces/comment.interface';
 
 @Component({
@@ -34,7 +35,7 @@ export class CommentsComponent implements OnInit {
   error = signal<any>(null);
 
   allComments = signal<Comment[]>([]);
-  pageInfo = signal<PageInfo>({ hasNextPage: false, endCursor: null });
+  pageInfo = signal<CommentPageInfo>({ hasNextPage: false, endCursor: null });
   loadingMore = signal<boolean>(false);
 
   replyData = signal<ReplyData | null>(null);
@@ -59,44 +60,28 @@ export class CommentsComponent implements OnInit {
   }
 
   private async loadInitialComments(): Promise<void> {
-    try {
-      this.loading.set(true);
-      this.error.set(null);
+    this.loading.set(true);
+    this.error.set(null);
 
-      const query = this.getCommentsQuery(this.contentType);
-      const variables = {
-        postId: this.postId,
-        first: this.commentsPerPage,
-        after: null, // Always null for initial load
-      };
-
-      return new Promise((resolve, reject) => {
-        this.graphqlService.query<any>(query, variables).subscribe({
-          next: (response) => {
-            this.data.set(response);
-
-            const contentData = response[this.contentType];
-            if (contentData?.comments?.nodes) {
-              this.allComments.set([...contentData.comments.nodes]);
-              this.pageInfo.set(contentData.comments.pageInfo);
-            }
-
-            this.loading.set(false);
-            resolve();
-          },
-          error: (error) => {
-            console.error('❌ Error loading comments:', error);
-            this.error.set(error);
-            this.loading.set(false);
-            reject(error);
-          },
-        });
+    fetchGraphQL<CommentResponse>(this.getCommentsQuery(this.contentType), {
+      postId: this.postId,
+      first: this.commentsPerPage,
+      after: null,
+    })
+      .then((response) => {
+        this.data.set(response);
+        const contentData = (response as any)[this.contentType];
+        if (contentData?.comments?.nodes) {
+          this.allComments.set([...contentData.comments.nodes]);
+          this.pageInfo.set(contentData.comments.pageInfo);
+        }
+      })
+      .catch((error) => {
+        this.error.set(error);
+      })
+      .finally(() => {
+        this.loading.set(false);
       });
-    } catch (error) {
-      console.error('Error loading comments:', error);
-      this.error.set(error);
-      this.loading.set(false);
-    }
   }
 
   private getCommentsQuery(contentType: string): string {
@@ -216,7 +201,7 @@ export class CommentsComponent implements OnInit {
   }
 
   handleCommentSubmit(commentData: any): void {
-    console.log('Comment submitted:', commentData);
+    //console.log('Comment submitted:', commentData);
   }
 
   /**

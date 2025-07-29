@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { fetchGraphQLSSR, gql } from '../../../utils/graphql.service';
+import { fetchGraphQL, gql } from '../../../utils/graphql.service';
 import { Post } from '../../../interfaces/post.interface';
 import { PostListingComponent } from '../../post-listing/post-listing.component';
 import { LoadingComponent } from '../../loading/loading.component';
@@ -206,7 +206,7 @@ export class ArchiveComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    fetchGraphQLSSR<ArchiveResponse>(this.archiveQuery, { uri })
+    fetchGraphQL<ArchiveResponse>(this.archiveQuery, { uri })
       .then((response) => {
         this.data.set(response);
       })

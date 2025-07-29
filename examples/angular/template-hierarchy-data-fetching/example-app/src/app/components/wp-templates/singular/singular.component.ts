@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { gql, fetchGraphQLSSR } from '../../../utils/graphql.service';
+import { gql, fetchGraphQL } from '../../../utils/graphql.service';
 import {
   Post,
   Author,
@@ -94,12 +94,12 @@ export class SingularComponent implements OnInit {
   private loadPost(): void {
     const slug = this.router.url.split('/').pop() || '';
 
-    console.log('🔍 Loading post for slug:', slug);
+    //console.log('🔍 Loading post for slug:', slug);
 
     this.loading.set(true);
     this.error.set(null);
 
-    fetchGraphQLSSR<PostResponse>(this.POST_QUERY, { slug })
+    fetchGraphQL<PostResponse>(this.POST_QUERY, { slug })
       .then((response) => {
         this.data.set(response);
       })

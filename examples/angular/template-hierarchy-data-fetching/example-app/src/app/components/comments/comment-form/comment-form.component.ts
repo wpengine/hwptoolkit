@@ -180,18 +180,4 @@ export class CommentFormComponent {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
-
-  /**
-   * Simple URL validation (if provided)
-   */
-  private isValidUrl(url: string): boolean {
-    if (!url.trim()) return true; // Empty URL is valid (optional field)
-
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  }
 }

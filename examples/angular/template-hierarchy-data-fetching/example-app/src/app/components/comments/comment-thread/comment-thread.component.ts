@@ -1,22 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface Comment {
-  id: string;
-  content: string;
-  author: {
-    node: {
-      name: string;
-      url?: string;
-      avatar?: {
-        url: string;
-      };
-    };
-  };
-  date: string;
-  parentId?: string;
-  replies?: Comment[];
-}
+import { formatDate } from '../../../utils/utils';
+import { Comment } from '../../../interfaces/comment.interface';
 
 @Component({
   selector: 'app-comment-thread',
@@ -29,9 +14,6 @@ export class CommentThreadComponent {
   @Input() comment!: Comment;
   @Output() reply = new EventEmitter<{ author: string; parentId: string }>();
 
-  /**
-   * Handle reply button click
-   */
   onReply(): void {
     this.reply.emit({
       author: this.comment.author.node.name,
@@ -39,30 +21,14 @@ export class CommentThreadComponent {
     });
   }
 
-  /**
-   * Handle nested reply events
-   */
   onNestedReply(replyData: { author: string; parentId: string }): void {
     this.reply.emit(replyData);
   }
 
-  /**
-   * Format date for display
-   */
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return formatDate(dateString);
   }
 
-  /**
-   * Get initials from name for avatar placeholder
-   */
   getInitials(name: string): string {
     return name
       .split(' ')
@@ -72,9 +38,6 @@ export class CommentThreadComponent {
       .toUpperCase();
   }
 
-  /**
-   * Track by function for *ngFor performance
-   */
   trackByCommentId(index: number, comment: Comment): string {
     return comment.id;
   }
