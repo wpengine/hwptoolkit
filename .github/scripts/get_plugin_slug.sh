@@ -32,9 +32,9 @@ UNIQUE_PLUGINS=($(printf '%s\n' "${PLUGINS[@]}" | sort -u))
 # Find the first plugin that actually exists
 PLUGIN_SLUG=""
 for plugin in "${UNIQUE_PLUGINS[@]}"; do
-  if [ -d "plugins/$plugin" ]; then
+  if [ -d "plugins/$plugin" ] || [[ " ${CHANGED_FILES[@]} " =~ "plugins/$plugin/" ]]; then
     PLUGIN_SLUG="$plugin"
-    echo "Found existing plugin directory: $PLUGIN_SLUG"
+    echo "Found plugin in changes or directory: $PLUGIN_SLUG"
     break
   fi
 done
@@ -45,3 +45,6 @@ if [ -z "$PLUGIN_SLUG" ]; then
 fi
 
 echo "slug=$PLUGIN_SLUG" >> "$GITHUB_OUTPUT"
+
+echo "Changed files: $CHANGED_FILES"
+echo "Detected plugin(s): ${UNIQUE_PLUGINS[*]}"

@@ -24,6 +24,7 @@ jobs:
     outputs:
       plugins: ${{ steps.detect.outputs.plugins }}
       has-plugins: ${{ steps.detect.outputs.has-plugins }}
+      php-version: ${{ steps.detect-php-version.outputs.php-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,11 +35,13 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ]; then
             bash .github/scripts/get_plugin_slug.sh main
           else
-            bash .github/scripts/get_plugin_slug.sh ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+            bash .github/scripts/get_plugin_slug.sh \
+              ${{ github.event.pull_request.base.sha }} \
+              ${{ github.event.pull_request.head.sha }}
           fi
 
       - name: Detect changed plugins with quality config
-        id: detect
+        id: detect-plugin-slug
         run: |
           if [ -z "${{ steps.plugin.outputs.slug }}" ]; then
             echo "No plugin slug detected"
@@ -58,6 +61,23 @@ jobs:
             echo "has-plugins=false" >> $GITHUB_OUTPUT
             echo "ℹ️ No phpcs.xml found for plugin: $PLUGIN, skipping quality checks"
           fi
+      - name: Detect PHP version from composer.json
+        id: detect-php-version
+        run: |
+          PLUGIN="${{ steps.plugin.outputs.slug }}"
+          PHP_VERSION="7.4"
+          if [ -f "plugins/$PLUGIN/composer.json" ]; then
+            DETECTED_VERSION=$(jq -r '.require["php"] // empty' plugins/$PLUGIN/composer.json | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            if [ -n "$DETECTED_VERSION" ]; then
+              PHP_VERSION="$DETECTED_VERSION"
+              echo "Detected PHP version $PHP_VERSION from composer.json"
+            else
+              echo "No PHP version found in composer.json, using default $PHP_VERSION"
+            fi
+          else
+            echo "No composer.json found, using default PHP version $PHP_VERSION"
+          fi
+          echo "php-version=$PHP_VERSION" >> $GITHUB_OUTPUT
   quality-checks:
     needs: detect-plugins
     if: needs.detect-plugins.outputs.has-plugins == 'true'
@@ -75,3 +95,5 @@ jobs:
         uses: ./.github/actions/code-quality
         with:
           working-directory: plugins/${{ matrix.plugin }}
+          php-version: ${{ needs.detect-plugins.outputs.php-version }}
+          composer-options: '--no-progress --no-suggest'

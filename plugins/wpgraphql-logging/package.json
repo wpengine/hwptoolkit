@@ -1,0 +1,23 @@
+{
+	"name": "@wpengine/wpgraphql-logging-wordpress-plugin",
+	"version": "0.0.7",
+	"private": true,
+	"description": "A POC plugin for logging WPGraphQL queries.",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"test:e2e": "wp-scripts test-playwright --config tests/e2e/playwright.config.js",
+		"test:e2e:debug": "npm run test:e2e -- --debug",
+		"wp-env": "wp-env",
+		"version": "./bin/sync-package-version.sh"
+	},
+	"keywords": [],
+	"author": "wpengine",
+	"license": "GPL-2.0",
+	"devDependencies": {
+		"@playwright/test": "^1.52.0",
+		"@wordpress/e2e-test-utils-playwright": "^1.25.0",
+		"@wordpress/env": "^10.25.0",
+		"@wordpress/jest-console": "^8.25.0",
+		"@wordpress/scripts": "^30.18.0"
+	}
+}
