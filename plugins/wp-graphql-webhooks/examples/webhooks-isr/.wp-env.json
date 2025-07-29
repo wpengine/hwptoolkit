@@ -1,0 +1,25 @@
+{
+  "phpVersion": "8.0",
+  "plugins": [
+    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "https://github.com/wp-graphql/wp-graphql-smart-cache/releases/download/v2.0.0/wpgraphql-smart-cache.zip",
+    "https://downloads.wordpress.org/plugin/code-snippets.3.6.8.zip",
+    "../../"
+  ],
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": false,
+    "GRAPHQL_DEBUG": true,
+    "WP_DEBUG_LOG": true,
+    "WP_DEBUG_DISPLAY": false,
+    "SAVEQUERIES": false
+  },
+  "mappings": {
+    "db": "./wp-env/db",
+    "wp-content/uploads": "./wp-env/uploads",
+    ".htaccess": "./wp-env/setup/.htaccess"
+  },
+  "lifecycleScripts": {
+    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+  }
+}

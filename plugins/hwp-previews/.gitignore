@@ -38,6 +38,7 @@ wp-cli.local.yml
 
 # Tests
 *.sql
+!examples/**/*.sql
 *.tar.gz
 !tests
 tests/*.suite.yml

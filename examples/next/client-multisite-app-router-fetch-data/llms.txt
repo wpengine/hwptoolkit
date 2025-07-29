@@ -62,14 +62,13 @@ The example integrates with a WordPress multisite installation configured with:
 
 ### Prerequisites
 - Node.js (v18+)
-- pnpm package manager
 - Docker for local WordPress development
 
 ### Local Development Setup
 1. Clone the repository
-2. Install dependencies with `pnpm install`
+2. Install dependencies with `npm install`
 3. Configure environment variables for WordPress URLs
-4. Run the dev script with `pnpm example:build`
+4. Run the dev script with `npm run example:build`
 
 ### Environment Configuration
 Create a .env file with the following variables:

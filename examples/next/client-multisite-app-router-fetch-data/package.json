@@ -3,30 +3,22 @@
   "version": "1.0.0",
   "description": "An example multisite WordPress application using Next.js App Router and the fetch API to fetch data from WordPress using WPGraphQL. Designed with clear patterns for AI tool compatibility.",
   "scripts": {
-    "// Setup Commands": "Commands for setting up and building the example",
-    "example:build": "pnpm run wp:images:unzip && pnpm run example:dev:install && pnpm run wp:start && pnpm run wp:db:import && pnpm run example:start",
+    "example:build": "npm run wp:images:unzip && npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
-    "example:start": "pnpm run wp:start && pnpm run wp:multisite:set:variables && pnpm run example:dev",
-    "example:dev": "pnpm --dir ./example-app dev",
-
-    "// WordPress Environment Commands": "Commands for managing the WordPress environment",
-    "wp:start": "pnpm wp-env start",
+    "example:start": "npm run wp:start && npm run wp:multisite:set:variables && npm run example:dev",
+    "example:stop": "npm run wp:stop",
+    "example:prune": "wp-env destroy && npm run example:build && npm run example:start",
+    "example:dev": "npm --prefix ./example-app run dev",
+    "wp:multisite:set:variables": "wp-env run cli -- wp config set WP_ALLOW_MULTISITE true --raw && wp-env run cli -- wp config set MULTISITE true --raw && wp-env run cli -- wp config set SUBDOMAIN_INSTALL false --raw && wp-env run cli -- wp config set DOMAIN_CURRENT_SITE localhost:8888 && wp-env run cli -- wp config set PATH_CURRENT_SITE / && wp-env run cli -- wp config set SITE_ID_CURRENT_SITE 1 --raw && wp-env run cli -- wp config set BLOG_ID_CURRENT_SITE 1 --raw",
+    "wp:start": "npm install && wp-env start",
     "wp:stop": "wp-env stop",
     "wp:destroy": "wp-env destroy --config ./wp-env/wp-env.json",
-    "example:stop": "pnpm run wp:stop",
-    "example:prune": "wp-env destroy && pnpm run example:build && pnpm run example:start",
-
-    "// WordPress Multisite Configuration": "Commands for configuring WordPress multisite",
-    "wp:multisite:set:variables": "wp-env run cli -- wp config set WP_ALLOW_MULTISITE true --raw && wp-env run cli -- wp config set MULTISITE true --raw && wp-env run cli -- wp config set SUBDOMAIN_INSTALL false --raw && wp-env run cli -- wp config set DOMAIN_CURRENT_SITE localhost:8888 && wp-env run cli -- wp config set PATH_CURRENT_SITE / && wp-env run cli -- wp config set SITE_ID_CURRENT_SITE 1 --raw && wp-env run cli -- wp config set BLOG_ID_CURRENT_SITE 1 --raw",
-
-    "// Database Management": "Commands for managing the WordPress database",
     "wp:db:query": "wp-env run cli -- wp db query",
     "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
     "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
-
-    "// Asset Management": "Commands for managing WordPress uploads and assets",
     "wp:images:unzip": "rm -rf wp-env/uploads/ && unzip wp-env/uploads.zip -d wp-env;",
-    "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads"
+    "wp:images:zip": "zip -r wp-env/uploads.zip wp-env/uploads",
+    "wp-env": "wp-env"
   },
   "keywords": [
     "headless",
