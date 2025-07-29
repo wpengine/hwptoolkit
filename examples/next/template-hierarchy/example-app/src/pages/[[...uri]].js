@@ -1,16 +1,15 @@
 import { uriToTemplate } from "@/lib/templateHierarchy";
 import { RouteDataContext } from "@/lib/context";
-import Layout from "@/components/Layout";
+import availableTemplates from "@/wp-templates";
 
-export default function Page({ params, uri, templateData }) {
+export default function Page(props) {
+  const { templateData } = props;
+
+  const PageTemplate = availableTemplates[templateData.template?.id];
+
   return (
-    <RouteDataContext.Provider value={{ params, uri, templateData }}>
-      <Layout>
-        <p>
-          You shouldn't see this page if the template hierarchy is working
-          correctly.
-        </p>
-      </Layout>
+    <RouteDataContext.Provider value={props}>
+      <PageTemplate {...props} />
     </RouteDataContext.Provider>
   );
 }
@@ -21,6 +20,15 @@ export async function getServerSideProps({ params }) {
     : "/";
 
   const templateData = await uriToTemplate({ uri });
+
+  if (
+    !templateData?.template?.id ||
+    templateData?.template?.id === "404 Not Found"
+  ) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {

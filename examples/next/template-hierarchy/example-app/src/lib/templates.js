@@ -147,10 +147,14 @@ export async function getAvailableTemplates() {
   const templates = [];
 
   for (const file of files) {
+    if (file === "index.js") {
+      continue; // Skip the index file
+    }
+
     const slug = file.replace(".js", "");
 
     templates.push({
-      id: slug,
+      id: slug === "default" ? "index" : slug,
       path: join("/", TEMPLATE_PATH, file),
     });
   }
