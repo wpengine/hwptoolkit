@@ -42,11 +42,11 @@ class LoggerService {
 	protected readonly Logger $monolog;
 
 	/**
-	 * The instance of the logger.
+	 * The instance of the logger based off the channel name.
 	 *
-	 * @var \WPGraphQL\Logging\Logger\LoggerService|null
+	 * @var array<LoggerService>
 	 */
-	protected static ?LoggerService $instance = null;
+	protected static array $instances = [];
 
 	/**
 	 * Constructor for the LoggerService and initializes the Monolog logger with the provided channel, handlers, processors, and default context.
@@ -90,16 +90,16 @@ class LoggerService {
 		?array $processors = null,
 		?array $default_context = null
 	): LoggerService {
-		if ( null !== self::$instance ) {
-			return self::$instance;
+		if ( isset(self::$instances[$channel]) ) {
+			return self::$instances[$channel];
 		}
 
 		$processors      = $processors ?? self::get_default_processors();
 		$handlers        = $handlers ?? self::get_default_handlers();
 		$default_context = $default_context ?? self::get_default_context();
 
-		self::$instance = new self( $channel, $handlers, $processors, $default_context );
-		return self::$instance;
+		self::$instances[$channel] = new self( $channel, $handlers, $processors, $default_context );
+		return self::$instances[$channel];
 	}
 
 	/**
