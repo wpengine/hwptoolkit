@@ -13,6 +13,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 A WPGraphQL logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
 
+@TODO
 == Upgrade Notice ==
 == Frequently Asked Questions ==
 == Screenshots ==
