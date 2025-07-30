@@ -21,7 +21,6 @@ use GraphQL\Error\SyntaxError;
 use WPGraphQL\Debug\Analysis\Interfaces\AnalyzerItemInterface;
 
 class Complexity implements AnalyzerItemInterface {
-
     protected ?string $internalNote = null;
 
     /**
@@ -42,7 +41,6 @@ class Complexity implements AnalyzerItemInterface {
         }
 
         $complexity = 0;
-
         Visitor::visit(
             $ast,
             [
@@ -95,8 +93,6 @@ class Complexity implements AnalyzerItemInterface {
         );
 
         $value = $complexity;
-
-        // Use the new method to determine the note
         $this->internalNote = $this->getComplexityNote( $value );
 
         return [
