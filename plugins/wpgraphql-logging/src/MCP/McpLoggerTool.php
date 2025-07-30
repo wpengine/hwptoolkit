@@ -2,10 +2,10 @@
 
 namespace WPGraphQL\Logging\MCP;
 
+use Automattic\WordpressMcp\Core\RegisterMcpTool;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
 class McpLoggerTool {
-
 
 	/**
 	 * The single instance of the class.
@@ -31,52 +31,55 @@ class McpLoggerTool {
 	}
 
 	public function register_tool(): void {
-		WPMCP()->register_tool([
-			'type' => 'read',
-			'name' => 'wpgraphql_logging_custom_tool',
-			'description' => 'Reads WPGraphQL Logging custom tool data',
-			'inputSchema' => [
-				'type' => 'object',
-				'properties' => [
-					'timeframe_hours' => [
-						'type'        => 'integer',
-						'description' => 'The number of hours to look back. Defaults to 24.',
-						'default'     => 24,
+
+		new RegisterMcpTool(
+			array(
+				'type' => 'read',
+				'name' => 'wpgraphql_logging_custom_tool',
+				'description' => 'Reads WPGraphQL Logging custom tool data',
+				'inputSchema' => [
+					'type' => 'object',
+					'properties' => [
+						'timeframe_hours' => [
+							'type'        => 'integer',
+							'description' => 'The number of hours to look back. Defaults to 24.',
+							'default'     => 24,
+						],
+						'level' => [
+							'type'        => 'string',
+							'description' => "The log level to filter by (e.g., 'ERROR', 'WARNING', 'ERRORS_AND_ABOVE'). Optional.",
+						],
+						'search_text' => [
+							'type'        => 'string',
+							'description' => 'Text to search for within the log message. Optional.',
+						],
 					],
-					'level' => [
-						'type'        => 'string',
-						'description' => "The log level to filter by (e.g., 'ERROR', 'WARNING'). Optional.",
-					],
-					'search_text' => [
-						'type'        => 'string',
-						'description' => 'Text to search for within the log message. Optional.',
-					],
+					'required' => []
 				],
-				'required' => ['param1']
-			],
-			'callback' => [$this, 'execute'],
-		]);
+				'callback' => [$this, 'execute'],
+				'permission_callback' => [$this, 'permission_callback'],
+			)
+		);
+	}
+
+
+	public function permission_callback(): bool {
+		return current_user_can( 'manage_options' );
 	}
 
 	public function execute( array $args ): array {
-		// Testing
-//		return ['result' => 'success'];
 
-		// @TODO - Get args working
-		$args = [
-			'timeframe_hours' => 24,
-			'level'           => 'ERROR',
-		];
 
 		/**
 		 * Note this needs to be tidied up as mostly generated from AI prompts.
 		 *
-		 * We probably shouldd use the resource too if possible
+		 * We probably should use the resource too if possible
 		 */
 		global $wpdb;
 		$table_name = DatabaseEntity::get_table_name();
 
-		$sql = "SELECT id, message, level_name, datetime, context, extra FROM {$table_name} WHERE 1=1";
+		// Assuming your table has 'level' (integer) and 'level_name' (string) columns.
+		$sql = "SELECT id, message, level_name, level, datetime, extra FROM {$table_name} WHERE 1=1";
 		$params = [];
 
 		$timeframe_hours = isset($args['timeframe_hours']) ? intval($args['timeframe_hours']) : 24;
@@ -149,8 +152,8 @@ class McpLoggerTool {
 			return [ 'message' => 'No matching logs found.' ];
 		}
 
-		$logs = $wpdb->get_results( $wpdb->prepare( $sql, $params ) );
-
+		// FIX 3: Removed redundant database query.
+		$resource_links = [];
 		foreach ( $logs as $log ) {
 			$extra_data = json_decode( $log->extra, true );
 			$operation_name = ! empty( $extra_data['wpgraphql_operation_name'] ) ? $extra_data['wpgraphql_operation_name'] : 'Unknown Operation';
@@ -182,5 +185,4 @@ class McpLoggerTool {
 
 		return [ 'found_logs' => $resource_links ];
 	}
-
 }
