@@ -6,6 +6,8 @@ namespace WPGraphQL\Logging;
 
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Hooks\PluginHooks;
+use WPGraphQL\Logging\MCP\McpLoggerResource;
+use WPGraphQL\Logging\MCP\McpLoggerTool;
 
 /**
  * Plugin class for WPGraphQL Logging.
@@ -53,6 +55,10 @@ final class Plugin {
 	public function setup(): void {
 		PluginHooks::init();
 		QueryEventLifecycle::init();
+
+		// POC
+		McpLoggerTool::init();
+		McpLoggerResource::init();
 	}
 
 	/**

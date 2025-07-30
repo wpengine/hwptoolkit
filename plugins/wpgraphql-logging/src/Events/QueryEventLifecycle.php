@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Events;
 
+use GraphQL\Executor\ExecutionResult;
 use Monolog\Level;
 use WPGraphQL\Logging\Logger\LoggerService;
 
@@ -75,14 +76,32 @@ class QueryEventLifecycle {
 	 * @param array<string, mixed> $variables The variables for the query.
 	 */
 	public function log_post_request( $response, $result, string $operation_name, string $query, array $variables ): void {
+//		wp_send_json( ['errors' => $response['errors']] );
 
 		try {
+			// Note: POC so not sure if this is fully working yet.
 			$context = [];
 			$level   = Level::Info;
+
+			/** @var ExecutionResult $response */
+			$errors = $response->errors;
+
+
+			if (! empty( $errors ) ) {
+				$context['errors'] = [
+					'message' => 'GraphQL request errors',
+					'data'    => $errors
+				];
+				$level             = Level::Error;
+			}
+
+
+
 			$context = apply_filters( 'wpgraphql_logging_post_request_context', $context, $response, $result, $operation_name, $query, $variables );
 			$level   = apply_filters( 'wpgraphql_logging_post_request_level', $level, $response, $result, $operation_name, $query, $variables );
 			$this->logger->log( $level, 'WPGraphQL Outgoing Response', $context );
 		} catch ( \Throwable $e ) {
+//			wp_send_json( ['errors' => $e->getMessage()] );
 			// @TODO - Handle logging errors gracefully.
 			error_log( 'Error in log_post_request: ' . $e->getMessage() );  // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		}
