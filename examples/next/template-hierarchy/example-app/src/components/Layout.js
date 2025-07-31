@@ -1,9 +1,8 @@
-import { useContext } from "react";
-import { RouteDataContext } from "@/lib/context";
+import { useRouteData } from "@/lib/context";
 import TemplateHierarchyInfo from "@/components/TemplateHierarchyInfo";
 
 export default function Layout({ children }) {
-  const { templateData, uri } = useContext(RouteDataContext);
+  const { templateData, uri } = useRouteData();
 
   return (
     <div className="layout">

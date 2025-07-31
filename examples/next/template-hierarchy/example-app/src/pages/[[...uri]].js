@@ -1,5 +1,5 @@
 import { uriToTemplate } from "@/lib/templateHierarchy";
-import { RouteDataContext } from "@/lib/context";
+import { RouteDataProvider } from "@/lib/context";
 import availableTemplates from "@/wp-templates";
 
 export default function Page(props) {
@@ -8,9 +8,9 @@ export default function Page(props) {
   const PageTemplate = availableTemplates[templateData.template?.id];
 
   return (
-    <RouteDataContext.Provider value={props}>
+    <RouteDataProvider value={props}>
       <PageTemplate {...props} />
-    </RouteDataContext.Provider>
+    </RouteDataProvider>
   );
 }
 
