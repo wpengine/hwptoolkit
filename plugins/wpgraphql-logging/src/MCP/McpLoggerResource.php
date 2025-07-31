@@ -2,6 +2,8 @@
 
 namespace WPGraphQL\Logging\MCP;
 
+use Automattic\WordpressMcp\Core\RegisterMcpResource;
+
 class McpLoggerResource {
 
 

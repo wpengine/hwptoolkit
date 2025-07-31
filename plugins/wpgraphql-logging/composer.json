@@ -27,7 +27,8 @@
 	],
 	"require": {
 		"php": "^8.1",
-		"monolog/monolog": "^3.9"
+		"monolog/monolog": "^3.9",
+		"webonyx/graphql-php": "^15.22"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
