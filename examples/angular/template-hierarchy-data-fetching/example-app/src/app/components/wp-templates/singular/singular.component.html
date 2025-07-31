@@ -1,0 +1,81 @@
+<div class="container">
+  <div *ngIf="loading()" class="text-center py-10">
+    <app-loading text="Loading post..."></app-loading>
+  </div>
+
+  <div *ngIf="error() && !loading()" class="py-10 text-center error-container">
+    <app-not-found
+      [title]="'Error loading post'"
+      [text]="error()?.message || 'An unexpected error occurred.'"
+    ></app-not-found>
+  </div>
+
+  <article *ngIf="post() && !loading() && !error()" class="post-article">
+    <header class="post-header">
+      <h1 class="post-title">{{ post()!.title }}</h1>
+
+      <div class="post-meta-header">
+        <div *ngIf="hasAuthor()" class="author-info">
+          <img
+            *ngIf="hasAuthorAvatar()"
+            [src]="post()!.author!.node.avatar!.url"
+            [alt]="post()!.author!.node.name"
+            class="author-avatar"
+            loading="lazy"
+          />
+          <span class="author-name">By {{ post()!.author!.node.name }}</span>
+        </div>
+        <time class="post-date">{{ formatDate(post()!.date) }}</time>
+      </div>
+    </header>
+
+    <div *ngIf="hasFeaturedImage()" class="featured-image-container">
+      <img
+        [src]="post()!.featuredImage!.node.sourceUrl"
+        [alt]="post()!.featuredImage!.node.altText || post()!.title"
+        class="featured-image"
+        loading="lazy"
+      />
+    </div>
+
+    <div
+      class="post-content prose prose-lg max-w-none"
+      [innerHTML]="post()!.content"
+    ></div>
+
+    <footer class="post-footer">
+      <div *ngIf="hasCategories()" class="post-categories">
+        <span class="meta-label">Categories:</span>
+        <div class="categories-list">
+          <a
+            *ngFor="let category of post()!.categories!.nodes; let i = index"
+            [routerLink]="getCategoryLink(category)"
+            class="category-link"
+          >
+            {{ category.name
+            }}{{ !isLastItem(i, post()!.categories!.nodes) ? ',' : '' }}
+          </a>
+        </div>
+      </div>
+
+      <div *ngIf="hasTags()" class="post-tags">
+        <h3 class="meta-label">Tags:</h3>
+        <div class="tags-list">
+          <a
+            *ngFor="let tag of post()!.tags!.nodes; let i = index"
+            [routerLink]="getTagLink(tag)"
+            class="tag-link"
+          >
+            {{ tag.name }}{{ !isLastItem(i, post()!.tags!.nodes) ? ',' : '' }}
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <app-comments [postId]="postId()!"></app-comments>
+  </article>
+
+  <div *ngIf="!post() && !loading() && !error()">
+    <app-empty-state></app-empty-state>
+  </div>
+</div>

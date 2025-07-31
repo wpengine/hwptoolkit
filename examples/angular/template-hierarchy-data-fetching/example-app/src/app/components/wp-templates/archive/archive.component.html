@@ -1,0 +1,57 @@
+<main class="container">
+  <!-- Loading state -->
+  <div *ngIf="loading()" class="text-center">
+    <app-loading text="Loading archive..."></app-loading>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error() && !loading()" class="text-center error-container">
+    <app-not-found
+      [text]="error()?.message || 'Failed to load archive data.'"
+    ></app-not-found>
+  </div>
+
+  <!-- Archive content -->
+  <div *ngIf="archive() && !loading() && !error()">
+    <header class="archive-header">
+      <h1 class="archive-title">
+        {{ getArchiveType() }}: {{ archive()!.name }}
+      </h1>
+      <div
+        *ngIf="hasDescription()"
+        class="archive-description"
+        [innerHTML]="archive()!.description"
+      ></div>
+      <div class="archive-meta">
+        <span class="posts-count">{{
+          posts().length === 0
+            ? 'No posts found'
+            : posts().length +
+              ' ' +
+              (posts().length === 1 ? 'post' : 'posts') +
+              ' found'
+        }}</span>
+      </div>
+    </header>
+
+    <!-- Posts listing -->
+    <div *ngIf="hasContent()">
+      <app-post-listing [posts]="posts()" [loading]="false" [cols]="3">
+      </app-post-listing>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!hasContent()" class="text-center">
+      <app-empty-state
+        text="There are no posts available in here."
+      ></app-empty-state>
+    </div>
+  </div>
+
+  <!-- Fallback when no archive data -->
+  <div *ngIf="!archive() && !loading() && !error()" class="fallback-container">
+    <app-empty-state
+      text="No archive data available. Please check back later."
+    ></app-empty-state>
+  </div>
+</main>

@@ -1,0 +1,43 @@
+<div class="container">
+  <header class="page-header text-center mt-4">
+    <h1>{{ pageTitle() }}</h1>
+  </header>
+
+  <section *ngIf="loading() && allPosts().length === 0">
+    <app-loading text="Loading posts..."></app-loading>
+  </section>
+
+  <section *ngIf="error() && !loading()">
+    <div class="error-container">
+      <h2>Error Loading Posts</h2>
+      <p>{{ error() }}</p>
+      <button (click)="refreshPosts()" class="button button-primary">
+        Try Again
+      </button>
+    </div>
+  </section>
+
+  <section *ngIf="!loading() && !error() && allPosts().length > 0">
+    <app-post-listing [posts]="allPosts()" [loading]="false" [cols]="3">
+    </app-post-listing>
+
+    <div class="load-more-section text-center asd" *ngIf="hasMorePosts()">
+      <div *ngIf="loadingMore()" class="loading-more">
+        <app-loading text="Loading more posts..."></app-loading>
+      </div>
+
+      <app-load-more
+        [initialPosts]="allPosts()"
+        [initialPageInfo]="initialPageInfo()"
+        (newPostsLoaded)="handleNewPosts($event)"
+        (pageInfoUpdated)="handlePageInfoUpdate($event)"
+        (loadingStateChanged)="handleLoading($event)"
+      >
+      </app-load-more>
+    </div>
+  </section>
+
+  <section *ngIf="!loading() && !error() && allPosts().length === 0">
+    <app-empty-state [text]="'No posts found.'"> </app-empty-state>
+  </section>
+</div>

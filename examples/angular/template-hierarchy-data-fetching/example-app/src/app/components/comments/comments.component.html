@@ -1,0 +1,45 @@
+<section id="comments">
+  <h2>Comments ({{ commentCount() }})</h2>
+
+  <div *ngIf="loading()">
+    <app-loading text="Loading comments..."></app-loading>
+  </div>
+
+  <div *ngIf="!loading() && !error() && comments().length === 0">
+    <app-empty-state
+      text="No comments yet. Be the first to share your thoughts!"
+    ></app-empty-state>
+  </div>
+
+  <div *ngIf="!loading() && !error() && comments().length > 0">
+    <app-comment-thread
+      *ngFor="let comment of threadedComments(); trackBy: trackByCommentId"
+      [comment]="comment"
+      (reply)="handleReply($event)"
+    ></app-comment-thread>
+
+    <div *ngIf="pageInfo()?.hasNextPage" class="load-more-comments">
+      <button
+        (click)="loadMoreComments()"
+        [disabled]="loadingMore()"
+        class="load-more-button"
+      >
+        {{ loadingMore() ? 'Loading...' : 'Load More Comments' }}
+      </button>
+    </div>
+
+    <div
+      *ngIf="!pageInfo()?.hasNextPage && comments().length > 0"
+      class="comments-summary"
+    >
+      <p>Showing all {{ comments().length }} comments</p>
+    </div>
+  </div>
+  <app-comment-form
+    *ngIf="showCommentForm()"
+    [postId]="postId"
+    [replyData]="replyData() || null"
+    (submit)="handleCommentSubmit($event)"
+    (cancel)="cancelReply()"
+  ></app-comment-form>
+</section>

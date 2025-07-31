@@ -1,0 +1,14 @@
+<!-- Loading state -->
+<ng-container *ngIf="isLoading()">
+  <app-loading></app-loading>
+</ng-container>
+
+<!-- Error state -->
+<div *ngIf="hasError() && !isLoading()" class="error-container">
+  <app-not-found></app-not-found>
+</div>
+
+<!-- Dynamic content -->
+<ng-container *ngIf="componentToRender() && !isLoading() && !hasError()">
+  <ng-container *ngComponentOutlet="componentToRender()"> </ng-container>
+</ng-container>

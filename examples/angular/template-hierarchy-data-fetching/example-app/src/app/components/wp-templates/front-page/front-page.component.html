@@ -1,0 +1,47 @@
+<main>
+  <section id="hero">
+    <ng-container *ngIf="settingsLoading()">
+      <app-loading text="Loading site..."></app-loading>
+    </ng-container>
+
+    <div *ngIf="!settingsLoading() && !settingsError()">
+      <h1>{{ siteInfo().title }}</h1>
+      <p>{{ siteInfo().description }}</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <section id="recent-posts">
+      <h2>Recent Posts</h2>
+
+      <div *ngIf="blogError() && !blogLoading()">
+        <app-empty-state
+          text="Failed to load recent posts. Please try again later."
+        ></app-empty-state>
+      </div>
+
+      <ng-container *ngIf="blogLoading() && !blogError()">
+        <app-loading text="Loading recent posts..."></app-loading>
+      </ng-container>
+
+      <ng-container
+        *ngIf="!blogLoading() && !blogError() && blogPosts().length === 0"
+      >
+        <app-empty-state text="No recent posts available"></app-empty-state>
+      </ng-container>
+
+      <ng-container
+        *ngIf="!blogLoading() && !blogError() && blogPosts().length > 0"
+      >
+        <app-post-listing [posts]="blogPosts()" [loading]="false" [cols]="4">
+        </app-post-listing>
+      </ng-container>
+    </section>
+
+    <div class="text-center">
+      <a routerLink="/blog" class="button button-primary button-large">
+        View All Blog Posts →
+      </a>
+    </div>
+  </div>
+</main>
