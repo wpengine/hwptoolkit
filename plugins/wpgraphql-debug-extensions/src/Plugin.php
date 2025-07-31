@@ -12,6 +12,8 @@ namespace WPGraphQL\Debug;
 use AxeWP\GraphQL\Helper\Helper;
 use WPGraphQL\Debug\Analysis\QueryAnalyzer;
 use WPGraphQL\Utils\QueryAnalyzer as OriginalQueryAnalyzer;
+use WPGraphQL\Debug\Analysis\Rules\Complexity;
+use WPGraphQL\Debug\Analysis\Rules\UnfilteredLists;
 
 /**
  * Plugin singleton class.
@@ -73,14 +75,13 @@ if ( ! class_exists( 'WPGraphQL\Debug\Plugin' ) ) :
 			add_action( 'graphql_determine_graphql_keys', function ($query_analyzer_instance) {
 				static $initialized = false;
 
-				// Only initialize once per request to prevent redundant hooks/logic.
 				if ( $initialized ) {
 					return;
 				}
-
-				// Ensure that the received instance is indeed a QueryAnalyzer.
 				if ( $query_analyzer_instance instanceof OriginalQueryAnalyzer ) {
 					$debug_analyzer = new QueryAnalyzer( $query_analyzer_instance );
+					$debug_analyzer->addAnalyzerItem( new Complexity() );
+					$debug_analyzer->addAnalyzerItem( new UnfilteredLists() );
 					$debug_analyzer->init();
 
 					$initialized = true;
