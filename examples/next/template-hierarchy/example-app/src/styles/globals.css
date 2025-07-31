@@ -1,0 +1,17 @@
+.template-hierarchy-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: #f2f483;
+  padding: 0.5em;
+  border-radius: 5px;
+
+  & section {
+    padding: 0.5em;
+    border-right: 1px solid black;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+}
