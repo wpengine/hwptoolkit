@@ -8,6 +8,7 @@ use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Hooks\PluginHooks;
 use WPGraphQL\Logging\MCP\McpLoggerResource;
 use WPGraphQL\Logging\MCP\McpLoggerTool;
+use WPGraphQL\Logging\MCP\McpAnalyzeLogsPrompt;
 
 /**
  * Plugin class for WPGraphQL Logging.
@@ -59,6 +60,7 @@ final class Plugin {
 		// POC
 		McpLoggerTool::init();
 		McpLoggerResource::init();
+		McpAnalyzeLogsPrompt::init();
 	}
 
 	/**
