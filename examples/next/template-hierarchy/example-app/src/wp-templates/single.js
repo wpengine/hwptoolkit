@@ -4,10 +4,10 @@ export default function SingleTemplate({ graphqlData }) {
   const { SinglePostQuery } = graphqlData;
   return (
     <Layout>
-      <h2>{SinglePostQuery.response.data.post.title}</h2>
+      <h2>{SinglePostQuery.data.post.title}</h2>
       <div
         dangerouslySetInnerHTML={{
-          __html: SinglePostQuery.response.data.post.content,
+          __html: SinglePostQuery.data.post.content,
         }}
       />
     </Layout>
