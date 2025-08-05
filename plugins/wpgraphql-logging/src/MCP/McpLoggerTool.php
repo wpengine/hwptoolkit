@@ -104,10 +104,7 @@ class McpLoggerTool {
     public function execute( array $args ): array {
         global $wpdb;
 
-        // Get the table name from the database entity.
         $table_name = DatabaseEntity::get_table_name();
-
-        // Initialize SQL components.
         $sql           = "SELECT id, message, level_name, level, datetime, extra FROM {$table_name}";
         $where_clauses = [ '1=1' ]; // Base clause to simplify dynamic WHERE.
         $params        = [];
@@ -176,13 +173,10 @@ class McpLoggerTool {
             $params[]        = '%' . $wpdb->esc_like( $args['search_text'] ) . '%';
         }
 
-        // Combine all WHERE clauses.
+        // Combine
         $sql .= ' WHERE ' . implode( ' AND ', $where_clauses );
-
-        // Add ordering and a limit for performance.
         $sql .= ' ORDER BY datetime DESC LIMIT 100';
 
-        // Prepare the SQL statement to prevent SQL injection.
         $prepared_sql = $wpdb->prepare( $sql, $params );
 
         $logs = $wpdb->get_results( $prepared_sql );
@@ -200,10 +194,7 @@ class McpLoggerTool {
 
             $operation_name = $extra_data['wpgraphql_operation_name'] ?? 'Unknown Operation';
 
-            // Title remains concise for quick overview.
             $title = "{$log->level_name} in '{$operation_name}' at {$log->datetime}";
-
-            // Construct a detailed text field with full context for AI analysis.
             $detailed_text_parts = [];
             $detailed_text_parts[] = 'Log ID: ' . $log->id;
             $detailed_text_parts[] = 'Timestamp: ' . $log->datetime;
@@ -216,10 +207,8 @@ class McpLoggerTool {
 
             if ( ! empty( $extra_data['wpgraphql_variables'] ) ) {
                 $variables_json = is_array( $extra_data['wpgraphql_variables'] ) ? wp_json_encode( $extra_data['wpgraphql_variables'], JSON_PRETTY_PRINT ) : $extra_data['wpgraphql_variables'];
-                $detailed_text_parts[] = 'GraphQL Variables: ' . $variables_json; // Full variables, pretty-printed
+                $detailed_text_parts[] = 'GraphQL Variables: ' . $variables_json;
             }
-
-            // Include all extra data as a pretty-printed JSON string for maximum context.
             if ( ! empty( $extra_data ) ) {
                 $detailed_text_parts[] = 'Additional Context (Extra Data): ' . wp_json_encode( $extra_data, JSON_PRETTY_PRINT );
             }
