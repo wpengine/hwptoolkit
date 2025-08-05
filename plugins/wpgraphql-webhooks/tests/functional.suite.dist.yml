@@ -1,0 +1,22 @@
+# Codeception Test Suite Configuration
+#
+# Suite for functional tests
+# Emulate web requests and make WordPress process them
+
+actor: FunctionalTester
+modules:
+    enabled:
+        - Asserts
+        - lucatume\WPBrowser\Module\WPBrowser
+        - lucatume\WPBrowser\Module\WPDb
+        - lucatume\WPBrowser\Module\WPLoader
+        - REST
+    config:
+        lucatume\WPBrowser\Module\WPLoader:
+            loadOnly: true
+            plugins:
+                - wp-graphql/wp-graphql.php
+                - wpgraphql-webhooks/wpgraphql-webhooks.php
+            activatePlugins:
+                - wp-graphql/wp-graphql.php
+                - wpgraphql-webhooks/wpgraphql-webhooks.php
