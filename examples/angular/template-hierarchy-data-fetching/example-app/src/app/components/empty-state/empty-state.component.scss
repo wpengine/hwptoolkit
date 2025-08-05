@@ -1,0 +1,17 @@
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+  &::before {
+    content: '📭';
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+
+  .loading-text {
+    margin: 0 auto;
+  }
+}

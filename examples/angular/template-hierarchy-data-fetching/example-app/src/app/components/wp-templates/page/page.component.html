@@ -1,0 +1,60 @@
+<div class="container">
+  <!-- Loading state -->
+  <div *ngIf="loading()" class="py-10 text-center">
+    <app-loading text="Loading page..."></app-loading>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error() && !loading()" class="py-10 text-center">
+    <h1 class="text-2xl font-bold text-red-500 mb-2">Error</h1>
+    <p class="mb-4">{{ error() }}</p>
+    <app-not-found></app-not-found>
+  </div>
+
+  <!-- Page content -->
+  <article
+    *ngIf="page() && !loading() && !error()"
+    class="single-page"
+    [id]="'page-' + pageId()"
+  >
+    <!-- Page Title -->
+    <h1 class="page-title text-center">{{ page()!.title }}</h1>
+
+    <!-- Featured Image -->
+    <div *ngIf="page()!.featuredImage?.node" class="featured-image-container">
+      <img
+        [src]="page()!.featuredImage!.node.sourceUrl"
+        [alt]="page()!.featuredImage!.node.altText || page()!.title"
+        class="featured-image"
+        loading="lazy"
+      />
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content" [innerHTML]="page()!.content"></div>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+      <!-- Active Comments -->
+      <app-comments
+        *ngIf="commentsEnabled() && pageId()"
+        [postId]="pageId()!"
+        contentType="page"
+      >
+      </app-comments>
+
+      <!-- Closed Comments Message -->
+      <div *ngIf="commentsClosedButExist()" class="comments-closed-message">
+        <p>Comments are closed for this page.</p>
+        <small class="text-muted">
+          This page has {{ page()!.commentCount }}
+          {{ page()!.commentCount === 1 ? 'comment' : 'comments' }}.
+        </small>
+      </div>
+    </div>
+  </article>
+
+  <div *ngIf="!page() && !loading() && !error()">
+    <app-not-found></app-not-found>
+  </div>
+</div>
