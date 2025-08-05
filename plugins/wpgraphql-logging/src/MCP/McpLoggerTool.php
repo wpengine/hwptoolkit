@@ -103,9 +103,10 @@ class McpLoggerTool {
      */
     public function execute( array $args ): array {
         global $wpdb;
-		
+
         // Get the table name from the database entity.
         $table_name = DatabaseEntity::get_table_name();
+
         // Initialize SQL components.
         $sql           = "SELECT id, message, level_name, level, datetime, extra FROM {$table_name}";
         $where_clauses = [ '1=1' ]; // Base clause to simplify dynamic WHERE.
@@ -190,7 +191,7 @@ class McpLoggerTool {
             return [ 'message' => 'No matching logs found.' ];
         }
 
-        // 4. Format the logs into resource links.
+        // 4. Format the logs into resource links with enhanced context.
         $resource_links = [];
         foreach ( $logs as $log ) {
             // Attempt to safely decode the extra data.
@@ -199,22 +200,31 @@ class McpLoggerTool {
 
             $operation_name = $extra_data['wpgraphql_operation_name'] ?? 'Unknown Operation';
 
+            // Title remains concise for quick overview.
             $title = "{$log->level_name} in '{$operation_name}' at {$log->datetime}";
 
-            // Construct a detailed snippet for the log entry.
-            $snippet_parts = [];
-            $snippet_parts[] = 'Error: ' . substr( $log->message, 0, 100 ) . ( strlen( $log->message ) > 100 ? '...' : '' );
+            // Construct a detailed text field with full context for AI analysis.
+            $detailed_text_parts = [];
+            $detailed_text_parts[] = 'Log ID: ' . $log->id;
+            $detailed_text_parts[] = 'Timestamp: ' . $log->datetime;
+            $detailed_text_parts[] = 'Level Name: ' . $log->level_name . ' (' . $log->level . ')';
+            $detailed_text_parts[] = 'Message: ' . $log->message; // Full message
 
             if ( ! empty( $extra_data['wpgraphql_query'] ) ) {
-                $snippet_parts[] = 'Query: ' . substr( $extra_data['wpgraphql_query'], 0, 150 ) . ( strlen( $extra_data['wpgraphql_query'] ) > 150 ? '...' : '' );
+                $detailed_text_parts[] = 'GraphQL Query: ' . $extra_data['wpgraphql_query']; // Full query
             }
 
             if ( ! empty( $extra_data['wpgraphql_variables'] ) ) {
-                $variables_json = is_array( $extra_data['wpgraphql_variables'] ) ? wp_json_encode( $extra_data['wpgraphql_variables'] ) : $extra_data['wpgraphql_variables'];
-                $snippet_parts[] = 'Variables: ' . substr( $variables_json, 0, 100 ) . ( strlen( $variables_json ) > 100 ? '...' : '' );
+                $variables_json = is_array( $extra_data['wpgraphql_variables'] ) ? wp_json_encode( $extra_data['wpgraphql_variables'], JSON_PRETTY_PRINT ) : $extra_data['wpgraphql_variables'];
+                $detailed_text_parts[] = 'GraphQL Variables: ' . $variables_json; // Full variables, pretty-printed
             }
 
-            $text = implode( "\n", $snippet_parts );
+            // Include all extra data as a pretty-printed JSON string for maximum context.
+            if ( ! empty( $extra_data ) ) {
+                $detailed_text_parts[] = 'Additional Context (Extra Data): ' . wp_json_encode( $extra_data, JSON_PRETTY_PRINT );
+            }
+
+            $text = implode( "\n", $detailed_text_parts );
 
             $resource_links[] = [
                 'uri'   => 'log://wpgraphql_logging/' . $log->id,
