@@ -19,5 +19,5 @@ In this example we show how to implement the WordPress Template Hierarchy in Ang
 - Run `npm run backend:start` and verify that http://localhost:3000/api/templates returns correct data.
 - Verify if you have added `/backend/.env` file with correct `FRONTEND_URL`.
 - check for any errors in the console
-1. In some cases, you might have to install @angluar/cli globally. In /example-app/ run `npm install -g @angular/cli@latest`
-2. To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.
+2. In some cases, you might have to install @angluar/cli globally. In /example-app/ run `npm install -g @angular/cli@latest`
+3. To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.
