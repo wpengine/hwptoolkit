@@ -1,0 +1,22 @@
+<section id="load-more-section">
+  <div class="container">
+    <div *ngIf="error()" class="error-container">
+      <app-empty-state [text]="error()?.message || 'Failed to load posts'">
+      </app-empty-state>
+    </div>
+
+    <div *ngIf="hasMorePosts() && !error()" class="text-center mt-4">
+      <button
+        (click)="loadMorePosts()"
+        [disabled]="isLoadingMore()"
+        class="button button-primary load-more-btn"
+      >
+        {{ isLoadingMore() ? 'Loading...' : 'Load More Posts' }}
+      </button>
+    </div>
+
+    <div *ngIf="isLoadingMore()" class="text-center mt-3">
+      <app-loading></app-loading>
+    </div>
+  </div>
+</section>
