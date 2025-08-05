@@ -4,4 +4,5 @@ Used purely to fetch dynamically the available templates in `/example-app/src/ap
 
 ## Getting Started
 
-1. Run `npm run dev` to start backend service for fetching templates at `http://localhost:3000/api/templates`. It fetches the templates located in `/example-app/src/app/components/wp-templates`.
+1. Add `.env` file with `FRONTEND_URL=http://localhost:4200` or the desired URL for your Angular front application.
+2. Run `npm run dev` to start backend service for fetching templates at `http://localhost:3000/api/templates`. It fetches the templates located in `/example-app/src/app/components/wp-templates`.

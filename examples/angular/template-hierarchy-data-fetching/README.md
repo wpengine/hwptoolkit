@@ -16,5 +16,8 @@ In this example we show how to implement the WordPress Template Hierarchy in Ang
 
 ## Trouble Shooting
 1. I get "Page Not Found. Sorry, the page you are looking for does not exist. Please check the URL." when opening the Angular app and trying to navigate through it.
-- Run `npm run backend:start` and verify that http://localhost:3000/api/templates returns correct data
+- Run `npm run backend:start` and verify that http://localhost:3000/api/templates returns correct data.
+- Verify if you have added `/backend/.env` file with correct `FRONTEND_URL`.
+- check for any errors in the console
+1. In some cases, you might have to install @angluar/cli globally. In /example-app/ run `npm install -g @angular/cli@latest`
 2. To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.
