@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging;
 
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
-use WPGraphQL\Logging\Hooks\PluginHooks;
+use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
 /**
  * Plugin class for WPGraphQL Logging.
@@ -51,8 +51,22 @@ final class Plugin {
 	 * Initialize the plugin admin, frontend & api functionality.
 	 */
 	public function setup(): void {
-		PluginHooks::init();
 		QueryEventLifecycle::init();
+	}
+
+	/**
+	 * Activation callback for the plugin.
+	 */
+	public static function activate(): void {
+		DatabaseEntity::create_table();
+	}
+
+	/**
+	 * Deactivation callback for the plugin.
+	 */
+	public static function deactivate(): void {
+		// @TODO: Add configuration to determine if the table should be dropped on deactivation.
+		DatabaseEntity::drop_table();
 	}
 
 	/**
