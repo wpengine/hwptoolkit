@@ -140,6 +140,6 @@ function wpgraphql_logging_load_textdomain(): void {
 add_action( 'init', 'wpgraphql_logging_load_textdomain', 1, 0 );
 
 /** @psalm-suppress HookNotFound */
-add_action( 'plugins_loaded', function() : void {
+add_action( 'plugins_loaded', static function (): void {
 	wpgraphql_logging_init();
- }, 10, 0 );
+}, 10, 0 );

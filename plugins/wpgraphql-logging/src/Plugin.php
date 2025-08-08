@@ -55,6 +55,21 @@ final class Plugin {
 	}
 
 	/**
+	 * Activation callback for the plugin.
+	 */
+	public static function activate(): void {
+		DatabaseEntity::create_table();
+	}
+
+	/**
+	 * Deactivation callback for the plugin.
+	 */
+	public static function deactivate(): void {
+		// @TODO: Add configuration to determine if the table should be dropped on deactivation.
+		DatabaseEntity::drop_table();
+	}
+
+	/**
 	 * Throw error on object clone.
 	 * The whole idea of the singleton design pattern is that there is a single object
 	 * therefore, we don't want the object to be cloned.
@@ -76,20 +91,5 @@ final class Plugin {
 	public function __wakeup(): void {
 		// De-serializing instances of the class is forbidden.
 		_doing_it_wrong( __METHOD__, 'De-serializing instances of the plugin Main class is not allowed.', '0.0.1' );
-	}
-
-	/**
-	 * Activation callback for the plugin.
-	 */
-	public static function activate(): void {
-		DatabaseEntity::create_table();
-	}
-
-	/**
-	 * Deactivation callback for the plugin.
-	 */
-	public static function deactivate(): void {
-		// @TODO: Add configuration to determine if the table should be dropped on deactivation.
-		DatabaseEntity::drop_table();
 	}
 }

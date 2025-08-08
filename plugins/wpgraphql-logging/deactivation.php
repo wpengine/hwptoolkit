@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /**
  * Deactivation Hook
  *
@@ -9,6 +6,8 @@ declare(strict_types=1);
  *
  * @since 0.0.1
  */
+
+declare(strict_types=1);
 
 use WPGraphQL\Logging\Plugin;
 

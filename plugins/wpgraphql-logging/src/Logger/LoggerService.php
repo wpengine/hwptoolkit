@@ -44,7 +44,7 @@ class LoggerService {
 	/**
 	 * The instance of the logger based off the channel name.
 	 *
-	 * @var array<LoggerService>
+	 * @var array<\WPGraphQL\Logging\Logger\LoggerService>
 	 */
 	protected static array $instances = [];
 
@@ -90,16 +90,16 @@ class LoggerService {
 		?array $processors = null,
 		?array $default_context = null
 	): LoggerService {
-		if ( isset(self::$instances[$channel]) ) {
-			return self::$instances[$channel];
+		if ( isset( self::$instances[ $channel ] ) ) {
+			return self::$instances[ $channel ];
 		}
 
 		$processors      = $processors ?? self::get_default_processors();
 		$handlers        = $handlers ?? self::get_default_handlers();
 		$default_context = $default_context ?? self::get_default_context();
 
-		self::$instances[$channel] = new self( $channel, $handlers, $processors, $default_context );
-		return self::$instances[$channel];
+		self::$instances[ $channel ] = new self( $channel, $handlers, $processors, $default_context );
+		return self::$instances[ $channel ];
 	}
 
 	/**
