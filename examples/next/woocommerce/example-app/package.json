@@ -1,0 +1,38 @@
+{
+  "name": "apollo-authentication-example-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate": "graphql-codegen"
+  },
+  "dependencies": {
+    "@apollo/client": "3.13.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "graphql": "16.10.0",
+    "lucide-react": "^0.477.0",
+    "next": "^15.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@babel/helpers": "^7.27.0",
+    "@eslint/eslintrc": "^3",
+    "@graphql-codegen/cli": "^5.0.5",
+    "@graphql-codegen/fragment-matcher": "^5.1.0",
+    "@tailwindcss/postcss": "^4",
+    "dotenv": "16.4.7",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.0",
+    "tailwindcss": "^4"
+  },
+  "resolutions": {
+    "@babel/runtime": "7.27.0"
+  }
+}
