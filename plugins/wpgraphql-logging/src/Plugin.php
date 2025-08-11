@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
+use WPGraphQL\Logging\Events\EventManager;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
@@ -55,6 +56,39 @@ final class Plugin {
 	}
 
 	/**
+	 * Subscribe to an event using the internal EventManager.
+	 *
+	 * @param string   $event_name Event name from \WPGraphQL\Logging\Events\Events.
+	 * @param callable $listener  Listener callable with signature: function(array $payload): void {}.
+	 * @param int      $priority  Lower runs earlier.
+	 */
+	public static function on( string $event_name, callable $listener, int $priority = 10 ): void {
+		EventManager::subscribe( $event_name, $listener, $priority );
+	}
+
+	/**
+	 * Publish an event to subscribers.
+	 *
+	 * @param string               $event_name Event name from \WPGraphQL\Logging\Events\Events.
+	 * @param array<string, mixed> $payload   Arbitrary payload data.
+	 */
+	public static function emit( string $event_name, array $payload = [] ): void {
+		EventManager::publish( $event_name, $payload );
+	}
+
+	/**
+	 * Register a transform for an event payload. The transformer should return
+	 * the (possibly) modified payload array.
+	 *
+	 * @param string   $event_name Event name from \WPGraphQL\Logging\Events\Events.
+	 * @param callable $transform  function(array $payload): array {}.
+	 * @param int      $priority  Lower runs earlier.
+	 */
+	public static function transform( string $event_name, callable $transform, int $priority = 10 ): void {
+		EventManager::subscribe_to_transform( $event_name, $transform, $priority );
+	}
+
+	/**
 	 * Activation callback for the plugin.
 	 */
 	public static function activate(): void {
@@ -84,7 +118,7 @@ final class Plugin {
 	}
 
 	/**
-	 * Disable unserializing of the class.
+	 * Disable unserialize of the class.
 	 *
 	 * @codeCoverageIgnore
 	 */

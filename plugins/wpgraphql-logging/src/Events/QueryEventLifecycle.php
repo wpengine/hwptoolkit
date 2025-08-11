@@ -30,17 +30,22 @@ class QueryEventLifecycle {
 	/**
 	 * The logger service instance.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\LoggerService $logger
+     * @var \WPGraphQL\Logging\Logger\LoggerService
 	 */
-	protected function __construct( readonly LoggerService $logger ) {
-	}
+    protected LoggerService $logger;
+
+    /**
+     * @param \WPGraphQL\Logging\Logger\LoggerService $logger
+     */
+    protected function __construct( LoggerService $logger ) {
+        $this->logger = $logger;
+    }
 
 	/**
 	 * Get or create the single instance of the class.
 	 */
 	public static function init(): QueryEventLifecycle {
 		if ( null === self::$instance ) {
-			// @TODO - Add filter to allow for custom logger service.
 			$logger         = LoggerService::get_instance();
 			self::$instance = new self( $logger );
 			self::$instance->setup();
@@ -65,14 +70,30 @@ class QueryEventLifecycle {
 				'operation_name' => $operation_name,
 			];
 
-			$context = apply_filters( 'wpgraphql_logging_pre_request_context', $context, $query, $variables, $operation_name );
-			$level   = apply_filters( 'wpgraphql_logging_pre_request_level', Level::Info, $query, $variables, $operation_name );
-			$this->logger->log( $level, 'WPGraphQL Incoming Request', $context );
+			// Allow subscribers to transform context/level via EventManager
+            $payload = EventManager::transform( Events::PRE_REQUEST, [
+                'query'          => $query,
+                'variables'      => $variables,
+                'operation_name' => $operation_name,
+                'context'        => $context,
+                'level'          => Level::Info,
+            ] );
+
+            $this->logger->log( $payload['level'], 'WPGraphQL Incoming Request', $payload['context'] );
+
+            // Publish event for subscribers
+            EventManager::publish( Events::PRE_REQUEST, [
+                'query'          => $query,
+                'variables'      => $variables,
+                'operation_name' => $operation_name,
+                'level'          => (string) $level->getName(),
+            ] );
 		} catch ( \Throwable $e ) {
 			// @TODO - Handle logging errors gracefully.
 			error_log( 'Error in log_pre_request: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		}
 	}
+
 
 	/**
 	 * Logs the post-request event for a GraphQL query.
@@ -84,7 +105,7 @@ class QueryEventLifecycle {
 	 */
 	public function log_post_request( $response, Request $request_instance ): void {
 		// Extract relevant data from the WPGraphQL Request instance
-		$params         = $request_instance->get_params(); // Can be OperationParams or array of OperationParams
+		$params         = $request_instance->get_params();
 		$query          = null;
 		$operation_name = null;
 		$variables      = null;
@@ -99,6 +120,9 @@ class QueryEventLifecycle {
 			$query          = $params[0]->query;
 			$operation_name = $params[0]->operation;
 			$variables      = $params[0]->variables;
+		} else {
+			// Do nothing if the params are not an OperationParams object or an array of OperationParams objects
+			return;
 		}
 
 		// Determine status code if available (WPGraphQL Router sets this)
@@ -134,11 +158,15 @@ class QueryEventLifecycle {
 			];
 			$level   = Level::Info;
 
-			// Apply filters for context and level
-			$context = apply_filters( 'wpgraphql_logging_post_request_context', $context, $response, $request_instance );
-			$level   = apply_filters( 'wpgraphql_logging_post_request_level', $level, $response, $request_instance );
+            $payload = EventManager::transform( Events::POST_REQUEST, [
+                'query'          => $query,
+                'variables'      => $variables,
+                'operation_name' => $operation_name,
+                'context'        => $context,
+                'level'          => Level::Info,
+            ] );
 
-			$this->logger->log( $level, 'WPGraphQL Outgoing Response', $context );
+			$this->logger->log( $payload['level'], 'WPGraphQL Response', $payload['context'] );
 
 			// Log errors specifically if present in the response
 			if ( ! empty( $response_errors ) ) {
@@ -163,14 +191,25 @@ class QueryEventLifecycle {
 	 * Register actions and filters.
 	 */
 	protected function setup(): void {
-		/**
-		 * @psalm-suppress HookNotFound
-		 */
+
 		add_action( 'do_graphql_request', [ $this, 'log_pre_request' ], 10, 3 );
+
+
+
+		/**
+		 * @TODO
+		* Pre-request: do_graphql_request
+		 * Before Query Execution: pre_graphql_execute_request
+		 * Before Field Resolve: graphql_pre_resolve_field
+		 * After Field Resolve: graphql_resolve_field
+		 * After Query Execution: graphql_execute
+		 * Response: graphql_after_execute
+		 * Failure: graphql_after_execute or graphql_request_results
+		 */
 
 		/**
 		 * @psalm-suppress HookNotFound
 		 */
-		add_action( 'graphql_after_execute', [ $this, 'log_post_request' ], 10, 2 );
+		//add_action( 'graphql_after_execute', [ $this, 'log_post_request' ], 10, 2 );
 	}
 }
