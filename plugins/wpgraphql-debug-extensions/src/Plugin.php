@@ -82,23 +82,17 @@ if ( ! class_exists( 'WPGraphQL\Debug\Plugin' ) ) :
 				if ( $query_analyzer_instance instanceof OriginalQueryAnalyzer ) {
 					$debug_analyzer = new QueryAnalyzer( $query_analyzer_instance );
 
-					// Define a structured list of rules to register.
-					// The value is an array containing the class name and its constructor arguments.
 					$analyzer_items = [ 
 						'complexity' => [ 'class' => Complexity::class, 'args' => [] ],
 						'unfiltered_lists' => [ 'class' => UnfilteredLists::class, 'args' => [] ],
 						'nested_query' => [ 'class' => NestedQuery::class, 'args' => [ ] ],
 					];
-
-					// Apply a filter to allow other plugins to add, remove, or modify this list.
 					$analyzer_items = apply_filters( 'graphql_debug_extensions_analyzer_items', $analyzer_items );
 
-					// Loop through the filtered list and instantiate each class.
 					foreach ( $analyzer_items as $item_config ) {
 						$class_name = $item_config['class'];
 						$args = $item_config['args'] ?? [];
-
-						// Instantiate the class with its constructor arguments using the spread operator.
+						
 						$instance = new $class_name( ...$args );
 						$debug_analyzer->addAnalyzerItem( $instance );
 					}
