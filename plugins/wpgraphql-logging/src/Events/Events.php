@@ -9,11 +9,38 @@ namespace WPGraphQL\Logging\Events;
  */
 final class Events {
 	/**
+	 * WPGraphQL action: do_graphql_request.
+	 *
 	 * Before the request is processed.
 	 *
 	 * @var string
 	 */
-	public const PRE_REQUEST = 'pre_request';
+	public const PRE_REQUEST = 'do_graphql_request';
+
+	/**
+	 * WPGraphQL action: graphql_before_execute.
+	 *
+	 * @var string
+	 */
+	public const BEFORE_GRAPHQL_EXECUTION = 'graphql_before_execute';
+
+	/**
+	 * WPGraphQL action: graphql_execute
+	 *
+	 * After the request is processed.
+	 *
+	 * @var string
+	 */
+	public const AFTER_GRAPHQL_EXECUTION = 'graphql_execute';
+
+	/**
+	 * WPGraphQL action: graphql_return_response
+	 *
+	 * Before the response is returned to the client.
+	 *
+	 * @var string
+	 */
+	public const BEFORE_RESPONSE_RETURNED = 'graphql_return_response';
 
 	/**
 	 * After the request is processed.
