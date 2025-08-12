@@ -17,7 +17,10 @@ const databaseId = Astro.locals.templateData?.databaseId;
 
 const { data, error } = await client.query(
   gql`
-    query singleTemplatePageQuery($databaseId: ID!, $isPreview: Boolean!) {
+    query singleTemplatePageQuery(
+      $databaseId: ID!
+      $isPreview: Boolean = false
+    ) {
       post: contentNode(
         id: $databaseId
         idType: DATABASE_ID

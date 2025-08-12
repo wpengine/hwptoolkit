@@ -1,16 +1,13 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { authHeaders, client, gql } from "../../lib/client";
+
 /**
  * This is a template for the WordPress template hierarchy.
  * It will be used to render the WordPress templates.
  * It should never be used directly.
  * This check confirms that the template is being used in the correct context.
  * If the template is being used directly, it will redirect to the 404 page.
- *
- * Once https://github.com/withastro/astro/issues/13555 is fixed, this check can be changed to:
- *  if (Astro.url.pathname === Astro.originPathname)
- *
  */
 if (Astro.url.pathname === Astro.originPathname) {
   return Astro.rewrite("/404");
