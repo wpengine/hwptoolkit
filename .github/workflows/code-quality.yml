@@ -1,5 +1,9 @@
-# This workflow correctly detects all modified plugins with a quality config
-# and runs checks for each one individually.
+# This does the following:
+# 1. Detects modified plugins that have phpcs.xml configuration
+# 2. Runs PHP Code Quality checks on those plugins using the custom action
+# 3. Creates a matrix job for each plugin that has a quality configuration
+# Bonus: This means you can have plugin specific badges e.g.
+# [![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks&label=Code%20Quality%20Checks)](https://github.com/wpengine/hwptoolkit/actions)
 
 name: Code Quality
 
@@ -8,105 +12,88 @@ on:
     branches:
       - main
     paths:
-      - "plugins/*/**.php"
-      - "plugins/*/phpcs.xml" # Trigger if a config file changes
+      - 'plugins/*/**.php'
   pull_request:
     paths:
-      - "plugins/*/**.php"
-      - "plugins/*/phpcs.xml" # Trigger if a config file changes
+      - 'plugins/*/**.php'
 
 jobs:
-  # This job finds all modified plugins and creates a JSON list for the matrix
-  detect-modified-plugins:
+  detect-plugins:
     runs-on: ubuntu-latest
-    name: Detect modified plugins with quality config
+    name: Detect plugins has php code quality configuration
     outputs:
       plugins: ${{ steps.detect.outputs.plugins }}
+      has-plugins: ${{ steps.detect.outputs.has-plugins }}
+      php-version: ${{ steps.detect-php-version.outputs.php-version }}
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          # Fetch full history to ensure git diff is accurate
-          fetch-depth: 0
 
-      - name: Find modified plugins with phpcs.xml
-        id: detect
+      - name: Get changed plugin directory
+        id: plugin
         run: |
-          # Establish the correct base and head commits for the diff
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            BASE_SHA="${{ github.event.pull_request.base.sha }}"
-            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-          else # This handles the 'push' event
-            BASE_SHA="${{ github.event.before }}"
-            HEAD_SHA="${{ github.event.after }}"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            bash .github/scripts/get_plugin_slug.sh main
+          else
+            bash .github/scripts/get_plugin_slug.sh \
+              ${{ github.event.pull_request.base.sha }} \
+              ${{ github.event.pull_request.head.sha }}
           fi
 
-          echo "Detecting changed plugins between $BASE_SHA and $HEAD_SHA..."
+      - name: Detect changed plugins with quality config
+        id: detect-plugin-slug
+        run: |
+          if [ -z "${{ steps.plugin.outputs.slug }}" ]; then
+            echo "No plugin slug detected"
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
 
-          # Get changed files, extract unique plugin slugs, and check for phpcs.xml
-          PLUGINS_WITH_CONFIG=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" \
-            | grep -E '^plugins/[^/]+/' \
-            | sed -E 's|plugins/([^/]+)/.*|\1|' \
-            | sort -u \
-            | {
-                plugins_json="["
-                first=true
-                while read -r plugin; do
-                  if [[ -f "plugins/$plugin/phpcs.xml" ]]; then
-                    echo "✅ Found phpcs.xml for changed plugin: $plugin"
-                    if [[ "$first" = false ]]; then plugins_json="$plugins_json,"; fi
-                    plugins_json="$plugins_json\"$plugin\""
-                    first=false
-                  else
-                    echo "ℹ️ No phpcs.xml for changed plugin: $plugin. Skipping."
-                  fi
-                done
-                plugins_json="$plugins_json]"
-                echo "$plugins_json"
-              })
+          PLUGIN="${{ steps.plugin.outputs.slug }}"
 
-          echo "plugins=${PLUGINS_WITH_CONFIG}" >> "$GITHUB_OUTPUT"
-          echo "Matrix for next job: ${PLUGINS_WITH_CONFIG}"
-
-  # This job runs if the matrix from the previous job is not empty
+          if [ -f "plugins/$PLUGIN/phpcs.xml" ]; then
+            echo "plugins=[\"$PLUGIN\"]" >> $GITHUB_OUTPUT
+            echo "has-plugins=true" >> $GITHUB_OUTPUT
+            echo "✅ Found phpcs.xml for plugin: $PLUGIN"
+          else
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No phpcs.xml found for plugin: $PLUGIN, skipping quality checks"
+          fi
+      - name: Detect PHP version from composer.json
+        id: detect-php-version
+        run: |
+          PLUGIN="${{ steps.plugin.outputs.slug }}"
+          PHP_VERSION="7.4"
+          if [ -f "plugins/$PLUGIN/composer.json" ]; then
+            DETECTED_VERSION=$(jq -r '.require["php"] // empty' plugins/$PLUGIN/composer.json | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            if [ -n "$DETECTED_VERSION" ]; then
+              PHP_VERSION="$DETECTED_VERSION"
+              echo "Detected PHP version $PHP_VERSION from composer.json"
+            else
+              echo "No PHP version found in composer.json, using default $PHP_VERSION"
+            fi
+          else
+            echo "No composer.json found, using default PHP version $PHP_VERSION"
+          fi
+          echo "php-version=$PHP_VERSION" >> $GITHUB_OUTPUT
   quality-checks:
-    needs: detect-modified-plugins
-    # A cleaner condition: run only if the plugins list is not empty
-    if: needs.detect-modified-plugins.outputs.plugins != '[]'
+    needs: detect-plugins
+    if: needs.detect-plugins.outputs.has-plugins == 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        plugin: ${{ fromJson(needs.detect-modified-plugins.outputs.plugins) }}
+        plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
       fail-fast: false
     name: ${{ matrix.plugin }} php code quality checks
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-
-      # This step detects the PHP version for each specific plugin in the matrix
-      - name: Detect PHP version for ${{ matrix.plugin }}
-        id: get-php-version
-        run: |
-          PHP_VERSION="7.4" # Set a default PHP version
-          COMPOSER_FILE="plugins/${{ matrix.plugin }}/composer.json"
-          if [[ -f "$COMPOSER_FILE" ]]; then
-            # Safely parse composer.json for the PHP version
-            DETECTED_VERSION=$(jq -r '.require.php // ""' "$COMPOSER_FILE" | grep -oE '[0-9]+\.[0-9]+' | head -1)
-            if [[ -n "$DETECTED_VERSION" ]]; then
-              PHP_VERSION="$DETECTED_VERSION"
-            fi
-          fi
-          # Use a heredoc to safely set the output, preventing format errors
-          {
-            echo 'plugins<<EOF'
-            echo "${PLUGINS_WITH_CONFIG}"
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
-          echo "Using PHP version ${PHP_VERSION} for ${{ matrix.plugin }}"
 
       - name: PHP Code Quality for ${{ matrix.plugin }}
         uses: ./.github/actions/code-quality
         with:
           working-directory: plugins/${{ matrix.plugin }}
-          php-version: ${{ steps.get-php-version.outputs.php-version }}
-          composer-options: "--no-progress --no-suggest"
+          php-version: ${{ needs.detect-plugins.outputs.php-version }}
+          composer-options: '--no-progress --no-suggest'
