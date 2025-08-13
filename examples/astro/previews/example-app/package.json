@@ -1,0 +1,16 @@
+{
+  "name": "astro-previews-example-app",
+  "description": "A template for Astro with WordPress and URQL",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@urql/core": "^5.1.1",
+    "astro": "^5.6.1"
+  }
+}

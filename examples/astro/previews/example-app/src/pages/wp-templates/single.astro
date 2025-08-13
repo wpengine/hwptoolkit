@@ -1,0 +1,134 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { client, authHeaders, gql } from "../../lib/client";
+/**
+ * This is a template for the WordPress template hierarchy.
+ * It will be used to render the WordPress templates.
+ * It should never be used directly.
+ * This check confirms that the template is being used in the correct context.
+ * If the template is being used directly, it will redirect to the 404 page.
+ */
+if (Astro.url.pathname === Astro.originPathname) {
+  return Astro.rewrite("/404");
+}
+
+const isPreview = Astro.locals.isPreview;
+const databaseId = Astro.locals.templateData?.databaseId;
+
+const { data, error } = await client.query(
+  gql`
+    query singleTemplatePageQuery(
+      $databaseId: ID!
+      $isPreview: Boolean = false
+    ) {
+      post: contentNode(
+        id: $databaseId
+        idType: DATABASE_ID
+        asPreview: $isPreview
+      ) {
+        id
+        uri
+        ... on NodeWithTitle {
+          title
+        }
+        ... on NodeWithContentEditor {
+          content
+        }
+        ... on Post {
+          categories {
+            nodes {
+              name
+              uri
+            }
+          }
+          tags {
+            nodes {
+              name
+              uri
+            }
+          }
+        }
+      }
+    }
+  `,
+  {
+    databaseId,
+    isPreview,
+  },
+  {
+    fetchOptions: {
+      headers: {
+        ...authHeaders(isPreview),
+      },
+    },
+  }
+);
+
+if (error) {
+  console.error("Error fetching data:", error);
+  return Astro.rewrite("/500");
+}
+
+if (!data.post) {
+  console.error("HTTP/404 - Not Found in WordPress:", databaseId);
+  return Astro.rewrite("/404");
+}
+---
+
+<Layout>
+  <main>
+    <article>
+      <h1 set:html={data.post.title} />
+      <div set:html={data.post.content} />
+      <footer>
+        <span class="term-section">
+          <strong>Categories:</strong>
+          <span class="term-list">
+            {
+              data.post.categories.nodes?.length > 0 ? (
+                data.post.categories.nodes?.map((category) => (
+                  <span>
+                    <a href={category.uri} set:text={category.name} />
+                  </span>
+                ))
+              ) : (
+                <span>None.</span>
+              )
+            }
+          </span>
+        </span>
+        <span class="term-section">
+          <strong>Tags: </strong>
+          <span class="term-list">
+            {
+              data.post.tags.nodes?.length > 0 ? (
+                data.post.tags?.nodes?.map((category) => (
+                  <span>
+                    <a href={category.uri} set:html={category.name} />
+                  </span>
+                ))
+              ) : (
+                <span>None.</span>
+              )
+            }
+          </span>
+        </span>
+      </footer>
+    </article>
+  </main>
+</Layout>
+
+<style>
+  .term-list {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .term-section {
+    margin: 0.5rem 0;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+</style>
