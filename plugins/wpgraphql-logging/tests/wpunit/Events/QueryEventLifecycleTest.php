@@ -215,47 +215,9 @@ class QueryEventLifecycleTest extends WPTestCase {
 		$this->assertEquals($request->params, $record['context']['params']);
 	}
 
-	public function test_log_after_graphql_execute_logs_correctly(): void {
-		$lifecycle = $this->create_lifecycle_with_mock_logger();
 
-		$response = $this->create_mock_execution_result(['posts' => [['title' => 'Test Post']]]);
-		$schema = $this->create_mock_schema();
-		$operation = 'GetPosts';
-		$query = '{ posts { title } }';
-		$variables = ['limit' => 10];
-		$request = $this->create_mock_request();
 
-		$lifecycle->log_after_graphql_execute($response, $schema, $operation, $query, $variables, $request);
 
-		$this->assertTrue($this->test_handler->hasInfoRecords());
-		$records = $this->test_handler->getRecords();
-		$record = $records[0];
-
-		$this->assertEquals('WPGraphQL After Query Execution', $record['message']);
-		$this->assertEquals($query, $record['context']['query']);
-		$this->assertEquals($operation, $record['context']['operation_name']);
-		$this->assertEquals($variables, $record['context']['variables']);
-		$this->assertEquals($response, $record['context']['response']);
-		$this->assertEquals($schema, $record['context']['schema']);
-		$this->assertEquals($request, $record['context']['request']);
-	}
-
-	public function test_log_after_graphql_execute_handles_null_operation(): void {
-		$lifecycle = $this->create_lifecycle_with_mock_logger();
-
-		$response = $this->create_mock_execution_result();
-		$schema = $this->create_mock_schema();
-		$query = '{ posts { title } }';
-		$variables = [];
-		$request = $this->create_mock_request();
-
-		$lifecycle->log_after_graphql_execute($response, $schema, null, $query, $variables, $request);
-
-		$records = $this->test_handler->getRecords();
-		$record = $records[0];
-
-		$this->assertEquals('', $record['context']['operation_name']);
-	}
 
 	public function test_log_before_response_returned_logs_info_for_success(): void {
 		$lifecycle = $this->create_lifecycle_with_mock_logger();
@@ -420,7 +382,6 @@ class QueryEventLifecycleTest extends WPTestCase {
 
 		$this->assertEquals(10, has_action('do_graphql_request', [$lifecycle, 'log_pre_request']));
 		$this->assertEquals(10, has_action('graphql_before_execute', [$lifecycle, 'log_graphql_before_execute']));
-		$this->assertEquals(10, has_action('graphql_execute', [$lifecycle, 'log_after_graphql_execute']));
 		$this->assertEquals(10, has_action('graphql_return_response', [$lifecycle, 'log_before_response_returned']));
 	}
 
@@ -503,7 +464,6 @@ class QueryEventLifecycleTest extends WPTestCase {
 
 		$response = $this->create_mock_execution_result();
 		$schema = $this->create_mock_schema();
-		$lifecycle->log_after_graphql_execute($response, $schema, null, '{ test }', [], $request);
 
 		$lifecycle->log_before_response_returned($response, $response, $schema, null, '{ test }', null, $request, null);
 

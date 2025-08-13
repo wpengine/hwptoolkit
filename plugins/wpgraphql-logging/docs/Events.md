@@ -30,7 +30,6 @@ Currently we subscribe to the following WPGraphQL events:
 | --- | --- | --- |
 | `Events::PRE_REQUEST` | `do_graphql_request` | Before the request is processed |
 | `Events::BEFORE_GRAPHQL_EXECUTION` | `graphql_before_execute` | Before query execution |
-| `Events::AFTER_GRAPHQL_EXECUTION` | `graphql_execute` | After query execution |
 | `Events::BEFORE_RESPONSE_RETURNED` | `graphql_return_response` | Before response is returned to client |
 
 ## Usage
@@ -88,7 +87,7 @@ add_action('init', function () {
 
 **Example**
 
-Currently the plugin logs at four points in the WPGraphQL lifecycle: `do_graphql_request`, `graphql_before_execute`, `graphql_execute`, `graphql_return_response`. If you need more visibility you could do the following:
+Currently the plugin logs at three points in the WPGraphQL lifecycle: `do_graphql_request`, `graphql_before_execute`, `graphql_return_response`. If you need more visibility you could do the following:
 
 ```php
 use WPGraphQL\Logging\Logger\LoggerService;

@@ -25,15 +25,6 @@ final class Events {
 	public const BEFORE_GRAPHQL_EXECUTION = 'graphql_before_execute';
 
 	/**
-	 * WPGraphQL action: graphql_execute
-	 *
-	 * After the request is processed.
-	 *
-	 * @var string
-	 */
-	public const AFTER_GRAPHQL_EXECUTION = 'graphql_execute';
-
-	/**
 	 * WPGraphQL action: graphql_return_response
 	 *
 	 * Before the response is returned to the client.

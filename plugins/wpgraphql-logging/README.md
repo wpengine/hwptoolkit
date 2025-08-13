@@ -78,7 +78,6 @@ wpgraphql-logging/
 - **Query event lifecycle logging**
   - **Pre Request** (`do_graphql_request`): captures `query`, `variables`, `operation_name`.
   - **Before Execution** (`graphql_before_execute`): includes a snapshot of request `params`.
-  - **After Execution** (`graphql_execute`): captures `response`/`ExecutionResult`, `schema`, and `request`.
   - **Before Response Returned** (`graphql_return_response`): inspects `response` and automatically upgrades level to Error when GraphQL `errors` are present (adds `errors` to context when found).
 
 - **Built-in pub/sub event bus**

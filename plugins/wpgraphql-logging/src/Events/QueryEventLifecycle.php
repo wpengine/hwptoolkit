@@ -133,51 +133,7 @@ class QueryEventLifecycle {
 		}
 	}
 
-	/**
-	 * After Query Execution.
-	 *
-	 * @hook graphql_execute
-	 *
-	 * @param array<mixed>|\GraphQL\Executor\ExecutionResult $response The GraphQL execution result(s).
-	 * @param \WPGraphQL\WPSchema                            $schema The WPGraphQL schema.
-	 * @param string|null                                    $operation The operation name.
-	 * @param string                                         $query The query string.
-	 * @param array<string, mixed>                           $variables The variables for the query.
-	 * @param \WPGraphQL\Request                             $request The WPGraphQL request instance.
-	 */
-	public function log_after_graphql_execute( array|ExecutionResult $response, WPSchema $schema, ?string $operation, string $query, array $variables, Request $request ): void {
 
-		try {
-			$context = [
-				'query'          => $query,
-				'operation_name' => $operation ?? '',
-				'variables'      => $variables,
-				'response'       => $response,
-				'schema'         => $schema,
-				'request'        => $request,
-			];
-
-			$payload = EventManager::transform(
-				Events::AFTER_GRAPHQL_EXECUTION,
-				[
-					'context' => $context,
-					'level'   => Level::Info,
-				]
-			);
-
-			$this->logger->log( $payload['level'], 'WPGraphQL After Query Execution', $payload['context'] );
-
-			EventManager::publish(
-				Events::AFTER_GRAPHQL_EXECUTION,
-				[
-					'context' => $payload['context'],
-					'level'   => (string) $payload['level']->getName(),
-				]
-			);
-		} catch ( \Throwable $e ) {
-			$this->process_application_error( Events::AFTER_GRAPHQL_EXECUTION, $e );
-		}
-	}
 
 	/**
 	 * Before the GraphQL response is returned to the client.
@@ -276,11 +232,6 @@ class QueryEventLifecycle {
 		 * Before Query Execution
 		 */
 		add_action( 'graphql_before_execute', [ $this, 'log_graphql_before_execute' ], 10, 1 );
-
-		/**
-		 * After Query Execution
-		 */
-		add_action( 'graphql_execute', [ $this, 'log_after_graphql_execute' ], 10, 6 );
 
 		/**
 		 * Response/Error Handling

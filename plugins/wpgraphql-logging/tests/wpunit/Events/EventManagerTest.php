@@ -328,7 +328,6 @@ class EventManagerTest extends WPTestCase {
 		return [
 			[Events::PRE_REQUEST, 'do_graphql_request'],
 			[Events::BEFORE_GRAPHQL_EXECUTION, 'graphql_before_execute'],
-			[Events::AFTER_GRAPHQL_EXECUTION, 'graphql_execute'],
 			[Events::BEFORE_RESPONSE_RETURNED, 'graphql_return_response'],
 		];
 	}
