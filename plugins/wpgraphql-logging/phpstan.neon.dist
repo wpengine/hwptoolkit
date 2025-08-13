@@ -30,5 +30,3 @@ parameters:
     paths:
         - wpgraphql-logging.php
         - src/
-    excludePaths:
-        - src/Events/QueryEventLifecycle.php

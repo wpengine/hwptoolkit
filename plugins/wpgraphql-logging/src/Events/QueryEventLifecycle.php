@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Events;
 
 use GraphQL\Executor\ExecutionResult;
-use GraphQL\Server\OperationParams;
 use Monolog\Level;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Request;
+use WPGraphQL\WPSchema;
 
 /**
- * WPGraphQL Query Event Lifecycle -
+ * WPGraphQL Query Event Lifecycle.
  *
  * Handles logging for GraphQL query lifecycle events.
  *
@@ -21,6 +21,13 @@ use WPGraphQL\Request;
  */
 class QueryEventLifecycle {
 	/**
+	 * The logger service instance.
+	 *
+	 * @var \WPGraphQL\Logging\Logger\LoggerService
+	 */
+	protected LoggerService $logger;
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var \WPGraphQL\Logging\Events\QueryEventLifecycle|null
@@ -28,11 +35,10 @@ class QueryEventLifecycle {
 	private static ?QueryEventLifecycle $instance = null;
 
 	/**
-	 * The logger service instance.
-	 *
 	 * @param \WPGraphQL\Logging\Logger\LoggerService $logger
 	 */
-	protected function __construct( readonly LoggerService $logger ) {
+	protected function __construct( LoggerService $logger ) {
+		$this->logger = $logger;
 	}
 
 	/**
@@ -40,7 +46,6 @@ class QueryEventLifecycle {
 	 */
 	public static function init(): QueryEventLifecycle {
 		if ( null === self::$instance ) {
-			// @TODO - Add filter to allow for custom logger service.
 			$logger         = LoggerService::get_instance();
 			self::$instance = new self( $logger );
 			self::$instance->setup();
@@ -50,12 +55,13 @@ class QueryEventLifecycle {
 	}
 
 	/**
-	 * Logs the pre-request event for a GraphQL query.
-	 * This method is hooked into 'do_graphql_request'.
+	 * Initial Incoming Request.
 	 *
-	 * @param string      $query The GraphQL query string.
-	 * @param string|null $operation_name The name of the operation. Made nullable.
-	 * @param array|null  $variables The variables for the query. Made nullable.
+	 * @hook do_graphql_request
+	 *
+	 * @param string                    $query           The GraphQL query string.
+	 * @param string|null               $operation_name  The name of the operation. Made nullable.
+	 * @param array<string, mixed>|null $variables       The variables for the query. Made nullable.
 	 */
 	public function log_pre_request( string $query, ?string $operation_name, ?array $variables ): void {
 		try {
@@ -65,112 +71,181 @@ class QueryEventLifecycle {
 				'operation_name' => $operation_name,
 			];
 
-			$context = apply_filters( 'wpgraphql_logging_pre_request_context', $context, $query, $variables, $operation_name );
-			$level   = apply_filters( 'wpgraphql_logging_pre_request_level', Level::Info, $query, $variables, $operation_name );
-			$this->logger->log( $level, 'WPGraphQL Incoming Request', $context );
+			$payload = EventManager::transform(
+				Events::PRE_REQUEST,
+				[
+					'context' => $context,
+					'level'   => Level::Info,
+				]
+			);
+
+			$this->logger->log( $payload['level'], 'WPGraphQL Pre Request', $payload['context'] );
+
+			EventManager::publish(
+				Events::PRE_REQUEST,
+				[
+					'context' => $payload['context'],
+					'level'   => (string) $payload['level']->getName(),
+				]
+			);
 		} catch ( \Throwable $e ) {
-			// @TODO - Handle logging errors gracefully.
-			error_log( 'Error in log_pre_request: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			$this->process_application_error( Events::PRE_REQUEST, $e );
 		}
 	}
 
 	/**
-	 * Logs the post-request event for a GraphQL query.
-	 * This method is now hooked into 'graphql_after_execute'.
+	 * Before Request Execution.
 	 *
-	 * @param \GraphQL\Executor\ExecutionResult|array<int, \GraphQL\Executor\ExecutionResult> $response The GraphQL execution result(s).
-	 * This can be a single ExecutionResult object or an array of them for batch requests.
-	 * @param \WPGraphQL\Request                                                              $request_instance The WPGraphQL Request instance.
+	 * @hook graphql_before_execute
+	 *
+	 * @param \WPGraphQL\Request $request          The WPGraphQL Request instance.
 	 */
-	public function log_post_request( $response, Request $request_instance ): void {
-		// Extract relevant data from the WPGraphQL Request instance
-		$params         = $request_instance->get_params(); // Can be OperationParams or array of OperationParams
-		$query          = null;
-		$operation_name = null;
-		$variables      = null;
-		$status_code    = 200; // Default success status
+	public function log_graphql_before_execute(Request $request ): void {
+		try {
+			/** @var \GraphQL\Server\OperationParams $params */
+			$params  = $request->params;
+			$context = [
+				'query'          => $params->query,
+				'operation_name' => $params->operation,
+				'variables'      => $params->variables,
+				'params'         => $params,
+			];
 
-		// Handle single or batch requests to get query details
-		if ( $params instanceof OperationParams ) {
-			$query          = $params->query;
-			$operation_name = $params->operation;
-			$variables      = $params->variables;
-		} elseif ( is_array( $params ) && ! empty( $params[0] ) && $params[0] instanceof OperationParams ) {
-			$query          = $params[0]->query;
-			$operation_name = $params[0]->operation;
-			$variables      = $params[0]->variables;
+			$payload = EventManager::transform(
+				Events::BEFORE_GRAPHQL_EXECUTION,
+				[
+					'context' => $context,
+					'level'   => Level::Info,
+				]
+			);
+
+			$this->logger->log( $payload['level'], 'WPGraphQL Before Query Execution', $payload['context'] );
+
+			EventManager::publish(
+				Events::BEFORE_GRAPHQL_EXECUTION,
+				[
+					'context' => $payload['context'],
+					'level'   => (string) $payload['level']->getName(),
+				]
+			);
+		} catch ( \Throwable $e ) {
+			$this->process_application_error( Events::BEFORE_GRAPHQL_EXECUTION, $e );
 		}
-
-		// Determine status code if available (WPGraphQL Router sets this)
-		if ( class_exists( '\WPGraphQL\Router' ) && property_exists( '\WPGraphQL\Router', '$http_status_code' ) ) {
-			$status_code = \WPGraphQL\Router::$http_status_code;
-		}
-
-		// Extract data and errors from the ExecutionResult object(s)
-		$response_data   = null;
-		$response_errors = null;
-
-		if ( $response instanceof ExecutionResult ) {
-			$response_data   = $response->data;
-			$response_errors = $response->errors;
-		} elseif ( is_array( $response ) && ! empty( $response[0] ) && $response[0] instanceof ExecutionResult ) {
-			// For batch requests, aggregate data/errors from all results
-			$response_data   = array_map( static fn( $res ) => $res->data, $response );
-			$response_errors = array_reduce( $response, static fn( $carry, $res ) => array_merge( $carry, $res->errors ?? [] ), [] );
-			if ( empty( $response_errors ) ) {
-				$response_errors = null; // Ensure it's null if no errors
-			}
-		}
+	}
 
 
+
+	/**
+	 * Before the GraphQL response is returned to the client.
+	 *
+	 * @hook graphql_return_response
+	 *
+	 * @param array<mixed>|\GraphQL\Executor\ExecutionResult $filtered_response The filtered response for the GraphQL request.
+	 * @param array<mixed>|\GraphQL\Executor\ExecutionResult $response          The response for the GraphQL request.
+	 * @param \WPGraphQL\WPSchema                            $schema            The schema object for the root request.
+	 * @param string|null                                    $operation         The name of the operation.
+	 * @param string                                         $query             The query that GraphQL executed.
+	 * @param array<string, mixed>|null                      $variables    Variables passed to your GraphQL query.
+	 * @param \WPGraphQL\Request                             $request           Instance of the Request.
+	 * @param string|null                                    $query_id          The query id that GraphQL executed.
+	 */
+	public function log_before_response_returned(array|ExecutionResult $filtered_response, array|ExecutionResult $response, WPSchema $schema, ?string $operation, string $query, ?array $variables, Request $request, ?string $query_id): void {
 		try {
 			$context = [
-				'query'           => $query,
-				'operation_name'  => $operation_name,
-				'variables'       => $variables,
-				'status_code'     => $status_code,
-				'response_data'   => $response_data,
-				'response_errors' => $response_errors,
+				'response'       => $response,
+				'schema'         => $schema,
+				'operation_name' => $operation,
+				'query'          => $query,
+				'variables'      => $variables,
+				'request'        => $request,
+				'query_id'       => $query_id,
 			];
+
 			$level   = Level::Info;
-
-			// Apply filters for context and level
-			$context = apply_filters( 'wpgraphql_logging_post_request_context', $context, $response, $request_instance );
-			$level   = apply_filters( 'wpgraphql_logging_post_request_level', $level, $response, $request_instance );
-
-			$this->logger->log( $level, 'WPGraphQL Outgoing Response', $context );
-
-			// Log errors specifically if present in the response
-			if ( ! empty( $response_errors ) ) {
-				$this->logger->error(
-					'GraphQL query completed with errors.',
-					[
-						'query'          => $query,
-						'operation_name' => $operation_name,
-						'status_code'    => $status_code,
-						'errors'         => array_map( static fn( $error ) => $error->getMessage(), $response_errors ), // Extract message from error object
-						'full_errors'    => $response_errors, // Include full error details for debugging
-					]
-				);
+			$message = 'WPGraphQL Response';
+			$errors  = $this->get_response_errors( $response );
+			if ( null !== $errors && count( $errors ) > 0 ) {
+				$context['errors'] = $errors;
+				$level             = Level::Error;
+				$message           = 'WPGraphQL Response with Errors';
 			}
+
+			$payload = EventManager::transform(
+				Events::BEFORE_RESPONSE_RETURNED,
+				[
+					'context' => $context,
+					'level'   => $level,
+				]
+			);
+
+			$this->logger->log( $payload['level'], $message, $payload['context'] );
+
+			EventManager::publish(
+				Events::BEFORE_RESPONSE_RETURNED,
+				[
+					'context' => $payload['context'],
+					'level'   => (string) $payload['level']->getName(),
+				]
+			);
 		} catch ( \Throwable $e ) {
-			// @TODO - Handle logging errors gracefully.
-			error_log( 'Error in log_post_request: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine() );
+			$this->process_application_error( Events::BEFORE_RESPONSE_RETURNED, $e );
 		}
 	}
 
 	/**
-	 * Register actions and filters.
+	 * Get the context for the response.
+	 *
+	 * @param array<mixed>|\GraphQL\Executor\ExecutionResult $response The response.
+	 *
+	 * @return array<mixed>|null
+	 */
+	protected function get_response_errors( array|ExecutionResult $response ): ?array {
+		if ( $response instanceof ExecutionResult && [] !== $response->errors ) {
+			return $response->errors;
+		}
+
+		if ( ! is_array( $response ) ) {
+			return null;
+		}
+
+		$errors = $response['errors'] ?? null;
+		if ( null === $errors || [] === $errors ) {
+			return null;
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Register actions and filters to log the query event lifecycle.
+	 *
+	 * @psalm-suppress HookNotFound
 	 */
 	protected function setup(): void {
+
 		/**
-		 * @psalm-suppress HookNotFound
+		 * Initial Incoming Request
 		 */
 		add_action( 'do_graphql_request', [ $this, 'log_pre_request' ], 10, 3 );
 
 		/**
-		 * @psalm-suppress HookNotFound
+		 * Before Query Execution
 		 */
-		add_action( 'graphql_after_execute', [ $this, 'log_post_request' ], 10, 2 );
+		add_action( 'graphql_before_execute', [ $this, 'log_graphql_before_execute' ], 10, 1 );
+
+		/**
+		 * Response/Error Handling
+		 */
+		add_action( 'graphql_return_response', [ $this, 'log_before_response_returned' ], 10, 8 );
+	}
+
+	/**
+	 * Processing application error when an exception is thrown.
+	 *
+	 * @param string     $event The event name.
+	 * @param \Throwable $exception The exception.
+	 */
+	protected function process_application_error(string $event, \Throwable $exception): void {
+		error_log( 'Error for WPGraphQL Logging - ' . $event . ': ' . $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine() ); //phpcs:ignore
 	}
 }

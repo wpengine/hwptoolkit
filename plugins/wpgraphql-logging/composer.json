@@ -53,6 +53,7 @@
 		"slevomat/coding-standard": "^8.0",
 		"szepeviktor/phpstan-wordpress": "^2.0",
 		"wp-cli/wp-cli-bundle": "^2.8.1",
+		"wp-graphql/wp-graphql": "^2.3",
 		"wp-graphql/wp-graphql-testcase": "^3.0.1"
 	},
 	"config": {
@@ -80,7 +81,7 @@
 			"/.DS_Store",
 			"/.docker/",
 			"/.env.dist",
-			"/ACTIONS_AND_FILTERS.md",
+			"/docs",
 			"/TESTING.md",
 			"/Thumbs.db",
 			"/artifacts",

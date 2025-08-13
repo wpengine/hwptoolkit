@@ -226,6 +226,8 @@ class LoggerService {
 			new ProcessIdProcessor(), // Logs the process ID.
 			new WPGraphQLQueryProcessor(), // Custom processor to capture GraphQL request data.
 		];
+
+		// Filter for users to add their own processors.
 		return apply_filters( 'wpgraphql_logging_default_processors', $default_processors );
 	}
 
@@ -240,6 +242,8 @@ class LoggerService {
 		$default_handlers = [
 			new WordPressDatabaseHandler(),
 		];
+
+		// Filter for users to add their own handlers.
 		return apply_filters( 'wpgraphql_logging_default_handlers', $default_handlers );
 	}
 
@@ -256,6 +260,7 @@ class LoggerService {
 			'site_url'       => home_url(),
 		];
 
+		// Filter for users to modify the default context.
 		return apply_filters( 'wpgraphql_logging_default_context', $context );
 	}
 }
