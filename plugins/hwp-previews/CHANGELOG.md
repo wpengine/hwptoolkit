@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.9
+
+### Patch Changes
+
+- [#370](https://github.com/wpengine/hwptoolkit/pull/370) [`e8f3904`](https://github.com/wpengine/hwptoolkit/commit/e8f39041e114a05db37de6dc38714e278a2d9f95) Thanks [@colinmurphy](https://github.com/colinmurphy)! - bug: Fixed issue with retrieving post types before ACF hook initialisation.
+
 ## 0.0.8
 
 ### Patch Changes
