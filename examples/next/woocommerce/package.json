@@ -1,7 +1,7 @@
 {
-  "name": "apollo-authentication",
+  "name": "woocommerce",
   "version": "1.0.0",
-  "description": "An example demonstrating authentication with username and password in a headless WordPress setup, running Next.js as a frontend framework.",
+  "description": "An example demonstrating woocommerce and authentication with username and password in a headless WordPress setup, running Next.js as a frontend framework.",
   "scripts": {
     "example:build": "npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
@@ -19,6 +19,8 @@
   },
   "keywords": [
     "headless",
+    "woocommerce",
+    "ecommerce",
     "wordpress",
     "nextjs",
     "apollo-client",
@@ -26,6 +28,7 @@
     "headless-cms",
     "wpgraphql",
     "headless-wordpress",
+    "headless-woocommerce",
     "nextjs-pages-router",
     "wp-env-configuration",
     "fullstack-example",

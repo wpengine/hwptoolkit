@@ -1,9 +1,14 @@
 {
-  "phpVersion": "7.4",
+  "phpVersion": "8.0",
   "plugins": [
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
     "https://github.com/AxeWP/wp-graphql-headless-login/releases/latest/download/wp-graphql-headless-login.zip",
-    "https://github.com/woocommerce/woocommerce/releases/latest/download/woocommerce.zip"
+    "https://github.com/woocommerce/woocommerce/releases/latest/download/woocommerce.zip",
+    "https://downloads.wordpress.org/plugin/wpgraphql-ide.latest-stable.zip",
+    "https://github.com/wp-graphql/wp-graphql-woocommerce/releases/download/v0.21.2/wp-graphql-woocommerce.zip"
+  ],
+  "themes": [
+    "https://downloads.wordpress.org/theme/storefront.latest-stable.zip"
   ],
   "env": {
     "development": {
@@ -19,9 +24,7 @@
     "GRAPHQL_DEBUG": true,
     "WP_DEBUG_LOG": true,
     "WP_DEBUG_DISPLAY": false,
-    "SAVEQUERIES": false,
-    "WP_SITEURL": "http://127.0.0.1",
-    "WP_HOME": "http://127.0.0.1"
+    "SAVEQUERIES": false
   },
   "mappings": {
     "db": "./wp-env/db",

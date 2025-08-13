@@ -1,6 +1,13 @@
-# Next.js pages Apollo Authentication
+# Next.js WooCommerce example - template hierarchy, data fetching and authentication with Apollo
+This example demonstrates a complete headless WooCommerce solution with Next.js, showcasing essential e-commerce functionality including shopping cart management, checkout flow, and user authentication. Built with WordPress template hierarchy and modern data fetching patterns using both native fetch and Apollo Client.
 
-This example demonstrates authentication with username and password in a headless WordPress setup, running Next.js as a frontend framework. Example is using WPGraphQL and WPGraphQL Headless Login plugins to enable authentication features.
+## Features
+
+- **E-commerce Core**: Add to cart, remove items, checkout process, and thank you page
+- **Authentication**: Username/password login in headless WordPress environment
+- **Template Hierarchy**: WordPress template system integration with Next.js
+- **Data Fetching**: Dual approach with native fetch and Apollo Client
+- **GraphQL Integration**: Powered by WPGraphQL, WPGraphQL Headless Login, and WooGraphQL plugins
 
 ## Screenshots
 
@@ -19,54 +26,64 @@ After following the installation steps, you should have the example webpage as s
 │       ├── components/             # Reusable React components
 │       ├── lib/                    # Apollo Client configuration, client and helpers
 │       └── pages/                  # Next.js page routes
+│       └── wp-templates/           # Next.js WordPress template hierarchy
 ├── .wp-env.json                    # wp-env configuration file
 └── wp-env
     └── db
         └── database.sql            # WordPress database including all demo data for the example
 ```
 
-## Running the example with wp-env
+## Quick Start with wp-env
 
 ### Prerequisites
 
 - Node.js (v18+ recommended)
-- [Docker](https://www.docker.com/) (if you plan on running the example see details below)
+- [Docker](https://www.docker.com/) (required for wp-env)
 
-**Note** Please make sure you have all prerequisites installed as mentioned above and Docker running (`docker ps`)
+**Note:** Ensure Docker is running (`docker ps`) before proceeding.
 
 ### Setup Repository and Packages
 
-- Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
-- Install packages `cd hwptoolkit && npm install`
-- Setup a .env file under `examples/next/apollo-authentication/example-app` and add these values inside:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/wpengine/hwptoolkit.git
+   ```
 
-```
-NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8890
-```
+2. Install dependencies:
+   ```bash
+   cd hwptoolkit && npm install
+   ```
 
-or run the command below:
+3. Configure environment variables:
+   ```bash
+   echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8890" > examples/next/woocommerce/example-app/.env
+   ```
 
-```bash
-echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8890" > examples/next/apollo-authentication/example-app/.env
-```
+### Build and Start the Application
 
-### Build and start the application
+1. Navigate to the example directory:
+   ```bash
+   cd examples/next/woocommerce
+   ```
 
-- `cd examples/next/apollo-authentication`
-- Then run `npm run example:build` will build and start your application.
-- This does the following:
-  - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
-  - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
-  - Install Next.js dependencies for `example-app`
-  - Runs the Next.js dev script
+2. Build and start everything:
+   ```bash
+   npm run example:build
+   ```
 
-Congratulations, WordPress should now be fully set up.
+This command will:
+- Start [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
+- Import the database from [wp-env/db/database.sql](wp-env/db/database.sql)
+- Install Next.js dependencies
+- Start the development server
+
+### Access Your Application
 
 | Frontend                                         | Admin                                                              |
 | ------------------------------------------------ | ------------------------------------------------------------------ |
 | [http://localhost:3000/](http://localhost:3000/) | [http://localhost:8890/wp-admin/](http://localhost:8890/wp-admin/) |
 
-> **Note:** The login details for the admin is username "admin" and password "password"
+> **Admin Credentials:** Username: `admin` | Password: `password`
 
 ### Command Reference
 
@@ -85,69 +102,63 @@ Congratulations, WordPress should now be fully set up.
 | `wp:db:export`        | Exports the WordPress database to `wp-env/db/database.sql`.                                                             |
 | `wp:db:import`        | Imports the WordPress database from `wp-env/db/database.sql`.                                                           |
 
-> **Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
+> **Tip:** Run `npm run wp-env` for additional wp-env commands. See the [official documentation](https://www.npmjs.com/package/@wordpress/env) for more details.
 
-### Database access
+### Database Access
 
-If you need database access add the following to your wp-env `"phpmyadminPort": 11111,` (where port 11111 is not allocated).
+To access the database via phpMyAdmin, add this to your wp-env configuration:
+```json
+"phpmyadminPort": 11111
+```
 
-You can check if a port is free by running `lsof -i :11111`
+Check if port 11111 is available: `lsof -i :11111`
 
-## Running the example with custom WordPress setup
+## Manual WordPress Setup
 
 ### Prerequisites
 
-Before running this project, ensure you have the following:
+- **Node.js** (v18+ recommended)
+- **Package manager**: npm, yarn, pnpm, or bun
+- **WordPress instance** with required plugins with php 8.0 due to WPGraphQL for WooCommerce
 
-- **Node.js** (version 18 or higher recommended)
-- **npm**, **yarn**, **pnpm**, or **bun** package manager
-- A **WordPress** instance with the following plugins installed and configured:
-  - **WPGraphQL**
-  - **WPGraphQL Headless Login**
+### Required WordPress Plugins
 
-### WordPress Setup
+Install and activate these plugins in your WordPress admin:
 
-1.  **Install Plugins:** In your WordPress admin dashboard, navigate to "Plugins" and install the following plugins:
+1. **WPGraphQL** - Exposes WordPress data via GraphQL
+2. **WPGraphQL Headless Login** - Enables authentication for headless setups
+3. **WPGraphQL for WooCommerce (WooGraphQL)** - Adds WooCommerce GraphQL support
 
-    - **WPGraphQL**: This plugin exposes your WordPress data via GraphQL.
-    - **WPGraphQL Headless Login**: This plugin enables authentication for headless WordPress setups.
+### Plugin Configuration
 
-2.  **Configure Headless Login:** After installing WPGraphQL Headless Login, go to the plugin's settings page (usually found under the "GraphQL" menu in your WordPress admin dashboard). **Enable Credentials Authentication**.
+1. Navigate to **GraphQL** → **Settings** in your WordPress admin
+2. Under **WPGraphQL Headless Login**, enable **Credentials Authentication**
+3. When installing WooCommerce no extra additional plugins or add-ons are required.
+4. [Optional] Go in WP Admin -> All Products -> Import and use the `sample_products.csv` from `/wp-env/` folder.
 
-    ![Enable Credentials Authentication](./screenshots/enable-credentials-auth.png)
 
-### Environment Variables
+   ![Enable Credentials Authentication](./screenshots/enable-credentials-auth.png)
 
-Create a `.env` file in the root of your project with the following variable:
+### Environment Setup
 
+Create a `.env` file in the `example-app` directory:
+
+```env
+NEXT_PUBLIC_WORDPRESS_URL=https://your-wordpress-site.com
 ```
-NEXT_PUBLIC_WORDPRESS_URL=<your_wordpress_url>
-```
 
-Replace `<your_wordpress_url>` with the URL of your WordPress instance (e.g., `https://your-wordpress-site.com`). **Do not include a trailing slash.**
+> **Important:** Use your actual WordPress URL without a trailing slash.
 
 ### Getting Started
 
-1.  **Install Dependencies:**
+1. **Install dependencies:**
+   ```bash
+   npm install
+   # or yarn install / pnpm install / bun install
+   ```
 
-    ```
-    npm install
-    # or
-    yarn install
-    # or
-    pnpm install
-    # or
-    bun install
-    ```
-
-2.  **Run the Development Server:**
-
-    ```
-    npm run dev
-    # or
-    yarn dev
-    # or
-    pnpm dev
-    # or
-    bun dev
-    ```
+2. **Start development server:**
+   ```bash
+   npm run dev
+   # or yarn dev / pnpm dev / bun dev
+   ```

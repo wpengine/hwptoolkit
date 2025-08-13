@@ -5,7 +5,7 @@ export default defineNuxtConfig({
 
     // Public keys that are exposed to the client
     public: {
-      wordpressUrl: process.env.WORDPRESS_URL || "http://localhost:8890",
+      wordpressUrl: process.env.WORDPRESS_URL || "http://localhost:8894",
     },
   },
   experimental: {
