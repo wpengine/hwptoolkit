@@ -96,7 +96,12 @@ jobs:
               PHP_VERSION="$DETECTED_VERSION"
             fi
           fi
-          echo "php-version=${PHP_VERSION}" >> "$GITHUB_OUTPUT"
+          # Use a heredoc to safely set the output, preventing format errors
+          {
+            echo 'plugins<<EOF'
+            echo "${PLUGINS_WITH_CONFIG}"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
           echo "Using PHP version ${PHP_VERSION} for ${{ matrix.plugin }}"
 
       - name: PHP Code Quality for ${{ matrix.plugin }}
