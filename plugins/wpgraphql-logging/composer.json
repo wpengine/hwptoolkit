@@ -81,7 +81,7 @@
 			"/.DS_Store",
 			"/.docker/",
 			"/.env.dist",
-			"/ACTIONS_AND_FILTERS.md",
+			"/docs",
 			"/TESTING.md",
 			"/Thumbs.db",
 			"/artifacts",
