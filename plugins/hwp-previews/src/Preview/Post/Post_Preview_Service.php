@@ -36,20 +36,13 @@ class Post_Preview_Service {
 	protected $parent_post_statuses = [];
 
 	/**
-	 * @return array<string>
-	 */
-	public function get_allowed_post_types(): array {
-		return $this->get_post_types();
-	}
-
-	/**
 	 * Get the post-statuses.
 	 *
 	 * @return array<string>
 	 */
 	public function get_post_statuses(): array {
 		$post_statuses = $this->post_statuses;
-		if ([] !== $post_statuses) {
+		if ( [] !== $post_statuses ) {
 			return $post_statuses;
 		}
 		$this->set_post_statuses();
@@ -63,7 +56,7 @@ class Post_Preview_Service {
 	 */
 	public function get_post_types(): array {
 		$post_types = $this->post_types;
-		if ([] !== $post_types) {
+		if ( [] !== $post_types ) {
 			return $post_types;
 		}
 		$this->set_post_types();
@@ -77,7 +70,7 @@ class Post_Preview_Service {
 	 */
 	public function get_parent_post_statuses(): array {
 		$parent_post_statuses = $this->parent_post_statuses;
-		if ([] !== $parent_post_statuses) {
+		if ( [] !== $parent_post_statuses ) {
 			return $parent_post_statuses;
 		}
 		$this->set_post_parent_statuses();
