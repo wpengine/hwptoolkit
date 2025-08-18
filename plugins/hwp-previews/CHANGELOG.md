@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.10
+
+### Patch Changes
+
+- [#377](https://github.com/wpengine/hwptoolkit/pull/377) [`90e14d8`](https://github.com/wpengine/hwptoolkit/commit/90e14d85c338ca23d20678ff57cf8496c37585dd) Thanks [@colinmurphy](https://github.com/colinmurphy)! - Fixed priority issue with ACF and Previews.
+
 ## 0.0.9
 
 ### Patch Changes

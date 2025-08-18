@@ -31,13 +31,6 @@ class Post_Preview_Service_Test extends WPTestCase {
 		remove_all_filters( 'hwp_previews_filter_available_post_statuses' );
 	}
 
-	public function test_get_allowed_post_types_returns_array(): void {
-		$result = $this->service->get_allowed_post_types();
-
-		$this->assertIsArray( $result );
-		$this->assertNotEmpty( $result );
-	}
-
 	public function test_get_post_statuses_returns_default_statuses(): void {
 		$result = $this->service->get_post_statuses();
 
@@ -63,13 +56,6 @@ class Post_Preview_Service_Test extends WPTestCase {
 			'private'
 		];
 		$this->assertEquals($expected, $result);
-	}
-
-	public function test_get_post_types_returns_same_as_get_allowed_post_types(): void {
-		$allowed_types = $this->service->get_allowed_post_types();
-		$post_types = $this->service->get_post_types();
-
-		$this->assertEquals($allowed_types, $post_types);
 	}
 
 	public function test_post_types_filter_is_applied(): void {

@@ -574,4 +574,45 @@ class PreviewHooksTest extends WPTestCase {
 		$this->assertArrayNotHasKey( 'link', $data );
 		$this->assertEquals( $original_response, $response );
 	}
+
+	public function test_setup_post_type_hooks_adds_filters_for_enabled_post_types() {
+		// Create a custom post type to test with
+		register_post_type( 'test_cpt', [
+			'public'       => true,
+			'show_in_rest' => true,
+			'supports'     => [ 'editor' ], // This enables Gutenberg
+		] );
+
+		$test_config = [
+			'post' => [
+				Settings_Field_Collection::ENABLED_FIELD_ID     => true,
+				Settings_Field_Collection::PREVIEW_URL_FIELD_ID => 'https://localhost:3000/post?preview=true&post_id={ID}&status={status}',
+			],
+			'test_cpt' => [
+				Settings_Field_Collection::ENABLED_FIELD_ID     => true,
+				Settings_Field_Collection::PREVIEW_URL_FIELD_ID => 'https://localhost:3000/cpt?preview=true&post_id={ID}&status={status}',
+			]
+		];
+		update_option( $this->test_option_key, $test_config );
+
+		// Remove any existing filters to have a clean slate
+		remove_all_filters( 'rest_post_query' );
+		remove_all_filters( 'rest_test_cpt_query' );
+		remove_all_filters( 'rest_prepare_post' );
+		remove_all_filters( 'rest_prepare_test_cpt' );
+
+		$preview_hooks = new Preview_Hooks();
+
+		// Call the method we're testing
+		$preview_hooks->setup_post_type_hooks();
+
+		// Assert that the filters were added for post types that support Gutenberg
+		$this->assertTrue( has_filter( 'rest_post_query', [ $preview_hooks, 'enable_post_statuses_as_parent' ] ) !== false );
+		$this->assertTrue( has_filter( 'rest_test_cpt_query', [ $preview_hooks, 'enable_post_statuses_as_parent' ] ) !== false );
+		$this->assertTrue( has_filter( 'rest_prepare_post', [ $preview_hooks, 'filter_rest_prepare_link' ] ) !== false );
+		$this->assertTrue( has_filter( 'rest_prepare_test_cpt', [ $preview_hooks, 'filter_rest_prepare_link' ] ) !== false );
+
+		// Clean up
+		unregister_post_type( 'test_cpt' );
+	}
 }
