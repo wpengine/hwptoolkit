@@ -78,6 +78,20 @@ class Preview_Hooks {
 		add_filter( 'page_attributes_dropdown_pages_args', [ $this, 'enable_post_statuses_as_parent' ], 10, 1 );
 		add_filter( 'quick_edit_dropdown_pages_args', [ $this, 'enable_post_statuses_as_parent' ], 10, 1 );
 
+		// iframe preview functionality.
+		add_filter( 'template_include', [ $this, 'add_iframe_preview_template' ], 10, 1 );
+
+		// Preview link functionality. Extra priority to ensure it runs after the Faust preview link filter.
+		add_filter( 'preview_post_link', [ $this, 'update_preview_post_link' ], 1001, 2 );
+
+		// Setup the post-type dependent hooks.
+		add_action( 'init', [ $this, 'setup_post_type_hooks' ], 20, 0 );
+	}
+
+	/**
+	 * Setup the post-type dependent hooks.`
+	 */
+	public function setup_post_type_hooks(): void {
 		$post_editor_service = new Post_Editor_Service();
 		$post_types          = $this->post_preview_service->get_post_types();
 
@@ -89,13 +103,6 @@ class Preview_Hooks {
 
 			add_filter( 'rest_' . $post_type . '_query', [ $this, 'enable_post_statuses_as_parent' ], 10, 1 );
 		}
-
-		// iframe preview functionality.
-		add_filter( 'template_include', [ $this, 'add_iframe_preview_template' ], 10, 1 );
-
-		// Preview link functionality. Extra priority to ensure it runs after the Faust preview link filter.
-		add_filter( 'preview_post_link', [ $this, 'update_preview_post_link' ], 1001, 2 );
-
 
 		/**
 		 * Hack Function that changes the preview link for draft articles,
