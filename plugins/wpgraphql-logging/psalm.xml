@@ -15,9 +15,6 @@
 		<file name="deactivation.php"/>
 		<file name="vendor/autoload.php"/>
 		<directory name="src"/>
-		<ignoreFiles>
-			<file name="src/Events/QueryEventLifecycle.php"/>
-		</ignoreFiles>
 	</projectFiles>
 
 

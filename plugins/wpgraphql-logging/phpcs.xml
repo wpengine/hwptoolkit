@@ -14,8 +14,7 @@
 	<exclude-pattern>*/languages/*</exclude-pattern>
 	<exclude-pattern>*/phpunit.xml*</exclude-pattern>
 	<exclude-pattern>**/tests/**</exclude-pattern>
-	<exclude-pattern>*/vendor/*</exclude-pattern>
-	<exclude-pattern>*/src/Events/QueryEventLifecycle.php</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>`
 
 	<!-- ===================================== -->
 	<!-- CLI Arguments & Version Config       -->
