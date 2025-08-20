@@ -100,8 +100,8 @@ class Select_Field extends Abstract_Settings_Field {
 	 *
 	 * @return string The sanitized value.
 	 */
-	protected function sanitize_single_value( string $value ): string {
-		$sanitized_value = sanitize_text_field( $value );
+	protected function sanitize_single_value( $value ): string {
+		$sanitized_value = sanitize_text_field( (string) $value );
 		return array_key_exists( $sanitized_value, $this->options ) ? $sanitized_value : '';
 	}
 
@@ -115,7 +115,10 @@ class Select_Field extends Abstract_Settings_Field {
 	protected function sanitize_multiple_value( array $values ): array {
 		$sanitized = [];
 		foreach ( $values as $value ) {
-			$sanitized[] = $this->sanitize_single_value( $value );
+			$single = $this->sanitize_single_value( $value );
+			if ( '' !== $single ) {
+				$sanitized[] = $single;
+			}
 		}
 		return $sanitized;
 	}

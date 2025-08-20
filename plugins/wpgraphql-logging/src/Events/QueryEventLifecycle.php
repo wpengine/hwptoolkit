@@ -133,8 +133,6 @@ class QueryEventLifecycle {
 		}
 	}
 
-
-
 	/**
 	 * Before the GraphQL response is returned to the client.
 	 *
