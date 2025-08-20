@@ -189,7 +189,7 @@
         "name": "wpengine/wpgraphql-debug-extensions",
         "version": "0.0.1",
         "type": "wordpress-plugin",
-        "description": "A WordPress plugin for wpgraphql debug extensions.",
+        "description": "Debug extensions for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
         "license": "GPL-2.0",
         "authors": [
@@ -204,7 +204,7 @@
           "email": "support@wpengine.com"
         },
         "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-debug-extensions-plugin-0.0.1/wpgraphql-debug-extensions.zip",
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-debug-extensions-wordpress-plugin-0.0.1/wpgraphql-debug-extensions.zip",
           "type": "zip"
         },
         "require": {
