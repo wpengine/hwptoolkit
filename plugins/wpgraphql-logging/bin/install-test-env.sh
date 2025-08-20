@@ -44,9 +44,9 @@ install_db() {
 	# create database
 	echo -e "$(status_message "Creating the database (if it does not exist)...")"
 
-	RESULT=$(mysql --skip-ssl -u $WORDPRESS_DB_USER --password="$WORDPRESS_DB_PASSWORD" --skip-column-names -e "SHOW DATABASES LIKE '$WORDPRESS_DB_NAME'"$EXTRA)
+	RESULT=$(mysql -u $WORDPRESS_DB_USER --password="$WORDPRESS_DB_PASSWORD" --skip-column-names -e "SHOW DATABASES LIKE '$WORDPRESS_DB_NAME'"$EXTRA)
 	if [ "$RESULT" != $WORDPRESS_DB_NAME ]; then
-		mysqladmin --skip-ssl create $WORDPRESS_DB_NAME --user="$WORDPRESS_DB_USER" --password="$WORDPRESS_DB_PASSWORD"$EXTRA
+		mysqladmin create $WORDPRESS_DB_NAME --user="$WORDPRESS_DB_USER" --password="$WORDPRESS_DB_PASSWORD"$EXTRA
 	fi
 }
 
