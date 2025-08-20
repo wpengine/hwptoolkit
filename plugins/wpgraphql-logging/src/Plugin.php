@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
+use WPGraphQL\Logging\Admin\Settings_Page;
 use WPGraphQL\Logging\Events\EventManager;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
@@ -52,6 +53,7 @@ final class Plugin {
 	 * Initialize the plugin admin, frontend & api functionality.
 	 */
 	public function setup(): void {
+		Settings_Page::init();
 		QueryEventLifecycle::init();
 	}
 

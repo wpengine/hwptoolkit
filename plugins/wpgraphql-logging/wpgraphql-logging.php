@@ -85,6 +85,14 @@ if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
 		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_URL' ) ) {
 			define( 'WPGRAPHQL_LOGGING_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_KEY' ) ) {
+			define( 'WPGRAPHQL_LOGGING_SETTINGS_KEY', 'wpgraphql_logging_settings' );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP' ) ) {
+			define( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP', 'wpgraphql_logging_settings_group' );
+		}
 	}
 }
 

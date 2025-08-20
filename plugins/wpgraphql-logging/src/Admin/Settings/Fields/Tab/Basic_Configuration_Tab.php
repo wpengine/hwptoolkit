@@ -1,0 +1,168 @@
+<?php
+
+declare(strict_types=1);
+
+namespace WPGraphQL\Logging\Admin\Settings\Fields\Tab;
+
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\Checkbox_Field;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\Select_Field;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Input_Field;
+use WPGraphQL\Logging\Events\Events;
+
+/**
+ * Basic Configuration Tab class.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
+ */
+class Basic_Configuration_Tab implements Settings_Tab_Interface {
+	/**
+	 * The field ID for the enabled checkbox.
+	 *
+	 * @var string
+	 */
+	public const ENABLED = 'enabled';
+
+	/**
+	 * The field ID for the IP restrictions text input.
+	 *
+	 * @var string
+	 */
+	public const IP_RESTRICTIONS = 'ip_restrictions';
+
+	/**
+	 * The field ID for the data sampling select.
+	 *
+	 * @var string
+	 */
+	public const DATA_SAMPLING = 'data_sampling';
+
+	/**
+	 * The field ID for the WPGraphQL query filtering text input.
+	 *
+	 * @var string
+	 */
+	public const WPGRAPHQL_FILTERING = 'wpgraphql_filtering';
+
+	/**
+	 * The field ID for the user-based logging select.
+	 *
+	 * @var string
+	 */
+	public const ADMIN_USER_LOGGING = 'admin_user_logging';
+
+	/**
+	 * The field ID for the performance metrics text input.
+	 *
+	 * @var string
+	 */
+	public const PERFORMANCE_METRICS = 'performance_metrics';
+
+	/**
+	 * The field ID for the log point selection select.
+	 *
+	 * @var string
+	 */
+	public const EVENT_LOG_SELECTION = 'event_log_selection';
+
+	/**
+	 * Get the name/identifier of the tab.
+	 */
+	public function get_name(): string {
+		return 'basic_configuration';
+	}
+
+	/**
+	 * Get the label of the tab.
+	 *
+	 * @return string The tab label.
+	 */
+	public function get_label(): string {
+		return 'Basic Configuration';
+	}
+
+	/**
+	 * Get the fields for this tab.
+	 *
+	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface> Array of fields keyed by field ID.
+	 */
+	public function get_fields(): array {
+		$fields = [];
+
+		$fields[ self::ENABLED ] = new Checkbox_Field(
+			self::ENABLED,
+			$this->get_name(),
+			__( 'Enabled', 'wpgraphql-logging' ),
+			'',
+			__( 'Enable or disable WPGraphQL logging.', 'wpgraphql-logging' ),
+		);
+
+		$fields[ self::IP_RESTRICTIONS ] = new Text_Input_Field(
+			self::IP_RESTRICTIONS,
+			$this->get_name(),
+			__( 'IP Restrictions', 'wpgraphql-logging' ),
+			'',
+			__( 'Comma-separated list of IPv4/IPv6 addresses to restrict logging to. Leave empty to log from all IPs.', 'wpgraphql-logging' ),
+			__( 'e.g., 192.168.1.1, 10.0.0.1', 'wpgraphql-logging' )
+		);
+
+		$fields[ self::ADMIN_USER_LOGGING ] = new Checkbox_Field(
+			self::ADMIN_USER_LOGGING,
+			$this->get_name(),
+			__( 'Log only for admin users', 'wpgraphql-logging' ),
+			'',
+			__( 'Log only for admin users.', 'wpgraphql-logging' )
+		);
+
+		$fields[ self::WPGRAPHQL_FILTERING ] = new Text_Input_Field(
+			self::WPGRAPHQL_FILTERING,
+			$this->get_name(),
+			__( 'WPGraphQL Query Filtering', 'wpgraphql-logging' ),
+			'',
+			__( 'Comma-separated list of query names or patterns to log. Leave empty to log all queries.', 'wpgraphql-logging' ),
+			__( 'e.g., GetPost, GetPosts, introspection', 'wpgraphql-logging' )
+		);
+
+		$fields[ self::DATA_SAMPLING ] = new Select_Field(
+			self::DATA_SAMPLING,
+			$this->get_name(),
+			__( 'Data Sampling Rate', 'wpgraphql-logging' ),
+			[
+				'100' => __( '100% (All requests)', 'wpgraphql-logging' ),
+				'50'  => __( '50% (Every other request)', 'wpgraphql-logging' ),
+				'25'  => __( '25% (Every 4th request)', 'wpgraphql-logging' ),
+				'10'  => __( '10% (Every 10th request)', 'wpgraphql-logging' ),
+			],
+			'',
+			__( 'Percentage of requests to log for performance optimization.', 'wpgraphql-logging' ),
+			false
+		);
+
+		$fields[ self::PERFORMANCE_METRICS ] = new Text_Input_Field(
+			self::PERFORMANCE_METRICS,
+			$this->get_name(),
+			__( 'Performance Threshold (seconds)', 'wpgraphql-logging' ),
+			'',
+			__( 'Only log requests that take longer than this threshold. 0 logs all requests. Calculated in seconds.', 'wpgraphql-logging' ),
+			__( 'e.g., 1.5', 'wpgraphql-logging' )
+		);
+
+
+		$fields[ self::EVENT_LOG_SELECTION ] = new Select_Field(
+			self::EVENT_LOG_SELECTION,
+			$this->get_name(),
+			__( 'Log Points', 'wpgraphql-logging' ),
+			[
+				Events::PRE_REQUEST              => __( 'Pre Request', 'wpgraphql-logging' ),
+				Events::BEFORE_GRAPHQL_EXECUTION => __( 'Before Query Execution', 'wpgraphql-logging' ),
+				Events::BEFORE_RESPONSE_RETURNED => __( 'Before Response Returned', 'wpgraphql-logging' ),
+			],
+			'',
+			__( 'Select which points in the request lifecycle to log. By default, all points are logged.', 'wpgraphql-logging' ),
+			true
+		);
+
+		return $fields;
+	}
+}

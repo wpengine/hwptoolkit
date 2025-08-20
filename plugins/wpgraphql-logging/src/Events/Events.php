@@ -32,11 +32,4 @@ final class Events {
 	 * @var string
 	 */
 	public const BEFORE_RESPONSE_RETURNED = 'graphql_return_response';
-
-	/**
-	 * After the request is processed.
-	 *
-	 * @var string
-	 */
-	public const POST_REQUEST = 'post_request';
 }
