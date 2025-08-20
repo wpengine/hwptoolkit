@@ -163,6 +163,6 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 			true
 		);
 
-		return $fields;
+		return apply_filters( 'wpgraphql_logging_basic_configuration_fields', $fields );
 	}
 }
