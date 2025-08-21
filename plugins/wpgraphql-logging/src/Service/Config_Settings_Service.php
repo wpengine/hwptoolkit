@@ -11,13 +11,6 @@ use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
  */
 class Config_Settings_Service {
 	/**
-	 * The config settings.
-	 *
-	 * @var array<string, array<string, string|int|bool|array<mixed>>>
-	 */
-	protected array $config = [];
-
-	/**
 	 * The default data sampling percentage.
 	 *
 	 * @var int
@@ -30,6 +23,13 @@ class Config_Settings_Service {
 	 * @var float
 	 */
 	public const DEFAULT_PERFORMANCE_METRIC_THRESHOLD = 0.25;
+
+	/**
+	 * The config settings.
+	 *
+	 * @var array<string, array<string, string|int|bool|array<mixed>>>
+	 */
+	protected array $config = [];
 
 	/**
 	 * Singleton instance of the class.

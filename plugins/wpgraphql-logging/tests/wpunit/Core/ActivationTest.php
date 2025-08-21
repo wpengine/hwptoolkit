@@ -6,7 +6,7 @@ namespace WPGraphQL\Logging\Tests\Core;
 
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Database\Database_Entity;
 
 /**
  * Test class for the activation callback.
@@ -22,7 +22,7 @@ class ActivationTest extends WPTestCase {
 	}
 
 	public function drop_table(): void {
-		DatabaseEntity::drop_table();
+		Database_Entity::drop_table();
 	}
 
 	public function test_activation_callback_function_exists(): void {

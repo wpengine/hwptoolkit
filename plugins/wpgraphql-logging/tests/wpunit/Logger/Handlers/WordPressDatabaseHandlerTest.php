@@ -8,18 +8,18 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use Monolog\Level;
 use Monolog\LogRecord;
 use DateTimeImmutable;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
-use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
+use WPGraphQL\Logging\Logger\Database\Database_Entity;
+use WPGraphQL\Logging\Logger\Handlers\WordPress_Database_Handler;
 
 /**
- * Class WPGraphQLQueryProcessorTest
+ * Class WPGraphQL_Query_ProcessorTest
  *
- * Tests for the WordPressDatabaseHandler class.
+ * Tests for the WordPress_Database_Handler class.
  *
  * @package WPGraphQL\Logging
  * @since 0.0.1
  */
-class WordPressDatabaseHandlerTest extends WPTestCase
+class WordPress_Database_HandlerTest extends WPTestCase
 {
 	protected LogRecord $record;
 
@@ -31,7 +31,7 @@ class WordPressDatabaseHandlerTest extends WPTestCase
 	public function setUp(): void
     {
         parent::setUp();
-        DatabaseEntity::create_table();
+        Database_Entity::create_table();
 
 		// Setup test record data.
 		$this->log_data = [
@@ -75,7 +75,7 @@ class WordPressDatabaseHandlerTest extends WPTestCase
 
     public function tearDown(): void
     {
-        DatabaseEntity::drop_table();
+        Database_Entity::drop_table();
         parent::tearDown();
     }
 
@@ -84,12 +84,12 @@ class WordPressDatabaseHandlerTest extends WPTestCase
         global $wpdb;
 
         // 3. Create an instance of the handler and call the write method.
-        $handler = new WordPressDatabaseHandler();
+        $handler = new WordPress_Database_Handler();
   	 	$handler->handle($this->record);
 		$log_data = $this->log_data;
 
         // 4. Verify the data was saved correctly in the database.
-        $table_name = DatabaseEntity::get_table_name();
+        $table_name = Database_Entity::get_table_name();
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $saved_row = $wpdb->get_row("SELECT * FROM {$table_name} ORDER BY id DESC LIMIT 1", ARRAY_A);
 
@@ -107,11 +107,11 @@ class WordPressDatabaseHandlerTest extends WPTestCase
     public function test_write_method_handles_exceptions_gracefully(): void
     {
         // Drop the table to force the save operation to fail.
-        DatabaseEntity::drop_table();
+        Database_Entity::drop_table();
 		global $wpdb;
 		$wpdb->flush();
 
-        $handler = new WordPressDatabaseHandler();
+        $handler = new WordPress_Database_Handler();
         try {
             $handler->handle($this->record);
             $this->assertTrue(true, 'The handler should catch the exception and not crash.');

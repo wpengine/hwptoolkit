@@ -6,7 +6,7 @@ namespace WPGraphQL\Logging\Events;
 
 use GraphQL\Executor\ExecutionResult;
 use Monolog\Level;
-use WPGraphQL\Logging\Logger\LoggerService;
+use WPGraphQL\Logging\Logger\Logger_Service;
 use WPGraphQL\Request;
 use WPGraphQL\WPSchema;
 
@@ -19,34 +19,34 @@ use WPGraphQL\WPSchema;
  *
  * @since 0.0.1
  */
-class QueryEventLifecycle {
+class Query_Event_Lifecycle {
 	/**
 	 * The logger service instance.
 	 *
-	 * @var \WPGraphQL\Logging\Logger\LoggerService
+	 * @var \WPGraphQL\Logging\Logger\Logger_Service
 	 */
-	protected LoggerService $logger;
+	protected Logger_Service $logger;
 
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var \WPGraphQL\Logging\Events\QueryEventLifecycle|null
+	 * @var \WPGraphQL\Logging\Events\Query_Event_Lifecycle|null
 	 */
-	private static ?QueryEventLifecycle $instance = null;
+	private static ?Query_Event_Lifecycle $instance = null;
 
 	/**
-	 * @param \WPGraphQL\Logging\Logger\LoggerService $logger
+	 * @param \WPGraphQL\Logging\Logger\Logger_Service $logger
 	 */
-	protected function __construct( LoggerService $logger ) {
+	protected function __construct( Logger_Service $logger ) {
 		$this->logger = $logger;
 	}
 
 	/**
 	 * Get or create the single instance of the class.
 	 */
-	public static function init(): QueryEventLifecycle {
+	public static function init(): Query_Event_Lifecycle {
 		if ( null === self::$instance ) {
-			$logger         = LoggerService::get_instance();
+			$logger         = Logger_Service::get_instance();
 			self::$instance = new self( $logger );
 			self::$instance->setup();
 		}
@@ -71,7 +71,7 @@ class QueryEventLifecycle {
 				'operation_name' => $operation_name,
 			];
 
-			$payload = EventManager::transform(
+			$payload = Event_Manager::transform(
 				Events::PRE_REQUEST,
 				[
 					'context' => $context,
@@ -81,7 +81,7 @@ class QueryEventLifecycle {
 
 			$this->logger->log( $payload['level'], 'WPGraphQL Pre Request', $payload['context'] );
 
-			EventManager::publish(
+			Event_Manager::publish(
 				Events::PRE_REQUEST,
 				[
 					'context' => $payload['context'],
@@ -111,7 +111,7 @@ class QueryEventLifecycle {
 				'params'         => $params,
 			];
 
-			$payload = EventManager::transform(
+			$payload = Event_Manager::transform(
 				Events::BEFORE_GRAPHQL_EXECUTION,
 				[
 					'context' => $context,
@@ -121,7 +121,7 @@ class QueryEventLifecycle {
 
 			$this->logger->log( $payload['level'], 'WPGraphQL Before Query Execution', $payload['context'] );
 
-			EventManager::publish(
+			Event_Manager::publish(
 				Events::BEFORE_GRAPHQL_EXECUTION,
 				[
 					'context' => $payload['context'],
@@ -168,7 +168,7 @@ class QueryEventLifecycle {
 				$message           = 'WPGraphQL Response with Errors';
 			}
 
-			$payload = EventManager::transform(
+			$payload = Event_Manager::transform(
 				Events::BEFORE_RESPONSE_RETURNED,
 				[
 					'context' => $context,
@@ -178,7 +178,7 @@ class QueryEventLifecycle {
 
 			$this->logger->log( $payload['level'], $message, $payload['context'] );
 
-			EventManager::publish(
+			Event_Manager::publish(
 				Events::BEFORE_RESPONSE_RETURNED,
 				[
 					'context' => $payload['context'],

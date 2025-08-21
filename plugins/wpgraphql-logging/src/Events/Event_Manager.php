@@ -14,7 +14,7 @@ namespace WPGraphQL\Logging\Events;
  * - publish events using publish()
  * - also listen via WordPress hooks: `wpgraphql_logging_event_{event_name}`
  */
-final class EventManager {
+final class Event_Manager {
 	/**
 	 * In-memory map of event name to priority to listeners.
 	 *
@@ -174,7 +174,7 @@ final class EventManager {
 			$listener( $payload );
 		} catch ( \Throwable $e ) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			error_log( 'WPGraphQL Logging EventManager listener error: ' . $e->getMessage() );
+			error_log( 'WPGraphQL Logging Event_Manager listener error: ' . $e->getMessage() );
 		}
 	}
 
@@ -194,7 +194,7 @@ final class EventManager {
 			}
 		} catch ( \Throwable $e ) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			error_log( 'WPGraphQL Logging EventManager transform error: ' . $e->getMessage() );
+			error_log( 'WPGraphQL Logging Event_Manager transform error: ' . $e->getMessage() );
 		}
 
 		return $payload;

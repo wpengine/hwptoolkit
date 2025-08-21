@@ -6,7 +6,7 @@
 - [Architecture](#architecture)
 - [Default Components](#default-components)
 - [Usage](#usage)
-  - [Example 1: Basic logging with LoggerService](#example-1-basic-logging-with-loggerservice)
+  - [Example 1: Basic logging with Logger_Service](#example-1-basic-logging-with-logger_service)
   - [Example 2: Creating a custom logger instance](#example-2-creating-a-custom-logger-instance)
   - [Example 3: Adding custom handlers](#example-3-adding-custom-handlers)
   - [Example 4: Adding custom processors](#example-4-adding-custom-processors)
@@ -15,11 +15,11 @@
 
 ## Overview
 
-WPGraphQL Logging uses [Monolog](https://github.com/Seldaek/monolog), the powerful PHP logging library, as its foundation. The `LoggerService` class provides a singleton wrapper around Monolog, making it easy to log throughout the application with consistent configuration.
+WPGraphQL Logging uses [Monolog](https://github.com/Seldaek/monolog), the powerful PHP logging library, as its foundation. The `Logger_Service` class provides a singleton wrapper around Monolog, making it easy to log throughout the application with consistent configuration.
 
 The logging system is built around three core components under `src/Logger/`:
 
-- **LoggerService** - The main service that manages Monolog instances with custom channels, handlers, processors, and context
+- **Logger_Service** - The main service that manages Monolog instances with custom channels, handlers, processors, and context
 - **Handlers** - Determine where logs are written (database, files, external services, etc.)
 - **Processors** - Add extra data to log records (memory usage, request info, GraphQL query details, etc.)
 
@@ -32,7 +32,7 @@ Channels group log messages by context or component. The default channel is `wpg
 
 ### Handlers
 Handlers determine where log records are written. The plugin includes a simple database handler.
-- **WordPressDatabaseHandler** - Writes logs to a WordPress database table (`{$wpdb->prefix}wpgraphql_logging`)
+- **WordPress_Database_Handler** - Writes logs to a WordPress database table (`{$wpdb->prefix}wpgraphql_logging`)
 
 ### Processors
 Processors add extra data to each log record. The plugin includes several default processors:
@@ -41,32 +41,32 @@ Processors add extra data to each log record. The plugin includes several defaul
 - **MemoryPeakUsageProcessor** - Adds peak memory usage
 - **WebProcessor** - Adds web request data (IP, method, URI, etc.)
 - **ProcessIdProcessor** - Adds the process ID
-- **WPGraphQLQueryProcessor** - Adds GraphQL query, variables, and operation name
+- **WPGraphQL_Query_Processor** - Adds GraphQL query, variables, and operation name
 
 ## Default Components
 
-The LoggerService comes configured with sensible defaults:
+The Logger_Service comes configured with sensible defaults:
 
 | Component | Default Implementation | Purpose |
 | --- | --- | --- |
-| Handler | `WordPressDatabaseHandler` | Stores logs in WordPress database |
+| Handler | `WordPress_Database_Handler` | Stores logs in WordPress database |
 | Processors | Memory, Web, Process ID, WPGraphQL Query | Enriches log records with contextual data |
 | Log Levels | All levels (DEBUG to EMERGENCY) | Monolog's standard PSR-3 log levels |
 | Default Context | WP version, plugin version, debug mode, site URL | Consistent context across all logs |
 
 ## Usage
 
-### Example 1: Basic logging with LoggerService
+### Example 1: Basic logging with Logger_Service
 
 **Use case:** You want to log custom events from your plugin or theme.
 
 ```php
 <?php
-use WPGraphQL\Logging\Logger\LoggerService;
+use WPGraphQL\Logging\Logger\Logger_Service;
 use Monolog\Level;
 
 // Get the default logger instance
-$logger = LoggerService::get_instance();
+$logger = Logger_Service::get_instance();
 
 // Log at different levels
 $logger->info('User performed action', ['user_id' => 123, 'action' => 'login']);
@@ -83,13 +83,13 @@ $logger->log(Level::Debug, 'Debug information', ['debug_data' => $debug_info]);
 
 ```php
 <?php
-use WPGraphQL\Logging\Logger\LoggerService;
-use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
+use WPGraphQL\Logging\Logger\Logger_Service;
+use WPGraphQL\Logging\Logger\Handlers\WordPress_Database_Handler;
 
 // Create a logger with a custom channel
-$custom_logger = LoggerService::get_instance(
+$custom_logger = Logger_Service::get_instance(
     'my_custom_channel',
-    [new WordPressDatabaseHandler()], // Custom handlers
+    [new WordPress_Database_Handler()], // Custom handlers
     null, // Use default processors
     ['component' => 'my_plugin'] // Custom default context
 );
@@ -103,20 +103,20 @@ $custom_logger->info('Custom component event', ['data' => 'example']);
 
 ```php
 <?php
-use WPGraphQL\Logging\Logger\LoggerService;
-use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
+use WPGraphQL\Logging\Logger\Logger_Service;
+use WPGraphQL\Logging\Logger\Handlers\WordPress_Database_Handler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SlackWebhookHandler;
 use Monolog\Level;
 
 // Create custom handlers
 $handlers = [
-    new WordPressDatabaseHandler(), // Database (all levels)
+    new WordPress_Database_Handler(), // Database (all levels)
     new StreamHandler('/path/to/app.log', Level::Info), // File (Info and above)
     new SlackWebhookHandler('webhook_url', '#alerts', 'WPGraphQL Bot', true, null, Level::Error), // Slack (Errors only)
 ];
 
-$logger = LoggerService::get_instance('multi_output', $handlers);
+$logger = Logger_Service::get_instance('multi_output', $handlers);
 $logger->error('Critical error occurred', ['error' => 'Something went wrong']);
 ```
 
@@ -126,7 +126,7 @@ $logger->error('Critical error occurred', ['error' => 'Something went wrong']);
 
 ```php
 <?php
-use WPGraphQL\Logging\Logger\LoggerService;
+use WPGraphQL\Logging\Logger\Logger_Service;
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 
@@ -143,11 +143,11 @@ class UserContextProcessor implements ProcessorInterface {
 
 // Add custom processors
 $processors = array_merge(
-    LoggerService::get_default_processors(),
+    Logger_Service::get_default_processors(),
     [new UserContextProcessor()]
 );
 
-$logger = LoggerService::get_instance('user_aware', null, $processors);
+$logger = Logger_Service::get_instance('user_aware', null, $processors);
 $logger->info('User action logged'); // Will include user_id and user_role in extra data
 ```
 
@@ -157,7 +157,7 @@ $logger->info('User action logged'); // Will include user_id and user_role in ex
 
 ```php
 <?php
-use WPGraphQL\Logging\Logger\LoggerService;
+use WPGraphQL\Logging\Logger\Logger_Service;
 use Monolog\Handler\FilterHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
@@ -170,7 +170,7 @@ $filtered_handler = new FilterHandler(
 );
 
 // Create a logger with level filtering
-$logger = LoggerService::get_instance('filtered', [$filtered_handler]);
+$logger = Logger_Service::get_instance('filtered', [$filtered_handler]);
 
 $logger->debug('Debug message'); // Won't be logged
 $logger->info('Info message');   // Won't be logged
@@ -180,7 +180,7 @@ $logger->error('Error message');     // Will be logged
 
 ### Example 6: Using WordPress filters to modify defaults
 
-**Use case:** You want to globally modify the default handlers, processors, or context for all LoggerService instances.
+**Use case:** You want to globally modify the default handlers, processors, or context for all Logger_Service instances.
 
 ```php
 <?php
@@ -206,8 +206,8 @@ add_filter('wpgraphql_logging_default_processors', function($processors) {
     return $processors;
 });
 
-// Now all LoggerService instances will include these modifications
-$logger = LoggerService::get_instance();
+// Now all Logger_Service instances will include these modifications
+$logger = Logger_Service::get_instance();
 $logger->info('This will include the custom context and use all handlers');
 ```
 

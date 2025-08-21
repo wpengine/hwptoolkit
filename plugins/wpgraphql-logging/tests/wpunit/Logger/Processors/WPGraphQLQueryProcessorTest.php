@@ -9,34 +9,34 @@ use Monolog\Level;
 use Monolog\LogRecord;
 use DateTimeImmutable;
 use ReflectionProperty;
-use WPGraphQL\Logging\Logger\Processors\WPGraphQLQueryProcessor;
+use WPGraphQL\Logging\Logger\Processors\WPGraphQL_Query_Processor;
 
 /**
- * Class WPGraphQLQueryProcessorTest
+ * Class WPGraphQL_Query_ProcessorTest
  *
- * Tests for the WPGraphQLQueryProcessor class.
+ * Tests for the WPGraphQL_Query_Processor class.
  *
  * @package WPGraphQL\Logging
  *
  * @since 0.0.1
  */
-class WPGraphQLQueryProcessorTest extends WPTestCase
+class WPGraphQL_Query_ProcessorTest extends WPTestCase
 {
     public function setUp(): void
     {
         parent::setUp();
-        WPGraphQLQueryProcessor::clear_request_data();
+        WPGraphQL_Query_Processor::clear_request_data();
     }
 
     public function tearDown(): void
     {
-        WPGraphQLQueryProcessor::clear_request_data();
+        WPGraphQL_Query_Processor::clear_request_data();
         parent::tearDown();
     }
 
     public function test_invoke_adds_nothing_when_data_is_not_captured(): void
     {
-        $processor = new WPGraphQLQueryProcessor();
+        $processor = new WPGraphQL_Query_Processor();
         $record = $this->get_test_record();
 
         $processed_record = $processor($record);
@@ -53,9 +53,9 @@ class WPGraphQLQueryProcessorTest extends WPTestCase
         ];
 
         // Manually capture the data to simulate a GraphQL request starting.
-        WPGraphQLQueryProcessor::capture_request_data($request_data);
+        WPGraphQL_Query_Processor::capture_request_data($request_data);
 
-        $processor = new WPGraphQLQueryProcessor();
+        $processor = new WPGraphQL_Query_Processor();
         $record = $this->get_test_record();
 
         $processed_record = $processor($record);
@@ -74,23 +74,23 @@ class WPGraphQLQueryProcessorTest extends WPTestCase
     public function test_clear_request_data_resets_static_properties(): void
     {
         // 1. Capture some data.
-        WPGraphQLQueryProcessor::capture_request_data([
+        WPGraphQL_Query_Processor::capture_request_data([
             'query' => 'query Test { posts { nodes { id } } }'
         ]);
 
         // 2. Call the clear method.
-        WPGraphQLQueryProcessor::clear_request_data();
+        WPGraphQL_Query_Processor::clear_request_data();
 
         // 3. Use reflection to access the private static properties and check their values.
-        $query_prop = new ReflectionProperty(WPGraphQLQueryProcessor::class, 'query');
+        $query_prop = new ReflectionProperty(WPGraphQL_Query_Processor::class, 'query');
         $query_prop->setAccessible(true);
         $this->assertNull($query_prop->getValue(), 'The static query property should be null after clearing.');
 
-        $variables_prop = new ReflectionProperty(WPGraphQLQueryProcessor::class, 'variables');
+        $variables_prop = new ReflectionProperty(WPGraphQL_Query_Processor::class, 'variables');
         $variables_prop->setAccessible(true);
         $this->assertNull($variables_prop->getValue(), 'The static variables property should be null after clearing.');
 
-        $operation_name_prop = new ReflectionProperty(WPGraphQLQueryProcessor::class, 'operation_name');
+        $operation_name_prop = new ReflectionProperty(WPGraphQL_Query_Processor::class, 'operation_name');
         $operation_name_prop->setAccessible(true);
         $this->assertNull($operation_name_prop->getValue(), 'The static operation_name property should be null after clearing.');
     }
@@ -102,22 +102,22 @@ class WPGraphQLQueryProcessorTest extends WPTestCase
     public function test_constructor_hooks_into_wordpress_actions(): void
     {
         // Instantiate the processor to trigger its constructor.
-        $processor = new WPGraphQLQueryProcessor();
+        $processor = new WPGraphQL_Query_Processor();
 
         // Check if the hooks have been added correctly.
         $this->assertNotFalse(
-            has_action('graphql_request_data', [WPGraphQLQueryProcessor::class, 'capture_request_data']),
+            has_action('graphql_request_data', [WPGraphQL_Query_Processor::class, 'capture_request_data']),
             'The capture_request_data method should be hooked to graphql_request_data.'
         );
 
         $this->assertNotFalse(
-            has_action('graphql_process_http_request_response', [WPGraphQLQueryProcessor::class, 'clear_request_data']),
+            has_action('graphql_process_http_request_response', [WPGraphQL_Query_Processor::class, 'clear_request_data']),
             'The clear_request_data method should be hooked to graphql_process_http_request_response.'
         );
 
         // Clean up the hooks after the test.
-        remove_action('graphql_request_data', [WPGraphQLQueryProcessor::class, 'capture_request_data'], 10);
-        remove_action('graphql_process_http_request_response', [WPGraphQLQueryProcessor::class, 'clear_request_data'], 999);
+        remove_action('graphql_request_data', [WPGraphQL_Query_Processor::class, 'capture_request_data'], 10);
+        remove_action('graphql_process_http_request_response', [WPGraphQL_Query_Processor::class, 'clear_request_data'], 999);
     }
 
     /**

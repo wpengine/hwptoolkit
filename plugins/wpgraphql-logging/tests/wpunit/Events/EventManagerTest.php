@@ -6,18 +6,18 @@ namespace WPGraphQL\Logging\Tests\Events;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use ReflectionClass;
-use WPGraphQL\Logging\Events\EventManager;
+use WPGraphQL\Logging\Events\Event_Manager;
 use WPGraphQL\Logging\Events\Events;
 
 /**
- * Class EventManagerTest
+ * Class Event_ManagerTest
  *
- * Tests for the EventManager class.
+ * Tests for the Event_Manager class.
  */
-class EventManagerTest extends WPTestCase {
+class Event_ManagerTest extends WPTestCase {
 
 	/**
-	 * Reset EventManager state after each test.
+	 * Reset Event_Manager state after each test.
 	 */
 	public function tearDown(): void {
 		parent::tearDown();
@@ -25,10 +25,10 @@ class EventManagerTest extends WPTestCase {
 	}
 
 	/**
-	 * Reset the EventManager static state.
+	 * Reset the Event_Manager static state.
 	 */
 	private function reset_event_manager(): void {
-		$reflection = new ReflectionClass(EventManager::class);
+		$reflection = new ReflectionClass(Event_Manager::class);
 
 		$events_prop = $reflection->getProperty('events');
 		$events_prop->setAccessible(true);
@@ -43,7 +43,7 @@ class EventManagerTest extends WPTestCase {
 	 * Get the internal events array for testing.
 	 */
 	private function get_events_array(): array {
-		$reflection = new ReflectionClass(EventManager::class);
+		$reflection = new ReflectionClass(Event_Manager::class);
 		$events_prop = $reflection->getProperty('events');
 		$events_prop->setAccessible(true);
 		return $events_prop->getValue();
@@ -53,7 +53,7 @@ class EventManagerTest extends WPTestCase {
 	 * Get the internal transforms array for testing.
 	 */
 	private function get_transforms_array(): array {
-		$reflection = new ReflectionClass(EventManager::class);
+		$reflection = new ReflectionClass(Event_Manager::class);
 		$transforms_prop = $reflection->getProperty('transforms');
 		$transforms_prop->setAccessible(true);
 		return $transforms_prop->getValue();
@@ -65,7 +65,7 @@ class EventManagerTest extends WPTestCase {
 			$listener_called = true;
 		};
 
-		EventManager::subscribe('test_event', $listener);
+		Event_Manager::subscribe('test_event', $listener);
 
 		$events = $this->get_events_array();
 		$this->assertArrayHasKey('test_event', $events);
@@ -78,8 +78,8 @@ class EventManagerTest extends WPTestCase {
 		$listener1 = function() {};
 		$listener2 = function() {};
 
-		EventManager::subscribe('priority_test', $listener1, 5);
-		EventManager::subscribe('priority_test', $listener2, 15);
+		Event_Manager::subscribe('priority_test', $listener1, 5);
+		Event_Manager::subscribe('priority_test', $listener2, 15);
 
 		$events = $this->get_events_array();
 		$this->assertArrayHasKey(5, $events['priority_test']);
@@ -92,8 +92,8 @@ class EventManagerTest extends WPTestCase {
 		$listener1 = function() {};
 		$listener2 = function() {};
 
-		EventManager::subscribe('multi_test', $listener1);
-		EventManager::subscribe('multi_test', $listener2);
+		Event_Manager::subscribe('multi_test', $listener1);
+		Event_Manager::subscribe('multi_test', $listener2);
 
 		$events = $this->get_events_array();
 		$this->assertCount(2, $events['multi_test'][10]);
@@ -110,10 +110,10 @@ class EventManagerTest extends WPTestCase {
 			$listener_calls++;
 		};
 
-		EventManager::subscribe('publish_test', $listener);
+		Event_Manager::subscribe('publish_test', $listener);
 
 		$test_payload = ['test' => 'data'];
-		EventManager::publish('publish_test', $test_payload);
+		Event_Manager::publish('publish_test', $test_payload);
 
 		$this->assertEquals(1, $listener_calls);
 		$this->assertEquals($test_payload, $payload_received);
@@ -134,11 +134,11 @@ class EventManagerTest extends WPTestCase {
 			$call_order[] = 'medium';
 		};
 
-		EventManager::subscribe('order_test', $high_priority, 5);  // Lower number = higher priority
-		EventManager::subscribe('order_test', $low_priority, 20);
-		EventManager::subscribe('order_test', $medium_priority, 10);
+		Event_Manager::subscribe('order_test', $high_priority, 5);  // Lower number = higher priority
+		Event_Manager::subscribe('order_test', $low_priority, 20);
+		Event_Manager::subscribe('order_test', $medium_priority, 10);
 
-		EventManager::publish('order_test');
+		Event_Manager::publish('order_test');
 
 		$this->assertEquals(['high', 'medium', 'low'], $call_order);
 	}
@@ -154,7 +154,7 @@ class EventManagerTest extends WPTestCase {
 		});
 
 		$test_payload = ['empty' => 'test'];
-		EventManager::publish('no_listeners', $test_payload);
+		Event_Manager::publish('no_listeners', $test_payload);
 
 		$this->assertTrue($action_called);
 		$this->assertEquals($test_payload, $received_payload);
@@ -167,13 +167,13 @@ class EventManagerTest extends WPTestCase {
 			$execution_order[] = 'listener';
 		};
 
-		EventManager::subscribe('wp_action_test', $listener);
+		Event_Manager::subscribe('wp_action_test', $listener);
 
 		$this->mock_wordpress_action('wpgraphql_logging_event_wp_action_test', function() use (&$execution_order) {
 			$execution_order[] = 'wp_action';
 		});
 
-		EventManager::publish('wp_action_test');
+		Event_Manager::publish('wp_action_test');
 
 		$this->assertEquals(['listener', 'wp_action'], $execution_order);
 	}
@@ -183,7 +183,7 @@ class EventManagerTest extends WPTestCase {
 			return $payload;
 		};
 
-		EventManager::subscribe_to_transform('transform_test', $transformer);
+		Event_Manager::subscribe_to_transform('transform_test', $transformer);
 
 		$transforms = $this->get_transforms_array();
 		$this->assertArrayHasKey('transform_test', $transforms);
@@ -197,10 +197,10 @@ class EventManagerTest extends WPTestCase {
 			return $payload;
 		};
 
-		EventManager::subscribe_to_transform('modify_test', $transformer);
+		Event_Manager::subscribe_to_transform('modify_test', $transformer);
 
 		$original = ['original' => 'data'];
-		$result = EventManager::transform('modify_test', $original);
+		$result = Event_Manager::transform('modify_test', $original);
 
 		$this->assertTrue($result['transformed']);
 		$this->assertEquals('data', $result['original']);
@@ -217,10 +217,10 @@ class EventManagerTest extends WPTestCase {
 			return $payload;
 		};
 
-		EventManager::subscribe_to_transform('multi_transform', $first_transformer, 5);
-		EventManager::subscribe_to_transform('multi_transform', $second_transformer, 10);
+		Event_Manager::subscribe_to_transform('multi_transform', $first_transformer, 5);
+		Event_Manager::subscribe_to_transform('multi_transform', $second_transformer, 10);
 
-		$result = EventManager::transform('multi_transform', ['order' => []]);
+		$result = Event_Manager::transform('multi_transform', ['order' => []]);
 
 		$this->assertEquals(['first', 'second'], $result['order']);
 	}
@@ -237,7 +237,7 @@ class EventManagerTest extends WPTestCase {
 		});
 
 		$original = ['test' => 'data'];
-		$result = EventManager::transform('filter_test', $original);
+		$result = Event_Manager::transform('filter_test', $original);
 
 		$this->assertTrue($filter_applied);
 		$this->assertEquals($original, $received_payload);
@@ -252,14 +252,14 @@ class EventManagerTest extends WPTestCase {
 			return $payload;
 		};
 
-		EventManager::subscribe_to_transform('filter_order_test', $transformer);
+		Event_Manager::subscribe_to_transform('filter_order_test', $transformer);
 
 		$this->mock_wordpress_filter('wpgraphql_logging_filter_filter_order_test', function($payload) use (&$execution_order) {
 			$execution_order[] = 'filter';
 			return $payload;
 		});
 
-		EventManager::transform('filter_order_test', []);
+		Event_Manager::transform('filter_order_test', []);
 
 		$this->assertEquals(['transformer', 'filter'], $execution_order);
 	}
@@ -277,11 +277,11 @@ class EventManagerTest extends WPTestCase {
 			$good_listener_called = true;
 		};
 
-		EventManager::subscribe('exception_test', $bad_listener, 5);
-		EventManager::subscribe('exception_test', $good_listener, 10);
+		Event_Manager::subscribe('exception_test', $bad_listener, 5);
+		Event_Manager::subscribe('exception_test', $good_listener, 10);
 
 		// Publishing should not throw an exception even if a listener throws
-		EventManager::publish('exception_test');
+		Event_Manager::publish('exception_test');
 
 		$this->assertTrue($exception_thrown, 'Exception should have been thrown by bad listener');
 		$this->assertTrue($good_listener_called, 'Good listener should still be called after exception');
@@ -295,10 +295,10 @@ class EventManagerTest extends WPTestCase {
 			throw new \Exception('Transform exception');
 		};
 
-		EventManager::subscribe_to_transform('transform_exception_test', $bad_transformer);
+		Event_Manager::subscribe_to_transform('transform_exception_test', $bad_transformer);
 
 		$original = ['test' => 'data'];
-		$result = EventManager::transform('transform_exception_test', $original);
+		$result = Event_Manager::transform('transform_exception_test', $original);
 
 		$this->assertTrue($exception_thrown, 'Exception should have been thrown by bad transformer');
 		$this->assertEquals($original, $result, 'Original payload should be returned on exception');
@@ -312,10 +312,10 @@ class EventManagerTest extends WPTestCase {
 			return 'not an array';
 		};
 
-		EventManager::subscribe_to_transform('bad_return_test', $bad_transformer);
+		Event_Manager::subscribe_to_transform('bad_return_test', $bad_transformer);
 
 		$original = ['test' => 'data'];
-		$result = EventManager::transform('bad_return_test', $original);
+		$result = Event_Manager::transform('bad_return_test', $original);
 
 		$this->assertTrue($transformer_called, 'Transformer should have been called');
 		$this->assertEquals($original, $result, 'Original payload should be returned when transformer returns non-array');
@@ -343,8 +343,8 @@ class EventManagerTest extends WPTestCase {
 			$listener_called = true;
 		};
 
-		EventManager::subscribe($event_constant, $listener);
-		EventManager::publish($event_constant);
+		Event_Manager::subscribe($event_constant, $listener);
+		Event_Manager::publish($event_constant);
 
 		$this->assertTrue($listener_called, "Listener should be called for event: {$event_constant}");
 	}

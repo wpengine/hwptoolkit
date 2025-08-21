@@ -10,19 +10,19 @@ use Monolog\Handler\TestHandler;
 use Monolog\Level;
 use Monolog\LogRecord;
 use ReflectionClass;
-use WPGraphQL\Logging\Events\EventManager;
+use WPGraphQL\Logging\Events\Event_Manager;
 use WPGraphQL\Logging\Events\Events;
-use WPGraphQL\Logging\Events\QueryEventLifecycle;
-use WPGraphQL\Logging\Logger\LoggerService;
+use WPGraphQL\Logging\Events\Query_Event_Lifecycle;
+use WPGraphQL\Logging\Logger\Logger_Service;
 use WPGraphQL\Request;
 use WPGraphQL\WPSchema;
 
 /**
- * Class QueryEventLifecycleTest
+ * Class Query_Event_LifecycleTest
  *
- * Tests for the QueryEventLifecycle class.
+ * Tests for the Query_Event_Lifecycle class.
  */
-class QueryEventLifecycleTest extends WPTestCase {
+class Query_Event_LifecycleTest extends WPTestCase {
 
 	/**
 	 * @var TestHandler
@@ -30,9 +30,9 @@ class QueryEventLifecycleTest extends WPTestCase {
 	private TestHandler $test_handler;
 
 	/**
-	 * @var LoggerService
+	 * @var Logger_Service
 	 */
-	private LoggerService $mock_logger;
+	private Logger_Service $mock_logger;
 
 	/**
 	 * Set up test fixtures.
@@ -40,7 +40,7 @@ class QueryEventLifecycleTest extends WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 		$this->test_handler = new TestHandler();
-		$this->mock_logger = LoggerService::get_instance('test_lifecycle', [$this->test_handler], [], []);
+		$this->mock_logger = Logger_Service::get_instance('test_lifecycle', [$this->test_handler], [], []);
 		$this->reset_lifecycle_instance();
 		$this->reset_event_manager();
 	}
@@ -56,20 +56,20 @@ class QueryEventLifecycleTest extends WPTestCase {
 	}
 
 	/**
-	 * Reset QueryEventLifecycle singleton state.
+	 * Reset Query_Event_Lifecycle singleton state.
 	 */
 	private function reset_lifecycle_instance(): void {
-		$reflection = new ReflectionClass(QueryEventLifecycle::class);
+		$reflection = new ReflectionClass(Query_Event_Lifecycle::class);
 		$instance_prop = $reflection->getProperty('instance');
 		$instance_prop->setAccessible(true);
 		$instance_prop->setValue(null, null);
 	}
 
 	/**
-	 * Reset EventManager static state.
+	 * Reset Event_Manager static state.
 	 */
 	private function reset_event_manager(): void {
-		$reflection = new ReflectionClass(EventManager::class);
+		$reflection = new ReflectionClass(Event_Manager::class);
 
 		$events_prop = $reflection->getProperty('events');
 		$events_prop->setAccessible(true);
@@ -81,20 +81,20 @@ class QueryEventLifecycleTest extends WPTestCase {
 	}
 
 	/**
-	 * Reset LoggerService instances.
+	 * Reset Logger_Service instances.
 	 */
 	private function reset_logger_instances(): void {
-		$reflection = new ReflectionClass(LoggerService::class);
+		$reflection = new ReflectionClass(Logger_Service::class);
 		$instances_prop = $reflection->getProperty('instances');
 		$instances_prop->setAccessible(true);
 		$instances_prop->setValue(null, []);
 	}
 
 	/**
-	 * Create a mock LoggerService instance with injected test handler.
+	 * Create a mock Logger_Service instance with injected test handler.
 	 */
-	private function create_lifecycle_with_mock_logger(): QueryEventLifecycle {
-		$reflection = new ReflectionClass(QueryEventLifecycle::class);
+	private function create_lifecycle_with_mock_logger(): Query_Event_Lifecycle {
+		$reflection = new ReflectionClass(Query_Event_Lifecycle::class);
 		$lifecycle = $reflection->newInstanceWithoutConstructor();
 
 		$logger_prop = $reflection->getProperty('logger');
@@ -138,23 +138,23 @@ class QueryEventLifecycleTest extends WPTestCase {
 	}
 
 	public function test_init_returns_singleton_instance(): void {
-		$instance1 = QueryEventLifecycle::init();
-		$instance2 = QueryEventLifecycle::init();
+		$instance1 = Query_Event_Lifecycle::init();
+		$instance2 = Query_Event_Lifecycle::init();
 
-		$this->assertInstanceOf(QueryEventLifecycle::class, $instance1);
+		$this->assertInstanceOf(Query_Event_Lifecycle::class, $instance1);
 		$this->assertSame($instance1, $instance2, 'init() should return the same singleton instance');
 	}
 
 	public function test_init_creates_new_instance_when_none_exists(): void {
-		$reflection = new ReflectionClass(QueryEventLifecycle::class);
+		$reflection = new ReflectionClass(Query_Event_Lifecycle::class);
 		$instance_prop = $reflection->getProperty('instance');
 		$instance_prop->setAccessible(true);
 
 		$this->assertNull($instance_prop->getValue());
 
-		$instance = QueryEventLifecycle::init();
+		$instance = Query_Event_Lifecycle::init();
 
-		$this->assertInstanceOf(QueryEventLifecycle::class, $instance);
+		$this->assertInstanceOf(Query_Event_Lifecycle::class, $instance);
 		$this->assertSame($instance, $instance_prop->getValue());
 	}
 
@@ -321,7 +321,7 @@ class QueryEventLifecycleTest extends WPTestCase {
 		$transform_called = false;
 		$received_payload = null;
 
-		EventManager::subscribe_to_transform(Events::PRE_REQUEST, function($payload) use (&$transform_called, &$received_payload) {
+		Event_Manager::subscribe_to_transform(Events::PRE_REQUEST, function($payload) use (&$transform_called, &$received_payload) {
 			$transform_called = true;
 			$received_payload = $payload;
 			$payload['context']['transformed'] = true;
@@ -344,7 +344,7 @@ class QueryEventLifecycleTest extends WPTestCase {
 		$publish_called = false;
 		$received_payload = null;
 
-		EventManager::subscribe(Events::PRE_REQUEST, function($payload) use (&$publish_called, &$received_payload) {
+		Event_Manager::subscribe(Events::PRE_REQUEST, function($payload) use (&$publish_called, &$received_payload) {
 			$publish_called = true;
 			$received_payload = $payload;
 		});
@@ -359,10 +359,10 @@ class QueryEventLifecycleTest extends WPTestCase {
 
 	public function test_exception_handling_in_log_pre_request(): void {
 		// Create a lifecycle with a mock logger that throws an exception
-		$mock_logger = $this->createMock(LoggerService::class);
+		$mock_logger = $this->createMock(Logger_Service::class);
 		$mock_logger->method('log')->willThrowException(new \Exception('Logger error'));
 
-		$reflection = new ReflectionClass(QueryEventLifecycle::class);
+		$reflection = new ReflectionClass(Query_Event_Lifecycle::class);
 		$lifecycle = $reflection->newInstanceWithoutConstructor();
 
 		$logger_prop = $reflection->getProperty('logger');
@@ -378,7 +378,7 @@ class QueryEventLifecycleTest extends WPTestCase {
 
 
 	public function test_setup_registers_correct_priorities(): void {
-		$lifecycle = QueryEventLifecycle::init();
+		$lifecycle = Query_Event_Lifecycle::init();
 
 		$this->assertEquals(10, has_action('do_graphql_request', [$lifecycle, 'log_pre_request']));
 		$this->assertEquals(10, has_action('graphql_before_execute', [$lifecycle, 'log_graphql_before_execute']));
@@ -412,7 +412,7 @@ class QueryEventLifecycleTest extends WPTestCase {
 		$lifecycle = $this->create_lifecycle_with_mock_logger();
 
 		$event_published = false;
-		EventManager::subscribe($event, function() use (&$event_published) {
+		Event_Manager::subscribe($event, function() use (&$event_published) {
 			$event_published = true;
 		});
 
@@ -446,10 +446,10 @@ class QueryEventLifecycleTest extends WPTestCase {
 
 	public function test_all_lifecycle_methods_handle_exceptions_gracefully(): void {
 		// Create a mock logger that always throws exceptions
-		$mock_logger = $this->createMock(LoggerService::class);
+		$mock_logger = $this->createMock(Logger_Service::class);
 		$mock_logger->method('log')->willThrowException(new \Exception('Logger error'));
 
-		$reflection = new ReflectionClass(QueryEventLifecycle::class);
+		$reflection = new ReflectionClass(Query_Event_Lifecycle::class);
 		$lifecycle = $reflection->newInstanceWithoutConstructor();
 
 		$logger_prop = $reflection->getProperty('logger');

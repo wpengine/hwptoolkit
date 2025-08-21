@@ -13,7 +13,7 @@ namespace WPGraphQL\Logging\Logger\Database;
  *
  * @since 0.0.1
  */
-class DatabaseEntity {
+class Database_Entity {
 	/**
 	 * The ID of the log entry. Null if the entry is not yet saved.
 	 *
@@ -105,7 +105,7 @@ class DatabaseEntity {
 	 *
 	 * @param int $id The ID of the log entry to find.
 	 *
-	 * @return self|null Returns an instance of DatabaseEntity if found, or null if not found.
+	 * @return self|null Returns an instance of Database_Entity if found, or null if not found.
 	 */
 	public static function find(int $id): ?self {
 		global $wpdb;

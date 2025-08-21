@@ -17,8 +17,8 @@ WPGraphQL Logging implements a pub/sub pattern for events to subscribe to certai
 This is achieved in the following classes under `src/Events/`:
 
 - **Events** - List of events the plugin hooks into for WPGraphQL
-- **EventManager** - An event manager which creates a pub/sub pattern to allow users to subscribe/publish events and also transform context or level for the current event
-- **QueryEventLifecycle** - The service that puts this all together and creates the logic and logs the data into the LoggerService (Monolog logger)
+- **Event_Manager** - An event manager which creates a pub/sub pattern to allow users to subscribe/publish events and also transform context or level for the current event
+- **Query_Event_Lifecycle** - The service that puts this all together and creates the logic and logs the data into the Logger_Service (Monolog logger)
 
 > **Note**: If we are missing anything from this event system, please feel free to create an issue or contribute.
 
@@ -90,10 +90,10 @@ add_action('init', function () {
 Currently the plugin logs at three points in the WPGraphQL lifecycle: `do_graphql_request`, `graphql_before_execute`, `graphql_return_response`. If you need more visibility you could do the following:
 
 ```php
-use WPGraphQL\Logging\Logger\LoggerService;
+use WPGraphQL\Logging\Logger\Logger_Service;
 
 add_action('graphql_pre_resolve_field', function($source, $args, $context, $info) {
-    LoggerService::get_instance()->info('Resolving field', [
+    Logger_Service::get_instance()->info('Resolving field', [
         'field' => $info->fieldName ?? '',
         'type'  => method_exists($info, 'parentType') ? (string) $info->parentType : '',
     ]);

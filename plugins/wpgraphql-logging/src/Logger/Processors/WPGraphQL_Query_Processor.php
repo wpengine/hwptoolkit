@@ -15,7 +15,7 @@ use Monolog\Processor\ProcessorInterface;
  *
  * @since 0.0.1
  */
-class WPGraphQLQueryProcessor implements ProcessorInterface {
+class WPGraphQL_Query_Processor implements ProcessorInterface {
 	/**
 	 * The GraphQL query string for the current request.
 	 *
@@ -38,7 +38,7 @@ class WPGraphQLQueryProcessor implements ProcessorInterface {
 	protected static ?string $operation_name = null;
 
 	/**
-	 * Constructor for the WPGraphQLQueryProcessor.
+	 * Constructor for the WPGraphQL_Query_Processor.
 	 *
 	 * This constructor sets up the necessary hooks to capture GraphQL request data and clear it after the request is completed.
 	 */

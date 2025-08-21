@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging;
 
 use WPGraphQL\Logging\Admin\Settings_Page;
-use WPGraphQL\Logging\Events\EventManager;
-use WPGraphQL\Logging\Events\QueryEventLifecycle;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Events\Event_Manager;
+use WPGraphQL\Logging\Events\Query_Event_Lifecycle;
+use WPGraphQL\Logging\Logger\Database\Database_Entity;
 
 /**
  * Plugin class for WPGraphQL Logging.
@@ -50,22 +50,14 @@ final class Plugin {
 	}
 
 	/**
-	 * Initialize the plugin admin, frontend & api functionality.
-	 */
-	protected function setup(): void {
-		Settings_Page::init();
-		QueryEventLifecycle::init();
-	}
-
-	/**
-	 * Subscribe to an event using the internal EventManager.
+	 * Subscribe to an event using the internal Event_Manager.
 	 *
 	 * @param string   $event_name Event name from \WPGraphQL\Logging\Events\Events.
 	 * @param callable $listener  Listener callable with signature: function(array $payload): void {}.
 	 * @param int      $priority  Lower runs earlier.
 	 */
 	public static function on( string $event_name, callable $listener, int $priority = 10 ): void {
-		EventManager::subscribe( $event_name, $listener, $priority );
+		Event_Manager::subscribe( $event_name, $listener, $priority );
 	}
 
 	/**
@@ -75,7 +67,7 @@ final class Plugin {
 	 * @param array<string, mixed> $payload   Arbitrary payload data.
 	 */
 	public static function emit( string $event_name, array $payload = [] ): void {
-		EventManager::publish( $event_name, $payload );
+		Event_Manager::publish( $event_name, $payload );
 	}
 
 	/**
@@ -87,14 +79,14 @@ final class Plugin {
 	 * @param int      $priority  Lower runs earlier.
 	 */
 	public static function transform( string $event_name, callable $transform, int $priority = 10 ): void {
-		EventManager::subscribe_to_transform( $event_name, $transform, $priority );
+		Event_Manager::subscribe_to_transform( $event_name, $transform, $priority );
 	}
 
 	/**
 	 * Activation callback for the plugin.
 	 */
 	public static function activate(): void {
-		DatabaseEntity::create_table();
+		Database_Entity::create_table();
 	}
 
 	/**
@@ -102,7 +94,15 @@ final class Plugin {
 	 */
 	public static function deactivate(): void {
 		// @TODO: Add configuration to determine if the table should be dropped on deactivation.
-		DatabaseEntity::drop_table();
+		Database_Entity::drop_table();
+	}
+
+	/**
+	 * Initialize the plugin admin, frontend & api functionality.
+	 */
+	protected function setup(): void {
+		Settings_Page::init();
+		Query_Event_Lifecycle::init();
 	}
 
 	/**

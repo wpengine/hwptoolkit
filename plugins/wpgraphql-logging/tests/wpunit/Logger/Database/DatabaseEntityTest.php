@@ -7,17 +7,17 @@ namespace WPGraphQL\Logging\Tests\Database;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use DateTimeImmutable;
 use ReflectionClass;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Database\Database_Entity;
 
 /**
- * Class DatabaseEntityTest
+ * Class Database_EntityTest
  *
- * Tests for the DatabaseEntity class.
+ * Tests for the Database_Entity class.
  *
  * @package WPGraphQL\Logging
  * @since 0.0.1
  */
-class DatabaseEntityTest extends WPTestCase
+class Database_EntityTest extends WPTestCase
 {
 
     public function setUp(): void
@@ -35,12 +35,12 @@ class DatabaseEntityTest extends WPTestCase
 
     private function drop_table(): void
     {
-        DatabaseEntity::drop_table();
+        Database_Entity::drop_table();
     }
 
     private function create_table(): void
     {
-	    DatabaseEntity::create_table();
+	    Database_Entity::create_table();
     }
 
     public function test_save_method_inserts_log_into_database(): void
@@ -76,14 +76,14 @@ class DatabaseEntityTest extends WPTestCase
 		];
 
         // Create and save the entity
-        $entity = DatabaseEntity::create(...array_values($log_data));
+        $entity = Database_Entity::create(...array_values($log_data));
         $insert_id = $entity->save();
 
 		$this->assertIsInt( $insert_id );
         $this->assertGreaterThan(0, $insert_id, 'The save method should return a positive insert ID.');
 
-		$entity = DatabaseEntity::find($insert_id);
-		$this->assertInstanceOf(DatabaseEntity::class, $entity, 'The find method should return an instance of DatabaseEntity.');
+		$entity = Database_Entity::find($insert_id);
+		$this->assertInstanceOf(Database_Entity::class, $entity, 'The find method should return an instance of Database_Entity.');
 		$this->assertEquals($log_data['channel'], $entity->get_channel(), 'The channel should match the saved data.');
 		$this->assertEquals($log_data['level'], $entity->get_level(), 'The level should match the saved data.');
 		$this->assertEquals($log_data['level_name'], $entity->get_level_name(), 'The level name should match the saved data.');
@@ -98,7 +98,7 @@ class DatabaseEntityTest extends WPTestCase
 
 	public function test_find_returns_null_for_nonexistent_id(): void
 	{
-		$entity = DatabaseEntity::find(999999);
+		$entity = Database_Entity::find(999999);
 		$this->assertNull($entity, 'find() should return null for a non-existent ID.');
 	}
 
@@ -108,7 +108,7 @@ class DatabaseEntityTest extends WPTestCase
     */
    public function test_sanitize_array_field_method(): void
    {
-       $reflection = new ReflectionClass(DatabaseEntity::class);
+       $reflection = new ReflectionClass(Database_Entity::class);
        $method = $reflection->getMethod('sanitize_array_field');
        $method->setAccessible(true);
 
@@ -149,7 +149,7 @@ class DatabaseEntityTest extends WPTestCase
         // 1. Define a callback that will force the DB query to fail.
         $force_fail_callback = function ($query) {
             // Check if this is the specific INSERT query we want to fail.
-            if (strpos($query, 'INSERT INTO `' . DatabaseEntity::get_table_name() . '`') !== false) {
+            if (strpos($query, 'INSERT INTO `' . Database_Entity::get_table_name() . '`') !== false) {
                 // Returning a non-string value like `false` will cause the
                 // $wpdb->insert() method to fail and return false.
                 return false;
@@ -162,7 +162,7 @@ class DatabaseEntityTest extends WPTestCase
         add_filter('query', $force_fail_callback);
 
         // 3. Create a valid entity that we will attempt to save.
-        $entity = DatabaseEntity::create(
+        $entity = Database_Entity::create(
             'failure_test',
             500,
             'CRITICAL',

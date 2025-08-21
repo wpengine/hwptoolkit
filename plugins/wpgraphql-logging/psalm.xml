@@ -33,7 +33,7 @@
 
 		<MissingFile errorLevel="suppress">
 			<errorLevel type="suppress">
-				<file name="src/Logger/Database/DatabaseEntity.php"/>
+				<file name="src/Logger/Database/Database_Entity.php"/>
 			</errorLevel>
 		</MissingFile>
 	</issueHandlers>

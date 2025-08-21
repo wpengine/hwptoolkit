@@ -7,7 +7,7 @@ namespace WPGraphQL\Logging\Tests\Core;
 use WPGraphQL\Logging\Plugin;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use ReflectionClass;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Database\Database_Entity;
 
 /**
  * Class PluginTest

@@ -8,16 +8,16 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use Monolog\Handler\TestHandler;
 use Monolog\Processor\ProcessorInterface;
 use ReflectionClass;
-use WPGraphQL\Logging\Logger\LoggerService;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Logger_Service;
+use WPGraphQL\Logging\Logger\Database\Database_Entity;
 use Monolog\LogRecord;
 
 /**
- * Class LoggerServiceTest
+ * Class Logger_ServiceTest
  *
- * Tests for the LoggerService class.
+ * Tests for the Logger_Service class.
  */
-class LoggerServiceTest extends WPTestCase
+class Logger_ServiceTest extends WPTestCase
 {
 
     public function tearDown(): void
@@ -28,13 +28,13 @@ class LoggerServiceTest extends WPTestCase
 
 	private function reset_logger_instance(): void
     {
-		$reflection = new ReflectionClass(LoggerService::class);
+		$reflection = new ReflectionClass(Logger_Service::class);
 		$instance_prop = $reflection->getProperty('instances');
 		$instance_prop->setAccessible(true);
 		$instance_prop->setValue(null, []);
     }
 
-	private function get_monolog_instance(LoggerService $service): \Monolog\Logger
+	private function get_monolog_instance(Logger_Service $service): \Monolog\Logger
     {
         $reflection = new ReflectionClass($service);
         $monolog_prop = $reflection->getProperty('monolog');
@@ -44,19 +44,19 @@ class LoggerServiceTest extends WPTestCase
 
     public function test_get_instance_returns_singleton(): void
     {
-        $instance1 = LoggerService::get_instance();
-        $instance2 = LoggerService::get_instance();
+        $instance1 = Logger_Service::get_instance();
+        $instance2 = Logger_Service::get_instance();
 
         $this->assertSame($instance1, $instance2, 'get_instance() should always return the same object.');
 
-		$instance3 = LoggerService::get_instance('custom_channel');
-		$this->assertInstanceOf(LoggerService::class, $instance3, 'Instance should be of type LoggerService.');
+		$instance3 = Logger_Service::get_instance('custom_channel');
+		$this->assertInstanceOf(Logger_Service::class, $instance3, 'Instance should be of type Logger_Service.');
 		$this->assertNotSame($instance1, $instance3, 'get_instance() should return different instances for different channels.');
 		$this->assertEquals('custom_channel', $instance3->channel);
 
 		$monolog = $this->get_monolog_instance($instance3);
-		$this->assertCount(count(LoggerService::get_default_handlers()), $monolog->getHandlers(), 'Should have the default number of handlers.');
-		$this->assertCount(count(LoggerService::get_default_processors()), $monolog->getProcessors(), 'Should have the default number of processors.');
+		$this->assertCount(count(Logger_Service::get_default_handlers()), $monolog->getHandlers(), 'Should have the default number of handlers.');
+		$this->assertCount(count(Logger_Service::get_default_processors()), $monolog->getProcessors(), 'Should have the default number of processors.');
     }
 
 	public function test_get_instance_with_custom_configuration(): void
@@ -70,7 +70,7 @@ class LoggerServiceTest extends WPTestCase
 			}
 		};
 
-		$logger_service = LoggerService::get_instance(
+		$logger_service = Logger_Service::get_instance(
 			'custom_channel',
 			[$custom_handler],
 			[$custom_processor]
@@ -85,7 +85,7 @@ class LoggerServiceTest extends WPTestCase
 	}
 
 	/**
-	 * Provides log levels and corresponding LoggerService methods.
+	 * Provides log levels and corresponding Logger_Service methods.
 	 */
 	public function logLevelProvider(): array
 	{
@@ -107,7 +107,7 @@ class LoggerServiceTest extends WPTestCase
 	public function test_logging_methods_write_to_handler(string $level, string $method): void
 	{
 		$test_handler = new TestHandler();
-		$logger_service = LoggerService::get_instance(
+		$logger_service = Logger_Service::get_instance(
 			'log_test_channel_' . $level,
 			[$test_handler],
 			[],
@@ -136,7 +136,7 @@ class LoggerServiceTest extends WPTestCase
 	public function test_log_method_accepts_arbitrary_level(): void
 	{
 		$test_handler = new TestHandler();
-		$logger_service = LoggerService::get_instance(
+		$logger_service = Logger_Service::get_instance(
 			'arbitrary_level',
 			[$test_handler],
 			[],

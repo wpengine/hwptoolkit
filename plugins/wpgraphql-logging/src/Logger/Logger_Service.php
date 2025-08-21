@@ -11,11 +11,11 @@ use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\ProcessorInterface;
 use Monolog\Processor\WebProcessor;
-use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
-use WPGraphQL\Logging\Logger\Processors\WPGraphQLQueryProcessor;
+use WPGraphQL\Logging\Logger\Handlers\WordPress_Database_Handler;
+use WPGraphQL\Logging\Logger\Processors\WPGraphQL_Query_Processor;
 
 /**
- * LoggerService class for managing the Monolog logger instance.
+ * Logger_Service class for managing the Monolog logger instance.
  *
  * This class provides a singleton instance of the Monolog logger, allowing for easy logging throughout the application.
  * It supports custom handlers and processors, and provides methods for logging at various levels.
@@ -24,7 +24,7 @@ use WPGraphQL\Logging\Logger\Processors\WPGraphQLQueryProcessor;
  *
  * @since 0.0.1
  */
-class LoggerService {
+class Logger_Service {
 	/**
 	 * The default channel for the logger.
 	 *
@@ -44,12 +44,12 @@ class LoggerService {
 	/**
 	 * The instance of the logger based off the channel name.
 	 *
-	 * @var array<\WPGraphQL\Logging\Logger\LoggerService>
+	 * @var array<\WPGraphQL\Logging\Logger\Logger_Service>
 	 */
 	protected static array $instances = [];
 
 	/**
-	 * Constructor for the LoggerService and initializes the Monolog logger with the provided channel, handlers, processors, and default context.
+	 * Constructor for the Logger_Service and initializes the Monolog logger with the provided channel, handlers, processors, and default context.
 	 *
 	 * @param string                                       $channel The channel for the logger.
 	 * @param array<\Monolog\Handler\HandlerInterface>     $handlers The handlers to use for the logger.
@@ -74,7 +74,7 @@ class LoggerService {
 	}
 
 	/**
-	 * Get the instance of the LoggerService.
+	 * Get the instance of the Logger_Service.
 	 *
 	 * This method implements the singleton pattern to ensure only one instance of the logger is created.
 	 * It allows for custom handlers, processors, and default context to be specified.
@@ -89,7 +89,7 @@ class LoggerService {
 		?array $handlers = null,
 		?array $processors = null,
 		?array $default_context = null
-	): LoggerService {
+	): Logger_Service {
 		if ( isset( self::$instances[ $channel ] ) ) {
 			return self::$instances[ $channel ];
 		}
@@ -224,7 +224,7 @@ class LoggerService {
 			new MemoryPeakUsageProcessor(), // Logs memory peak data.
 			new WebProcessor(), // Logs web request data. e.g. IP address, request method, URI, etc.
 			new ProcessIdProcessor(), // Logs the process ID.
-			new WPGraphQLQueryProcessor(), // Custom processor to capture GraphQL request data.
+			new WPGraphQL_Query_Processor(), // Custom processor to capture GraphQL request data.
 		];
 
 		// Filter for users to add their own processors.
@@ -240,7 +240,7 @@ class LoggerService {
 	 */
 	public static function get_default_handlers(): array {
 		$default_handlers = [
-			new WordPressDatabaseHandler(),
+			new WordPress_Database_Handler(),
 		];
 
 		// Filter for users to add their own handlers.

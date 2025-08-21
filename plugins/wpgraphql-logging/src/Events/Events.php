@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Events;
 
 /**
- * List of available events that users can subscribe to with the EventManager.
+ * List of available events that users can subscribe to with the Event_Manager.
  */
 final class Events {
 	/**
