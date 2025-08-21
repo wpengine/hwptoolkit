@@ -67,20 +67,18 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 	public const EVENT_LOG_SELECTION = 'event_log_selection';
 
 	/**
-	 * Get the name/identifier of the tab.
+	 * The section of the config.
+	 *
+	 * @var string
 	 */
-	public function get_name(): string {
-		return 'basic_configuration';
-	}
+	public const KEY = 'basic_configuration';
 
 	/**
-	 * Get the label of the tab.
+	 * The key of the config.
 	 *
-	 * @return string The tab label.
+	 * @var string
 	 */
-	public function get_label(): string {
-		return 'Basic Configuration';
-	}
+	public const LABEL = 'Basic Configuration';
 
 	/**
 	 * Get the fields for this tab.
@@ -92,7 +90,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 
 		$fields[ self::ENABLED ] = new Checkbox_Field(
 			self::ENABLED,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Enabled', 'wpgraphql-logging' ),
 			'',
 			__( 'Enable or disable WPGraphQL logging.', 'wpgraphql-logging' ),
@@ -100,7 +98,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 
 		$fields[ self::IP_RESTRICTIONS ] = new Text_Input_Field(
 			self::IP_RESTRICTIONS,
-			$this->get_name(),
+			self::get_name(),
 			__( 'IP Restrictions', 'wpgraphql-logging' ),
 			'',
 			__( 'Comma-separated list of IPv4/IPv6 addresses to restrict logging to. Leave empty to log from all IPs.', 'wpgraphql-logging' ),
@@ -109,7 +107,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 
 		$fields[ self::ADMIN_USER_LOGGING ] = new Checkbox_Field(
 			self::ADMIN_USER_LOGGING,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Log only for admin users', 'wpgraphql-logging' ),
 			'',
 			__( 'Log only for admin users.', 'wpgraphql-logging' )
@@ -117,7 +115,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 
 		$fields[ self::WPGRAPHQL_FILTERING ] = new Text_Input_Field(
 			self::WPGRAPHQL_FILTERING,
-			$this->get_name(),
+			self::get_name(),
 			__( 'WPGraphQL Query Filtering', 'wpgraphql-logging' ),
 			'',
 			__( 'Comma-separated list of query names or patterns to log. Leave empty to log all queries.', 'wpgraphql-logging' ),
@@ -126,13 +124,15 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 
 		$fields[ self::DATA_SAMPLING ] = new Select_Field(
 			self::DATA_SAMPLING,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Data Sampling Rate', 'wpgraphql-logging' ),
 			[
-				'100' => __( '100% (All requests)', 'wpgraphql-logging' ),
-				'50'  => __( '50% (Every other request)', 'wpgraphql-logging' ),
-				'25'  => __( '25% (Every 4th request)', 'wpgraphql-logging' ),
+				'5'   => __( '5% (Every 20th request)', 'wpgraphql-logging' ),
 				'10'  => __( '10% (Every 10th request)', 'wpgraphql-logging' ),
+				'25'  => __( '25% (Every 4th request)', 'wpgraphql-logging' ),
+				'50'  => __( '50% (Every 2nd request)', 'wpgraphql-logging' ),
+				'75'  => __( '75% (75% of requests)', 'wpgraphql-logging' ),
+				'100' => __( '100% (All requests)', 'wpgraphql-logging' ),
 			],
 			'',
 			__( 'Percentage of requests to log for performance optimization.', 'wpgraphql-logging' ),
@@ -141,7 +141,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 
 		$fields[ self::PERFORMANCE_METRICS ] = new Text_Input_Field(
 			self::PERFORMANCE_METRICS,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Performance Threshold (seconds)', 'wpgraphql-logging' ),
 			'',
 			__( 'Only log requests that take longer than this threshold. 0 logs all requests. Calculated in seconds.', 'wpgraphql-logging' ),
@@ -151,7 +151,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 
 		$fields[ self::EVENT_LOG_SELECTION ] = new Select_Field(
 			self::EVENT_LOG_SELECTION,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Log Points', 'wpgraphql-logging' ),
 			[
 				Events::PRE_REQUEST              => __( 'Pre Request', 'wpgraphql-logging' ),
@@ -164,5 +164,21 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 		);
 
 		return apply_filters( 'wpgraphql_logging_basic_configuration_fields', $fields );
+	}
+
+	/**
+	 * Get the name/identifier of the tab.
+	 */
+	public static function get_name(): string {
+		return self::KEY;
+	}
+
+	/**
+	 * Get the label of the tab.
+	 *
+	 * @return string The tab label.
+	 */
+	public static function get_label(): string {
+		return self::LABEL;
 	}
 }

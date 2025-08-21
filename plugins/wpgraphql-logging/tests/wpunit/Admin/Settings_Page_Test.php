@@ -68,13 +68,13 @@ class Settings_Page_Test extends WPTestCase {
         // Provide custom tabs and no $_GET -> default
         $tabs = [
             'basic_configuration' => new class implements \WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface {
-                public function get_name(): string { return 'basic_configuration'; }
-                public function get_label(): string { return 'Basic Configuration'; }
+                public static function get_name(): string { return 'basic_configuration'; }
+                public static function get_label(): string { return 'Basic Configuration'; }
                 public function get_fields(): array { return []; }
             },
             'advanced' => new class implements \WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface {
-                public function get_name(): string { return 'advanced'; }
-                public function get_label(): string { return 'Advanced'; }
+                public static function get_name(): string { return 'advanced'; }
+                public static function get_label(): string { return 'Advanced'; }
                 public function get_fields(): array { return []; }
             },
         ];

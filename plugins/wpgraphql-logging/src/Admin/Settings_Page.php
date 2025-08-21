@@ -94,7 +94,7 @@ class Settings_Page {
 				continue;
 			}
 
-			$tab_labels[ $tab_key ] = $tab->get_label();
+			$tab_labels[ $tab_key ] = $tab::get_label();
 		}
 
 		$page = new Menu_Page(

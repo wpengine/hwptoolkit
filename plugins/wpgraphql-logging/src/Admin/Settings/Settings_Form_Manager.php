@@ -48,7 +48,7 @@ class Settings_Form_Manager {
 		);
 
 		foreach ( $this->field_collection->get_tabs() as $tab ) {
-			$this->render_tab_section( $tab->get_name(), $tab->get_label() );
+			$this->render_tab_section( $tab::get_name(), $tab::get_label() );
 		}
 	}
 

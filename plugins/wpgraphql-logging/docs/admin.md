@@ -95,11 +95,11 @@ use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface;
 use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Input_Field;
 
 class My_Custom_Tab implements Settings_Tab_Interface {
-    public function get_name(): string {
+    public static function get_name(): string {
         return 'my_custom_tab';
     }
 
-    public function get_label(): string {
+    public static function get_label(): string {
         return 'My Custom Tab';
     }
 
@@ -107,7 +107,7 @@ class My_Custom_Tab implements Settings_Tab_Interface {
         return [
             'my_setting' => new Text_Input_Field(
                 'my_setting',
-                $this->get_name(),
+                self::get_name(),
                 'My Setting',
                 '',
                 'Describe what this setting does.',

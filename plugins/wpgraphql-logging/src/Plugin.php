@@ -52,7 +52,7 @@ final class Plugin {
 	/**
 	 * Initialize the plugin admin, frontend & api functionality.
 	 */
-	public function setup(): void {
+	protected function setup(): void {
 		Settings_Page::init();
 		QueryEventLifecycle::init();
 	}
