@@ -48,9 +48,10 @@ use WPGraphQL\Logging\Events\Events;
 
 add_action('init', function () {
     Plugin::on(Events::PRE_REQUEST, function(array $payload): void {
-        $context = $payload['context']; // array
+        $context = $payload['context']; // Request_Context_Service
 		$level = $payload['level']; // string
 		// Custom logic
+		$context->add_data('key', 'value');
     }, 10);
 });
 ```
@@ -70,8 +71,8 @@ use Monolog\Level;
 add_action('init', function () {
     Plugin::transform(Events::BEFORE_RESPONSE_RETURNED, function(array $payload): array {
 
-		// Add some custom context
-		$payload['context']['custom_key'] = 'custom_value';
+		// Add some custom context for the request context object
+		$context->add_data('custom_key', 'custom_value');
 
 		// Set the level to debug
 		$payload['level'] = Level::Debug;

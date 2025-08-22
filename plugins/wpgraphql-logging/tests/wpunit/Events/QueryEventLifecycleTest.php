@@ -16,6 +16,7 @@ use WPGraphQL\Logging\Events\Query_Event_Lifecycle;
 use WPGraphQL\Logging\Logger\Logger_Service;
 use WPGraphQL\Request;
 use WPGraphQL\WPSchema;
+use WPGraphQL\Logging\Events\Request_Context_Service;
 
 /**
  * Class Query_Event_LifecycleTest
@@ -324,15 +325,21 @@ class Query_Event_LifecycleTest extends WPTestCase {
 		Event_Manager::subscribe_to_transform(Events::PRE_REQUEST, function($payload) use (&$transform_called, &$received_payload) {
 			$transform_called = true;
 			$received_payload = $payload;
-			$payload['context']['transformed'] = true;
+			/** @var Request_Context_Service $context */
+			$context = $received_payload['context'];
+			$context->set_data('transformed', true);
 			return $payload;
 		});
 
 		$lifecycle->log_pre_request('{ test }', null, null);
 
+		/** @var Request_Context_Service $context */
+		$context = $received_payload['context'];
+
 		$this->assertTrue($transform_called);
 		$this->assertArrayHasKey('context', $received_payload);
-		$this->assertEquals('{ test }', $received_payload['context']['query']);
+		$this->assertInstanceOf(Request_Context_Service::class, $context);
+		$this->assertEquals('{ test }', $context->query);
 
 		$records = $this->test_handler->getRecords();
 		$this->assertTrue($records[0]['context']['transformed']);

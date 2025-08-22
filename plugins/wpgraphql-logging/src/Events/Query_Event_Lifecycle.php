@@ -65,21 +65,18 @@ class Query_Event_Lifecycle {
 	 */
 	public function log_pre_request( string $query, ?string $operation_name, ?array $variables ): void {
 		try {
-			$context = [
-				'query'          => $query,
-				'variables'      => $variables,
-				'operation_name' => $operation_name,
-			];
+
+			$request_context = new Request_Context_Service( $query, $operation_name, $variables );
 
 			$payload = Event_Manager::transform(
 				Events::PRE_REQUEST,
 				[
-					'context' => $context,
+					'context' => $request_context,
 					'level'   => Level::Info,
 				]
 			);
 
-			$this->logger->log( $payload['level'], 'WPGraphQL Pre Request', $payload['context'] );
+			$this->logger->log( $payload['level'], 'WPGraphQL Pre Request', $payload['context']->to_array() );
 
 			Event_Manager::publish(
 				Events::PRE_REQUEST,
@@ -102,24 +99,19 @@ class Query_Event_Lifecycle {
 	 */
 	public function log_graphql_before_execute(Request $request ): void {
 		try {
-			/** @var \GraphQL\Server\OperationParams $params */
 			$params  = $request->params;
-			$context = [
-				'query'          => $params->query,
-				'operation_name' => $params->operation,
-				'variables'      => $params->variables,
-				'params'         => $params,
-			];
+			$request_context = new Request_Context_Service( $params->query, $params->operation, $params->variables);
+			$request_context->set_data( 'params', $params );
 
 			$payload = Event_Manager::transform(
 				Events::BEFORE_GRAPHQL_EXECUTION,
 				[
-					'context' => $context,
+					'context' => $request_context,
 					'level'   => Level::Info,
 				]
 			);
 
-			$this->logger->log( $payload['level'], 'WPGraphQL Before Query Execution', $payload['context'] );
+			$this->logger->log( $payload['level'], 'WPGraphQL Before Query Execution', $payload['context']->to_array() );
 
 			Event_Manager::publish(
 				Events::BEFORE_GRAPHQL_EXECUTION,
@@ -149,21 +141,18 @@ class Query_Event_Lifecycle {
 	 */
 	public function log_before_response_returned(array|ExecutionResult $filtered_response, array|ExecutionResult $response, WPSchema $schema, ?string $operation, string $query, ?array $variables, Request $request, ?string $query_id): void {
 		try {
-			$context = [
-				'response'       => $response,
-				'schema'         => $schema,
-				'operation_name' => $operation,
-				'query'          => $query,
-				'variables'      => $variables,
-				'request'        => $request,
-				'query_id'       => $query_id,
-			];
+
+			$request_context = new Request_Context_Service( $query, $operation, $variables );
+			$request_context->set_data( 'response', $response );
+			$request_context->set_data( 'schema', $schema );
+			$request_context->set_data( 'request', $request );
+			$request_context->set_data( 'query_id', $query_id );
 
 			$level   = Level::Info;
 			$message = 'WPGraphQL Response';
 			$errors  = $this->get_response_errors( $response );
 			if ( null !== $errors && count( $errors ) > 0 ) {
-				$context['errors'] = $errors;
+				$request_context->set_data( 'errors', $errors );
 				$level             = Level::Error;
 				$message           = 'WPGraphQL Response with Errors';
 			}
@@ -171,12 +160,12 @@ class Query_Event_Lifecycle {
 			$payload = Event_Manager::transform(
 				Events::BEFORE_RESPONSE_RETURNED,
 				[
-					'context' => $context,
+					'context' => $request_context,
 					'level'   => $level,
 				]
 			);
 
-			$this->logger->log( $payload['level'], $message, $payload['context'] );
+			$this->logger->log( $payload['level'], $message, $payload['context']->to_array() );
 
 			Event_Manager::publish(
 				Events::BEFORE_RESPONSE_RETURNED,
