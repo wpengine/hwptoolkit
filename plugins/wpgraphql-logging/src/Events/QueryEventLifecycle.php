@@ -9,6 +9,7 @@ use Monolog\Level;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Request;
 use WPGraphQL\WPSchema;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
 
 /**
  * WPGraphQL Query Event Lifecycle.
@@ -39,6 +40,8 @@ class QueryEventLifecycle {
 	 */
 	protected function __construct( LoggerService $logger ) {
 		$this->logger = $logger;
+		$full_config = get_option( WPGRAPHQL_LOGGING_SETTINGS_KEY, [] );
+    	$this->config = $full_config['basic_configuration'] ?? [];
 	}
 
 	/**
@@ -55,6 +58,40 @@ class QueryEventLifecycle {
 	}
 
 	/**
+	 * Checks if logging is enabled based on user settings.
+	 */
+	protected function is_logging_enabled(): bool {
+		// Check the main "Enabled" checkbox first.
+		$is_enabled = $this->config[ Basic_Configuration_Tab::ENABLED ] ?? false;
+		if ( ! $is_enabled ) {
+			return false;
+		}
+
+		// Check if the current user is an admin if that option is enabled.
+		$log_for_admin = $this->config[ Basic_Configuration_Tab::ADMIN_USER_LOGGING ] ?? false;
+		if ( $log_for_admin && ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		// Check for IP restrictions.
+		$ip_restrictions = $this->config[ Basic_Configuration_Tab::IP_RESTRICTIONS ] ?? '';
+		if ( ! empty( $ip_restrictions ) ) {
+			$allowed_ips = array_map( 'trim', explode( ',', $ip_restrictions ) );
+			if ( ! in_array( $_SERVER['REMOTE_ADDR'], $allowed_ips, true ) ) {
+				return false;
+			}
+		}
+
+		// Check the data sampling rate.
+		$sampling_rate = (int) ( $this->config[ Basic_Configuration_Tab::DATA_SAMPLING ] ?? 100 );
+		if ( mt_rand( 0, 100 ) >= $sampling_rate ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Initial Incoming Request.
 	 *
 	 * @hook do_graphql_request
@@ -65,6 +102,10 @@ class QueryEventLifecycle {
 	 */
 	public function log_pre_request( string $query, ?string $operation_name, ?array $variables ): void {
 		try {
+			if ( ! $this->is_logging_enabled() ) {
+                return;
+            }
+
 			$context = [
 				'query'          => $query,
 				'variables'      => $variables,
@@ -102,6 +143,10 @@ class QueryEventLifecycle {
 	 */
 	public function log_graphql_before_execute(Request $request ): void {
 		try {
+			if ( ! $this->is_logging_enabled() ) {
+                return;
+            }
+
 			/** @var \GraphQL\Server\OperationParams $params */
 			$params  = $request->params;
 			$context = [
@@ -149,6 +194,9 @@ class QueryEventLifecycle {
 	 */
 	public function log_before_response_returned(array|ExecutionResult $filtered_response, array|ExecutionResult $response, WPSchema $schema, ?string $operation, string $query, ?array $variables, Request $request, ?string $query_id): void {
 		try {
+			if ( ! $this->is_logging_enabled() ) {
+                return;
+            }
 			$context = [
 				'response'       => $response,
 				'schema'         => $schema,
