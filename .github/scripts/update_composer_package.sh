@@ -18,7 +18,7 @@ usage() {
     echo "  description    - Optional: Package description (uses generic default if not provided)"
     echo ""
     echo "Examples:"
-    echo "  $0 '0.0.2' 'https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.2/wp-graphql-webhooks.zip'"
+    echo "  $0 '0.0.2' 'https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.2/wpgraphql-webhooks.zip'"
     echo ""
     echo "  With custom package name and description:"
     echo "  $0 '0.0.5' 'https://example.com/plugin.zip' 'wpengine/my-plugin' 'My custom plugin description'"

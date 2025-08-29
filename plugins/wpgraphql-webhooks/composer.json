@@ -95,7 +95,7 @@
 		"php:psalm:fix": "psalm --alter"
 	},
 	"archive": {
-		"name": "wp-graphql-webhooks",
+		"name": "wpgraphql-webhooks",
 		"exclude": [
 			"/.*",
 			"/assets",

@@ -8,7 +8,7 @@
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
  * Version: 0.0.4
- * Text Domain: wpgraphql-webhooks
+ * Text Domain: graphql-webhooks
  * Domain Path: /languages
  * Requires at least: 6.0
  * Tested up to: 6.8

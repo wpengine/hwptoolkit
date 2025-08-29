@@ -57,7 +57,7 @@ importers:
 
   plugins/hwp-previews: {}
 
-  plugins/wp-graphql-webhooks:
+  plugins/wpgraphql-webhooks:
     devDependencies:
       '@playwright/test':
         specifier: ^1.53.1
