@@ -29,15 +29,29 @@ done
 # Get unique plugin names
 UNIQUE_PLUGINS=($(printf '%s\n' "${PLUGINS[@]}" | sort -u))
 
-# Find the first plugin that actually exists
-PLUGIN_SLUG=""
+# Find all valid plugins that have changes
+VALID_PLUGINS=()
 for plugin in "${UNIQUE_PLUGINS[@]}"; do
-  if [ -d "plugins/$plugin" ] || [[ " ${CHANGED_FILES[@]} " =~ "plugins/$plugin/" ]]; then
-    PLUGIN_SLUG="$plugin"
-    echo "Found plugin in changes or directory: $PLUGIN_SLUG"
-    break
+  if [ -d "plugins/$plugin" ]; then
+    count=$(printf '%s\n' "${PLUGINS[@]}" | grep -c "^$plugin$")
+    VALID_PLUGINS+=("$plugin")
+    echo "Found plugin with $count changes: $plugin"
   fi
 done
+
+# Output all valid plugins as JSON array for matrix strategy
+if [ ${#VALID_PLUGINS[@]} -gt 0 ]; then
+  PLUGINS_JSON=$(printf '%s\n' "${VALID_PLUGINS[@]}" | jq -R . | jq -s .)
+  echo "plugins=$PLUGINS_JSON" >> "$GITHUB_OUTPUT"
+  echo "has-plugins=true" >> "$GITHUB_OUTPUT"
+  
+  # For backward compatibility, set slug to first plugin
+  PLUGIN_SLUG="${VALID_PLUGINS[0]}"
+else
+  echo "plugins=[]" >> "$GITHUB_OUTPUT"
+  echo "has-plugins=false" >> "$GITHUB_OUTPUT"
+  PLUGIN_SLUG=""
+fi
 
 if [ -z "$PLUGIN_SLUG" ]; then
   echo "No valid plugin directory found"
