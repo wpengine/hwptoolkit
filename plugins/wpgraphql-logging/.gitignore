@@ -48,6 +48,7 @@ c3.php
 
 # Cache
 phpcs-cache.json
+.psalm-cache/
 tests/_support/
 tests/_output/
 tests/_generated/

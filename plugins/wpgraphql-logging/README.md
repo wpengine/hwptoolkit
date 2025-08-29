@@ -23,6 +23,7 @@ A WPGraphQL logging plugin that provides visibility into request lifecycle to he
 - [Features](#features)
 - [Usage](#usage)
 - [Configuration](#configuration)
+- [Admin & Settings](#admin--settings)
 - [Extending the Functionality](#extending-the-functionality)
 - [Testing](#testing)
 
@@ -59,6 +60,7 @@ wpgraphql-logging/
 ├── docs/                       # Docs for extending the plugin.
 ├── src/                        # Main plugin source code
 │   ├── Admin/                  # Admin settings, menu, and settings page logic
+│   	├── Settings/             # Admin settings functionality for displaying and saving data.
 │   ├── Events/                 # Event logging, pub/sub event manager for extending the logging.
 │   ├── Logging/                # Logging logic, logger service, Monolog handlers & processors
 │   ├── Plugin.php              # Main plugin class (entry point)
@@ -110,6 +112,9 @@ The following documentation is available in the `docs/` directory:
 - [Logging](docs/Logging.md):
   Learn about the logging system, Monolog integration, handlers, processors, and how to use or extend the logger.
 
+- [Admin](docs/admin.md):
+  Learn how the admin settings page works, all available hooks, and how to add tabs/fields via actions and filters.
+
 ---
 
 
@@ -125,6 +130,10 @@ The following documentation is available in the `docs/` directory:
 @TODO - When we integrate plugin configuration.
 
 ---
+
+## Admin & Settings
+
+See `docs/admin.md` for a full overview of the admin/settings architecture, hooks, and examples for adding tabs and fields.
 
 ## Testing
 
