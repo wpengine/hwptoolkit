@@ -41,7 +41,17 @@ done
 
 # Output all valid plugins as JSON array for matrix strategy
 if [ ${#VALID_PLUGINS[@]} -gt 0 ]; then
-  PLUGINS_JSON=$(printf '%s\n' "${VALID_PLUGINS[@]}" | jq -R . | jq -s .)
+  # Simple, reliable JSON array generation
+  PLUGINS_JSON="["
+  for i in "${!VALID_PLUGINS[@]}"; do
+    if [ $i -eq 0 ]; then
+      PLUGINS_JSON="$PLUGINS_JSON\"${VALID_PLUGINS[i]}\""
+    else
+      PLUGINS_JSON="$PLUGINS_JSON,\"${VALID_PLUGINS[i]}\""
+    fi
+  done
+  PLUGINS_JSON="$PLUGINS_JSON]"
+  
   echo "plugins=$PLUGINS_JSON" >> "$GITHUB_OUTPUT"
   echo "has-plugins=true" >> "$GITHUB_OUTPUT"
   
