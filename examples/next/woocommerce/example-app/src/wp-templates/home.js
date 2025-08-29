@@ -1,14 +1,13 @@
-import RecentPosts from "@/components/Posts/RecentPosts";
+import Posts from "@/components/Posts/Posts";
 
 export default function Home() {
   return (
     <>
-      <h1>Blog Template</h1>
-      <RecentPosts />
+      <Posts />
     </>
   );
 }
 
 Home.queries = [
-  RecentPosts.query, // Ensure RecentPosts query is included
+  Posts.query,
 ];

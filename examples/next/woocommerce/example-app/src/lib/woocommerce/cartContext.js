@@ -20,15 +20,16 @@ export function CartProvider({ children }) {
           },
         },
       });
-
       if (errors) {
         throw new Error(errors[0]?.message || 'Failed to add to cart');
       }
 
-      if (data?.addToCart?.cartItem) {
+      if (data.addToCart.cart.contents.nodes) {
         // Refetch cart to update UI
+        console.log('cart refetch');
         await cartQuery.refetch();
-        return { success: true, cartItem: data.addToCart.cartItem };
+        console.log('cart refetch done', { cart });
+        return { success: true, cartItem: data.addToCart.cart.contents.nodes };
       } else {
         throw new Error('No cart item returned');
       }
@@ -41,6 +42,7 @@ export function CartProvider({ children }) {
   const cart = cartQuery.data?.cart;
   
   const getCartItemCount = () => {
+    console.log(cart);
     return cart?.contents?.nodes?.reduce((total, item) => total + item.quantity, 0) || 0;
   };
 

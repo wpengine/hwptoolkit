@@ -39,7 +39,7 @@ export const navData = async () => {
   const [settingsResult, navigationResult] = await Promise.all([
     client.query({
       query: SETTINGS_QUERY,
-      fetchPolicy: "no-cache", // Always fetch fresh data on server
+      fetchPolicy: "no-cache",
     }),
     client.query({
       query: NAVIGATION_QUERY,

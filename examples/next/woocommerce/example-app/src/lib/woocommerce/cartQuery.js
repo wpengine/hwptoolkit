@@ -101,8 +101,10 @@ const GET_CART = gql`
 `;
 
 export function useCartQuery() {
+    console.log('useCartQuery');
   return useQuery(GET_CART, {
     errorPolicy: 'all',
     notifyOnNetworkStatusChange: true,
   });
+
 }

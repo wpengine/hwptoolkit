@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { useRouteData } from "@/lib/templates/context";
 import ProductCard from "@/components/Products/ProductCard";
+import React from "react";
 
 export default function RecentProducts({ 
   count = 12, 

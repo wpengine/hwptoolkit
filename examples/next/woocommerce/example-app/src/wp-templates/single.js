@@ -1,31 +1,54 @@
-export default function SingleTemplate({ graphqlData }) {
+import SinglePost from "@/components/Posts/SinglePost/SinglePost";
+
+export default function Single({ graphqlData }) {
   const { SinglePostQuery } = graphqlData;
   return (
     <>
-      <div id="single-template">
-        <h2>{SinglePostQuery.post.title}</h2>
-        <div
-          dangerouslySetInnerHTML={{
-            __html: SinglePostQuery.post.content,
-          }}
-        />
-      </div>
+      <SinglePost post={SinglePostQuery.post} />
     </>
   );
 }
 
-// export const queries = "test";
-
-SingleTemplate.queries = [
+Single.queries = [
   {
     name: "SinglePostQuery",
-    query: /* GraphQL */ `
-      query SinglePostQuery($id: ID!) {
+    query: `
+      query GetPost($id: ID!) {
         post(id: $id, idType: URI) {
           id
+          databaseId
           title
-          content
           date
+          content
+          commentCount
+          categories {
+            nodes {
+              name
+              slug
+              uri
+            }
+          }
+          tags {
+            nodes {
+              name
+              slug
+              uri
+            }
+          }
+          author {
+            node {
+              name
+              avatar {
+                url
+              }
+            }
+          }
+          featuredImage {
+            node {
+              sourceUrl
+              altText
+            }
+          }
         }
       }
     `,

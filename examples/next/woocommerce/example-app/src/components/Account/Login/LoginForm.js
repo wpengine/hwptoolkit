@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useAuth } from "@/lib/auth/AuthProvider";
+//import { useSession } from "@/lib/woocommerce/sessionProvider";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const LoginForm = () => {
   const {login} = useAuth();
+  //const { login } = useSession();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,14 +16,8 @@ const LoginForm = () => {
     setLoading(true);
     setError("");
 
-    try {
-      await login(username, password);
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    event.preventDefault();
+    login(username, password);
   };
 
   return (
@@ -58,7 +54,9 @@ const LoginForm = () => {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full p-2 rounded ${loading ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`w-full p-2 rounded ${
+            loading ? "bg-gray-300" : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
         >
           {loading ? "Logging in..." : "Login"}
         </button>

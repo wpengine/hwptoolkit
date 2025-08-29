@@ -32,6 +32,7 @@ export async function uriToTemplate({ uri }) {
         uri: uri,
       }
     );
+
     if (!seedQueryData?.data.nodeByUri) {
       console.error("HTTP/404 - Not Found in WordPress:", uri);
       returnData.template = { id: "404 Not Found", path: "/404" };

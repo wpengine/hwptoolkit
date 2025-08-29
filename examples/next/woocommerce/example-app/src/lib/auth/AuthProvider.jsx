@@ -18,6 +18,20 @@ const LOGIN_MUTATION = gql`
       user {
         email
       }
+                customer {
+               billing {
+        firstName
+        lastName
+        company
+        address1
+        address2
+        city
+        state
+        country
+        postcode
+        phone
+      }
+        }
     }
   }
 `;
@@ -121,7 +135,7 @@ function AuthProvider({
         isLoading: false,
       });
 
-      navigation.push("/");
+      navigation.push("/my-account");
     } catch (error) {
       console.error("Error during login:", error);
       throw error;

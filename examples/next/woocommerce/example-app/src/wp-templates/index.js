@@ -21,10 +21,24 @@ const archiveProduct = dynamic(() => import("./archive-product.js"), {
 const page = dynamic(() => import("./page.js"), {
   loading: () => <p>Loading Page Template...</p>,
 });
+//WC
 const singleProduct = dynamic(() => import("./single-product.js"), {
   loading: () => <p>Loading Product Template...</p>,
 });
 const pageCart = dynamic(() => import("./page-cart.js"), {
   loading: () => <p>Loading Cart Template...</p>,
 });
-export default { home, index, page, single, frontPage, archiveProduct, singleProduct, pageCart };
+const pageMyAccount = dynamic(() => import("./page-my-account.js"), {
+  loading: () => <p>Loading Account Template...</p>,
+});
+export default {
+  home,
+  index,
+  page,
+  single,
+  frontPage,
+  archiveProduct,
+  singleProduct,
+  pageCart,
+  pageMyAccount,
+};

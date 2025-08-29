@@ -1,34 +1,31 @@
+import SinglePage from "@/components/Pages/SinglePage";
 export default function Page({ graphqlData }) {
-  const { SinglePageQuery } = graphqlData;
-  return (
-    <>
-      <div id="single-template">
-        <h2>{SinglePageQuery.page.title}</h2>
-        <div
-          dangerouslySetInnerHTML={{
-            __html: SinglePageQuery.page.content,
-          }}
-        />
-      </div>
-    </>
-  );
+	const { SinglePageQuery } = graphqlData;
+	console.log(SinglePageQuery.page);
+	return (
+		<>
+			<SinglePage page={SinglePageQuery.page} />
+		</>
+	);
 }
 
 Page.queries = [
-  {
-    name: "SinglePageQuery",
-    query: /* GraphQL */ `
-      query SinglePageQuery($id: ID!) {
-        page(id: $id, idType: URI) {
-          id
+	{
+		name: "SinglePageQuery",
+		query: `
+			query SinglePageQuery($id: ID!) {
+				page(id: $id, idType: URI) {
+					 id
+          databaseId
           title
-          content
           date
-        }
-      }
-    `,
-    variables: (event, { uri }) => ({
-      id: uri,
-    }),
-  },
+          content
+          commentCount
+				}
+			}
+		`,
+		variables: (event, { uri }) => ({
+			id: uri,
+		}),
+	},
 ];
