@@ -44,9 +44,9 @@ install_db() {
 	# create database
 	echo -e "$(status_message "Creating the database (if it does not exist)...")"
 
-	RESULT=$(mysql --ssl-mode=DISABLED -u $WORDPRESS_DB_USER --password="$WORDPRESS_DB_PASSWORD" --skip-column-names -e "SHOW DATABASES LIKE '$WORDPRESS_DB_NAME'"$EXTRA)
+	RESULT=$(mysql -u $WORDPRESS_DB_USER --password="$WORDPRESS_DB_PASSWORD" --skip-column-names -e "SHOW DATABASES LIKE '$WORDPRESS_DB_NAME'"$EXTRA)
 	if [ "$RESULT" != $WORDPRESS_DB_NAME ]; then
-		mysqladmin --ssl-mode=DISABLED create $WORDPRESS_DB_NAME --user="$WORDPRESS_DB_USER" --password="$WORDPRESS_DB_PASSWORD"$EXTRA
+		mysqladmin create $WORDPRESS_DB_NAME --user="$WORDPRESS_DB_USER" --password="$WORDPRESS_DB_PASSWORD"$EXTRA
 	fi
 }
 
@@ -117,6 +117,12 @@ configure_wordpress() {
 	SITE_TITLE=${WORDPRESS_SITE_TITLE:-"WPGraphQL Logging Tests"}
 
 	wp core install --title="$SITE_TITLE" --admin_user="$WORDPRESS_ADMIN_USER" --admin_password="$WORDPRESS_ADMIN_PASSWORD" --admin_email="$WORDPRESS_ADMIN_EMAIL" --skip-email --url="$WORDPRESS_URL" --allow-root
+
+	# Fix for WP 6.8+ SSL issue in tests
+    echo -e "$(status_message "Adding mu-plugin to disable local SSL verification for tests...")"
+    local MU_PLUGINS_DIR="$WORDPRESS_ROOT_DIR/wp-content/mu-plugins"
+    mkdir -p "$MU_PLUGINS_DIR"
+    echo "<?php add_filter( 'https_local_ssl_verify', '__return_false' );" > "$MU_PLUGINS_DIR/disable-local-ssl-verify.php"
 
 	echo -e "$(status_message "Running WordPress version: $(wp core version --allow-root) at $(wp option get home --allow-root)")"
 }
