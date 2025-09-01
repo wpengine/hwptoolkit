@@ -33,12 +33,11 @@ services:
             MYSQL_USER: ${WORDPRESS_DB_USER}
             MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
             MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
-            MYSQL_SSL_MODE: DISABLED
         volumes:
             - db:/var/lib/mysql
         networks:
             - plugin_network
-        command: --ssl-mode=DISABLED
+
 networks:
     plugin_network:
         driver: bridge
