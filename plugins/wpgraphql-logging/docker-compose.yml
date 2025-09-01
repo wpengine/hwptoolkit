@@ -17,7 +17,8 @@ services:
             - .env
         user: root
         depends_on:
-            - mysql
+            mysql:
+                condition: service_healthy
         volumes:
             - wordpress_data:/var/www/html
             - ./:/var/www/html/wp-content/plugins/${PLUGIN_SLUG}
