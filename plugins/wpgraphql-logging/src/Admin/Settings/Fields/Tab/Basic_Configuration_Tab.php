@@ -150,18 +150,21 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 
 
 		$fields[ self::EVENT_LOG_SELECTION ] = new Select_Field(
-			self::EVENT_LOG_SELECTION,
-			$this->get_name(),
-			__( 'Log Points', 'wpgraphql-logging' ),
-			[
-				Events::PRE_REQUEST              => __( 'Pre Request', 'wpgraphql-logging' ),
-				Events::BEFORE_GRAPHQL_EXECUTION => __( 'Before Query Execution', 'wpgraphql-logging' ),
-				Events::BEFORE_RESPONSE_RETURNED => __( 'Before Response Returned', 'wpgraphql-logging' ),
-			],
-			'',
-			__( 'Select which points in the request lifecycle to log. By default, all points are logged.', 'wpgraphql-logging' ),
-			true
-		);
+            self::EVENT_LOG_SELECTION,
+            $this->get_name(),
+            __( 'Log Points', 'wpgraphql-logging' ),
+            [
+                Events::PRE_REQUEST              => __( 'Pre Request', 'wpgraphql-logging' ),
+                Events::BEFORE_GRAPHQL_EXECUTION => __( 'Before Query Execution', 'wpgraphql-logging' ),
+                Events::BEFORE_RESPONSE_RETURNED => __( 'Before Response Returned', 'wpgraphql-logging' ),
+                Events::REQUEST_DATA             => __( 'Request Data', 'wpgraphql-logging' ),
+                Events::REQUEST_RESULTS          => __( 'Request Results', 'wpgraphql-logging' ),
+                Events::RESPONSE_HEADERS_TO_SEND => __( 'Response Headers', 'wpgraphql-logging' ),
+            ],
+            '',
+            __( 'Select which points in the request lifecycle to log. By default, all points are logged.', 'wpgraphql-logging' ),
+            true
+        );
 
 		return apply_filters( 'wpgraphql_logging_basic_configuration_fields', $fields );
 	}
