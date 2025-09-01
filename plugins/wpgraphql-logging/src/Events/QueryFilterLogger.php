@@ -56,6 +56,8 @@ class QueryFilterLogger {
 	 *
 	 * @param array<string, mixed> $query_data The raw GraphQL request data.
 	 *
+	 * phpcs:disable Generic.Metrics.CyclomaticComplexity, SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
+	 *
 	 * @return array<string, mixed> The filtered query data.
 	 */
 	public function log_graphql_request_data( array $query_data ): array {

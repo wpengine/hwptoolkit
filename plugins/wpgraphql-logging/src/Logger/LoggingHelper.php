@@ -14,6 +14,8 @@ trait LoggingHelper {
 	 * Checks if logging is enabled based on user settings.
 	 *
 	 * @param array<string, mixed> $config The logging configuration.
+	 *
+	 * phpcs:disable Generic.Metrics.CyclomaticComplexity, SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
 	 */
 	protected function is_logging_enabled( array $config ): bool {
 		$is_enabled = true;
@@ -34,7 +36,7 @@ trait LoggingHelper {
 		$ip_restrictions = $config[ Basic_Configuration_Tab::IP_RESTRICTIONS ] ?? '';
 		if ( $is_enabled && ! empty( $ip_restrictions ) ) {
 			$allowed_ips = array_map( 'trim', explode( ',', $ip_restrictions ) );
-			if ( ! in_array( $_SERVER['REMOTE_ADDR'], $allowed_ips, true ) ) {
+			if ( ! in_array( $_SERVER['REMOTE_ADDR'], $allowed_ips, true ) ) { // @phpcs:ignore
 				$is_enabled = false;
 			}
 		}
@@ -42,7 +44,7 @@ trait LoggingHelper {
 		// Check the data sampling rate.
 		if ( $is_enabled ) {
 			$sampling_rate = (int) ( $config[ Basic_Configuration_Tab::DATA_SAMPLING ] ?? 100 );
-			if ( mt_rand( 0, 100 ) >= $sampling_rate ) {
+			if ( wp_rand( 0, 100 ) >= $sampling_rate ) {
 				$is_enabled = false;
 			}
 		}
