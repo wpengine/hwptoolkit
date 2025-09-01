@@ -37,6 +37,7 @@ services:
             - db:/var/lib/mysql
         networks:
             - plugin_network
+        command: --ssl=0 --require-secure-transport=OFF
 
 networks:
     plugin_network:
