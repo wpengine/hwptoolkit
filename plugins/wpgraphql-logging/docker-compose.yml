@@ -26,6 +26,11 @@ services:
             - plugin_network
 
     mysql:
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
         image: mariadb:10.2.7
         restart: always
         ports:
