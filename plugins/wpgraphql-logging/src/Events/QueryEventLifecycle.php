@@ -125,7 +125,7 @@ class QueryEventLifecycle {
 
 		// Add filter hooks.
 		foreach ( $filter_events as $event_name => $data ) {
-			add_filter( $event_name, [ $this->filter_logger, $data['method'] ], 10, $data['accepted_args'] );
+			add_filter( $event_name, [ $this->filter_logger, $data['method'] ], 10, min( $data['accepted_args'], 3 ) );
 		}
 	}
 }

@@ -36,7 +36,8 @@ trait LoggingHelper {
 		$ip_restrictions = $config[ Basic_Configuration_Tab::IP_RESTRICTIONS ] ?? '';
 		if ( $is_enabled && ! empty( $ip_restrictions ) ) {
 			$allowed_ips = array_map( 'trim', explode( ',', $ip_restrictions ) );
-			if ( ! in_array( $_SERVER['REMOTE_ADDR'], $allowed_ips, true ) ) { // @phpcs:ignore
+			$remote_addr = $_SERVER['REMOTE_ADDR'] ?? ''; // @phpcs:ignore
+			if ( ! in_array( $remote_addr, $allowed_ips, true ) ) {
 				$is_enabled = false;
 			}
 		}
