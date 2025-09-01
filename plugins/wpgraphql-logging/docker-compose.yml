@@ -12,6 +12,7 @@ services:
         environment:
             WP_VERSION: ${WP_VERSION}
             PHP_VERSION: ${PHP_VERSION}
+            MYSQL_SSL_MODE: DISABLED
         env_file:
             - .env
         user: root
@@ -33,7 +34,7 @@ services:
             MYSQL_USER: ${WORDPRESS_DB_USER}
             MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
             MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
-        command: --ssl=0 --require-secure-transport=OFF
+        command: --skip-ssl --ssl=0 --require-secure-transport=OFF
         volumes:
             - db:/var/lib/mysql
         networks:
