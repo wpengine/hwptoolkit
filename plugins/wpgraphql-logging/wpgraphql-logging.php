@@ -64,7 +64,8 @@ if ( ! function_exists( 'wpgraphql_logging_init' ) ) {
 	function wpgraphql_logging_init(): void {
 		wpgraphql_logging_constants();
 		wpgraphql_logging_plugin_init();
-		wpgraphql_logging_plugin_admin_notice();
+		wpgraphql_logging_plugin_admin_notice_correct_build();
+		wpgraphql_logging_plugin_admin_notice_min_php_version();
 	}
 }
 
@@ -110,11 +111,11 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_init' ) ) {
 }
 
 
-if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice' ) ) {
+if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_correct_build' ) ) {
 	/**
 	 * Display an admin notice if the plugin is not properly initialized.
 	 */
-	function wpgraphql_logging_plugin_admin_notice(): void {
+	function wpgraphql_logging_plugin_admin_notice_correct_build(): void {
 		if ( defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
 			return;
 		}
@@ -137,6 +138,35 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice' ) ) {
 		);
 	}
 }
+
+if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' ) ) {
+	/**
+	 * Display an admin notice if the PHP version is not met.
+	 */
+	function wpgraphql_logging_plugin_admin_notice_min_php_version(): void {
+		if ( version_compare( PHP_VERSION, '8.1', '>=' ) ) {
+			return;
+		}
+
+		add_action(
+			'admin_notices',
+			static function (): void {
+				?>
+				<div class="error notice">
+					<p>
+						<?php
+						echo 'PHP ' . PHP_VERSION . ' is not supported. Please upgrade to PHP 8.1 or higher in order to use WPGraphQL Logging Plugin.';
+						?>
+					</p>
+				</div>
+				<?php
+			},
+			10,
+			0
+		);
+	}
+}
+
 
 /**
  * Load plugin text domain.
