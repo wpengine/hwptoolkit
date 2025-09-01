@@ -65,6 +65,9 @@ class QueryActionLogger {
 				return;
 			}
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
+				return;
+			}
 			if ( ! in_array( Events::PRE_REQUEST, $selected_events, true ) ) {
 				return;
 			}
@@ -97,6 +100,9 @@ class QueryActionLogger {
 				return;
 			}
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
+				return;
+			}
 			if ( ! in_array( Events::BEFORE_GRAPHQL_EXECUTION, $selected_events, true ) ) {
 				return;
 			}
@@ -148,6 +154,9 @@ class QueryActionLogger {
 				return;
 			}
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
+				return;
+			}
 			if ( ! in_array( Events::BEFORE_RESPONSE_RETURNED, $selected_events, true ) ) {
 				return;
 			}

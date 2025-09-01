@@ -65,6 +65,9 @@ class QueryFilterLogger {
 			}
 
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
+				return $query_data;
+			}
 			if ( ! in_array( Events::REQUEST_DATA, $selected_events, true ) ) {
 				return $query_data;
 			}
@@ -115,22 +118,27 @@ class QueryFilterLogger {
 			}
 
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
+				return $response;
+			}
 			if ( ! in_array( Events::REQUEST_RESULTS, $selected_events, true ) ) {
 				return $response;
 			}
 
+			/** @var \GraphQL\Server\OperationParams $params */
+			$params  = $request->params;
 			$context = [
 				'response'       => $response,
-				'operation_name' => $request->params->operation,
-				'query'          => $request->params->query,
-				'variables'      => $request->params->variables,
+				'operation_name' => $params->operation,
+				'query'          => $params->query,
+				'variables'      => $params->variables,
 				'request'        => $request,
 				'query_id'       => $query_id,
 			];
 
 			$level   = Level::Info;
 			$message = 'WPGraphQL Response';
-			if ( isset( $response['errors'] ) && ! empty( $response['errors'] ) ) {
+			if ( is_array( $response ) && isset( $response['errors'] ) && ! empty( $response['errors'] ) ) {
 				$context['errors'] = $response['errors'];
 				$level             = Level::Error;
 				$message           = 'WPGraphQL Response with Errors';

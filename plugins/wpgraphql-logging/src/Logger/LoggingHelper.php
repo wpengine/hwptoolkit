@@ -19,12 +19,12 @@ trait LoggingHelper {
 		$is_enabled = true;
 
 		// Check the main "Enabled" checkbox.
-		if ( ! ( $config[ Basic_Configuration_Tab::ENABLED ] ?? false ) ) {
+		if ( ! (bool) ( $config[ Basic_Configuration_Tab::ENABLED ] ?? false ) ) {
 			$is_enabled = false;
 		}
 
 		// Check if the current user is an admin if that option is enabled.
-		if ( $is_enabled && ( $config[ Basic_Configuration_Tab::ADMIN_USER_LOGGING ] ?? false ) ) {
+		if ( $is_enabled && ( (bool) ( $config[ Basic_Configuration_Tab::ADMIN_USER_LOGGING ] ?? false ) ) ) {
 			if ( ! current_user_can( 'manage_options' ) ) {
 				$is_enabled = false;
 			}
