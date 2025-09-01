@@ -44,9 +44,9 @@ install_db() {
 	# create database
 	echo -e "$(status_message "Creating the database (if it does not exist)...")"
 
-	RESULT=$(mysql -u $WORDPRESS_DB_USER --password="$WORDPRESS_DB_PASSWORD" --skip-column-names -e "SHOW DATABASES LIKE '$WORDPRESS_DB_NAME'"$EXTRA)
+	RESULT=$(mysql -u $WORDPRESS_DB_USER --password="$WORDPRESS_DB_PASSWORD" --skip-column-names --ssl=0 -e "SHOW DATABASES LIKE '$WORDPRESS_DB_NAME'"$EXTRA)
 	if [ "$RESULT" != $WORDPRESS_DB_NAME ]; then
-		mysqladmin create $WORDPRESS_DB_NAME --user="$WORDPRESS_DB_USER" --password="$WORDPRESS_DB_PASSWORD"$EXTRA
+		mysqladmin create $WORDPRESS_DB_NAME --user="$WORDPRESS_DB_USER" --password="$WORDPRESS_DB_PASSWORD" --ssl=0$EXTRA
 	fi
 }
 
@@ -135,7 +135,7 @@ setup_file_permissions() {
 		wp-settings.php \
 		wp-content/uploads \
 		wp-content/upgrade
-	
+
 	# Install a dummy favicon to avoid 404 errors.
 	echo -e "$(status_message "Installing a dummy favicon...")"
 	touch favicon.ico
@@ -188,14 +188,14 @@ post_setup() {
 	wp config set GRAPHQL_DEBUG true --raw --allow-root
 
 	wp core update-db --allow-root
-	
+
 	# Disable Update Checks
 	echo -e "$(status_message "Disabling update checks...")"
 	wp config set WP_AUTO_UPDATE_CORE false --raw --type=constant --quiet --allow-root
 	wp config set AUTOMATIC_UPDATER_DISABLED true --raw --type=constant --quiet --allow-root
 
 	# Export the db for codeception to use
-	SQLDUMP="$WORDPRESS_ROOT_DIR/wp-content/plugins/$PLUGIN_SLUG/tests/_data/dump.sql" 
+	SQLDUMP="$WORDPRESS_ROOT_DIR/wp-content/plugins/$PLUGIN_SLUG/tests/_data/dump.sql"
 	mkdir -p "$(dirname "$SQLDUMP")"
 	if [ ! -f "$SQLDUMP" ]; then
 		echo -e "$(status_message "Exporting test database dump...")"
