@@ -12,13 +12,11 @@ services:
         environment:
             WP_VERSION: ${WP_VERSION}
             PHP_VERSION: ${PHP_VERSION}
-            MYSQL_SSL_MODE: DISABLED
         env_file:
             - .env
         user: root
         depends_on:
-            mysql:
-                condition: service_healthy
+            - mysql
         volumes:
             - wordpress_data:/var/www/html
             - ./:/var/www/html/wp-content/plugins/${PLUGIN_SLUG}
@@ -26,11 +24,6 @@ services:
             - plugin_network
 
     mysql:
-        healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-            interval: 10s
-            timeout: 5s
-            retries: 10
         image: mariadb:10.2.7
         restart: always
         ports:
