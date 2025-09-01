@@ -24,7 +24,7 @@ services:
             - plugin_network
 
     mysql:
-        image: mariadb:10.2.7
+        image: mariadb:10
         restart: always
         ports:
             - '3306:3306'
