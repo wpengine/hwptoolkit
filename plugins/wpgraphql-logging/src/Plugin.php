@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging;
 
 use WPGraphQL\Logging\Admin\Settings_Page;
+use WPGraphQL\Logging\Admin\View_Logs_Page;
 use WPGraphQL\Logging\Events\EventManager;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
@@ -54,6 +55,7 @@ final class Plugin {
 	 */
 	public function setup(): void {
 		Settings_Page::init();
+		View_Logs_Page::init();
 		QueryEventLifecycle::init();
 	}
 
