@@ -117,13 +117,6 @@ configure_wordpress() {
 	SITE_TITLE=${WORDPRESS_SITE_TITLE:-"WPGraphQL Logging Tests"}
 
 	wp core install --title="$SITE_TITLE" --admin_user="$WORDPRESS_ADMIN_USER" --admin_password="$WORDPRESS_ADMIN_PASSWORD" --admin_email="$WORDPRESS_ADMIN_EMAIL" --skip-email --url="$WORDPRESS_URL" --allow-root
-
-	# Fix for WP 6.8+ SSL issue in tests
-    echo -e "$(status_message "Adding mu-plugin to disable local SSL verification for tests...")"
-    local MU_PLUGINS_DIR="$WORDPRESS_ROOT_DIR/wp-content/mu-plugins"
-    mkdir -p "$MU_PLUGINS_DIR"
-    echo "<?php add_filter( 'https_local_ssl_verify', '__return_false' );" > "$MU_PLUGINS_DIR/disable-local-ssl-verify.php"
-
 	echo -e "$(status_message "Running WordPress version: $(wp core version --allow-root) at $(wp option get home --allow-root)")"
 }
 
@@ -201,15 +194,6 @@ post_setup() {
 	echo -e "$(status_message "Disabling update checks...")"
 	wp config set WP_AUTO_UPDATE_CORE false --raw --type=constant --quiet --allow-root
 	wp config set AUTOMATIC_UPDATER_DISABLED true --raw --type=constant --quiet --allow-root
-
-	# Export the db for codeception to use
-	SQLDUMP="$WORDPRESS_ROOT_DIR/wp-content/plugins/$PLUGIN_SLUG/tests/_data/dump.sql"
-	mkdir -p "$(dirname "$SQLDUMP")"
-	if [ ! -f "$SQLDUMP" ]; then
-		echo -e "$(status_message "Exporting test database dump...")"
-
-		wp db export "$SQLDUMP" --allow-root
-	fi
 
 	echo -e "$(status_message "Installed plugins")"
 	wp plugin list --allow-root
