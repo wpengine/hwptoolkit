@@ -26,7 +26,7 @@ Copy and use this example as your `composer.json` for a typical WordPress projec
   ],
   "require": {
     "wpengine/hwp-previews": "*",
-    "wpengine/wp-graphql-webhooks": "*"
+    "wpengine/wpgraphql-webhooks": "*"
   },
   "config": {
     "allow-plugins": {
@@ -57,7 +57,7 @@ Copy and use this example as your `composer.json` for a typical WordPress projec
 To update to the latest version:
 
 ```bash
-composer update wpengine/hwp-previews wpengine/wp-graphql-webhooks
+composer update wpengine/hwp-previews wpengine/wpgraphql-webhooks
 ```
 
 ---

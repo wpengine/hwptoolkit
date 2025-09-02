@@ -149,7 +149,7 @@ setup_plugin() {
 	fi
 
 	# Add this repo as a plugin to the repo
-	if [ ! -d $WORDPRESS_ROOT_DIR/wp-content/plugins/wp-graphql-webhooks ]; then
+	if [ ! -d $WORDPRESS_ROOT_DIR/wp-content/plugins/wpgraphql-webhooks ]; then
 		echo -e "$(status_message "Symlinking the plugin to the WordPress plugins directory...")"
 
 		cd "$ORIGINAL_PATH"
