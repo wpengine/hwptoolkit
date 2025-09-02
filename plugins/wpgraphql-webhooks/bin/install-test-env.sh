@@ -144,7 +144,7 @@ setup_file_permissions() {
 
 setup_plugin() {
 	if [ "${SKIP_WP_SETUP}" = "true" ]; then
-		echo -e "$(warning_message "Skipping wp-graphql--webhooks installation...")"
+		echo -e "$(warning_message "Skipping wpgraphql--webhooks installation...")"
 		return 0
 	fi
 
