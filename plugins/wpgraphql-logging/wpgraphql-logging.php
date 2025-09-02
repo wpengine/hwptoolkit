@@ -167,7 +167,6 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' 
 	}
 }
 
-
 /**
  * Load plugin text domain.
  */
