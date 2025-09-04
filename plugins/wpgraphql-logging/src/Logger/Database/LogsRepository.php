@@ -58,4 +58,15 @@ class LogsRepository {
 
 		return (int) $count;
 	}
+
+	/**
+	 * Get a single log entry by ID.
+	 *
+	 * @param int $id The log entry ID.
+	 *
+	 * @return ?DatabaseEntity The log entry or null if not found.
+	 */
+	public function get_log( int $id ): ?DatabaseEntity {
+		return DatabaseEntity::find_by_id( $id );
+	}
 }

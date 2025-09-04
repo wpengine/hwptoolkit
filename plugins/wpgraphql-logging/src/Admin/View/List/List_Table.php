@@ -168,11 +168,22 @@ class List_Table extends WP_List_Table {
 	 * @return string The rendered ID column or null.
 	 */
 	public function column_id( DatabaseEntity $item ): string {
-		$url     = isset( $_REQUEST['page'] ) ? esc_attr( sanitize_text_field( $_REQUEST['page'] ) ) : ''; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$url     = \WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG;
 		$actions = [
-			'view' => sprintf( '<a href="?page=%s&action=%s&log=%d">View</a>', $url, 'view', $item->get_id() ),
+			'view' => sprintf(
+				'<a href="?page=%s&action=%s&log=%d">%s</a>',
+				esc_attr( $url ),
+				'view',
+				$item->get_id(),
+				esc_html__( 'View', 'wpgraphql-logging' )
+			),
 		];
-		return sprintf( '%1$s %2$s', $item->get_id(), $this->row_actions( $actions ) );
+
+		return sprintf(
+			'%1$s %2$s',
+			$item->get_id(),
+			$this->row_actions( $actions )
+		);
 	}
 
 	/**
