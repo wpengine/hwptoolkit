@@ -175,8 +175,8 @@ class DatabaseEntity {
 	/**
 	 * Gets the ID of the log entry.
 	 */
-	public function get_id(): ?int {
-		return $this->id;
+	public function get_id(): int {
+		return (int) $this->id;
 	}
 
 	/**
@@ -244,7 +244,7 @@ class DatabaseEntity {
 	 * @param string $orderby The column to order by.
 	 * @param string $order   The order direction (ASC or DESC).
 	 *
-	 * @return array<string> An array of DatabaseEntity instances, or an empty array if none found.
+	 * @return array<\WPGraphQL\Logging\Logger\Database\DatabaseEntity> An array of DatabaseEntity instances, or an empty array if none found.
 	 */
 	public static function find_logs(int $limit, int $offset, string $orderby = 'id', string $order = 'DESC'): array {
 		global $wpdb;
@@ -253,7 +253,9 @@ class DatabaseEntity {
 		$order      = esc_sql( $order );
 
 		$query = $wpdb->prepare(
-			"SELECT * FROM {$table_name} ORDER BY {$orderby} {$order} LIMIT %d, %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT * FROM {$table_name} ORDER BY %s %s LIMIT %d, %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$orderby,
+			$order,
 			$offset,
 			$limit
 		);

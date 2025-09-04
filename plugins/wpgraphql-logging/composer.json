@@ -143,8 +143,8 @@
 		"phpstan": [
 			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
 		],
-		"php:psalm": "psalm --output-format=text --no-progress",
-		"php:psalm:fix": "psalm --alter --output-format=text --no-progress",
+		"php:psalm": "psalm --no-progress",
+		"php:psalm:fix": "psalm --alter --no-progress",
 		"qa": "sh bin/local/run-qa.sh",
 		"test": [
 			"sh bin/local/run-unit-tests.sh coverage",

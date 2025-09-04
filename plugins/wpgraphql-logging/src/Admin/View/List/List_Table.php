@@ -10,7 +10,7 @@ use WP_List_Table;
 
 // Include the WP_List_Table class if not already loaded.
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'; // @phpstan-ignore-line
 }
 
 /**
@@ -24,6 +24,13 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class List_Table extends WP_List_Table {
 	/**
+	 * Default number of items per page.
+	 *
+	 * @var int
+	 */
+	public const DEFAULT_PER_PAGE = 25;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param \WPGraphQL\Logging\Logger\Database\LogsRepository $repository The logs repository.
@@ -33,13 +40,15 @@ class List_Table extends WP_List_Table {
 		public readonly LogsRepository $repository,
 		$args = []
 	) {
-		parent::__construct(
+		$args = wp_parse_args(
+			$args,
 			[
 				'singular' => __( 'Log', 'wpgraphql-logging' ),
 				'plural'   => __( 'Logs', 'wpgraphql-logging' ),
 				'ajax'     => false,
 			]
 		);
+		parent::__construct( $args );
 	}
 
 	/**
@@ -58,7 +67,7 @@ class List_Table extends WP_List_Table {
 		);
 
 		// @TODO
-		$per_page     = $this->get_items_per_page( 'logs_per_page', 20 );
+		$per_page     = $this->get_items_per_page( 'logs_per_page', self::DEFAULT_PER_PAGE );
 		$current_page = $this->get_pagenum();
 		$total_items  = $this->repository->get_log_count();
 
@@ -104,8 +113,8 @@ class List_Table extends WP_List_Table {
 	/**
 	 * Get the default column value for a log entry.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
-	 * @param string                                            $column_name The column name.
+	 * @param mixed|\WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
+	 * @param string                                                  $column_name The column name.
 	 *
 	 * @phpcs:disable Generic.Metrics.CyclomaticComplexity.MaxExceeded
 	 *
@@ -144,15 +153,13 @@ class List_Table extends WP_List_Table {
 	/**
 	 * Renders the checkbox column for a log entry.
 	 *
-	 * @var ?\WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
-	 *
-	 * @phpcs:disable SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingAnyTypeHint
+	 * @param mixed|\WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
 	 *
 	 * @return string The rendered checkbox column or null.
 	 */
 	public function column_cb( $item ): string {
 		if ( ! $item instanceof DatabaseEntity ) {
-			return null;
+			return '';
 		}
 		return sprintf(
 			'<input type="checkbox" name="log[]" value="%d" />',
@@ -168,11 +175,12 @@ class List_Table extends WP_List_Table {
 	 * @return string The rendered ID column or null.
 	 */
 	public function column_id( DatabaseEntity $item ): string {
-		$url     = isset( $_REQUEST['page'] ) ? esc_attr( sanitize_text_field( $_REQUEST['page'] ) ) : ''; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		/** @psalm-suppress PossiblyInvalidArgument */
+		$url     = sanitize_text_field( $_REQUEST['page'] ?? '' ); // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$actions = [
 			'view' => sprintf( '<a href="?page=%s&action=%s&log=%d">View</a>', $url, 'view', $item->get_id() ),
 		];
-		return sprintf( '%1$s %2$s', $item->get_id(), $this->row_actions( $actions ) );
+		return sprintf( '%1$d %2$s', $item->get_id(), $this->row_actions( $actions ) );
 	}
 
 	/**
@@ -211,7 +219,9 @@ class List_Table extends WP_List_Table {
 	/**
 	 * Gets the event from extra.
 	 *
-	 * @return string The event
+	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
+	 *
+	 * @return int The event
 	 */
 	public function get_process_id(DatabaseEntity $item): int {
 		$extra = $item->get_extra();

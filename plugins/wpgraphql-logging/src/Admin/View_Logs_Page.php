@@ -15,12 +15,19 @@ use WPGraphQL\Logging\Logger\Database\LogsRepository;
  * @since 0.0.1
  */
 class View_Logs_Page {
+	/**
+	 * The admin page slug.
+	 *
+	 * @var string
+	 */
 	public const ADMIN_PAGE_SLUG = 'wpgraphql-logging-view';
 
 	/**
 	 * The instance of the view logs page.
+	 *
+	 * @var self|null
 	 */
-	protected static ?View_Logs_Page $instance = null;
+	protected static ?self $instance = null;
 
 	/**
 	 * Initializes the view logs page.
@@ -76,7 +83,9 @@ class View_Logs_Page {
 	 * Renders the admin page for the logs.
 	 */
 	public function render_admin_page(): void {
-		$action = isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : 'list'; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		/** @psalm-suppress PossiblyInvalidArgument */
+		$action = sanitize_text_field( $_REQUEST['action'] ?? 'link' ); // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
 		switch ( $action ) {
 			case 'view':
 				$this->render_view_page();
