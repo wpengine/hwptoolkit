@@ -113,6 +113,26 @@ class View_Logs_Page {
 	 * Renders the view page for a single log entry.
 	 */
 	protected function render_view_page(): void {
-		// Render the view page.
+		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( ! $log_id ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) . '</p></div>';
+			return;
+		}
+
+		$repository = new LogsRepository();
+		$log        = $repository->get_log( $log_id );
+
+		if ( ! $log ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Log not found.', 'wpgraphql-logging' ) . '</p></div>';
+			return;
+		}
+
+		$log_template = apply_filters(
+			'wpgraphql_logging_view_template',
+			__DIR__ . '/View/List/Templates/wpgraphql-logger-view.php'
+		);
+
+		require_once $log_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 }
