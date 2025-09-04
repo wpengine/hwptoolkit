@@ -155,31 +155,42 @@ class List_Table extends WP_List_Table {
 			return null;
 		}
 
+		$value = '';
+
 		switch ( $column_name ) {
 			case 'date':
-				return $item->get_datetime();
+				$value = $item->get_datetime();
+				break;
 			case 'channel':
-				return $item->get_channel();
+				$value = $item->get_channel();
+				break;
 			case 'level':
-				return $item->get_level();
+				$value = $item->get_level();
+				break;
 			case 'level_name':
-				return $item->get_level_name();
+				$value = $item->get_level_name();
+				break;
 			case 'message':
-				return $item->get_message();
+				$value = $item->get_message();
+				break;
 			case 'event':
-				return $this->get_event( $item );
+				$value = $this->get_event( $item );
+				break;
 			case 'process_id':
-				return $this->get_process_id( $item );
+				$value = $this->get_process_id( $item );
+				break;
 			case 'memory_usage':
-				return $this->get_memory_usage( $item );
+				$value = $this->get_memory_usage( $item );
+				break;
 			case 'wpgraphql_query':
-				return $this->get_query( $item );
+				$value = $this->get_query( $item );
+				break;
 			case 'request_headers':
-				return $this->get_request_headers( $item );
-			default:
-				// Users can add their own custom columns and render functionality.
-				return apply_filters( 'wpgraphql_logging_logs_table_column_value', '', $item, $column_name );
+				$value = $this->get_request_headers( $item );
+				break;
 		}
+
+		return apply_filters( 'wpgraphql_logging_logs_table_column_value', $value, $item, $column_name );
 	}
 
 	/**
@@ -245,17 +256,7 @@ class List_Table extends WP_List_Table {
 	public function get_query(DatabaseEntity $item): string {
 		$extra = $item->get_extra();
 		$query = ! empty( $extra['wpgraphql_query'] ) ? esc_html( $extra['wpgraphql_query'] ) : '';
-		return '<pre style="overflow-x: auto;
-  background: #f6f7f7;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  max-width: 100%;
-  max-height: 300px;
-  overflow-y: auto;
-  box-sizing: border-box;">' . esc_html( $query ) . '</pre>';
+		return '<pre style="overflow-x: auto; background: #f6f7f7; padding: 15px; border: 1px solid #ddd; border-radius: 4px; white-space: pre-wrap; word-break: break-word; max-width: 100%; max-height: 300px; overflow-y: auto; box-sizing: border-box;">' . esc_html( $query ) . '</pre>';
 	}
 
 	/**
