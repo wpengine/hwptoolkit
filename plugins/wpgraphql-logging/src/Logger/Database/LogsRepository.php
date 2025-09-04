@@ -53,25 +53,32 @@ class LogsRepository {
 	/**
 	 * Get the total number of log entries.
 	 *
+	 * @param array<string> $where_clauses Array of where clauses to filter the count.
+	 *
+	 * @phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+	 *
 	 * @return int The total number of log entries.
 	 */
-	public function get_log_count(): int {
-		$cache_key = 'wpgraphql_logs_count';
-		$count     = wp_cache_get( $cache_key );
-
-		if ( is_int( $count ) ) {
-			return $count;
-		}
-
+	public function get_log_count(array $where_clauses): int {
 		global $wpdb;
 		$table_name = DatabaseEntity::get_table_name();
-		$count      = $wpdb->get_var( $wpdb->prepare( // @phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-			'SELECT COUNT(*) FROM %i',
-			$table_name
-		) );
-		wp_cache_set( $cache_key, $count, '', 300 );
 
-		return (int) $count;
+		if (empty($where_clauses)) {
+			return (int) $wpdb->get_var( $wpdb->prepare( // @phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+				'SELECT COUNT(*) FROM %i',
+				$table_name
+			) );
+		}
+
+		$where = '';
+		foreach ( $where_clauses as $clause ) {
+			if ( '' !== $where ) {
+				$where .= ' AND ';
+			}
+			$where .= (string) $clause;
+		}
+
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name} WHERE {$where}" ); // @phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**

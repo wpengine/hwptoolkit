@@ -73,7 +73,9 @@ class List_Table extends WP_List_Table {
 
 		$per_page     = $this->get_items_per_page( 'logs_per_page', self::DEFAULT_PER_PAGE );
 		$current_page = $this->get_pagenum();
-		$total_items  = $this->repository->get_log_count();
+				/** @psalm-suppress InvalidArgument */
+		$where        = $this->process_where( $_REQUEST );
+		$total_items  = $this->repository->get_log_count( $where );
 
 		$this->set_pagination_args(
 			[
@@ -94,9 +96,9 @@ class List_Table extends WP_List_Table {
 		if ( array_key_exists( 'order', $_REQUEST ) ) {
 			$args['order'] = sanitize_text_field( wp_unslash( (string) $_REQUEST['order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
-		/** @psalm-suppress InvalidArgument */
-		$args['where'] = $this->process_where( $_REQUEST );
-		$this->items   = $this->repository->get_logs( apply_filters( 'wpgraphql_logging_logs_table_query_args', $args ) );
+		$args['where'] = $where;
+
+		$this->items = $this->repository->get_logs( apply_filters( 'wpgraphql_logging_logs_table_query_args', $args ) );
 	}
 
 	/**

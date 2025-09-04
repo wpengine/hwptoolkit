@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	$wpgraphql_logging_current_end_date   = '';
 
 	// Verify nonce before processing form data.
-	if ( ! empty( $request['wpgraphql_logging_nonce'] ) && false === wp_verify_nonce( $request['wpgraphql_logging_nonce'], 'wpgraphql_logging_filter' ) ) {
+	if ( isset( $_REQUEST['wpgraphql_logging_nonce'] ) && (bool) wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['wpgraphql_logging_nonce'] ) ), 'wpgraphql_logging_filter' ) ) {
 		$wpgraphql_logging_current_level      = isset( $_REQUEST['level_filter'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['level_filter'] ) ) : '';
 		$wpgraphql_logging_current_start_date = isset( $_REQUEST['start_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['start_date'] ) ) : '';
 		$wpgraphql_logging_current_end_date   = isset( $_REQUEST['end_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['end_date'] ) ) : '';
@@ -52,5 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</option>
 		<?php endforeach; ?>
 	</select>
-	<?php submit_button( __( 'Filter', 'wpgraphql-logging' ), 'secondary', 'filter_action', false ); ?>
+
+	<?php submit_button( __( 'Filter', 'wpgraphql-logging' ), 'secondary', '', false ); ?>
+
 </div>
