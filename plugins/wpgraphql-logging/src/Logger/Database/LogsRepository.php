@@ -72,7 +72,7 @@ class LogsRepository {
 	 *
 	 * @param int $id The log entry ID.
 	 *
-	 * @return ?DatabaseEntity The log entry or null if not found.
+	 * @return ?\WPGraphQL\Logging\Logger\Database\DatabaseEntity The log entry or null if not found.
 	 */
 	public function get_log( int $id ): ?DatabaseEntity {
 		return DatabaseEntity::find_by_id( $id );

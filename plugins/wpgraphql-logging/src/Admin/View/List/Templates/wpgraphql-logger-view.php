@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Log detail view template.
  *
@@ -12,19 +15,19 @@
 		<tbody>
 			<tr>
 				<th><?php esc_html_e( 'ID', 'wpgraphql-logging' ); ?></th>
-				<td><?php echo esc_html( $log->get_id() ); ?></td>
+				<td><?php echo intval( $log->get_id() ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Datetime', 'wpgraphql-logging' ); ?></th>
-				<td><?php echo esc_html( $log->get_datetime() ); ?></td>
+				<td><?php echo esc_html( $log->get_datetime() ?? '' ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Channel', 'wpgraphql-logging' ); ?></th>
-				<td><?php echo esc_html( $log->get_channel() ); ?></td>
+				<td><?php echo esc_html( $log->get_channel() ?? '' ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Level', 'wpgraphql-logging' ); ?></th>
-				<td><?php echo esc_html( $log->get_level_name() ); ?></td>
+				<td><?php echo esc_html( $log->get_level_name() ?? '' ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Message', 'wpgraphql-logging' ); ?></th>
