@@ -134,8 +134,7 @@ class List_Table extends WP_List_Table {
 				'level_name'      => __( 'Level Name', 'wpgraphql-logging' ),
 				'event'           => __( 'Event', 'wpgraphql-logging' ),
 				'process_id'      => __( 'Process ID', 'wpgraphql-logging' ),
-				'headers'         => __( 'Headers', 'wpgraphql-logging' ),
-				'time'            => __( 'Time', 'wpgraphql-logging' ),
+				'request_headers' => __( 'Headers', 'wpgraphql-logging' ),
 				'memory_usage'    => __( 'Memory Usage', 'wpgraphql-logging' ),
 			]
 		);
@@ -175,6 +174,8 @@ class List_Table extends WP_List_Table {
 				return $this->get_memory_usage( $item );
 			case 'wpgraphql_query':
 				return $this->get_query( $item );
+			case 'request_headers':
+				return $this->get_request_headers( $item );
 			default:
 				// Users can add their own custom columns and render functionality.
 				return apply_filters( 'wpgraphql_logging_logs_table_column_value', '', $item, $column_name );
@@ -243,7 +244,18 @@ class List_Table extends WP_List_Table {
 	 */
 	public function get_query(DatabaseEntity $item): string {
 		$extra = $item->get_extra();
-		return ! empty( $extra['wpgraphql_query'] ) ? esc_html( $extra['wpgraphql_query'] ) : '';
+		$query = ! empty( $extra['wpgraphql_query'] ) ? esc_html( $extra['wpgraphql_query'] ) : '';
+		return '<pre style="overflow-x: auto;
+  background: #f6f7f7;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  box-sizing: border-box;">' . esc_html( $query ) . '</pre>';
 	}
 
 	/**
@@ -277,5 +289,24 @@ class List_Table extends WP_List_Table {
 	public function get_memory_usage(DatabaseEntity $item): string {
 		$extra = $item->get_extra();
 		return ! empty( $extra['memory_peak_usage'] ) ? esc_html( $extra['memory_peak_usage'] ) : '';
+	}
+
+	/**
+	 * Gets the request headers from extra.
+	 *
+	 * @return string The event
+	 */
+	public function get_request_headers(DatabaseEntity $item): string {
+		$extra           = $item->get_extra();
+		$request_headers = $extra['request_headers'] ?? [];
+		if ( empty( $request_headers ) || ! is_array( $request_headers ) ) {
+			return '';
+		}
+
+		$formatted_request_headers = wp_json_encode( $request_headers, JSON_PRETTY_PRINT );
+		if ( false === $formatted_request_headers ) {
+			return '';
+		}
+		return '<pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">' . esc_html( $formatted_request_headers ) . '</pre>';
 	}
 }

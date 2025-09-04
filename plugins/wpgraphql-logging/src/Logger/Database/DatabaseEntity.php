@@ -249,13 +249,12 @@ class DatabaseEntity {
 	public static function find_logs(int $limit, int $offset, string $orderby = 'id', string $order = 'DESC'): array {
 		global $wpdb;
 		$table_name = self::get_table_name();
+		$order      = esc_sql( strtoupper( $order ) );
 		$orderby    = esc_sql( $orderby );
-		$order      = esc_sql( $order );
 
+		/** @psalm-suppress PossiblyInvalidCast */
 		$query = $wpdb->prepare(
-			"SELECT * FROM {$table_name} ORDER BY %s %s LIMIT %d, %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$orderby,
-			$order,
+			"SELECT * FROM {$table_name} ORDER BY {$orderby} {$order} LIMIT %d, %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$offset,
 			$limit
 		);

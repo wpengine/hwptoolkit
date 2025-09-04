@@ -24,9 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<form method="post">
 		<?php
 		$list_table->prepare_items();
-		// $list_table->display_bulk_actions_top();
 		$list_table->display();
-		// $list_table->display_bulk_actions_bottom();
 		?>
 	</form>
 </div>
