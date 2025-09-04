@@ -89,6 +89,8 @@ class List_Table extends WP_List_Table {
 
 	/**
 	 * Define bulk actions.
+	 *
+	 * @return array<string, string> The bulk actions.
 	 */
 	public function get_bulk_actions(): array {
 		return [
@@ -103,14 +105,14 @@ class List_Table extends WP_List_Table {
 	public function process_bulk_action(): void {
 		$repository = $this->repository;
 
-		if ('delete' === $this->current_action() && !empty($_POST['log'])) {
-			$ids = array_map('absint', (array) $_POST['log']);
-			foreach ($ids as $id) {
-				$repository->delete($id);
+		if ( 'delete' === $this->current_action() && ! empty( $_POST['log'] ) ) { // @phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$ids = array_map( 'absint', (array) $_POST['log'] ); // @phpcs:ignore WordPress.Security.NonceVerification.Missing
+			foreach ( $ids as $id ) {
+				$repository->delete( $id );
 			}
 		}
 
-		if ('delete_all' === $this->current_action()) {
+		if ( 'delete_all' === $this->current_action() ) {
 			$repository->delete_all();
 		}
 	}

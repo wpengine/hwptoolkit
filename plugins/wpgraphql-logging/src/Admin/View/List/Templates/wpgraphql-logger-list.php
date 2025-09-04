@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-	
+
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php esc_html_e( 'WPGraphQL Logs', 'wpgraphql-logging' ); ?></h1>
 	<hr class="wp-header-end">
@@ -24,9 +24,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<form method="post">
 		<?php
 		$list_table->prepare_items();
-		$list_table->display_bulk_actions_top();
+		// $list_table->display_bulk_actions_top();
 		$list_table->display();
-		$list_table->display_bulk_actions_bottom();
+		// $list_table->display_bulk_actions_bottom();
 		?>
 	</form>
 </div>

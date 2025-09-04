@@ -115,7 +115,7 @@ class View_Logs_Page {
 	protected function render_view_page(): void {
 		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		if ( ! $log_id ) {
+		if ( 0 === (int) $log_id ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) . '</p></div>';
 			return;
 		}
@@ -123,7 +123,7 @@ class View_Logs_Page {
 		$repository = new LogsRepository();
 		$log        = $repository->get_log( $log_id );
 
-		if ( ! $log ) {
+		if ( is_null( $log ) ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Log not found.', 'wpgraphql-logging' ) . '</p></div>';
 			return;
 		}

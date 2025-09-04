@@ -19,27 +19,27 @@ declare(strict_types=1);
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Datetime', 'wpgraphql-logging' ); ?></th>
-				<td><?php echo esc_html( $log->get_datetime() ?? '' ); ?></td>
+				<td><?php echo esc_html( (string) $log->get_datetime() ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Channel', 'wpgraphql-logging' ); ?></th>
-				<td><?php echo esc_html( $log->get_channel() ?? '' ); ?></td>
+				<td><?php echo esc_html( (string) $log->get_channel() ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Level', 'wpgraphql-logging' ); ?></th>
-				<td><?php echo esc_html( $log->get_level_name() ?? '' ); ?></td>
+				<td><?php echo esc_html( (string) $log->get_level_name() ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Message', 'wpgraphql-logging' ); ?></th>
-				<td><code><?php echo esc_html( $log->get_message() ); ?></code></td>
+				<td><code><?php echo esc_html( (string) $log->get_message() ); ?></code></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Context', 'wpgraphql-logging' ); ?></th>
-				<td><pre><?php echo esc_html( wp_json_encode( $log->get_context(), JSON_PRETTY_PRINT ) ); ?></pre></td>
+				<td><pre><?php echo esc_html( (string) wp_json_encode( $log->get_context(), JSON_PRETTY_PRINT ) ); ?></pre></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Extra', 'wpgraphql-logging' ); ?></th>
-				<td><pre><?php echo esc_html( wp_json_encode( $log->get_extra(), JSON_PRETTY_PRINT ) ); ?></pre></td>
+				<td><pre><?php echo esc_html( (string) wp_json_encode( $log->get_extra(), JSON_PRETTY_PRINT ) ); ?></pre></td>
 			</tr>
 		</tbody>
 	</table>

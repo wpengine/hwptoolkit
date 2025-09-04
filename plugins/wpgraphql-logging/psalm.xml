@@ -36,5 +36,11 @@
 				<file name="src/Logger/Database/DatabaseEntity.php"/>
 			</errorLevel>
 		</MissingFile>
+
+		<RedundantCast>
+			<errorLevel type="suppress">
+				<file name="src/Admin/View/List/Templates/wpgraphql-logger-view.php"/>
+			</errorLevel>
+		</RedundantCast>
 	</issueHandlers>
 </psalm>
