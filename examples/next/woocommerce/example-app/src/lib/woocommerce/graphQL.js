@@ -175,6 +175,7 @@ export const CartItemContent = gql`
 
 export const CartContent = gql`
   fragment CartContent on Cart {
+    isEmpty
     contents(first: 100) {
       itemCount
       nodes {
@@ -305,8 +306,7 @@ export const CustomerContent = gql`
   }
 `;
 
-
-
+// QUERIES
 export const GetProduct = gql`
   query GetProduct($id: ID!, $idType: ProductIdTypeEnum) {
     product(id: $id, idType: $idType) {
@@ -326,18 +326,15 @@ export const GetProductVariation = gql`
 `;
 
 export const GetCart = gql`
-  query GetCart($customerId: Int) {
+  query GetCart {
     cart {
       ...CartContent
     }
-    customer(customerId: $customerId) {
-      ...CustomerContent
-    }
   }
   ${CartContent}
-  ${CustomerContent}
 `;
 
+// MUTATIONS
 export const AddToCart = gql`
   mutation AddToCart($productId: Int!, $variationId: Int, $quantity: Int, $extraData: String) {
     addToCart(
@@ -356,7 +353,7 @@ export const AddToCart = gql`
 `;
 
 export const UpdateCartItemQuantities = gql`
-  mutation UpdateCartItemQuantities($items: [CartItemQuantityInput]) {
+  mutation UpdateCartItemQuantities($items: [CartItemQuantityInput]!) {
     updateItemQuantities(input: {items: $items}) {
       cart {
         ...CartContent
@@ -370,9 +367,24 @@ export const UpdateCartItemQuantities = gql`
   ${CartItemContent}
 `;
 
+export const UpdateCartItemQuantity = gql`
+  mutation UpdateCartItemQuantity($key: ID!, $quantity: Int!) {
+    updateItemQuantities(input: {items: [{key: $key, quantity: $quantity}]}) {
+      cart {
+        ...CartContent
+      }
+      items {
+        ...CartItemContent
+      }
+    }
+  }
+  ${CartContent}
+  ${CartItemContent}
+`;
+
 export const RemoveItemsFromCart = gql`
-  mutation RemoveItemsFromCart($keys: [ID], $all: Boolean) {
-    removeItemsFromCart(input: {keys: $keys, all: $all}) {
+  mutation RemoveItemsFromCart($keys: [ID]!) {
+    removeItemsFromCart(input: {keys: $keys}) {
       cart {
         ...CartContent
       }
@@ -384,6 +396,55 @@ export const RemoveItemsFromCart = gql`
   ${CartContent}
   ${CartItemContent}
 `;
+
+export const RemoveItemFromCart = gql`
+  mutation RemoveItemFromCart($key: ID!) {
+    removeItemsFromCart(input: {keys: [$key]}) {
+      cart {
+        ...CartContent
+      }
+      cartItems {
+        ...CartItemContent
+      }
+    }
+  }
+  ${CartContent}
+  ${CartItemContent}
+`;
+
+export const ClearCart = gql`
+  mutation ClearCart {
+    removeItemsFromCart(input: {all: true}) {
+      cart {
+        ...CartContent
+      }
+    }
+  }
+  ${CartContent}
+`;
+
+export const ApplyCoupon = gql`
+  mutation ApplyCoupon($code: String!) {
+    applyCoupon(input: {code: $code}) {
+      cart {
+        ...CartContent
+      }
+    }
+  }
+  ${CartContent}
+`;
+
+export const RemoveCoupons = gql`
+  mutation RemoveCoupons($codes: [String]!) {
+    removeCoupons(input: {codes: $codes}) {
+      cart {
+        ...CartContent
+      }
+    }
+  }
+  ${CartContent}
+`;
+
 export const Login = gql`
   mutation Login($username: String!, $password: String!) {
     login(input: { username: $username, password: $password }) {

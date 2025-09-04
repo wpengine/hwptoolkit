@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useAuth } from "@/lib/auth/AuthProvider";
-//import { useSession } from "@/lib/woocommerce/sessionProvider";
+import { useAuth } from "@/lib/AppProvider";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const LoginForm = () => {

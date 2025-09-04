@@ -1,11 +1,9 @@
 import { ApolloProvider } from "@apollo/client";
 import { useRouter } from "next/router";
-import { AuthProvider } from "@/lib/auth/AuthProvider";
+import { AppProvider } from "@/lib/AppProvider";
 import getApolloClient from "@/lib/getApolloClient";
-import { CartProvider } from "@/lib/woocommerce/cartContext"; 
 import Layout from "@/components/Layout";
 import "@/styles/globals.scss";
-import {SessionProvider} from "@/lib/woocommerce/sessionProvider";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -13,13 +11,11 @@ export default function App({ Component, pageProps }) {
 
   return (
     <ApolloProvider client={client}>
-      <AuthProvider>
-        <SessionProvider>
-          <Layout pageProps={pageProps}>
-            <Component {...pageProps} key={router.asPath} />
-          </Layout>
-        </SessionProvider>
-      </AuthProvider>
+      <AppProvider>
+        <Layout pageProps={pageProps}>
+          <Component {...pageProps} key={router.asPath} />
+        </Layout>
+      </AppProvider>
     </ApolloProvider>
   );
-}
+} 

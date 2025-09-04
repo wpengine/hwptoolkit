@@ -2,13 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useCartMutations } from "@/lib/woocommerce/cart";
-import { useCartQuery } from "@/lib/woocommerce/cartQuery";
 import { Product } from "@/interfaces/product.interface";
 import React from "react";
 
 export default function ProductCard({ product }: { product: Product }) {
 	const { addToCart, loading } = useCartMutations();
-	const { refetch } = useCartQuery();
 	const [isAdding, setIsAdding] = useState(false);
 	const [addedToCart, setAddedToCart] = useState(false);
 
