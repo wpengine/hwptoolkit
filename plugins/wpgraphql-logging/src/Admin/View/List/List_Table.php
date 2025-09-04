@@ -55,6 +55,7 @@ class List_Table extends WP_List_Table {
 	 * Prepare items for display.
 	 */
 	public function prepare_items(): void {
+		$this->process_bulk_action();
 		$this->_column_headers =
 		apply_filters(
 			'wpgraphql_logging_logs_table_column_headers',
@@ -84,6 +85,34 @@ class List_Table extends WP_List_Table {
 				'offset' => ( $current_page - 1 ) * $per_page,
 			]
 		);
+	}
+
+	/**
+	 * Define bulk actions.
+	 */
+	public function get_bulk_actions(): array {
+		return [
+			'delete'     => __( 'Delete Selected', 'wpgraphql-logging' ),
+			'delete_all' => __( 'Delete All', 'wpgraphql-logging' ),
+		];
+	}
+
+	/**
+	 * Handle bulk actions.
+	 */
+	public function process_bulk_action(): void {
+		$repository = $this->repository;
+
+		if ('delete' === $this->current_action() && !empty($_POST['log'])) {
+			$ids = array_map('absint', (array) $_POST['log']);
+			foreach ($ids as $id) {
+				$repository->delete($id);
+			}
+		}
+
+		if ('delete_all' === $this->current_action()) {
+			$repository->delete_all();
+		}
 	}
 
 	/**

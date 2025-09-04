@@ -77,4 +77,34 @@ class LogsRepository {
 	public function get_log( int $id ): ?DatabaseEntity {
 		return DatabaseEntity::find_by_id( $id );
 	}
+
+	/**
+     * Delete a single log entry by ID.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool {
+        global $wpdb;
+        $table_name = DatabaseEntity::get_table_name();
+
+        if ($id <= 0) {
+            return false;
+        }
+
+        $result = $wpdb->delete($table_name, ['id' => $id], ['%d']); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        return false !== $result;
+    }
+
+    /**
+     * Delete all log entries.
+     *
+     * @return bool True if all logs were deleted successfully, false otherwise.
+     */
+    public function delete_all(): bool {
+        global $wpdb;
+        $table_name = DatabaseEntity::get_table_name();
+        $result = $wpdb->query("TRUNCATE TABLE {$table_name}"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        return false !== $result;
+    }
 }
