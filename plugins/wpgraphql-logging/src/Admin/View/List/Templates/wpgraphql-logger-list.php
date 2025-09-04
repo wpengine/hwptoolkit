@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Webhooks list view template using WP_List_Table.
+ * Logs list view template using WP_List_Table.
  *
  * @package WPGraphQL\Logger\Admin\View\List\Templates
  *

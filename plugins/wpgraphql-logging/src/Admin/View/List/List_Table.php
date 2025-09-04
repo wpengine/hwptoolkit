@@ -94,9 +94,9 @@ class List_Table extends WP_List_Table {
 		if ( array_key_exists( 'order', $_REQUEST ) ) {
 			$args['order'] = sanitize_text_field( wp_unslash( (string) $_REQUEST['order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
-
-
-		$this->items = $this->repository->get_logs( apply_filters( 'wpgraphql_logging_logs_table_query_args', $args ) );
+		/** @psalm-suppress InvalidArgument */
+		$args['where'] = $this->process_where( $_REQUEST );
+		$this->items   = $this->repository->get_logs( apply_filters( 'wpgraphql_logging_logs_table_query_args', $args ) );
 	}
 
 	/**
@@ -324,6 +324,41 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Process the where clauses for filtering.
+	 *
+	 * @param array<string, mixed> $request The request data.
+	 *
+	 * @return array<string> The where clauses.
+	 */
+	protected function process_where(array $request): array {
+		$where_clauses = [];
+
+		if ( ! empty( $request['wpgraphql_logging_nonce'] ) && false === wp_verify_nonce( $request['wpgraphql_logging_nonce'], 'wpgraphql_logging_filter' ) ) {
+			return [];
+		}
+
+		if ( ! empty( $request['level_filter'] ) ) {
+			$level           = sanitize_text_field( wp_unslash( (string) $request['level_filter'] ) );
+			$where_clauses[] = "level_name = '" . $level . "'";
+		}
+
+		if ( ! empty( $request['start_date'] ) ) {
+			$start_date      = sanitize_text_field( $request['start_date'] );
+			$date            = new \DateTime( $start_date );
+			$where_clauses[] = "datetime >= '" . $date->format( 'Y-m-d H:i:s' ) . "'";
+		}
+
+		if ( ! empty( $request['end_date'] ) ) {
+			$end_date        = sanitize_text_field( $request['end_date'] );
+			$date            = new \DateTime( $end_date );
+			$where_clauses[] = "datetime <= '" . $date->format( 'Y-m-d H:i:s' ) . "'";
+		}
+
+		// Allow developers to modify the where clauses.
+		return apply_filters( 'wpgraphql_logging_logs_table_where_clauses', $where_clauses, $request );
+	}
+
+	/**
 	 * Get a list of sortable columns.
 	 *
 	 * @return array<string, array{0: string, 1: bool}> The sortable columns.
@@ -335,5 +370,20 @@ class List_Table extends WP_List_Table {
 			'level'      => [ 'level', false ],
 			'level_name' => [ 'level_name', false ],
 		];
+	}
+
+	/**
+	 * Render extra table navigation controls.
+	 *
+	 * @param string $which The location of the nav ('top' or 'bottom').
+	 */
+	protected function extra_tablenav( $which ): void {
+
+		// Only display above the table.
+		if ( 'top' !== $which ) {
+			return;
+		}
+		$template = apply_filters( 'wpgraphql_logging_filters_template', __DIR__ . '/Templates/wpgraphql-logger-filters.php' );
+		require_once $template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 }

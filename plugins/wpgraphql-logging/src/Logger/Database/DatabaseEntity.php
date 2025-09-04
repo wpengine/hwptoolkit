@@ -239,22 +239,34 @@ class DatabaseEntity {
 	/**
 	 * Finds multiple log entries and returns them as an array.
 	 *
-	 * @param int    $limit   The maximum number of log entries to return.
-	 * @param int    $offset  The offset for pagination.
-	 * @param string $orderby The column to order by.
-	 * @param string $order   The order direction (ASC or DESC).
+	 * @param int                  $limit   The maximum number of log entries to return.
+	 * @param int                  $offset  The offset for pagination.
+	 * @param array<string, mixed> $where_clauses Optional. Additional WHERE conditions.
+	 * @param string               $orderby The column to order by.
+	 * @param string               $order   The order direction (ASC or DESC).
 	 *
 	 * @return array<\WPGraphQL\Logging\Logger\Database\DatabaseEntity> An array of DatabaseEntity instances, or an empty array if none found.
 	 */
-	public static function find_logs(int $limit, int $offset, string $orderby = 'id', string $order = 'DESC'): array {
+	public static function find_logs(int $limit, int $offset, array $where_clauses = [], string $orderby = 'id', string $order = 'DESC'): array {
 		global $wpdb;
 		$table_name = self::get_table_name();
-		$order      = esc_sql( strtoupper( $order ) );
-		$orderby    = esc_sql( $orderby );
+		$order      = sanitize_text_field( strtoupper( $order ) );
+		$orderby    = sanitize_text_field( $orderby );
+
+		$where = '';
+		foreach ( $where_clauses as $clause ) {
+			if ( '' !== $where ) {
+				$where .= ' AND ';
+			}
+			$where .= (string) $clause;
+		}
+		if ( '' !== $where ) {
+			$where = 'WHERE ' . $where;
+		}
 
 		/** @psalm-suppress PossiblyInvalidCast */
 		$query = $wpdb->prepare(
-			"SELECT * FROM {$table_name} ORDER BY {$orderby} {$order} LIMIT %d, %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT * FROM {$table_name} {$where} ORDER BY {$orderby} {$order} LIMIT %d, %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$offset,
 			$limit
 		);

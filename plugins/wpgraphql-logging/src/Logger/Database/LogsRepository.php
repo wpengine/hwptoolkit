@@ -26,21 +26,28 @@ class LogsRepository {
 			'offset'  => 0,
 			'orderby' => 'id',
 			'order'   => 'DESC',
+			'where'   => [],
 		];
 		$args     = wp_parse_args( $args, $defaults );
 
-		$orderby = esc_sql( $args['orderby'] );
+		$orderby = $args['orderby'];
 		if ( ! is_string( $orderby ) || '' === $orderby ) {
 			$orderby = $defaults['orderby'];
 		}
-		$order = esc_sql( $args['order'] );
+		$order = $args['order'];
 		if ( ! is_string( $order ) || '' === $order ) {
 			$order = $defaults['order'];
 		}
+		$where = $args['where'];
+		if ( ! is_array( $where ) ) {
+			$where = $defaults['where'];
+		}
+
 		$limit  = absint( $args['number'] );
 		$offset = absint( $args['offset'] );
 
-		return DatabaseEntity::find_logs( $limit, $offset, $orderby, $order );
+
+		return DatabaseEntity::find_logs( $limit, $offset, $where, $orderby, $order );
 	}
 
 	/**
