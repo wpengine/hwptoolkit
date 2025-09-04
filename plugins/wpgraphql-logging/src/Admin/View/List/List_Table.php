@@ -53,6 +53,10 @@ class List_Table extends WP_List_Table {
 
 	/**
 	 * Prepare items for display.
+	 *
+	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
+	 *
+	 * @psalm-suppress PossiblyInvalidCast
 	 */
 	public function prepare_items(): void {
 		$this->process_bulk_action();
@@ -67,7 +71,6 @@ class List_Table extends WP_List_Table {
 			]
 		);
 
-		// @TODO
 		$per_page     = $this->get_items_per_page( 'logs_per_page', self::DEFAULT_PER_PAGE );
 		$current_page = $this->get_pagenum();
 		$total_items  = $this->repository->get_log_count();
@@ -79,12 +82,21 @@ class List_Table extends WP_List_Table {
 			]
 		);
 
-		$this->items = $this->repository->get_logs(
-			[
-				'number' => $per_page,
-				'offset' => ( $current_page - 1 ) * $per_page,
-			]
-		);
+		$args = [
+			'number' => $per_page,
+			'offset' => ( $current_page - 1 ) * $per_page,
+		];
+
+		if ( array_key_exists( 'orderby', $_REQUEST ) ) {
+			$args['orderby'] = sanitize_text_field( wp_unslash( (string) $_REQUEST['orderby'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
+
+		if ( array_key_exists( 'order', $_REQUEST ) ) {
+			$args['order'] = sanitize_text_field( wp_unslash( (string) $_REQUEST['order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
+
+
+		$this->items = $this->repository->get_logs( apply_filters( 'wpgraphql_logging_logs_table_query_args', $args ) );
 	}
 
 	/**
@@ -308,6 +320,20 @@ class List_Table extends WP_List_Table {
 		if ( false === $formatted_request_headers ) {
 			return '';
 		}
-		return '<pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">' . esc_html( $formatted_request_headers ) . '</pre>';
+		return '<pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px; max-height: 300px;">' . esc_html( $formatted_request_headers ) . '</pre>';
+	}
+
+	/**
+	 * Get a list of sortable columns.
+	 *
+	 * @return array<string, array{0: string, 1: bool}> The sortable columns.
+	 */
+	protected function get_sortable_columns(): array {
+		return [
+			'id'         => [ 'id', false ],
+			'date'       => [ 'datetime', true ],
+			'level'      => [ 'level', false ],
+			'level_name' => [ 'level_name', false ],
+		];
 	}
 }
