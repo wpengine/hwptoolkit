@@ -39,13 +39,6 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 	public const DATA_SAMPLING = 'data_sampling';
 
 	/**
-	 * The field ID for the WPGraphQL query filtering text input.
-	 *
-	 * @var string
-	 */
-	public const WPGRAPHQL_FILTERING = 'wpgraphql_filtering';
-
-	/**
 	 * The field ID for the user-based logging select.
 	 *
 	 * @var string
@@ -106,15 +99,6 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 			__( 'Log only for admin users', 'wpgraphql-logging' ),
 			'',
 			__( 'Log only for admin users.', 'wpgraphql-logging' )
-		);
-
-		$fields[ self::WPGRAPHQL_FILTERING ] = new Text_Input_Field(
-			self::WPGRAPHQL_FILTERING,
-			$this->get_name(),
-			__( 'WPGraphQL Query Filtering', 'wpgraphql-logging' ),
-			'',
-			__( 'Comma-separated list of query names or patterns to log. Leave empty to log all queries.', 'wpgraphql-logging' ),
-			__( 'e.g., GetPost, GetPosts, introspection', 'wpgraphql-logging' )
 		);
 
 		$fields[ self::DATA_SAMPLING ] = new Select_Field(
