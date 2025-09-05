@@ -69,7 +69,6 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 											<li><?php esc_html_e( 'Log only for admin users', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Filter specific queries', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Set data sampling rates', 'wpgraphql-logging' ); ?></li>
-											<li><?php esc_html_e( 'Performance threshold', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Log for specific events', 'wpgraphql-logging' ); ?></li>
 										</ul>
 										<?php
@@ -96,6 +95,9 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 										break;
 								}
 								?>
+																		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . \WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG ) ); ?>" class="button">
+			<?php esc_html_e( 'View Logs', 'wpgraphql-logging' ); ?>
+		</a>
 							</div>
 						</div>
 

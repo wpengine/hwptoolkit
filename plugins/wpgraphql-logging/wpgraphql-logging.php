@@ -144,7 +144,7 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' 
 	 * Display an admin notice if the PHP version is not met.
 	 */
 	function wpgraphql_logging_plugin_admin_notice_min_php_version(): void {
-		if ( version_compare( PHP_VERSION, '8.1', '>=' ) ) {
+		if ( version_compare( PHP_VERSION, '8.1.2', '>=' ) ) {
 			return;
 		}
 
@@ -155,7 +155,7 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' 
 				<div class="error notice">
 					<p>
 						<?php
-						echo 'PHP ' . PHP_VERSION . ' is not supported. Please upgrade to PHP 8.1 or higher in order to use WPGraphQL Logging Plugin.';
+						echo 'PHP ' . PHP_VERSION . ' is not supported. Please upgrade to PHP 8.1.2 or higher in order to use WPGraphQL Logging Plugin.';
 						?>
 					</p>
 				</div>

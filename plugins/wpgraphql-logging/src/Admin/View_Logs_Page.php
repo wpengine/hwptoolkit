@@ -1,0 +1,281 @@
+<?php
+
+declare(strict_types=1);
+
+namespace WPGraphQL\Logging\Admin;
+
+use WPGraphQL\Logging\Admin\View\Download\Download_Log_Service;
+use WPGraphQL\Logging\Admin\View\List\List_Table;
+use WPGraphQL\Logging\Logger\Database\LogsRepository;
+
+/**
+ * The view logs page class for WPGraphQL Logging.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
+ */
+class View_Logs_Page {
+	/**
+	 * The admin page slug.
+	 *
+	 * @var string
+	 */
+	public const ADMIN_PAGE_SLUG = 'wpgraphql-logging-view';
+
+	/**
+	 * The hook suffix for the admin page.
+	 *
+	 * @var string
+	 */
+	protected string $page_hook = '';
+
+	/**
+	 * The instance of the view logs page.
+	 *
+	 * @var self|null
+	 */
+	protected static ?self $instance = null;
+
+	/**
+	 * Initializes the view logs page.
+	 */
+	public static function init(): ?View_Logs_Page {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return null;
+		}
+
+		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
+			self::$instance = new self();
+			self::$instance->setup();
+		}
+
+		do_action( 'wpgraphql_logging_view_logs_init', self::$instance );
+
+		return self::$instance;
+	}
+
+	/**
+	 * Sets up the view logs page.
+	 */
+	public function setup(): void {
+		add_action( 'admin_menu', [ $this, 'register_settings_page' ], 10, 0 );
+	}
+
+	/**
+	 * Registers the settings page for the view logs.
+	 */
+	public function register_settings_page(): void {
+
+		// Add submenu under GraphQL menu using the correct parent slug.
+		$this->page_hook = add_menu_page(
+			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
+			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
+			'manage_options',
+			self::ADMIN_PAGE_SLUG,
+			[ $this, 'render_admin_page' ],
+			'dashicons-list-view',
+			25
+		);
+		add_submenu_page(
+			'graphiql-ide',
+			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
+			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
+			'manage_options',
+			self::ADMIN_PAGE_SLUG,
+			[ $this, 'render_admin_page' ]
+		);
+
+		// Updates the list table when filters are applied.
+		add_action( 'load-' . $this->page_hook, [ $this, 'process_page_actions_before_rendering' ], 10, 0 );
+
+		// Enqueue scripts for the admin page.
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+	}
+
+	/**
+	 * Enqueues scripts and styles for the admin page.
+	 *
+	 * @param string $hook_suffix The current admin page.
+	 */
+	public function enqueue_admin_scripts( string $hook_suffix ): void {
+		if ( $hook_suffix !== $this->page_hook ) {
+			return;
+		}
+
+		// Enqueue WordPress's built-in datepicker and slider.
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+		wp_enqueue_script( 'jquery-ui-slider' );
+
+		// Enqueue the timepicker addon script and styles from a CDN.
+		wp_enqueue_script(
+			'jquery-ui-timepicker-addon',
+			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js',
+			[ 'jquery-ui-datepicker', 'jquery-ui-slider' ],
+			'1.6.3',
+			true
+		);
+		wp_enqueue_style(
+			'jquery-ui-timepicker-addon-style',
+			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css',
+			[],
+			'1.6.3'
+		);
+
+		// Enqueue the base jQuery UI styles.
+		wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', [], '1.12.1' );
+
+		// Add inline script to initialize the datetimepicker.
+		wp_add_inline_script(
+			'jquery-ui-timepicker-addon',
+			'jQuery(document).ready(function($){ $(".wpgraphql-logging-datepicker").datetimepicker({ dateFormat: "yy-mm-dd", timeFormat: "HH:mm:ss" }); });'
+		);
+	}
+
+	/**
+	 * Renders the admin page for the logs.
+	 */
+	public function render_admin_page(): void {
+		/** @psalm-suppress PossiblyInvalidArgument */
+		$action = sanitize_text_field( $_REQUEST['action'] ?? 'link' ); // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		switch ( $action ) {
+			case 'view':
+				$this->render_view_page();
+				break;
+			case 'download':
+				// Handled in process_page_actions_before_rendering.
+				break;
+			default:
+				$this->render_list_page();
+				break;
+		}
+	}
+
+	/**
+	 * Processes actions for the page, such as filtering and downloading logs.
+	 * This runs before any HTML is output.
+	 */
+	public function process_page_actions_before_rendering(): void {
+		// Check for a download request.
+		if ( isset( $_GET['action'] ) && 'download' === $_GET['action'] ) { // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$this->process_log_download();
+		}
+
+		$this->process_filters_redirect();
+	}
+
+	/**
+	 * Process filter form submission and redirect to a GET request.
+	 * This runs before any HTML is output.
+	 */
+	public function process_filters_redirect(): void {
+		// Handle POST from filter form and redirect to GET.
+		$nonce = $this->get_post_value( 'wpgraphql_logging_nonce' );
+		if ( ! is_string( $nonce ) ) {
+			return;
+		}
+
+		// Verify nonce for security.
+		if ( false === wp_verify_nonce( $nonce, 'wpgraphql_logging_filter' ) ) {
+			return;
+		}
+
+		$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
+
+		$possible_filters = [
+			'start_date',
+			'end_date',
+			'level_filter',
+			'orderby',
+			'order',
+		];
+		$filters          = [];
+		foreach ( $possible_filters as $key ) {
+			$value = $this->get_post_value( $key );
+			if ( null !== $value ) {
+				$filters[ $key ] = $value;
+			}
+		}
+
+		$redirect_url = add_query_arg( array_filter( $filters, static function ( $value ) {
+			return '' !== $value;
+		} ), $redirect_url );
+		$redirect_url = apply_filters( 'wpgraphql_logging_filter_redirect_url', $redirect_url, $filters );
+
+		wp_safe_redirect( $redirect_url );
+		exit;
+	}
+
+	/**
+	 * Retrieves and sanitizes a value from the $_POST superglobal.
+	 *
+	 * @param string $key The key to retrieve from $_POST.
+	 *
+	 * @return string|null The sanitized value or null if not set or invalid.
+	 */
+	protected function get_post_value(string $key): ?string {
+		$value = $_POST[ $key ] ?? null; // @phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( ! is_string( $value ) || '' === $value ) {
+			return null;
+		}
+		$value = wp_unslash( $value );
+		if ( ! is_string( $value ) ) {
+			return null;
+		}
+		return sanitize_text_field( $value );
+	}
+
+	/**
+	 * Renders the list page for log entries.
+	 */
+	protected function render_list_page(): void {
+		// Variable required for list template.
+		$list_table    = new List_Table( new LogsRepository() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
+		$list_template = apply_filters(
+			'wpgraphql_logging_list_template',
+			__DIR__ . '/View/Templates/wpgraphql-logger-list.php'
+		);
+		require_once $list_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	}
+
+		/**
+		 * Renders the list page for log entries.
+		 */
+	protected function process_log_download(): void {
+		if ( ! current_user_can( 'manage_options' ) || ! is_admin() ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-logging' ) );
+		}
+
+		$log_id     = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$downloader = new Download_Log_Service();
+		$downloader->generate_csv( $log_id );
+	}
+
+	/**
+	 * Renders the view page for a single log entry.
+	 */
+	protected function render_view_page(): void {
+		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( 0 === (int) $log_id ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) . '</p></div>';
+			return;
+		}
+
+		$repository = new LogsRepository();
+		$log        = $repository->get_log( $log_id );
+
+		if ( is_null( $log ) ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Log not found.', 'wpgraphql-logging' ) . '</p></div>';
+			return;
+		}
+
+		$log_template = apply_filters(
+			'wpgraphql_logging_view_template',
+			__DIR__ . '/View/Templates/wpgraphql-logger-view.php'
+		);
+
+		require_once $log_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	}
+}

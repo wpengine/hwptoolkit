@@ -82,7 +82,7 @@ class DatabaseEntityTest extends WPTestCase
 		$this->assertIsInt( $insert_id );
         $this->assertGreaterThan(0, $insert_id, 'The save method should return a positive insert ID.');
 
-		$entity = DatabaseEntity::find($insert_id);
+		$entity = DatabaseEntity::find_by_id($insert_id);
 		$this->assertInstanceOf(DatabaseEntity::class, $entity, 'The find method should return an instance of DatabaseEntity.');
 		$this->assertEquals($log_data['channel'], $entity->get_channel(), 'The channel should match the saved data.');
 		$this->assertEquals($log_data['level'], $entity->get_level(), 'The level should match the saved data.');
@@ -98,8 +98,8 @@ class DatabaseEntityTest extends WPTestCase
 
 	public function test_find_returns_null_for_nonexistent_id(): void
 	{
-		$entity = DatabaseEntity::find(999999);
-		$this->assertNull($entity, 'find() should return null for a non-existent ID.');
+		$entity = DatabaseEntity::find_by_id(999999);
+		$this->assertNull($entity, 'find_by_id() should return null for a non-existent ID.');
 	}
 
    /**

@@ -107,7 +107,7 @@ class DatabaseEntity {
 	 *
 	 * @return self|null Returns an instance of DatabaseEntity if found, or null if not found.
 	 */
-	public static function find(int $id): ?self {
+	public static function find_by_id(int $id): ?self {
 		global $wpdb;
 		$table_name = self::get_table_name();
 
@@ -119,6 +119,26 @@ class DatabaseEntity {
 		}
 
 		return self::create_from_db_row( $row );
+	}
+
+	/**
+	 * Helper to populate an instance from a database row.
+	 *
+	 * @param array<string, mixed> $row The database row to populate from.
+	 *
+	 * @return self The populated instance.
+	 */
+	public static function create_from_db_row(array $row): self {
+		$log             = new self();
+		$log->id         = (int) $row['id'];
+		$log->channel    = $row['channel'];
+		$log->level      = (int) $row['level'];
+		$log->level_name = $row['level_name'];
+		$log->message    = $row['message'];
+		$log->context    = ( isset( $row['context'] ) && '' !== $row['context'] ) ? json_decode( $row['context'], true ) : [];
+		$log->extra      = ( isset( $row['extra'] ) && '' !== $row['extra'] ) ? json_decode( $row['extra'], true ) : [];
+		$log->datetime   = $row['datetime'];
+		return $log;
 	}
 
 	/**
@@ -155,8 +175,8 @@ class DatabaseEntity {
 	/**
 	 * Gets the ID of the log entry.
 	 */
-	public function get_id(): ?int {
-		return $this->id;
+	public function get_id(): int {
+		return (int) $this->id;
 	}
 
 	/**
@@ -182,6 +202,8 @@ class DatabaseEntity {
 
 	/**
 	 * Gets the message of the log entry.
+	 *
+	 * @return string The message of the log entry.
 	 */
 	public function get_message(): string {
 		return $this->message;
@@ -212,6 +234,89 @@ class DatabaseEntity {
 	 */
 	public function get_datetime(): string {
 		return $this->datetime;
+	}
+
+	/**
+	 * Extracts and returns the GraphQL query from the context, if available.
+	 *
+	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
+	 *
+	 * @return string|null The GraphQL query string, or null if not available.
+	 */
+	public function get_query(): ?string {
+
+		$context = $this->get_context();
+		if ( empty( $context ) ) {
+			return null;
+		}
+
+		$query = $context['query'];
+
+		$request = $context['request'] ?? null;
+		if ( empty( $request ) || ! is_array( $request ) ) {
+			return $query;
+		}
+
+		$params = $request['params'] ?? null;
+		if ( empty( $params ) || ! is_array( $params ) ) {
+			return $query;
+		}
+
+		if ( isset( $params['query'] ) && is_string( $params['query'] ) ) {
+			return $params['query'];
+		}
+
+		return $query;
+	}
+
+	/**
+	 * Finds multiple log entries and returns them as an array.
+	 *
+	 * @param int                  $limit   The maximum number of log entries to return.
+	 * @param int                  $offset  The offset for pagination.
+	 * @param array<string, mixed> $where_clauses Optional. Additional WHERE conditions.
+	 * @param string               $orderby The column to order by.
+	 * @param string               $order   The order direction (ASC or DESC).
+	 *
+	 * @return array<\WPGraphQL\Logging\Logger\Database\DatabaseEntity> An array of DatabaseEntity instances, or an empty array if none found.
+	 */
+	public static function find_logs(int $limit, int $offset, array $where_clauses = [], string $orderby = 'id', string $order = 'DESC'): array {
+		global $wpdb;
+		$table_name = self::get_table_name();
+		$order      = sanitize_text_field( strtoupper( $order ) );
+		$orderby    = sanitize_text_field( $orderby );
+
+		$where = '';
+		foreach ( $where_clauses as $clause ) {
+			if ( '' !== $where ) {
+				$where .= ' AND ';
+			}
+			$where .= (string) $clause;
+		}
+		if ( '' !== $where ) {
+			$where = 'WHERE ' . $where;
+		}
+
+		/** @psalm-suppress PossiblyInvalidCast */
+		$query = $wpdb->prepare(
+			"SELECT * FROM {$table_name} {$where} ORDER BY {$orderby} {$order} LIMIT %d, %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$offset,
+			$limit
+		);
+
+		// We do not want to cache as this is a paginated query.
+		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+		if ( empty( $results ) || ! is_array( $results ) ) {
+			return [];
+		}
+
+		return array_map(
+			static function (array $row) {
+				return DatabaseEntity::create_from_db_row( $row );
+			},
+			$results
+		);
 	}
 
 	/**
@@ -296,25 +401,5 @@ class DatabaseEntity {
 			}
 		}
 		return $data;
-	}
-
-	/**
-	 * Helper to populate an instance from a database row.
-	 *
-	 * @param array<string, mixed> $row The database row to populate from.
-	 *
-	 * @return self The populated instance.
-	 */
-	private static function create_from_db_row(array $row): self {
-		$log             = new self();
-		$log->id         = (int) $row['id'];
-		$log->channel    = $row['channel'];
-		$log->level      = (int) $row['level'];
-		$log->level_name = $row['level_name'];
-		$log->message    = $row['message'];
-		$log->context    = ( isset( $row['context'] ) && '' !== $row['context'] ) ? json_decode( $row['context'], true ) : [];
-		$log->extra      = ( isset( $row['extra'] ) && '' !== $row['extra'] ) ? json_decode( $row['extra'], true ) : [];
-		$log->datetime   = $row['datetime'];
-		return $log;
 	}
 }
