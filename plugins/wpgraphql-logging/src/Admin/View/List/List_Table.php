@@ -276,6 +276,9 @@ class List_Table extends WP_List_Table {
 	 */
 	public function get_query(DatabaseEntity $item): string {
 		$query = $item->get_query();
+		if (! is_string($query) || '' === $query) {
+			return '';
+		}
 		return $this->format_code( $query );
 	}
 
@@ -331,11 +334,18 @@ class List_Table extends WP_List_Table {
 		return $this->format_code( $formatted_request_headers );
 	}
 
+	/**
+	 * Format code for display in a table cell.
+	 *
+	 * @param string $code The code to format.
+	 *
+	 * @return string The formatted code.
+	 */
 	protected function format_code(string $code): string {
 		if ( empty( $code ) ) {
 			return '';
 		}
-		return '<pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px; max-height: 300px;">' . esc_html( $code	 ) . '</pre>';
+		return '<pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px; max-height: 300px;">' . esc_html( $code ) . '</pre>';
 	}
 
 	/**

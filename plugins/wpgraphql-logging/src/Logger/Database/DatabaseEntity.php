@@ -236,11 +236,17 @@ class DatabaseEntity {
 		return $this->datetime;
 	}
 
+	/**
+	 * Extracts and returns the GraphQL query from the context, if available.
+	 *
+	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
+	 *
+	 * @return string|null The GraphQL query string, or null if not available.
+	 */
 	public function get_query(): ?string {
 
-		$extra = $this->get_extra();
 		$context = $this->get_context();
-		if ( empty( $context ) || ! is_array( $context ) ) {
+		if ( empty( $context ) ) {
 			return null;
 		}
 
@@ -255,6 +261,7 @@ class DatabaseEntity {
 		if ( empty( $params ) || ! is_array( $params ) ) {
 			return $query;
 		}
+
 		if ( isset( $params['query'] ) && is_string( $params['query'] ) ) {
 			return $params['query'];
 		}
