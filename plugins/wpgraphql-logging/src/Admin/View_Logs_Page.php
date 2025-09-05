@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin;
 
+use WPGraphQL\Logging\Admin\View\Download\Download_Log_Service;
 use WPGraphQL\Logging\Admin\View\List\List_Table;
 use WPGraphQL\Logging\Logger\Database\LogsRepository;
 
@@ -79,7 +80,7 @@ class View_Logs_Page {
 		);
 
 		// Updates the list table when filters are applied.
-		add_action( 'load-' . $menu_page, [ $this, 'process_filters_redirect' ], 10, 0 );
+		add_action( 'load-' . $menu_page, [ $this, 'process_page_actions_before_rendering' ], 10, 0 );
 	}
 
 	/**
@@ -93,10 +94,26 @@ class View_Logs_Page {
 			case 'view':
 				$this->render_view_page();
 				break;
+			case 'download':
+				// Handled in process_page_actions_before_rendering.
+				break;
 			default:
 				$this->render_list_page();
 				break;
 		}
+	}
+
+	/**
+	 * Processes actions for the page, such as filtering and downloading logs.
+	 * This runs before any HTML is output.
+	 */
+	public function process_page_actions_before_rendering(): void {
+		// Check for a download request.
+		if ( isset( $_GET['action'] ) && 'download' === $_GET['action'] ) { // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$this->process_log_download();
+		}
+
+		$this->process_filters_redirect();
 	}
 
 	/**
@@ -171,6 +188,19 @@ class View_Logs_Page {
 			__DIR__ . '/View/List/Templates/wpgraphql-logger-list.php'
 		);
 		require_once $list_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	}
+
+		/**
+		 * Renders the list page for log entries.
+		 */
+	protected function process_log_download(): void {
+		if ( ! current_user_can( 'manage_options' ) || ! is_admin() ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-logging' ) );
+		}
+
+		$log_id     = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$downloader = new Download_Log_Service();
+		$downloader->generate_csv( $log_id );
 	}
 
 	/**

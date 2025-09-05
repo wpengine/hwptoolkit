@@ -235,12 +235,19 @@ class List_Table extends WP_List_Table {
 	public function column_id( DatabaseEntity $item ): string {
 		$url     = \WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG;
 		$actions = [
-			'view' => sprintf(
+			'view'     => sprintf(
 				'<a href="?page=%s&action=%s&log=%d">%s</a>',
 				esc_attr( $url ),
 				'view',
 				$item->get_id(),
 				esc_html__( 'View', 'wpgraphql-logging' )
+			),
+			'download' => sprintf(
+				'<a href="?page=%s&action=%s&log=%d">%s</a>',
+				esc_attr( $url ),
+				'download',
+				$item->get_id(),
+				esc_html__( 'Download', 'wpgraphql-logging' )
 			),
 		];
 

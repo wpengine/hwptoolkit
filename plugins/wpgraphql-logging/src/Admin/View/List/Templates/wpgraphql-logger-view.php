@@ -9,7 +9,25 @@ declare(strict_types=1);
  */
 ?>
 <div class="wrap">
-	<h1><?php esc_html_e( 'Log Entry', 'wpgraphql-logging' ); ?></h1>
+	<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+		<h1><?php esc_html_e( 'Log Entry', 'wpgraphql-logging' ); ?></h1>
+		<a href="
+		<?php
+		echo esc_url(
+			admin_url(
+				sprintf(
+					'admin.php?page=%s&action=%s&log=%d',
+					\WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG,
+					'download',
+					$log->get_id()
+				)
+			)
+		);
+		?>
+		" class="button">
+			<?php esc_html_e( 'Download Log', 'wpgraphql-logging' ); ?>
+		</a>
+	</div>
 
 	<table class="widefat striped">
 		<tbody>
