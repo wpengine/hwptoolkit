@@ -96,6 +96,9 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 										break;
 								}
 								?>
+																		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . \WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG ) ); ?>" class="button">
+			<?php esc_html_e( 'View Logs', 'wpgraphql-logging' ); ?>
+		</a>
 							</div>
 						</div>
 

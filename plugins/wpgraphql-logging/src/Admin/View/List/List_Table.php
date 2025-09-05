@@ -393,7 +393,7 @@ class List_Table extends WP_List_Table {
 		if ( 'top' !== $which ) {
 			return;
 		}
-		$template = apply_filters( 'wpgraphql_logging_filters_template', __DIR__ . '/Templates/wpgraphql-logger-filters.php' );
+		$template = apply_filters( 'wpgraphql_logging_filters_template', __DIR__ . '/../Templates/wpgraphql-logger-filters.php' );
 		require_once $template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 }

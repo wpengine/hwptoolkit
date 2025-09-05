@@ -27,7 +27,7 @@
 	],
 	"require": {
 		"php": "^8.1",
-		"league/csv": "^9.9",
+		"league/csv": "^9",
 		"monolog/monolog": "^3.9"
 	},
 	"minimum-stability": "dev",

@@ -45,11 +45,15 @@ declare(strict_types=1);
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Level', 'wpgraphql-logging' ); ?></th>
+				<td><?php echo (int) $log->get_level(); ?></td>
+			</tr>
+			<tr>
+				<th><?php esc_html_e( 'Level Name', 'wpgraphql-logging' ); ?></th>
 				<td><?php echo esc_html( (string) $log->get_level_name() ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Message', 'wpgraphql-logging' ); ?></th>
-				<td><code><?php echo esc_html( (string) $log->get_message() ); ?></code></td>
+				<td><?php echo esc_html( (string) $log->get_message() ); ?></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Context', 'wpgraphql-logging' ); ?></th>
