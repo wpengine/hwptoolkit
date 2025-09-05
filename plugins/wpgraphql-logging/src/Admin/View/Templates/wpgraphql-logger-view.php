@@ -40,10 +40,6 @@ declare(strict_types=1);
 				<td><?php echo esc_html( (string) $log->get_datetime() ); ?></td>
 			</tr>
 			<tr>
-				<th><?php esc_html_e( 'Channel', 'wpgraphql-logging' ); ?></th>
-				<td><?php echo esc_html( (string) $log->get_channel() ); ?></td>
-			</tr>
-			<tr>
 				<th><?php esc_html_e( 'Level', 'wpgraphql-logging' ); ?></th>
 				<td><?php echo (int) $log->get_level(); ?></td>
 			</tr>
@@ -54,6 +50,14 @@ declare(strict_types=1);
 			<tr>
 				<th><?php esc_html_e( 'Message', 'wpgraphql-logging' ); ?></th>
 				<td><?php echo esc_html( (string) $log->get_message() ); ?></td>
+			</tr>
+			<tr>
+				<th><?php esc_html_e( 'Channel', 'wpgraphql-logging' ); ?></th>
+				<td><?php echo esc_html( (string) $log->get_channel() ); ?></td>
+			</tr>
+			<tr>
+				<th><?php esc_html_e( 'Query', 'wpgraphql-logging' ); ?></th>
+				<td><pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px;"><?php echo esc_html( (string) $log->get_query() ); ?></pre></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Context', 'wpgraphql-logging' ); ?></th>

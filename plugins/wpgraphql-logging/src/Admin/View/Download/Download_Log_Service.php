@@ -56,6 +56,7 @@ class Download_Log_Service {
 			'Level Name',
 			'Message',
 			'Channel',
+			'Query',
 			'Context',
 			'Extra',
 		];
@@ -66,8 +67,9 @@ class Download_Log_Service {
 			$log->get_level(),
 			$log->get_level_name(),
 			$log->get_message(),
-			wp_json_encode( $log->get_context() ),
 			$log->get_channel(),
+			$log->get_query(),
+			wp_json_encode( $log->get_context() ),
 			wp_json_encode( $log->get_extra() ),
 		];
 

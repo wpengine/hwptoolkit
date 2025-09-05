@@ -28,7 +28,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @var int
 	 */
-	public const DEFAULT_PER_PAGE = 25;
+	public const DEFAULT_PER_PAGE = 20;
 
 	/**
 	 * Constructor.
@@ -73,7 +73,6 @@ class List_Table extends WP_List_Table {
 
 		$per_page     = $this->get_items_per_page( 'logs_per_page', self::DEFAULT_PER_PAGE );
 		$current_page = $this->get_pagenum();
-				/** @psalm-suppress InvalidArgument */
 		/** @psalm-suppress InvalidArgument */
 		$where       = $this->process_where( $_REQUEST );
 		$total_items = $this->repository->get_log_count( $where );
@@ -276,9 +275,8 @@ class List_Table extends WP_List_Table {
 	 * @return string The query
 	 */
 	public function get_query(DatabaseEntity $item): string {
-		$extra = $item->get_extra();
-		$query = ! empty( $extra['wpgraphql_query'] ) ? esc_html( $extra['wpgraphql_query'] ) : '';
-		return '<pre style="overflow-x: auto; background: #f6f7f7; padding: 15px; border: 1px solid #ddd; border-radius: 4px; white-space: pre-wrap; word-break: break-word; max-width: 100%; max-height: 300px; overflow-y: auto; box-sizing: border-box;">' . esc_html( $query ) . '</pre>';
+		$query = $item->get_query();
+		return $this->format_code( $query );
 	}
 
 	/**
@@ -330,7 +328,14 @@ class List_Table extends WP_List_Table {
 		if ( false === $formatted_request_headers ) {
 			return '';
 		}
-		return '<pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px; max-height: 300px;">' . esc_html( $formatted_request_headers ) . '</pre>';
+		return $this->format_code( $formatted_request_headers );
+	}
+
+	protected function format_code(string $code): string {
+		if ( empty( $code ) ) {
+			return '';
+		}
+		return '<pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px; max-height: 300px;">' . esc_html( $code	 ) . '</pre>';
 	}
 
 	/**

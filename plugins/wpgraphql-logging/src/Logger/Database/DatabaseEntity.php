@@ -236,6 +236,32 @@ class DatabaseEntity {
 		return $this->datetime;
 	}
 
+	public function get_query(): ?string {
+
+		$extra = $this->get_extra();
+		$context = $this->get_context();
+		if ( empty( $context ) || ! is_array( $context ) ) {
+			return null;
+		}
+
+		$query = $context['query'];
+
+		$request = $context['request'] ?? null;
+		if ( empty( $request ) || ! is_array( $request ) ) {
+			return $query;
+		}
+
+		$params = $request['params'] ?? null;
+		if ( empty( $params ) || ! is_array( $params ) ) {
+			return $query;
+		}
+		if ( isset( $params['query'] ) && is_string( $params['query'] ) ) {
+			return $params['query'];
+		}
+
+		return $query;
+	}
+
 	/**
 	 * Finds multiple log entries and returns them as an array.
 	 *
