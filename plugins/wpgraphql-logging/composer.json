@@ -26,8 +26,8 @@
 		"monolog"
 	],
 	"require": {
-		"php": "^8.1",
-		"league/csv": "^9",
+		"php": ">=8.1.2",
+		"league/csv": "^9.9",
 		"monolog/monolog": "^3.9"
 	},
 	"minimum-stability": "dev",
@@ -64,7 +64,7 @@
 		},
 		"optimize-autoloader": true,
 		"platform": {
-			"php": "8.1"
+			"php": "8.1.2"
 		},
 		"preferred-install": "dist",
 		"sort-packages": true
