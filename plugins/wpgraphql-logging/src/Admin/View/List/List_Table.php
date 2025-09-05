@@ -74,8 +74,9 @@ class List_Table extends WP_List_Table {
 		$per_page     = $this->get_items_per_page( 'logs_per_page', self::DEFAULT_PER_PAGE );
 		$current_page = $this->get_pagenum();
 				/** @psalm-suppress InvalidArgument */
-		$where        = $this->process_where( $_REQUEST );
-		$total_items  = $this->repository->get_log_count( $where );
+		/** @psalm-suppress InvalidArgument */
+		$where       = $this->process_where( $_REQUEST );
+		$total_items = $this->repository->get_log_count( $where );
 
 		$this->set_pagination_args(
 			[

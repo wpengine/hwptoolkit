@@ -63,7 +63,7 @@ class LogsRepository {
 		global $wpdb;
 		$table_name = DatabaseEntity::get_table_name();
 
-		if (empty($where_clauses)) {
+		if ( empty( $where_clauses ) ) {
 			return (int) $wpdb->get_var( $wpdb->prepare( // @phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 				'SELECT COUNT(*) FROM %i',
 				$table_name

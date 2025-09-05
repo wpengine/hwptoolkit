@@ -60,7 +60,7 @@ class View_Logs_Page {
 	public function register_settings_page(): void {
 
 		// Add submenu under GraphQL menu using the correct parent slug.
-		add_menu_page(
+		$menu_page = add_menu_page(
 			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
 			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
 			'manage_options',
@@ -77,6 +77,9 @@ class View_Logs_Page {
 			self::ADMIN_PAGE_SLUG,
 			[ $this, 'render_admin_page' ]
 		);
+
+		// Updates the list table when filters are applied.
+		add_action( 'load-' . $menu_page, [ $this, 'process_filters_redirect' ], 10, 0 );
 	}
 
 	/**
@@ -94,6 +97,67 @@ class View_Logs_Page {
 				$this->render_list_page();
 				break;
 		}
+	}
+
+	/**
+	 * Process filter form submission and redirect to a GET request.
+	 * This runs before any HTML is output.
+	 */
+	public function process_filters_redirect(): void {
+		// Handle POST from filter form and redirect to GET.
+		$nonce = $this->get_post_value( 'wpgraphql_logging_nonce' );
+		if ( ! is_string( $nonce ) ) {
+			return;
+		}
+
+		// Verify nonce for security.
+		if ( false === wp_verify_nonce( $nonce, 'wpgraphql_logging_filter' ) ) {
+			return;
+		}
+
+		$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
+
+		$possible_filters = [
+			'start_date',
+			'end_date',
+			'level_filter',
+			'orderby',
+			'order',
+		];
+		$filters          = [];
+		foreach ( $possible_filters as $key ) {
+			$value = $this->get_post_value( $key );
+			if ( null !== $value ) {
+				$filters[ $key ] = $value;
+			}
+		}
+
+		$redirect_url = add_query_arg( array_filter( $filters, static function ( $value ) {
+			return '' !== $value;
+		} ), $redirect_url );
+		$redirect_url = apply_filters( 'wpgraphql_logging_filter_redirect_url', $redirect_url, $filters );
+
+		wp_safe_redirect( $redirect_url );
+		exit;
+	}
+
+	/**
+	 * Retrieves and sanitizes a value from the $_POST superglobal.
+	 *
+	 * @param string $key The key to retrieve from $_POST.
+	 *
+	 * @return string|null The sanitized value or null if not set or invalid.
+	 */
+	protected function get_post_value(string $key): ?string {
+		$value = $_POST[ $key ] ?? null; // @phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( ! is_string( $value ) || '' === $value ) {
+			return null;
+		}
+		$value = wp_unslash( $value );
+		if ( ! is_string( $value ) ) {
+			return null;
+		}
+		return sanitize_text_field( $value );
 	}
 
 	/**

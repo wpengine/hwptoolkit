@@ -26,12 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	$wpgraphql_logging_current_start_date = '';
 	$wpgraphql_logging_current_end_date   = '';
 
-	// Verify nonce before processing form data.
-	if ( isset( $_REQUEST['wpgraphql_logging_nonce'] ) && (bool) wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['wpgraphql_logging_nonce'] ) ), 'wpgraphql_logging_filter' ) ) {
-		$wpgraphql_logging_current_level      = isset( $_REQUEST['level_filter'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['level_filter'] ) ) : '';
-		$wpgraphql_logging_current_start_date = isset( $_REQUEST['start_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['start_date'] ) ) : '';
-		$wpgraphql_logging_current_end_date   = isset( $_REQUEST['end_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['end_date'] ) ) : '';
-	}
+	$wpgraphql_logging_current_level      = isset( $_GET['level_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['level_filter'] ) ) : ''; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$wpgraphql_logging_current_start_date = isset( $_GET['start_date'] ) ? sanitize_text_field( wp_unslash( $_GET['start_date'] ) ) : ''; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$wpgraphql_logging_current_end_date   = isset( $_GET['end_date'] ) ? sanitize_text_field( wp_unslash( $_GET['end_date'] ) ) : ''; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 	/**
 	 * Log levels for filtering.
