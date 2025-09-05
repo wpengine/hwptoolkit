@@ -69,7 +69,6 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 											<li><?php esc_html_e( 'Log only for admin users', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Filter specific queries', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Set data sampling rates', 'wpgraphql-logging' ); ?></li>
-											<li><?php esc_html_e( 'Performance threshold', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Log for specific events', 'wpgraphql-logging' ); ?></li>
 										</ul>
 										<?php

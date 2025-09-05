@@ -53,13 +53,6 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 	public const ADMIN_USER_LOGGING = 'admin_user_logging';
 
 	/**
-	 * The field ID for the performance metrics text input.
-	 *
-	 * @var string
-	 */
-	public const PERFORMANCE_METRICS = 'performance_metrics';
-
-	/**
 	 * The field ID for the log point selection select.
 	 *
 	 * @var string
@@ -129,25 +122,16 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 			$this->get_name(),
 			__( 'Data Sampling Rate', 'wpgraphql-logging' ),
 			[
-				'100' => __( '100% (All requests)', 'wpgraphql-logging' ),
-				'50'  => __( '50% (Every other request)', 'wpgraphql-logging' ),
-				'25'  => __( '25% (Every 4th request)', 'wpgraphql-logging' ),
 				'10'  => __( '10% (Every 10th request)', 'wpgraphql-logging' ),
+				'25'  => __( '25% (Every 4th request)', 'wpgraphql-logging' ),
+				'50'  => __( '50% (Every other request)', 'wpgraphql-logging' ),
+				'75'  => __( '75% (Every 3 out of 4 requests)', 'wpgraphql-logging' ),
+				'100' => __( '100% (All requests)', 'wpgraphql-logging' ),
 			],
 			'',
 			__( 'Percentage of requests to log for performance optimization.', 'wpgraphql-logging' ),
 			false
 		);
-
-		$fields[ self::PERFORMANCE_METRICS ] = new Text_Input_Field(
-			self::PERFORMANCE_METRICS,
-			$this->get_name(),
-			__( 'Performance Threshold (seconds)', 'wpgraphql-logging' ),
-			'',
-			__( 'Only log requests that take longer than this threshold. 0 logs all requests. Calculated in seconds.', 'wpgraphql-logging' ),
-			__( 'e.g., 1.5', 'wpgraphql-logging' )
-		);
-
 
 		$fields[ self::EVENT_LOG_SELECTION ] = new Select_Field(
 			self::EVENT_LOG_SELECTION,
@@ -162,7 +146,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 				Events::RESPONSE_HEADERS_TO_SEND => __( 'Response Headers', 'wpgraphql-logging' ),
 			],
 			'',
-			__( 'Select which points in the request lifecycle to log. By default, all points are logged.', 'wpgraphql-logging' ),
+			__( 'Select which points in the request lifecycle to log. By default, no events are logged.', 'wpgraphql-logging' ),
 			true
 		);
 
