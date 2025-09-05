@@ -4,24 +4,7 @@ import { useRouter } from "next/router";
 import { gql, useMutation, useLazyQuery } from "@apollo/client";
 
 // Import GraphQL operations from your existing file
-import { AddToCart, GetCart, UpdateCartItemQuantities } from "@/lib/woocommerce/graphQL";
-
-const LOGIN_MUTATION = gql`
-    mutation loginWithPassword($username: String!, $password: String!) {
-        login(input: { provider: PASSWORD, credentials: { username: $username, password: $password } }) {
-            authToken
-            authTokenExpiration
-            refreshToken
-            refreshTokenExpiration
-            user {
-                id
-                email
-                databaseId
-                name
-            }
-        }
-    }
-`;
+import { AddToCart, GetCart, UpdateCartItemQuantities, LOGIN_MUTATION } from "@/lib/woocommerce/graphQL";
 
 const REFRESH_TOKEN_MUTATION = gql`
     mutation refreshToken($token: String!) {
@@ -49,6 +32,7 @@ export function AppProvider({ children }) {
     // Cart State
     const [cartData, setCartData] = useState(null);
     const [isCartInitialized, setIsCartInitialized] = useState(false);
+    const [cartSessionToken, setCartSessionToken] = useState(null); // Add session token state
 
     // Get customer ID from auth state
     const customerId = authState.customer?.databaseId || authState.user?.databaseId || null;
@@ -57,8 +41,11 @@ export function AppProvider({ children }) {
     const [loginMutation] = useMutation(LOGIN_MUTATION);
     const [refreshTokenMutation] = useMutation(REFRESH_TOKEN_MUTATION);
 
-    // Cart Mutations and Queries - using the correct GraphQL operations
+    // Cart Mutations and Queries - with session token context
     const [addToCartMutation, { loading: addToCartLoading }] = useMutation(AddToCart, {
+        context: {
+            headers: cartSessionToken ? { 'woocommerce-session': `Session ${cartSessionToken}` } : {},
+        },
         onCompleted: (data) => {
             console.log("✅ Add to cart completed:", data);
             if (data?.addToCart?.cart) {
@@ -66,6 +53,12 @@ export function AppProvider({ children }) {
                 console.log("📦 New cart data from addToCart:", newCartData);
                 setCartData(newCartData);
                 saveCartToLocalStorage(newCartData);
+                
+                // Extract and save session token if present
+                if (data.addToCart.cart.sessionToken) {
+                    setCartSessionToken(data.addToCart.cart.sessionToken);
+                    saveToLocalStorage("cart_session_token", data.addToCart.cart.sessionToken);
+                }
             }
         },
         onError: (error) => {
@@ -74,6 +67,9 @@ export function AppProvider({ children }) {
     });
 
     const [updateCartMutation, { loading: updateCartLoading }] = useMutation(UpdateCartItemQuantities, {
+        context: {
+            headers: cartSessionToken ? { 'woocommerce-session': `Session ${cartSessionToken}` } : {},
+        },
         onCompleted: (data) => {
             console.log("✅ Update cart completed:", data);
             if (data?.updateItemQuantities?.cart) {
@@ -89,6 +85,9 @@ export function AppProvider({ children }) {
     });
 
     const [getCartQuery, { loading: getCartLoading }] = useLazyQuery(GetCart, {
+        context: {
+            headers: cartSessionToken ? { 'woocommerce-session': `Session ${cartSessionToken}` } : {},
+        },
         onCompleted: (data) => {
             console.log("✅ Server cart fetched:", data?.cart);
             console.log("📦 Server cart contents:", data?.cart?.contents?.nodes);
@@ -102,6 +101,12 @@ export function AppProvider({ children }) {
                     console.log("✅ Server cart has valid data, updating state");
                     setCartData(data.cart);
                     saveCartToLocalStorage(data.cart);
+                    
+                    // Save session token if present
+                    if (data.cart.sessionToken) {
+                        setCartSessionToken(data.cart.sessionToken);
+                        saveToLocalStorage("cart_session_token", data.cart.sessionToken);
+                    }
                 } else {
                     console.log("⚠️ Server cart has invalid product data, keeping current cart");
                     console.log("Invalid cart data:", data.cart);
@@ -112,7 +117,7 @@ export function AppProvider({ children }) {
             console.error("❌ GetCart error:", error);
         },
         fetchPolicy: "network-only",
-        errorPolicy: "all", // Continue even if there are errors
+        errorPolicy: "all",
     });
 
     // Helper functions for localStorage
@@ -148,19 +153,28 @@ export function AppProvider({ children }) {
         (cart) => {
             if (cart) {
                 console.log("💾 Saving cart to localStorage");
-                saveToLocalStorage("wocommerce_cart_items", cart);
+                saveToLocalStorage("woocommerce_cart_items", cart);
             }
         },
         [saveToLocalStorage]
     );
 
     const loadCartFromLocalStorage = useCallback(() => {
-        const localCart = getFromLocalStorage("wocommerce_cart_items");
+        const localCart = getFromLocalStorage("woocommerce_cart_items");
         if (localCart) {
             console.log("📱 Loaded cart from localStorage:", localCart);
             console.log("📦 LocalStorage cart contents:", localCart?.contents?.nodes);
         }
         return localCart;
+    }, [getFromLocalStorage]);
+
+    // Load cart session token on initialization
+    useEffect(() => {
+        const savedSessionToken = getFromLocalStorage("cart_session_token");
+        if (savedSessionToken) {
+            console.log("🔗 Loaded cart session token:", savedSessionToken);
+            setCartSessionToken(savedSessionToken);
+        }
     }, [getFromLocalStorage]);
 
     // Initialize Auth on app start
@@ -200,26 +214,56 @@ export function AppProvider({ children }) {
 
             console.log("🛒 === CART INITIALIZATION START ===");
             console.log("👤 Customer ID:", customerId);
+            console.log("🔗 Cart Session Token:", cartSessionToken);
 
             const localCart = loadCartFromLocalStorage();
             const localItemCount = localCart?.contents?.nodes?.length || 0;
             console.log(`📱 localStorage has ${localItemCount} items`);
 
             if (!customerId) {
-                // Guest user - use localStorage only
-                console.log("👤 Guest user - using localStorage only");
-                if (localCart) {
-                    setCartData(localCart);
+                // Guest user - use localStorage AND server cart with session token
+                console.log("👤 Guest user - managing cart with session token");
+                
+                if (cartSessionToken) {
+                    // We have a session token, fetch server cart
+                    try {
+                        console.log("🌐 Fetching server cart with session token...");
+                        const result = await getCartQuery();
+                        const serverCart = result.data?.cart || null;
+                        
+                        if (serverCart && serverCart.contents?.nodes?.length > 0) {
+                            console.log("🌐 Using server cart for guest user");
+                            setCartData(serverCart);
+                            saveCartToLocalStorage(serverCart);
+                        } else if (localCart && localItemCount > 0) {
+                            console.log("📱 Server cart empty, but localStorage has items - need to sync");
+                            setCartData(localCart);
+                            // Don't sync to server for guest users without proper session management
+                        } else {
+                            console.log("🆕 Both empty - starting fresh");
+                            setCartData(null);
+                        }
+                    } catch (error) {
+                        console.error("❌ Error fetching server cart for guest:", error);
+                        if (localCart) {
+                            setCartData(localCart);
+                        }
+                    }
                 } else {
-                    setCartData(null);
+                    // No session token, use localStorage only
+                    console.log("📱 No session token, using localStorage only");
+                    if (localCart) {
+                        setCartData(localCart);
+                    } else {
+                        setCartData(null);
+                    }
                 }
             } else {
                 // Authenticated user - sync with server
                 console.log("👤 Authenticated user - syncing with server");
 
                 try {
-                    // Fetch server cart - no customerId parameter needed
-                    console.log("🌐 Fetching server cart...");
+                    console.log("🌐 Fetching server cart for authenticated user...");
                     const result = await getCartQuery();
 
                     const serverCart = result.data?.cart || null;
@@ -231,7 +275,6 @@ export function AppProvider({ children }) {
                         await syncLocalCartToServer(localCart);
                     } else if (serverItemCount > 0 && localItemCount === 0) {
                         console.log("🌐➡️📱 Server has items but localStorage is empty - using server cart");
-                        // Only update if server cart has valid product data
                         const hasValidProducts = serverCart.contents?.nodes?.every(node => 
                             node.product?.node?.databaseId || node.product?.databaseId
                         );
@@ -244,7 +287,6 @@ export function AppProvider({ children }) {
                         }
                     } else if (serverItemCount > 0 && localItemCount > 0) {
                         console.log("🌐📱 Both have items - using server as source of truth");
-                        // Validate server cart data first
                         const hasValidProducts = serverCart.contents?.nodes?.every(node => 
                             node.product?.node?.databaseId || node.product?.databaseId
                         );
@@ -264,7 +306,6 @@ export function AppProvider({ children }) {
                     }
                 } catch (error) {
                     console.error("❌ Error initializing cart:", error);
-                    // Fallback to localStorage
                     if (localCart) {
                         console.log("🔄 Fallback: using localStorage cart");
                         setCartData(localCart);
@@ -277,9 +318,9 @@ export function AppProvider({ children }) {
         };
 
         initializeCart();
-    }, [authState.isLoading, customerId, isCartInitialized, loadCartFromLocalStorage, getCartQuery]);
+    }, [authState.isLoading, customerId, isCartInitialized, cartSessionToken, loadCartFromLocalStorage, getCartQuery]);
 
-    // Sync localStorage cart to server
+    // Sync localStorage cart to server (only for authenticated users)
     const syncLocalCartToServer = useCallback(
         async (localCart) => {
             if (!customerId || !localCart?.contents?.nodes?.length) {
@@ -288,13 +329,6 @@ export function AppProvider({ children }) {
             }
 
             console.log(`🔄 Syncing ${localCart.contents.nodes.length} items to server...`);
-
-            // Clear server cart first by fetching it
-            try {
-                await getCartQuery();
-            } catch (error) {
-                console.log("Note: Could not fetch server cart before sync");
-            }
 
             // Add each item from localStorage to server
             for (const item of localCart.contents.nodes) {
@@ -327,7 +361,7 @@ export function AppProvider({ children }) {
 
             console.log("✅ Cart sync completed");
         },
-        [customerId, addToCartMutation, getCartQuery]
+        [customerId, addToCartMutation]
     );
 
     // Find existing cart item
@@ -351,7 +385,7 @@ export function AppProvider({ children }) {
         [cartData]
     );
 
-    // Auth Functions
+    // Auth Functions (unchanged)
     const login = useCallback(
         async (username, password) => {
             try {
@@ -380,34 +414,30 @@ export function AppProvider({ children }) {
                 });
 
                 // Handle cart sync after login
-                const newCustomerId = customer?.databaseId || user?.databaseId;
-                console.log("🔐 Login completed, handling cart sync for customer:", newCustomerId);
+                // const newCustomerId = customer?.databaseId || user?.databaseId;
+                // console.log("🔐 Login completed, handling cart sync for customer:", newCustomerId);
 
-                if (newCustomerId) {
-                    // Get current localStorage cart before reinitializing
-                    const localCart = loadCartFromLocalStorage();
-                    console.log("📱 localStorage cart at login:", localCart);
+                // if (newCustomerId) {
+                //     const localCart = loadCartFromLocalStorage();
+                //     console.log("📱 localStorage cart at login:", localCart);
 
-                    if (localCart?.contents?.nodes?.length > 0) {
-                        console.log("🛒 Found localStorage items, will sync after auth state update");
+                //     if (localCart?.contents?.nodes?.length > 0) {
+                //         console.log("🛒 Found localStorage items, will sync after auth state update");
                         
-                        // Don't reinitialize immediately, let the useEffect handle it
-                        // But trigger a sync after a short delay to ensure auth state is updated
-                        setTimeout(async () => {
-                            try {
-                                console.log("🔄 Starting delayed cart sync after login...");
-                                await syncLocalCartToServer(localCart);
-                            } catch (error) {
-                                console.error("❌ Error in delayed cart sync:", error);
-                            }
-                        }, 500);
-                    } else {
-                        console.log("📭 No localStorage items, will fetch server cart");
-                    }
+                //         setTimeout(async () => {
+                //             try {
+                //                 console.log("🔄 Starting delayed cart sync after login...");
+                //                 await syncLocalCartToServer(localCart);
+                //             } catch (error) {
+                //                 console.error("❌ Error in delayed cart sync:", error);
+                //             }
+                //         }, 500);
+                //     } else {
+                //         console.log("📭 No localStorage items, will fetch server cart");
+                //     }
                     
-                    // Mark cart as not initialized to trigger re-initialization
-                    setIsCartInitialized(false);
-                }
+                //     setIsCartInitialized(false);
+                // }
 
                 router.push("/my-account");
             } catch (error) {
@@ -434,7 +464,7 @@ export function AppProvider({ children }) {
             isLoading: false,
         });
 
-        // Keep cart in localStorage but reinitialize as guest
+        // Keep cart session for guest user
         console.log("🛒 Reinitializing cart as guest user");
         setIsCartInitialized(false);
 
@@ -478,13 +508,13 @@ export function AppProvider({ children }) {
     const addToCart = useCallback(
         async (productId, quantity = 1, variationId = null) => {
             try {
-                console.log("🛒 Adding to cart:", { productId, quantity, variationId, customerId });
+                console.log("🛒 Adding to cart:", { productId, quantity, variationId, customerId, cartSessionToken });
 
                 // Check if item already exists in cart
                 const existingItem = findCartItem(productId, variationId);
 
-                if (existingItem && customerId) {
-                    // If authenticated and item exists, update quantity instead of adding
+                if (existingItem) {
+                    // Item exists, update quantity instead of adding
                     console.log("📈 Item exists, updating quantity...");
 
                     const newQuantity = existingItem.quantity + quantity;
@@ -515,7 +545,7 @@ export function AppProvider({ children }) {
                         };
                     }
                 } else {
-                    // Add new item or guest user adding item
+                    // Add new item
                     const variables = {
                         productId: parseInt(productId),
                         quantity: parseInt(quantity),
@@ -524,6 +554,8 @@ export function AppProvider({ children }) {
                     if (variationId) {
                         variables.variationId = parseInt(variationId);
                     }
+
+                    console.log("➕ Adding new item with variables:", variables);
 
                     const { data, errors } = await addToCartMutation({ variables });
 
@@ -550,7 +582,7 @@ export function AppProvider({ children }) {
                 };
             }
         },
-        [customerId, addToCartMutation, updateCartMutation, findCartItem]
+        [customerId, cartSessionToken, addToCartMutation, updateCartMutation, findCartItem]
     );
 
     // Update cart item quantity
@@ -601,35 +633,31 @@ export function AppProvider({ children }) {
 
     const clearCart = useCallback(() => {
         console.log("🗑️ Clearing cart");
-        removeFromLocalStorage("wocommerce_cart_items");
+        removeFromLocalStorage("woocommerce_cart_items");
+        removeFromLocalStorage("cart_session_token");
         setCartData(null);
+        setCartSessionToken(null);
     }, [removeFromLocalStorage]);
 
     const refreshCart = useCallback(async () => {
         console.log("🔄 Refreshing cart...");
         
-        if (!customerId) {
-            // Guest user - refresh from localStorage
-            console.log("👤 Guest user - refreshing from localStorage");
+        try {
+            const result = await getCartQuery();
+
+            if (result.data?.cart) {
+                console.log("✅ Cart refreshed from server");
+                return result.data.cart;
+            }
+        } catch (error) {
+            console.error("❌ Error refreshing cart:", error);
+            // Fallback to localStorage
             const localCart = loadCartFromLocalStorage();
             setCartData(localCart);
             return localCart;
-        } else {
-            // Authenticated user - refresh from server
-            console.log("👤 Authenticated user - refreshing from server");
-            try {
-                const result = await getCartQuery();
-
-                if (result.data?.cart) {
-                    console.log("✅ Cart refreshed from server");
-                    return result.data.cart; // State will be updated by onCompleted
-                }
-            } catch (error) {
-                console.error("❌ Error refreshing cart:", error);
-            }
         }
         return null;
-    }, [customerId, getCartQuery, loadCartFromLocalStorage]);
+    }, [getCartQuery, loadCartFromLocalStorage]);
 
     // Computed values
     const cartItemCount = useMemo(() => {
@@ -668,6 +696,7 @@ export function AppProvider({ children }) {
             cartTotal,
             cartLoading: getCartLoading || addToCartLoading || updateCartLoading,
             isCartInitialized,
+            cartSessionToken,
 
             // Cart functions
             addToCart,
@@ -696,6 +725,7 @@ export function AppProvider({ children }) {
             addToCartLoading,
             updateCartLoading,
             isCartInitialized,
+            cartSessionToken,
             addToCart,
             updateCartItemQuantity,
             clearCart,
@@ -707,7 +737,7 @@ export function AppProvider({ children }) {
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
-// Custom hooks remain the same...
+// Rest of the hooks remain the same...
 export const useApp = () => {
     const context = useContext(AppContext);
     if (!context) {
@@ -751,6 +781,7 @@ export const useCart = () => {
         customerId,
         isAuthenticated,
         isGuest,
+        cartSessionToken,
     } = useApp();
 
     return {
@@ -771,5 +802,6 @@ export const useCart = () => {
         customerId,
         isAuthenticated,
         isGuest,
+        cartSessionToken,
     };
 };

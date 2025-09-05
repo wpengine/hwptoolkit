@@ -6,14 +6,13 @@ import { gql, useQuery } from "@apollo/client";
 
 const GET_USER_SETTINGS = gql`
 	query GetUserSettings {
-		viewer {
-			email
-			username
+		customer {
+			id
+			databaseId
 			firstName
 			lastName
-      name
-		}
-		customer {
+			displayName
+
 			billing {
 				firstName
 				lastName
@@ -164,13 +163,13 @@ const CustomerFields = gql`
 `;
 
 export default function Account() {
-	const {user, tokens, isLoading, logout, refreshAuth } = useAuth();
+	const { user, tokens, isLoading, logout, refreshAuth } = useAuth();
 	const isAuthenticated = !!tokens?.authToken;
 
 	const { data, loading: userDataLoading } = useQuery(GET_USER_SETTINGS, {
 		skip: !isAuthenticated,
 	});
-
+	console.log("user data:", data);
 	const [activeTab, setActiveTab] = useState("dashboard");
 
 	// Loading state

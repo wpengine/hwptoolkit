@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useMutation } from "@apollo/client";
 import { useCart } from "@/lib/AppProvider";
-import { UpdateCartItemQuantity, RemoveItemFromCart, ClearCart } from "@/lib/woocommerce/graphQL";
-import { CartItem } from "@/interfaces/product.interface";
+import { RemoveItemFromCart, ClearCart } from "@/lib/woocommerce/graphQL";
 
 interface MiniCartProps {
     isVisible?: boolean;
@@ -11,20 +10,10 @@ interface MiniCartProps {
 }
 
 export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) {
-    const { cart, cartItemCount, refreshCart } = useCart();
+    const { cart, cartItemCount, refreshCart, updateCartItemQuantity } = useCart();
     const [updatingItems, setUpdatingItems] = useState<{ [key: string]: boolean }>({});
 
-    // Mutations
-    const [updateQuantityMutation, { loading: updateLoading }] = useMutation(UpdateCartItemQuantity, {
-        onCompleted: (data) => {
-            console.log("✅ Quantity updated:", data);
-            refreshCart();
-        },
-        onError: (error) => {
-            console.error("❌ Update quantity error:", error);
-        },
-    });
-
+    // Only need mutations for remove and clear since we're using AppProvider for quantity updates
     const [removeItemMutation, { loading: removeLoading }] = useMutation(RemoveItemFromCart, {
         onCompleted: (data) => {
             console.log("✅ Item removed:", data);
@@ -45,7 +34,7 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
         },
     });
 
-    // Handle quantity update
+    // Handle quantity update using AppProvider function
     const handleQuantityUpdate = async (key: string, newQuantity: number) => {
         if (newQuantity < 1) {
             handleRemoveItem(key);
@@ -55,12 +44,11 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
         setUpdatingItems(prev => ({ ...prev, [key]: true }));
 
         try {
-            await updateQuantityMutation({
-                variables: {
-                    key,
-                    quantity: newQuantity,
-                },
-            });
+            const result = await updateCartItemQuantity(key, newQuantity);
+            
+            if (!result.success) {
+                console.error("Failed to update quantity:", result.error);
+            }
         } catch (error) {
             console.error("Error updating quantity:", error);
         } finally {
@@ -101,7 +89,7 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
     return (
         <>
             {/* Backdrop */}
-            <div className="fixed inset-0 bg-opacity-25 z-40" onClick={onClose} />
+            <div className="fixed inset-0 bg-black bg-opacity-25 z-40" onClick={onClose} />
 
             {/* Mini Cart Panel */}
             <div className="fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out">
@@ -122,7 +110,7 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                             {/* Cart Items */}
                             <div className="flex-1 overflow-y-auto p-4">
                                 <ul className="space-y-4">
-                                    {cart.contents.nodes.map((item: CartItem) => {
+                                    {cart.contents.nodes.map((item) => {
                                         const isUpdating = updatingItems[item.key];
                                         
                                         return (
@@ -220,6 +208,9 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
 
                                 {/* Action Buttons */}
                                 <div className="space-y-2">
+                                       <button onClick={() => {
+                                refreshCart()
+                            }}>Refresh</button>
                                     <button
                                         onClick={() => {
                                             onClose?.();
@@ -272,12 +263,15 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                             >
                                 Continue Shopping
                             </button>
+                            <button onClick={() => {
+                                refreshCart()
+                            }}>Refresh</button>
                         </div>
                     )}
                 </div>
 
                 {/* Loading Overlay */}
-                {(updateLoading || removeLoading || clearLoading) && (
+                {(removeLoading || clearLoading) && (
                     <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
                         <div className="flex items-center space-x-2">
                             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
