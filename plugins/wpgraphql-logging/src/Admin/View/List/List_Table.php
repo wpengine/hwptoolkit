@@ -276,7 +276,7 @@ class List_Table extends WP_List_Table {
 	 */
 	public function get_query(DatabaseEntity $item): string {
 		$query = $item->get_query();
-		if (! is_string($query) || '' === $query) {
+		if ( ! is_string( $query ) || '' === $query ) {
 			return '';
 		}
 		return $this->format_code( $query );

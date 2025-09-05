@@ -38,8 +38,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 */
 	$wpgraphql_logging_log_levels = [ 'debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency' ];
 	?>
-	<input type="text" name="start_date" placeholder="Start Date (YYYY-MM-DD)" value="<?php echo esc_attr( $wpgraphql_logging_current_start_date ); ?>" />
-	<input type="text" name="end_date" placeholder="End Date (YYYY-MM-DD)" value="<?php echo esc_attr( $wpgraphql_logging_current_end_date ); ?>" />
+	<input type="text" name="start_date" class="wpgraphql-logging-datepicker" placeholder="Start Date" value="<?php echo esc_attr( $wpgraphql_logging_current_start_date ); ?>" />
+	<input type="text" name="end_date" class="wpgraphql-logging-datepicker" placeholder="End Date" value="<?php echo esc_attr( $wpgraphql_logging_current_end_date ); ?>" />
 
 	<select name="level_filter">
 		<option value="">All Levels</option>

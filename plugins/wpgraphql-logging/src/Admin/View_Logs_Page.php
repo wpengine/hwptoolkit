@@ -24,6 +24,13 @@ class View_Logs_Page {
 	public const ADMIN_PAGE_SLUG = 'wpgraphql-logging-view';
 
 	/**
+	 * The hook suffix for the admin page.
+	 *
+	 * @var string
+	 */
+	protected string $page_hook = '';
+
+	/**
 	 * The instance of the view logs page.
 	 *
 	 * @var self|null
@@ -61,7 +68,7 @@ class View_Logs_Page {
 	public function register_settings_page(): void {
 
 		// Add submenu under GraphQL menu using the correct parent slug.
-		$menu_page = add_menu_page(
+		$this->page_hook = add_menu_page(
 			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
 			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
 			'manage_options',
@@ -80,7 +87,49 @@ class View_Logs_Page {
 		);
 
 		// Updates the list table when filters are applied.
-		add_action( 'load-' . $menu_page, [ $this, 'process_page_actions_before_rendering' ], 10, 0 );
+		add_action( 'load-' . $this->page_hook, [ $this, 'process_page_actions_before_rendering' ], 10, 0 );
+
+		// Enqueue scripts for the admin page.
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+	}
+
+	/**
+	 * Enqueues scripts and styles for the admin page.
+	 *
+	 * @param string $hook_suffix The current admin page.
+	 */
+	public function enqueue_admin_scripts( string $hook_suffix ): void {
+		if ( $hook_suffix !== $this->page_hook ) {
+			return;
+		}
+
+		// Enqueue WordPress's built-in datepicker and slider.
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+		wp_enqueue_script( 'jquery-ui-slider' );
+
+		// Enqueue the timepicker addon script and styles from a CDN.
+		wp_enqueue_script(
+			'jquery-ui-timepicker-addon',
+			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js',
+			[ 'jquery-ui-datepicker', 'jquery-ui-slider' ],
+			'1.6.3',
+			true
+		);
+		wp_enqueue_style(
+			'jquery-ui-timepicker-addon-style',
+			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css',
+			[],
+			'1.6.3'
+		);
+
+		// Enqueue the base jQuery UI styles.
+		wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', [], '1.12.1' );
+
+		// Add inline script to initialize the datetimepicker.
+		wp_add_inline_script(
+			'jquery-ui-timepicker-addon',
+			'jQuery(document).ready(function($){ $(".wpgraphql-logging-datepicker").datetimepicker({ dateFormat: "yy-mm-dd", timeFormat: "HH:mm:ss" }); });'
+		);
 	}
 
 	/**
