@@ -17,9 +17,8 @@ trait LoggingHelper {
 	 *
 	 * phpcs:disable Generic.Metrics.CyclomaticComplexity, SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
 	 */
-	protected function is_logging_enabled( array $config ): bool {
+	protected function is_logging_enabled( array $config, ?string $query_string = null ): bool {
 		$is_enabled = true;
-
 		// Check the main "Enabled" checkbox.
 		if ( ! (bool) ( $config[ Basic_Configuration_Tab::ENABLED ] ?? false ) ) {
 			$is_enabled = false;
@@ -50,6 +49,11 @@ trait LoggingHelper {
 			}
 		}
 
+		// Check if the query is an introspection query and skip logging if it is.
+        if ( $is_enabled && $this->is_introspection_query( $query_string ) ) {
+            $is_enabled = false;
+        }
+
 		/**
 		 * Filter the final decision on whether to log a request.
 		 *
@@ -58,4 +62,18 @@ trait LoggingHelper {
 		 */
 		return apply_filters( 'wpgraphql_logging_is_enabled', $is_enabled, $config );
 	}
+
+	/**
+     * Checks if a query is an introspection query.
+     *
+     * @param string|null $query_string The GraphQL query string.
+     * @return bool
+     */
+    protected function is_introspection_query( ?string $query_string ): bool {
+        if ( null === $query_string ) {
+            return false;
+        }
+
+        return strpos( $query_string, '__schema' ) !== false;
+    }
 }

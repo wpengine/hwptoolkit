@@ -61,7 +61,7 @@ class QueryActionLogger {
 	 */
 	public function log_pre_request( string $query, ?string $operation_name, ?array $variables ): void {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config ) ) {
+			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
 				return;
 			}
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
@@ -96,7 +96,15 @@ class QueryActionLogger {
 	 */
 	public function log_graphql_before_execute( Request $request ): void {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config ) ) {
+			/** @var \GraphQL\Server\OperationParams $params */
+			$params  = $request->params;
+			$context = [
+				'query'          => $params->query,
+				'operation_name' => $params->operation,
+				'variables'      => $params->variables,
+				'params'         => $params,
+			];
+			if ( ! $this->is_logging_enabled( $this->config, $params->query ) ) {
 				return;
 			}
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
@@ -106,14 +114,7 @@ class QueryActionLogger {
 			if ( ! in_array( Events::BEFORE_GRAPHQL_EXECUTION, $selected_events, true ) ) {
 				return;
 			}
-			/** @var \GraphQL\Server\OperationParams $params */
-			$params  = $request->params;
-			$context = [
-				'query'          => $params->query,
-				'operation_name' => $params->operation,
-				'variables'      => $params->variables,
-				'params'         => $params,
-			];
+			
 			$payload = EventManager::transform( Events::BEFORE_GRAPHQL_EXECUTION, [
 				'context' => $context,
 				'level'   => Level::Info,
@@ -150,7 +151,7 @@ class QueryActionLogger {
 		?string $query_id
 	): void {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config ) ) {
+			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
 				return;
 			}
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
