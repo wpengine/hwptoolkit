@@ -111,8 +111,6 @@ class LogsRepository {
 
 	/**
 	 * Delete all log entries.
-	 *
-	 * @return void
 	 */
 	public function delete_all(): void {
 		global $wpdb;

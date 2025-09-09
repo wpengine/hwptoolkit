@@ -50,9 +50,9 @@ trait LoggingHelper {
 		}
 
 		// Check if the query is an introspection query and skip logging if it is.
-        if ( $is_enabled && $this->is_introspection_query( $query_string ) ) {
-            $is_enabled = false;
-        }
+		if ( $is_enabled && $this->is_introspection_query( $query_string ) ) {
+			$is_enabled = false;
+		}
 
 		/**
 		 * Filter the final decision on whether to log a request.
@@ -64,16 +64,15 @@ trait LoggingHelper {
 	}
 
 	/**
-     * Checks if a query is an introspection query.
-     *
-     * @param string|null $query_string The GraphQL query string.
-     * @return bool
-     */
-    protected function is_introspection_query( ?string $query_string ): bool {
-        if ( null === $query_string ) {
-            return false;
-        }
+	 * Checks if a query is an introspection query.
+	 *
+	 * @param string|null $query_string The GraphQL query string.
+	 */
+	protected function is_introspection_query( ?string $query_string ): bool {
+		if ( null === $query_string ) {
+			return false;
+		}
 
-        return strpos( $query_string, '__schema' ) !== false;
-    }
+		return strpos( $query_string, '__schema' ) !== false;
+	}
 }

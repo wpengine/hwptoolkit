@@ -128,7 +128,7 @@ class List_Table extends WP_List_Table {
 
 		// Nonce action WordPress uses for bulk actions is 'bulk-' . $this->_args['plural']
 		$nonce_action = 'bulk-' . $this->_args['plural'];
-		$nonce_value = $_REQUEST['_wpnonce'] ?? '';
+		$nonce_value  = $_REQUEST['_wpnonce'] ?? '';
 		
 		// Ensure nonce is a string for wp_verify_nonce
 		$nonce = is_string( $nonce_value ) ? $nonce_value : '';
@@ -162,7 +162,7 @@ class List_Table extends WP_List_Table {
 		if ( $deleted_count > 0 ) {
 			// Preserve filters during redirect
 			$preserved_filters = [];
-			$filter_keys = [ 'level_filter', 'start_date', 'end_date' ];
+			$filter_keys       = [ 'level_filter', 'start_date', 'end_date' ];
 
 			foreach ( $filter_keys as $key ) {
 				$value = $_REQUEST[ $key ] ?? null;
@@ -488,10 +488,12 @@ class List_Table extends WP_List_Table {
 			__DIR__ . '/../Templates/wpgraphql-logger-filters.php'
 		);
 
-		if ( file_exists( $template ) ) {
-			echo '<div class="alignleft actions">';
-			require $template; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-			echo '</div>';
+		if ( ! file_exists( $template ) ) {
+			return;
 		}
+
+		echo '<div class="alignleft actions">';
+		require $template; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+		echo '</div>';
 	}
 }
