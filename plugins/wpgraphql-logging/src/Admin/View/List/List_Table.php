@@ -126,14 +126,11 @@ class List_Table extends WP_List_Table {
 			return;
 		}
 
-		// Nonce action WordPress uses for bulk actions is 'bulk-' . $this->_args['plural']
 		$nonce_action = 'bulk-' . $this->_args['plural'];
 		$nonce_value  = $_REQUEST['_wpnonce'] ?? '';
 		
-		// Ensure nonce is a string for wp_verify_nonce
 		$nonce = is_string( $nonce_value ) ? $nonce_value : '';
 
-		// Fix for PHPStan: wp_verify_nonce returns int|false, need explicit boolean check
 		$nonce_result = wp_verify_nonce( $nonce, $nonce_action );
 		if ( false === $nonce_result ) {
 			wp_die( esc_html__( 'Nonce verification failed!', 'wpgraphql-logging' ) );
@@ -141,7 +138,7 @@ class List_Table extends WP_List_Table {
 
 		$deleted_count = 0;
 
-		// WordPress sometimes sends 'delete' for selected items
+		// WordPress sometimes sends 'delete' for selected items.
 		if ( in_array( $action, [ 'delete', 'bulk_delete' ], true ) && ! empty( $_REQUEST['log'] ) ) {
 			$ids = array_map( 'absint', (array) $_REQUEST['log'] );
 			// Remove redundant empty check since array_map always returns array
@@ -160,7 +157,6 @@ class List_Table extends WP_List_Table {
 		}
 
 		if ( $deleted_count > 0 ) {
-			// Preserve filters during redirect
 			$preserved_filters = [];
 			$filter_keys       = [ 'level_filter', 'start_date', 'end_date' ];
 
