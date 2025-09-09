@@ -122,7 +122,7 @@ class List_Table extends WP_List_Table {
 	public function process_bulk_action(): void {
 		$action = $this->current_action();
 
-		if ( ! in_array( $action, [ 'delete', 'bulk_delete', 'delete_all' ], true ) ) {
+		if ( ! in_array( $action, [ 'delete', 'delete_all' ], true ) ) {
 			return;
 		}
 
@@ -176,8 +176,19 @@ class List_Table extends WP_List_Table {
 				$redirect_url
 			);
 
-			wp_safe_redirect( esc_url_raw( $redirect_url ) );
-			exit;
+			if ( ! headers_sent() ) {
+				wp_safe_redirect( esc_url_raw( $redirect_url ) );
+				exit;
+			} else {
+				echo '<meta http-equiv="refresh" content="0;url=' . esc_url( $redirect_url ) . '">';
+				printf(
+					'<div class="notice notice-success"><p>%s <a href="%s">%s</a></p></div>',
+					esc_html__( 'Logs deleted successfully.', 'wpgraphql-logging' ),
+					esc_url( $redirect_url ),
+					esc_html__( 'Return to Logs', 'wpgraphql-logging' )
+				);
+				exit;
+			}
 		}
 	}
 	
