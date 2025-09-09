@@ -121,28 +121,36 @@ class List_Table extends WP_List_Table {
 	 */
 	public function process_bulk_action(): void {
 		$action = $this->current_action();
+
 		if ( ! in_array( $action, [ 'delete', 'bulk_delete', 'delete_all' ], true ) ) {
 			return;
 		}
 
+		// Nonce action WordPress uses for bulk actions is 'bulk-' . $this->_args['plural']
 		$nonce_action = 'bulk-' . $this->_args['plural'];
-		$nonce = $_REQUEST['_wpnonce'] ?? '';
+		$nonce_value = $_REQUEST['_wpnonce'] ?? '';
+		
+		// Ensure nonce is a string for wp_verify_nonce
+		$nonce = is_string( $nonce_value ) ? $nonce_value : '';
 
-		if ( false === wp_verify_nonce( $nonce, $nonce_action ) ) {
+		// Fix for PHPStan: wp_verify_nonce returns int|false, need explicit boolean check
+		$nonce_result = wp_verify_nonce( $nonce, $nonce_action );
+		if ( false === $nonce_result ) {
 			wp_die( esc_html__( 'Nonce verification failed!', 'wpgraphql-logging' ) );
 		}
 
 		$deleted_count = 0;
 
-		// WordPress sometimes sends 'delete' for selected items (action or action2), treat it as 'bulk_delete'.
+		// WordPress sometimes sends 'delete' for selected items
 		if ( in_array( $action, [ 'delete', 'bulk_delete' ], true ) && ! empty( $_REQUEST['log'] ) ) {
 			$ids = array_map( 'absint', (array) $_REQUEST['log'] );
-			if ( ! empty( $ids ) ) {
-				foreach ( $ids as $id ) {
+			// Remove redundant empty check since array_map always returns array
+			foreach ( $ids as $id ) {
+				if ( $id > 0 ) { // Only process valid IDs
 					$this->repository->delete( $id );
 				}
-				$deleted_count = count( $ids );
 			}
+			$deleted_count = count( array_filter( $ids, static fn( $id ) => $id > 0 ) );
 		}
 
 		if ( 'delete_all' === $action ) {
@@ -152,13 +160,14 @@ class List_Table extends WP_List_Table {
 		}
 
 		if ( $deleted_count > 0 ) {
-			// Preserve filters during redirect.
+			// Preserve filters during redirect
 			$preserved_filters = [];
 			$filter_keys = [ 'level_filter', 'start_date', 'end_date' ];
 
 			foreach ( $filter_keys as $key ) {
-				if ( ! empty( $_REQUEST[ $key ] ) ) {
-					$preserved_filters[ $key ] = sanitize_text_field( wp_unslash( (string) $_REQUEST[ $key ] ) );
+				$value = $_REQUEST[ $key ] ?? null;
+				if ( ! empty( $value ) && is_string( $value ) ) {
+					$preserved_filters[ $key ] = sanitize_text_field( wp_unslash( $value ) );
 				}
 			}
 
@@ -175,8 +184,7 @@ class List_Table extends WP_List_Table {
 			exit;
 		}
 	}
-
-
+	
 	/**
 	 * Get the columns for the logs table.
 	 *
