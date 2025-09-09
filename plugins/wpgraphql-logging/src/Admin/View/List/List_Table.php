@@ -128,7 +128,7 @@ class List_Table extends WP_List_Table {
 		$nonce_action = 'bulk-' . $this->_args['plural'];
 		$nonce = $_REQUEST['_wpnonce'] ?? '';
 
-		if ( ! wp_verify_nonce( $nonce, $nonce_action ) ) {
+		if ( false === wp_verify_nonce( $nonce, $nonce_action ) ) {
 			wp_die( esc_html__( 'Nonce verification failed!', 'wpgraphql-logging' ) );
 		}
 
@@ -449,6 +449,7 @@ class List_Table extends WP_List_Table {
 	 * @param string $which The location of the nav ('top' or 'bottom').
 	 */
 	protected function display_tablenav( $which ): void {
+		$which_position = ( 'top' === $which ) ? 'top' : 'bottom';
 		?>
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
 			<?php if ( 'top' === $which ) : ?>
@@ -457,12 +458,12 @@ class List_Table extends WP_List_Table {
 			<?php endif; ?>
 
 			<div class="alignleft actions bulkactions">
-				<?php $this->bulk_actions( $which ); ?>
+				<?php $this->bulk_actions( $which_position ); ?>
 			</div>
 			
 			<?php
 			$this->extra_tablenav( $which );
-			$this->pagination( $which );
+			$this->pagination( $which_position );
 			?>
 
 			<br class="clear" />
