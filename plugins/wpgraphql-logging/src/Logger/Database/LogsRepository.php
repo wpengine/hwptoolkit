@@ -114,10 +114,18 @@ class LogsRepository {
 	 *
 	 * @return bool True if all logs were deleted successfully, false otherwise.
 	 */
-	public function delete_all(): bool {
+	public function delete_all(): void {
 		global $wpdb;
-		$table_name = DatabaseEntity::get_table_name();
-		$result     = $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %s', $table_name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-		return false !== $result;
+
+		if ( isset( $this->table ) && ! empty( $this->table ) ) {
+			$table = $this->table;
+		} else {
+			$table = $wpdb->prefix . 'wpgraphql_logging';
+		}
+		$table_quoted = "`" . str_replace( "`", "``", $table ) . "`";
+		$sql = "TRUNCATE TABLE {$table_quoted}";
+
+		// Execute
+		$wpdb->query( $sql );
 	}
 }

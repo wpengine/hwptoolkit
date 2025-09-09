@@ -115,21 +115,67 @@ class List_Table extends WP_List_Table {
 
 	/**
 	 * Handle bulk actions.
+	 *
+	 * @phpcs:disable WordPress.Security.NonceVerification.Missing
+	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
 	 */
 	public function process_bulk_action(): void {
-		$repository = $this->repository;
+		$action = $this->current_action();
+		if ( ! in_array( $action, [ 'delete', 'bulk_delete', 'delete_all' ], true ) ) {
+			return;
+		}
 
-		if ( 'delete' === $this->current_action() && ! empty( $_POST['log'] ) ) { // @phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$ids = array_map( 'absint', (array) $_POST['log'] ); // @phpcs:ignore WordPress.Security.NonceVerification.Missing
-			foreach ( $ids as $id ) {
-				$repository->delete( $id );
+		$nonce_action = 'bulk-' . $this->_args['plural'];
+		$nonce = $_REQUEST['_wpnonce'] ?? '';
+
+		if ( ! wp_verify_nonce( $nonce, $nonce_action ) ) {
+			wp_die( esc_html__( 'Nonce verification failed!', 'wpgraphql-logging' ) );
+		}
+
+		$deleted_count = 0;
+
+		// WordPress sometimes sends 'delete' for selected items (action or action2), treat it as 'bulk_delete'.
+		if ( in_array( $action, [ 'delete', 'bulk_delete' ], true ) && ! empty( $_REQUEST['log'] ) ) {
+			$ids = array_map( 'absint', (array) $_REQUEST['log'] );
+			if ( ! empty( $ids ) ) {
+				foreach ( $ids as $id ) {
+					$this->repository->delete( $id );
+				}
+				$deleted_count = count( $ids );
 			}
 		}
 
-		if ( 'delete_all' === $this->current_action() ) {
-			$repository->delete_all();
+		if ( 'delete_all' === $action ) {
+			$count_before_delete = $this->repository->get_log_count( [] );
+			$this->repository->delete_all();
+			$deleted_count = $count_before_delete;
+		}
+
+		if ( $deleted_count > 0 ) {
+			// Preserve filters during redirect.
+			$preserved_filters = [];
+			$filter_keys = [ 'level_filter', 'start_date', 'end_date' ];
+
+			foreach ( $filter_keys as $key ) {
+				if ( ! empty( $_REQUEST[ $key ] ) ) {
+					$preserved_filters[ $key ] = sanitize_text_field( wp_unslash( (string) $_REQUEST[ $key ] ) );
+				}
+			}
+
+			$redirect_url = remove_query_arg( [ 'action', 'action2', 'log', '_wpnonce' ] );
+			$redirect_url = add_query_arg(
+				array_merge(
+					[ 'deleted_count' => $deleted_count ],
+					$preserved_filters
+				),
+				$redirect_url
+			);
+
+			wp_safe_redirect( esc_url_raw( $redirect_url ) );
+			exit;
 		}
 	}
+
 
 	/**
 	 * Get the columns for the logs table.
@@ -398,17 +444,45 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Render extra table navigation controls.
+	 * Display the table navigation and actions.
 	 *
 	 * @param string $which The location of the nav ('top' or 'bottom').
 	 */
-	protected function extra_tablenav( $which ): void {
+	protected function display_tablenav( $which ): void {
+		?>
+		<div class="tablenav <?php echo esc_attr( $which ); ?>">
+			<?php if ( 'top' === $which ) : ?>
+				<?php $this->render_custom_filters(); ?>
+				<?php wp_nonce_field( 'bulk-' . $this->_args['plural'] ); ?>
+			<?php endif; ?>
 
-		// Only display above the table.
-		if ( 'top' !== $which ) {
-			return;
+			<div class="alignleft actions bulkactions">
+				<?php $this->bulk_actions( $which ); ?>
+			</div>
+			
+			<?php
+			$this->extra_tablenav( $which );
+			$this->pagination( $which );
+			?>
+
+			<br class="clear" />
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render custom filter controls.
+	 */
+	protected function render_custom_filters(): void {
+		$template = apply_filters(
+			'wpgraphql_logging_filters_template',
+			__DIR__ . '/../Templates/wpgraphql-logger-filters.php'
+		);
+
+		if ( file_exists( $template ) ) {
+			echo '<div class="alignleft actions">';
+			require $template; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+			echo '</div>';
 		}
-		$template = apply_filters( 'wpgraphql_logging_filters_template', __DIR__ . '/../Templates/wpgraphql-logger-filters.php' );
-		require_once $template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 }
