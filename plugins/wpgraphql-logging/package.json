@@ -1,6 +1,6 @@
 {
 	"name": "@wpengine/wpgraphql-logging-wordpress-plugin",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"private": true,
 	"description": "A POC plugin for logging WPGraphQL queries.",
 	"scripts": {
