@@ -58,7 +58,7 @@ class Settings_Page {
 	 * Initializes the settings page.
 	 */
 	public static function init(): ?Settings_Page {
-		if ( ! is_admin() ) {
+		if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
 			return null;
 		}
 		if ( ! isset( self::$instance ) || ! ( is_a( self::$instance, self::class ) ) ) {
