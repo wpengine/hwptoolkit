@@ -7,7 +7,7 @@
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
- * Version: 0.0.10
+ * Version: 0.0.11
  * Text Domain: hwp-previews
  * Domain Path: /languages
  * Requires at least: 6.0
@@ -67,7 +67,7 @@ if ( ! function_exists( 'hwp_previews_constants' ) ) {
 	 */
 	function hwp_previews_constants(): void {
 		if ( ! defined( 'HWP_PREVIEWS_VERSION' ) ) {
-			define( 'HWP_PREVIEWS_VERSION', '0.0.10' );
+			define( 'HWP_PREVIEWS_VERSION', '0.0.11' );
 		}
 
 		if ( ! defined( 'HWP_PREVIEWS_PLUGIN_DIR' ) ) {

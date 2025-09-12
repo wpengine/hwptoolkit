@@ -44,10 +44,10 @@ install_db() {
 	# create database
 	echo -e "$(status_message "Creating the database (if it does not exist)...")"
 
-	RESULT=$(mysql -u $WORDPRESS_DB_USER --password="$WORDPRESS_DB_PASSWORD" --skip-column-names -e "SHOW DATABASES LIKE '$WORDPRESS_DB_NAME'"$EXTRA)
-	if [ "$RESULT" != $WORDPRESS_DB_NAME ]; then
-		mysqladmin create $WORDPRESS_DB_NAME --user="$WORDPRESS_DB_USER" --password="$WORDPRESS_DB_PASSWORD"$EXTRA
-	fi
+    RESULT=$(mysql --no-defaults --ssl=false -u $WORDPRESS_DB_USER --password="$WORDPRESS_DB_PASSWORD" --skip-column-names -e "SHOW DATABASES LIKE '$WORDPRESS_DB_NAME'"$EXTRA)
+    if [ "$RESULT" != $WORDPRESS_DB_NAME ]; then
+        mysqladmin --no-defaults --ssl=false create $WORDPRESS_DB_NAME --user="$WORDPRESS_DB_USER" --password="$WORDPRESS_DB_PASSWORD"$EXTRA
+    fi
 }
 
 download() {
@@ -195,15 +195,6 @@ post_setup() {
 	echo -e "$(status_message "Disabling update checks...")"
 	wp config set WP_AUTO_UPDATE_CORE false --raw --type=constant --quiet --allow-root
 	wp config set AUTOMATIC_UPDATER_DISABLED true --raw --type=constant --quiet --allow-root
-
-	# Export the db for codeception to use
-	SQLDUMP="$WORDPRESS_ROOT_DIR/wp-content/plugins/$PLUGIN_SLUG/tests/_data/dump.sql"
-	mkdir -p "$(dirname "$SQLDUMP")"
-	if [ ! -f "$SQLDUMP" ]; then
-		echo -e "$(status_message "Exporting test database dump...")"
-
-		wp db export "$SQLDUMP" --allow-root
-	fi
 
 	echo -e "$(status_message "Installed plugins")"
 	wp plugin list --allow-root

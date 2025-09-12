@@ -9,7 +9,7 @@
 -----
 
 [![Version](https://img.shields.io/github/v/release/wpengine/hwptoolkit?include_prereleases&label=previews&filter=%40wpengine%2Fhwp-previews-wordpress-plugin-*)](https://github.com/wpengine/hwptoolkit/releases)
-[![License](https://img.shields.io/badge/license-GPLv2%2B-green)]()
+[![License](https://img.shields.io/badge/license-GPLv2%2B-green)](https://www.gnu.org/licenses/gpl-2.0.html)
 ![GitHub forks](https://img.shields.io/github/forks/wpengine/hwptoolkit?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/wpengine/hwptoolkit?style=social)
 [![Testing Integration](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20codeception%20tests&label=Automated%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
@@ -21,7 +21,7 @@
 
 
 > [!CAUTION]
-> This plugin is currently in an beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible. You can create an issue at [https://github.com/wpengine/hwptoolkit/issues](https://github.com/wpengine/hwptoolkit/issues)
+> This plugin is currently in a beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible. You can create an issue at [https://github.com/wpengine/hwptoolkit/issues](https://github.com/wpengine/hwptoolkit/issues)
 
 ---
 
@@ -40,7 +40,7 @@
 
 HWP Previews is a robust and extensible WordPress plugin that centralizes all preview configurations into a user-friendly settings interface.
 It empowers site administrators and developers to tailor preview behaviors for each public post type independently, facilitating seamless headless or decoupled workflows.
-With HWP Previews, you can define dynamic URL templates, enforce unique slugs for drafts, allow all post statuses be used as parent and extend functionality through flexible hooks and filters, ensuring a consistent and conflict-free preview experience across diverse environments.
+With HWP Previews, you can define dynamic URL templates, allow posts of all statuses to be used as parents, and extend functionality through flexible hooks and filters, ensuring a consistent and conflict-free preview experience across diverse environments.
 
 
 
@@ -53,7 +53,7 @@ With HWP Previews, you can define dynamic URL templates, enforce unique slugs fo
 
 - **Enable/Disable Previews**: Turn preview functionality on or off for each public post type (including custom types).
 - **Custom URL Templates**: Define preview URLs using placeholder tokens for dynamic content.
-- **Parent Status**: Allow posts of **all** statuses to be used as parent within hierarchical post types.
+- **Parent Status**: Allow posts of **all** statuses to be used as parents within hierarchical post types.
 - **Highly Customizable**: Extend core behavior with a comprehensive set of actions and filters.
 - **Faust Compatibility**: The plugin is compatible with [Faust.js](https://faustjs.org/) and the [FaustWP plugin](https://github.com/wpengine/faustjs/tree/canary/plugins/faustwp).
 
@@ -64,9 +64,9 @@ This guide will help you set up your first headless preview link for the "Posts"
 
 1.  **Activate the Plugin:** Ensure "HWP Previews" is installed and activated.
 2.  **Navigate to Settings:** Go to **Settings > HWP Previews** in your WordPress admin dashboard.
-3.  **Enable for Posts:** On the "Posts" tab check the "Enable HWP Previews" box. If you have Faust installed this option will be enabled by default. Find more information about Faust integration below.
+3.  **Enable for Posts:** On the "Posts" tab, check the "Enable HWP Previews" box. If you have Faust installed, this option will be enabled by default. Find more information about Faust integration below.
 4.  **Set the Preview URL:** In the "Preview URL Template" field for Posts, enter the URL for your front-end application's preview endpoint. Use parameters to add dynamic information that you want to access.
-5.  **Save and Test:** Save changes and go to any post, make a change, and click the "Preview" button. You should be redirected to the URL you just configured.
+5.  **Save and Test:** Save changes, go to any post, make a change, and click the "Preview" button. You should be redirected to the URL you just configured.
 
 ---
 
@@ -81,15 +81,16 @@ hwp-previews/
 │   ├── Preview/                # Preview URL logic, template resolver, helpers
 │   ├── Plugin.php              # Main plugin class (entry point)
 │   └── Autoload.php            # PSR-4 autoloader
+├── examples/                   # Example front-end integrations for WP GraphQL and REST
 ├── tests/                      # All test suites
-│   ├── wpunit/                 # WPBrowser/Codeception unit 
-├── [hwp-previews.php]
-├── [activation.php]
-├── [composer.json]
-├── [deactivation.php]
-├── [ACTIONS_AND_FILTERS.md]
-├── [TESTING.md]
-├── [README.md]
+│   ├── wpunit/                 # WPBrowser/Codeception unit
+├── hwp-previews.php
+├── activation.php
+├── composer.json
+├── deactivation.php
+├── ACTIONS_AND_FILTERS.md
+├── TESTING.md
+├── README.md
 ```
 
 ## Configuration
@@ -101,12 +102,12 @@ HWP Previews configuration located at **Settings > HWP Previews** page in your W
 For each public post type, you can configure:
 
 - **Enable HWP Previews:** This is the master switch for the post type. If disabled, WordPress will revert to its default preview behavior for these posts.
-- **Allow All Statuses as Parent:** This option is only available for Pages type. By default, WordPress only allows published posts to be parents. Enable this to build parent-child relationships using draft or pending posts.
+- **Allow All Statuses as Parent:** This option is only available for hierarchical post types like Pages. By default, WordPress only allows published posts to be parents. Enable this to build parent-child relationships using draft or pending posts.
 - **Load Previews in Iframe:** When enabled, the preview will be displayed directly within the WordPress editor in a sandboxed `<iframe>`. This provides a more integrated experience but requires your front-end to be configured to allow embedding. If disabled, clicking "Preview" will open a new browser tab.
-- **Preview URL:** You will be redirected to this link, whenever you click the preview button for the enabled post type.
+- **Preview URL:** You will be redirected to this link whenever you click the preview button for the enabled post type.
 
 > [!NOTE]  
-> Retrieving of settings is cached for performance.
+> Retrieval of settings is cached for performance.
 
 ### Parameters
 
@@ -132,7 +133,9 @@ Default post statuses are `publish`, `future`, `draft`, `pending`, `private`, `a
 
 HWP Previews is framework and API agnostic, meaning you can integrate it with any front-end application and with any data-fetching method (WPGraphQL, REST).
 
-To get started quickly you can use our [example based on Next.js and WPGraphQL](https://github.com/wpengine/hwptoolkit/tree/main/examples/next/hwp-preview-wpgraphql). This example uses the Draft Mode feature of Next.js.
+To get started quickly you can use our [example based on Next.js and WPGraphQL](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews/examples/hwp-preview-wpgraphql). This example uses the Draft Mode feature of Next.js.
+
+For REST users, you can follow our example [here](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews/examples/hwp-preview-rest) with Next.js App Router.
 
 To implement your own approach from scratch you can refer to the appropriate documentation pages for each framework. HWP Previews relies on custom preview URLs, allowing you to integrate any method. Below you can find the guides to implement framework-specific preview mode.
 

@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.11
+
+### Patch Changes
+
+- [#406](https://github.com/wpengine/hwptoolkit/pull/406) [`7e5a134`](https://github.com/wpengine/hwptoolkit/commit/7e5a13476a3bfba0b92479ff2a03acc01875ff28) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Fix for the admin settings page to check capabilities.
+
 ## 0.0.10
 
 ### Patch Changes
