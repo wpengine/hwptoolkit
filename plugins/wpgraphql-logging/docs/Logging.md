@@ -41,7 +41,7 @@ Processors add extra data to each log record. The plugin includes several defaul
 - **MemoryPeakUsageProcessor** - Adds peak memory usage
 - **WebProcessor** - Adds web request data (IP, method, URI, etc.)
 - **ProcessIdProcessor** - Adds the process ID
-- **WPGraphQLQueryProcessor** - Adds GraphQL query, variables, and operation name
+- **RequestHeadersProcessor** - Adds requests headers
 
 ## Default Components
 

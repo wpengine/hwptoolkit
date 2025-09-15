@@ -13,7 +13,6 @@ use Monolog\Processor\ProcessorInterface;
 use Monolog\Processor\WebProcessor;
 use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
 use WPGraphQL\Logging\Logger\Processors\RequestHeadersProcessor;
-use WPGraphQL\Logging\Logger\Processors\WPGraphQLQueryProcessor;
 
 /**
  * LoggerService class for managing the Monolog logger instance.
@@ -225,7 +224,6 @@ class LoggerService {
 			new MemoryPeakUsageProcessor(), // Logs memory peak data.
 			new WebProcessor(), // Logs web request data. e.g. IP address, request method, URI, etc.
 			new ProcessIdProcessor(), // Logs the process ID.
-			new WPGraphQLQueryProcessor(), // Custom processor to capture GraphQL request data.
 			new RequestHeadersProcessor(), // Custom processor to capture request headers.
 		];
 

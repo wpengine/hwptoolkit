@@ -115,6 +115,6 @@ class LogsRepository {
 	public function delete_all(): void {
 		global $wpdb;
 		$table_name = DatabaseEntity::get_table_name();
-		$wpdb->query( $wpdb->prepare( "DELETE FROM %i", $table_name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->query( $wpdb->prepare( 'DELETE FROM %i', $table_name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 	}
 }

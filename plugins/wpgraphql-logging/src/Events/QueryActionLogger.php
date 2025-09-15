@@ -55,11 +55,11 @@ class QueryActionLogger {
 	 *
 	 * This method hooks into the `do_graphql_request` action.
 	 *
-	 * @param string                    $query
+	 * @param string|null               $query
 	 * @param string|null               $operation_name
 	 * @param array<string, mixed>|null $variables
 	 */
-	public function log_pre_request( string $query, ?string $operation_name, ?array $variables ): void {
+	public function log_pre_request( ?string $query, ?string $operation_name, ?array $variables ): void {
 		try {
 			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
 				return;
@@ -114,7 +114,7 @@ class QueryActionLogger {
 			if ( ! in_array( Events::BEFORE_GRAPHQL_EXECUTION, $selected_events, true ) ) {
 				return;
 			}
-			
+
 			$payload = EventManager::transform( Events::BEFORE_GRAPHQL_EXECUTION, [
 				'context' => $context,
 				'level'   => Level::Info,
@@ -135,7 +135,7 @@ class QueryActionLogger {
 	 * @param array<mixed>|\GraphQL\Executor\ExecutionResult $response
 	 * @param \WPGraphQL\WPSchema                            $schema
 	 * @param string|null                                    $operation
-	 * @param string                                         $query
+	 * @param string|null                                    $query
 	 * @param array<string, mixed>|null                      $variables
 	 * @param \WPGraphQL\Request                             $request
 	 * @param string|null                                    $query_id
@@ -145,7 +145,7 @@ class QueryActionLogger {
 		array|ExecutionResult $response,
 		WPSchema $schema,
 		?string $operation,
-		string $query,
+		?string $query,
 		?array $variables,
 		Request $request,
 		?string $query_id
