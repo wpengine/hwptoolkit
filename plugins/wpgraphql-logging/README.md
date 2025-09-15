@@ -89,7 +89,6 @@ wpgraphql-logging/
 
 - **Monolog-powered logging pipeline**
   - Default handler: stores logs in a WordPress table (`{$wpdb->prefix}wpgraphql_logging`).
-  - Default processors: Memory usage, memory peak, web request, process ID, and `WPGraphQLQueryProcessor` (adds `wpgraphql_query`, `wpgraphql_operation_name`, `wpgraphql_variables`).
 
 - **Simple developer API**
   - `Plugin::on()` to subscribe, `Plugin::emit()` to publish, `Plugin::transform()` to modify payloads.

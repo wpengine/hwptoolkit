@@ -128,7 +128,7 @@ class List_Table extends WP_List_Table {
 
 		$nonce_action = 'bulk-' . $this->_args['plural'];
 		$nonce_value  = $_REQUEST['_wpnonce'] ?? '';
-		
+
 		$nonce = is_string( $nonce_value ) ? $nonce_value : '';
 
 		$nonce_result = wp_verify_nonce( $nonce, $nonce_action );
@@ -156,42 +156,44 @@ class List_Table extends WP_List_Table {
 			$deleted_count = $count_before_delete;
 		}
 
-		if ( $deleted_count > 0 ) {
-			$preserved_filters = [];
-			$filter_keys       = [ 'level_filter', 'start_date', 'end_date' ];
+		if ( $deleted_count <= 0 ) {
+			return;
+		}
 
-			foreach ( $filter_keys as $key ) {
-				$value = $_REQUEST[ $key ] ?? null;
-				if ( ! empty( $value ) && is_string( $value ) ) {
-					$preserved_filters[ $key ] = sanitize_text_field( wp_unslash( $value ) );
-				}
-			}
+		$preserved_filters = [];
+		$filter_keys       = [ 'level_filter', 'start_date', 'end_date' ];
 
-			$redirect_url = remove_query_arg( [ 'action', 'action2', 'log', '_wpnonce' ] );
-			$redirect_url = add_query_arg(
-				array_merge(
-					[ 'deleted_count' => $deleted_count ],
-					$preserved_filters
-				),
-				$redirect_url
-			);
-
-			if ( ! headers_sent() ) {
-				wp_safe_redirect( esc_url_raw( $redirect_url ) );
-				exit;
-			} else {
-				echo '<meta http-equiv="refresh" content="0;url=' . esc_url( $redirect_url ) . '">';
-				printf(
-					'<div class="notice notice-success"><p>%s <a href="%s">%s</a></p></div>',
-					esc_html__( 'Logs deleted successfully.', 'wpgraphql-logging' ),
-					esc_url( $redirect_url ),
-					esc_html__( 'Return to Logs', 'wpgraphql-logging' )
-				);
-				exit;
+		foreach ( $filter_keys as $key ) {
+			$value = $_REQUEST[ $key ] ?? null;
+			if ( ! empty( $value ) && is_string( $value ) ) {
+				$preserved_filters[ $key ] = sanitize_text_field( wp_unslash( $value ) );
 			}
 		}
+
+		$redirect_url = remove_query_arg( [ 'action', 'action2', 'log', '_wpnonce' ] );
+		$redirect_url = add_query_arg(
+			array_merge(
+				[ 'deleted_count' => $deleted_count ],
+				$preserved_filters
+			),
+			$redirect_url
+		);
+
+		if ( ! headers_sent() ) {
+			wp_safe_redirect( esc_url_raw( $redirect_url ) );
+			exit;
+		}
+
+		echo '<meta http-equiv="refresh" content="0;url=' . esc_url( $redirect_url ) . '">';
+		printf(
+			'<div class="notice notice-success"><p>%s <a href="%s">%s</a></p></div>',
+			esc_html__( 'Logs deleted successfully.', 'wpgraphql-logging' ),
+			esc_url( $redirect_url ),
+			esc_html__( 'Return to Logs', 'wpgraphql-logging' )
+		);
+		exit;
 	}
-	
+
 	/**
 	 * Get the columns for the logs table.
 	 *
@@ -475,7 +477,7 @@ class List_Table extends WP_List_Table {
 			<div class="alignleft actions bulkactions">
 				<?php $this->bulk_actions( $which_position ); ?>
 			</div>
-			
+
 			<?php
 			$this->extra_tablenav( $which );
 			$this->pagination( $which_position );

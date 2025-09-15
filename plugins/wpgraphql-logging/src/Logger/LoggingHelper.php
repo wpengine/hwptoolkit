@@ -18,6 +18,10 @@ trait LoggingHelper {
 	 * phpcs:disable Generic.Metrics.CyclomaticComplexity, SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
 	 */
 	protected function is_logging_enabled( array $config, ?string $query_string = null ): bool {
+		if ( null === $query_string ) {
+			return false;
+		}
+
 		$is_enabled = true;
 		// Check the main "Enabled" checkbox.
 		if ( ! (bool) ( $config[ Basic_Configuration_Tab::ENABLED ] ?? false ) ) {

@@ -12,7 +12,7 @@ use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
 
 /**
- * Class WPGraphQLQueryProcessorTest
+ * Class WordPressDatabaseHandlerTest
  *
  * Tests for the WordPressDatabaseHandler class.
  *
