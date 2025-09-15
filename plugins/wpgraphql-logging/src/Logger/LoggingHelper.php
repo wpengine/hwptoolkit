@@ -28,6 +28,11 @@ trait LoggingHelper {
 			$is_enabled = false;
 		}
 
+		// Do not log the seedQuery for Faust.js
+		if ( $is_enabled && ( 'query GetSeedNode' === trim( $query_string ) ) ) {
+			$is_enabled = false;
+		}
+
 		// Check if the current user is an admin if that option is enabled.
 		if ( $is_enabled && ( (bool) ( $config[ Basic_Configuration_Tab::ADMIN_USER_LOGGING ] ?? false ) ) ) {
 			if ( ! current_user_can( 'manage_options' ) ) {
