@@ -53,6 +53,20 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 	public const EVENT_LOG_SELECTION = 'event_log_selection';
 
 	/**
+	 * The field ID for the seed query exclusion for Faust.js.
+	 *
+	 * @var string
+	 */
+	public const SEED_QUERY = 'seed_query';
+
+	/**
+	 * The field ID for whether to log the response from the WPGGraphQL query into the context object.
+	 *
+	 * @var string
+	 */
+	public const LOG_RESPONSE = 'log_response';
+
+	/**
 	 * Get the name/identifier of the tab.
 	 */
 	public function get_name(): string {
@@ -132,6 +146,23 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 			'',
 			__( 'Select which points in the request lifecycle to log. By default, no events are logged.', 'wpgraphql-logging' ),
 			true
+		);
+
+
+		$fields[ self::SEED_QUERY ] = new Checkbox_Field(
+			self::SEED_QUERY,
+			$this->get_name(),
+			__( 'Log Seed Query', 'wpgraphql-logging' ),
+			'',
+			__( 'Whether or not to log the Faust.js seed query.', 'wpgraphql-logging' ),
+		);
+
+		$fields[ self::LOG_RESPONSE ] = new Checkbox_Field(
+			self::LOG_RESPONSE,
+			$this->get_name(),
+			__( 'Log Response', 'wpgraphql-logging' ),
+			'',
+			__( 'Whether or not to log the response from the WPGraphQL query into the context object.', 'wpgraphql-logging' ),
 		);
 
 		return apply_filters( 'wpgraphql_logging_basic_configuration_fields', $fields );
