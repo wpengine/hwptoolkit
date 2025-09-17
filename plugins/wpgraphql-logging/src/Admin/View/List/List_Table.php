@@ -131,7 +131,7 @@ class List_Table extends WP_List_Table {
 		}
 
 		$nonce_action = 'bulk-' . esc_attr( $this->_args['plural'] );
-		$nonce_value  = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( (string) $_REQUEST['_wpnonce'] ) ) : '';
+		$nonce_value  = isset( $_REQUEST['_wpnonce'] ) && is_string( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
 
 		$nonce = is_string( $nonce_value ) ? $nonce_value : '';
 
@@ -168,8 +168,8 @@ class List_Table extends WP_List_Table {
 		$filter_keys       = [ 'level_filter', 'start_date', 'end_date' ];
 
 		foreach ( $filter_keys as $key ) {
-			$value = isset( $_REQUEST[ $key ] ) ? sanitize_text_field( wp_unslash( (string) $_REQUEST[ $key ] ) ) : null;
-			if ( ! empty( $value ) && is_string( $value ) ) {
+			$value = isset( $_REQUEST[ $key ] ) && is_string( $_REQUEST[ $key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $key ] ) ) : null;
+			if ( ! empty( $value ) ) {
 				$preserved_filters[ $key ] = $value;
 			}
 		}
