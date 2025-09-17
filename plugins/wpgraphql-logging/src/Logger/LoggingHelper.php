@@ -28,7 +28,7 @@ trait LoggingHelper {
 			$is_enabled = false;
 		}
 
-		// Do not log the seedQuery for Faust.js
+		// Do not log the seedQuery for Faust.js.
 		if ( $is_enabled && ( 'query GetSeedNode' === trim( $query_string ) ) ) {
 			$is_enabled = false;
 		}

@@ -60,5 +60,4 @@ final class Events {
 	 * @var string
 	 */
 	public const REQUEST_RESULTS = 'graphql_request_results';
-
 }

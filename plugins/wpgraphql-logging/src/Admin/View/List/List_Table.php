@@ -118,6 +118,10 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @phpcs:disable WordPress.Security.NonceVerification.Missing
 	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
+	 * @phpcs:disable Generic.Metrics.NestingLevel.TooHigh
+	 * @phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
+	 * @phpcs:disable Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
 	 */
 	public function process_bulk_action(): void {
 		$action = $this->current_action();
@@ -126,8 +130,8 @@ class List_Table extends WP_List_Table {
 			return;
 		}
 
-		$nonce_action = 'bulk-' . $this->_args['plural'];
-		$nonce_value  = $_REQUEST['_wpnonce'] ?? '';
+		$nonce_action = 'bulk-' . esc_attr( $this->_args['plural'] );
+		$nonce_value  = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( (string) $_REQUEST['_wpnonce'] ) ) : '';
 
 		$nonce = is_string( $nonce_value ) ? $nonce_value : '';
 
@@ -141,9 +145,9 @@ class List_Table extends WP_List_Table {
 		// WordPress sometimes sends 'delete' for selected items.
 		if ( in_array( $action, [ 'delete', 'bulk_delete' ], true ) && ! empty( $_REQUEST['log'] ) ) {
 			$ids = array_map( 'absint', (array) $_REQUEST['log'] );
-			// Remove redundant empty check since array_map always returns array
+			// Remove redundant empty check since array_map always returns array.
 			foreach ( $ids as $id ) {
-				if ( $id > 0 ) { // Only process valid IDs
+				if ( $id > 0 ) { // Only process valid IDs.
 					$this->repository->delete( $id );
 				}
 			}
@@ -164,9 +168,9 @@ class List_Table extends WP_List_Table {
 		$filter_keys       = [ 'level_filter', 'start_date', 'end_date' ];
 
 		foreach ( $filter_keys as $key ) {
-			$value = $_REQUEST[ $key ] ?? null;
+			$value = isset( $_REQUEST[ $key ] ) ? sanitize_text_field( wp_unslash( (string) $_REQUEST[ $key ] ) ) : null;
 			if ( ! empty( $value ) && is_string( $value ) ) {
-				$preserved_filters[ $key ] = sanitize_text_field( wp_unslash( $value ) );
+				$preserved_filters[ $key ] = $value;
 			}
 		}
 
