@@ -9,6 +9,7 @@ use Monolog\Level;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Logger\LoggingHelper;
+use WPGraphQL\Logging\Logger\Rules\EnabledRule;
 use WPGraphQL\Request;
 
 /**
@@ -62,10 +63,6 @@ class QueryFilterLogger {
 	 */
 	public function log_graphql_request_data( array $query_data ): array {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config ) ) {
-				return $query_data;
-			}
-
 			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
 			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
 				return $query_data;
@@ -74,8 +71,13 @@ class QueryFilterLogger {
 				return $query_data;
 			}
 
+			$query_string = $query_data['query'] ?? null;
+			if ( ! $this->is_logging_enabled( $this->config, $query_string ) ) {
+				return $query_data;
+			}
+
 			$context = [
-				'query'          => $query_data['query'] ?? null,
+				'query'          => $query_string,
 				'variables'      => $query_data['variables'] ?? null,
 				'operation_name' => $query_data['operationName'] ?? null,
 			];
@@ -115,7 +117,7 @@ class QueryFilterLogger {
 		?string $query_id
 	): array|ExecutionResult {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config ) ) {
+			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
 				return $response;
 			}
 
@@ -169,7 +171,9 @@ class QueryFilterLogger {
 	 * @return array<string, string> The filtered array of headers.
 	 */
 	public function add_logging_headers( array $headers ): array {
-		if ( ! $this->is_logging_enabled( $this->config ) ) {
+
+		$rule = new EnabledRule();
+		if ( ! $rule->passes( $this->config ) ) {
 			return $headers;
 		}
 
