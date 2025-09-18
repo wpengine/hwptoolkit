@@ -6,13 +6,12 @@ namespace WPGraphQL\Logging\Logger;
 
 use WPGraphQL\Logging\Logger\Rules\AdminUserRule;
 use WPGraphQL\Logging\Logger\Rules\EnabledRule;
-use WPGraphQL\Logging\Logger\Rules\IntrospectionQueryRule;
+use WPGraphQL\Logging\Logger\Rules\ExcludeQueryRule;
 use WPGraphQL\Logging\Logger\Rules\IpRestrictionsRule;
 use WPGraphQL\Logging\Logger\Rules\LogResponseRule;
 use WPGraphQL\Logging\Logger\Rules\QueryNullRule;
 use WPGraphQL\Logging\Logger\Rules\RuleManager;
 use WPGraphQL\Logging\Logger\Rules\SamplingRateRule;
-use WPGraphQL\Logging\Logger\Rules\SeedQueryRule;
 
 /**
  * Trait for shared logging helper methods.
@@ -54,8 +53,7 @@ trait LoggingHelper {
 		$this->rule_manager->add_rule( new EnabledRule() );
 		$this->rule_manager->add_rule( new AdminUserRule() );
 		$this->rule_manager->add_rule( new IpRestrictionsRule() );
-		$this->rule_manager->add_rule( new IntrospectionQueryRule() );
-		$this->rule_manager->add_rule( new SeedQueryRule() );
+		$this->rule_manager->add_rule( new ExcludeQueryRule() );
 		apply_filters( 'wpgraphql_logging_rule_manager', $this->rule_manager );
 		return $this->rule_manager;
 	}
