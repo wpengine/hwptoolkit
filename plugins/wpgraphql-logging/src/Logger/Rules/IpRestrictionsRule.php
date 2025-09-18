@@ -29,9 +29,6 @@ class IpRestrictionsRule implements LoggingRuleInterface {
 			return true;
 		}
 		$allowed_ips = array_map( 'trim', explode( ',', $ip_restrictions ) );
-		if ( empty( $allowed_ips ) ) {
-			return true;
-		}
 		if ( ! isset( $_SERVER['REMOTE_ADDR'] ) ) { // @phpcs:ignore WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders
 			return false;
 		}
@@ -47,6 +44,6 @@ class IpRestrictionsRule implements LoggingRuleInterface {
 	 * Get the rule name for debugging.
 	 */
 	public function get_name(): string {
-		return 'ip_restrictions_rule';
+		return 'ip_restrictions';
 	}
 }

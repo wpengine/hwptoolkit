@@ -11,6 +11,7 @@ use WPGraphQL\Logging\Logger\Rules\IpRestrictionsRule;
 use WPGraphQL\Logging\Logger\Rules\QueryNullRule;
 use WPGraphQL\Logging\Logger\Rules\RuleManager;
 use WPGraphQL\Logging\Logger\Rules\SamplingRateRule;
+use WPGraphQL\Logging\Logger\Rules\SeedQueryRule;
 
 /**
  * Trait for shared logging helper methods.
@@ -41,6 +42,7 @@ trait LoggingHelper {
 		$this->rule_manager->add_rule( new AdminUserRule() );
 		$this->rule_manager->add_rule( new IpRestrictionsRule() );
 		$this->rule_manager->add_rule( new IntrospectionQueryRule() );
+		$this->rule_manager->add_rule( new SeedQueryRule() );
 		apply_filters( 'wpgraphql_logging_rule_manager', $this->rule_manager );
 		return $this->rule_manager;
 	}
@@ -53,10 +55,6 @@ trait LoggingHelper {
 	protected function is_logging_enabled( array $config, ?string $query_string = null ): bool {
 
 		$is_enabled = $this->get_rule_manager()->all_rules_pass( $config, $query_string );
-		wp_send_json_error( [
-			'is_enabled'   => $is_enabled,
-			'query_string' => $query_string,
-		], 200 );
 
 		/**
 		 * Filter the final decision on whether to log a request.
