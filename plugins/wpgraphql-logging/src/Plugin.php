@@ -106,7 +106,7 @@ final class Plugin {
 	 */
 	public static function deactivate(): void {
 		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
-    		return;
+			return;
 		}
 		DatabaseEntity::drop_table();
 	}

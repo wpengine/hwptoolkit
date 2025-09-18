@@ -40,4 +40,10 @@ $wpgraphql_logging_log_levels = apply_filters( 'wpgraphql_logging_log_levels', $
 	</select>
 
 	<?php submit_button( __( 'Filter', 'wpgraphql-logging' ), 'secondary', '', false, [ 'style' => 'margin: 0;' ] ); ?>
+
+	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpgraphql-logging-view' ) ); ?>"
+		class="clear-all-button"
+		style="margin: 0; margin-left: 5px; text-decoration: none;">
+		<?php esc_html_e( 'Clear All', 'wpgraphql-logging' ); ?>
+	</a>
 </div>
