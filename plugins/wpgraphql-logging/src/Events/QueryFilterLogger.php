@@ -139,7 +139,9 @@ class QueryFilterLogger {
 				'request'        => $request,
 				'query_id'       => $query_id,
 			];
-
+			if ( ! $this->should_log_response( $this->config ) ) {
+				unset( $context['response'] );
+			}
 			$level   = Level::Info;
 			$message = 'WPGraphQL Response';
 			if ( is_array( $response ) && isset( $response['errors'] ) && ! empty( $response['errors'] ) ) {

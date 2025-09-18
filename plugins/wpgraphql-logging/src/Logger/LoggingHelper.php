@@ -8,6 +8,7 @@ use WPGraphQL\Logging\Logger\Rules\AdminUserRule;
 use WPGraphQL\Logging\Logger\Rules\EnabledRule;
 use WPGraphQL\Logging\Logger\Rules\IntrospectionQueryRule;
 use WPGraphQL\Logging\Logger\Rules\IpRestrictionsRule;
+use WPGraphQL\Logging\Logger\Rules\LogResponseRule;
 use WPGraphQL\Logging\Logger\Rules\QueryNullRule;
 use WPGraphQL\Logging\Logger\Rules\RuleManager;
 use WPGraphQL\Logging\Logger\Rules\SamplingRateRule;
@@ -27,6 +28,18 @@ trait LoggingHelper {
 	 * @var \WPGraphQL\Logging\Logger\Rules\RuleManager|null
 	 */
 	protected ?RuleManager $rule_manager = null;
+
+	/**
+	 * Determines if the response should be logged based on the configuration.
+	 *
+	 * @param array<string, mixed> $config The logging configuration.
+	 *
+	 * @return bool True if the response should be logged, false otherwise.
+	 */
+	public function should_log_response(array $config): bool {
+		$rule = new LogResponseRule();
+		return $rule->passes( $config );
+	}
 
 	/**
 	 * Get the rule manager, initializing it if necessary.
