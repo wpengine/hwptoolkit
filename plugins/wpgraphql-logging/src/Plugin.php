@@ -101,9 +101,13 @@ final class Plugin {
 
 	/**
 	 * Deactivation callback for the plugin.
+	 *
+	 * @since 0.0.1
 	 */
 	public static function deactivate(): void {
-		// @TODO: Add configuration to determine if the table should be dropped on deactivation.
+		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
+    		return;
+		}
 		DatabaseEntity::drop_table();
 	}
 

@@ -110,7 +110,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 		$fields[ self::EXCLUDE_QUERY ] = new Text_Input_Field(
 			self::EXCLUDE_QUERY,
 			$this->get_name(),
-			__( 'Exclude Query', 'wpgraphql-logging' ),
+			__( 'Exclude Queries', 'wpgraphql-logging' ),
 			'',
 			__( 'Comma-separated list of GraphQL query names to exclude from logging.', 'wpgraphql-logging' ),
 			__( 'e.g., __schema,SeedNode,__typename', 'wpgraphql-logging' )
@@ -119,7 +119,7 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 		$fields[ self::ADMIN_USER_LOGGING ] = new Checkbox_Field(
 			self::ADMIN_USER_LOGGING,
 			$this->get_name(),
-			__( 'Log only for admin users', 'wpgraphql-logging' ),
+			__( 'Admin User Logging', 'wpgraphql-logging' ),
 			'',
 			__( 'Log only for admin users.', 'wpgraphql-logging' )
 		);
