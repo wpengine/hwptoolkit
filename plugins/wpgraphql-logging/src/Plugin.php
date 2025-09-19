@@ -9,6 +9,7 @@ use WPGraphQL\Logging\Admin\View_Logs_Page;
 use WPGraphQL\Logging\Events\EventManager;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Scheduler\DataDeletionScheduler;
 
 /**
  * Plugin class for WPGraphQL Logging.
@@ -57,6 +58,7 @@ final class Plugin {
 		Settings_Page::init();
 		View_Logs_Page::init();
 		QueryEventLifecycle::init();
+		DataDeletionScheduler::init();
 	}
 
 	/**
@@ -105,6 +107,9 @@ final class Plugin {
 	 * @since 0.0.1
 	 */
 	public static function deactivate(): void {
+
+		DataDeletionScheduler::clear_scheduled_deletion();
+
 		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
 			return;
 		}

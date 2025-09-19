@@ -91,7 +91,9 @@ wpgraphql-logging/
 │   ├── Admin/                  # Admin settings, menu, and settings page logic
 │   	├── Settings/             # Admin settings functionality for displaying and saving data.
 │   ├── Events/                 # Event logging, pub/sub event manager for extending the logging.
-│   ├── Logging/                # Logging logic, logger service, Monolog handlers & processors
+│   ├── Logger/                 # Logging logic, logger service, Monolog handlers & processors
+│   	├── Rules/            		# Rule Management on whether we log a query
+│   	├── Scheduler/            # Automated data cleanup and maintenance tasks
 │   ├── Plugin.php              # Main plugin class (entry point)
 │   └── Autoload.php            # PSR-4 autoloader
 ├── tests/                      # All test suites
@@ -118,6 +120,12 @@ wpgraphql-logging/
 
 - **Monolog-powered logging pipeline**
   - Default handler: stores logs in a WordPress table (`{$wpdb->prefix}wpgraphql_logging`).
+
+- **Automated data management**
+  - **Daily cleanup scheduler**: Automatically removes old logs based on retention settings.
+  - **Configurable retention period**: Set how many days to keep log data (default: 30 days).
+  - **Manual cleanup**: Admin interface to trigger immediate cleanup of old logs.
+  - **Data sanitization**: Remove sensitive fields from logged data for privacy compliance.
 
 - **Simple developer API**
   - `Plugin::on()` to subscribe, `Plugin::emit()` to publish, `Plugin::transform()` to modify payloads.
