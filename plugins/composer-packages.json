@@ -211,6 +211,32 @@
       }
     },
     "wpengine/wpgraphql-debug-extensions": {
+      "0.0.2": {
+        "name": "wpengine/wpgraphql-debug-extensions",
+        "version": "0.0.2",
+        "type": "wordpress-plugin",
+        "description": "Debug extensions for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-debug-extensions-wordpress-plugin-0.0.2/wpgraphql-debug-extensions.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
       "0.0.1": {
         "name": "wpengine/wpgraphql-debug-extensions",
         "version": "0.0.1",

@@ -7,7 +7,7 @@
  * Author: WPEngine OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
- * Version: 0.0.1
+ * Version: 0.0.2
  * Text Domain: wpgraphql-debug-extensions
  * Domain Path: /languages
  * Requires at least: 6.0
@@ -59,7 +59,7 @@ if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
 function wpgraphql_debug_extensions_constants(): void {
     // Plugin version.
     if ( ! defined( 'WPGRAPHQL_DEBUG_EXTENSIONS_VERSION' ) ) {
-        define( 'WPGRAPHQL_DEBUG_EXTENSIONS_VERSION', '0.0.1' );
+        define( 'WPGRAPHQL_DEBUG_EXTENSIONS_VERSION', '0.0.2' );
     }
 
     // Plugin Folder Path.
