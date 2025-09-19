@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Admin\Settings\Fields;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Data_Management_Tab;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface;
 
 /**
@@ -34,6 +35,7 @@ class Settings_Field_Collection {
 	 */
 	public function __construct() {
 		$this->add_tab( new Basic_Configuration_Tab() );
+		$this->add_tab( new Data_Management_Tab() );
 		do_action( 'wpgraphql_logging_settings_field_collection_init', $this );
 	}
 

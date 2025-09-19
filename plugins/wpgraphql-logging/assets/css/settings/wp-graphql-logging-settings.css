@@ -5,6 +5,7 @@ settings_page_wpgraphql-logging #poststuff .postbox .inside h2 {
 }
 
 
+.form-table td input[type="number"],
 .form-table td input[type="text"] {
 	width: calc(99% - 24px);
 	display: inline-block;

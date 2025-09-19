@@ -67,24 +67,23 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 											<li><?php esc_html_e( 'Enable/disable logging', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Set IP restrictions', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Log only for admin users', 'wpgraphql-logging' ); ?></li>
-											<li><?php esc_html_e( 'Filter specific queries', 'wpgraphql-logging' ); ?></li>
-											<li><?php esc_html_e( 'Set data sampling rates', 'wpgraphql-logging' ); ?></li>
-											<li><?php esc_html_e( 'Log for specific events', 'wpgraphql-logging' ); ?></li>
+											<li><?php esc_html_e( 'Data sampling', 'wpgraphql-logging' ); ?></li>
+											<li><?php esc_html_e( 'Log specific queries', 'wpgraphql-logging' ); ?></li>
+											<li><?php esc_html_e( 'Exclude queries', 'wpgraphql-logging' ); ?></li>
+											<li><?php esc_html_e( 'Log response', 'wpgraphql-logging' ); ?></li>
 										</ul>
 										<?php
 										break;
 
 									case 'data_management':
 										?>
-										<p><?php esc_html_e( 'Manage how logging data is stored, retained, and exported.', 'wpgraphql-logging' ); ?></p>
-										<p><em><?php esc_html_e( 'Configuration options coming soon.', 'wpgraphql-logging' ); ?></em></p>
-										<?php
-										break;
-
-									case 'security':
-										?>
-										<p><?php esc_html_e( 'Configure security settings for logging data and access controls.', 'wpgraphql-logging' ); ?></p>
-										<p><em><?php esc_html_e( 'Configuration options coming soon.', 'wpgraphql-logging' ); ?></em></p>
+										<p><?php esc_html_e( 'Manage how logging data is sanitized and deleted.', 'wpgraphql-logging' ); ?></p>
+										<ul class="wpgraphql-logging-feature-list">
+											<li><?php esc_html_e( 'Enable/disable data deletion', 'wpgraphql-logging' ); ?></li>
+											<li><?php esc_html_e( 'Number of days logs are stored', 'wpgraphql-logging' ); ?></li>
+											<li><?php esc_html_e( 'Enable/disable data sanitization', 'wpgraphql-logging' ); ?></li>
+											<li><?php esc_html_e( 'List fields for sanitization', 'wpgraphql-logging' ); ?></li>
+										</ul>
 										<?php
 										break;
 
@@ -106,7 +105,7 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 							<div class="inside wpgraphql-logging-docs">
 								<ul>
 									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/wpgraphql-logging#getting-started" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Getting Started', 'wpgraphql-logging' ); ?></a></li>
-									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/wpgraphql-logging" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Documentation', 'wpgraphql-logging' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/README.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Documentation', 'wpgraphql-logging' ); ?></a></li>
 									<li><a href="https://github.com/wpengine/hwptoolkit" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'HWP Toolkit', 'wpgraphql-logging' ); ?></a></li>
 								</ul>
 								<p><?php esc_html_e( 'WPGraphQL Logging is part of the HWP Toolkit, our comprehensive suite of tools and examples for headless WordPress.', 'wpgraphql-logging' ); ?></p>
