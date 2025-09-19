@@ -34,3 +34,5 @@ parameters:
         - identifier: empty.notAllowed
         -
             message: '#Constant WPGRAPHQL_LOGGING.* not found\.#'
+        -
+            message: '#GraphQL\\.*#'

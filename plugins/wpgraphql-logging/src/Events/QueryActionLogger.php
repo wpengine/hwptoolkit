@@ -139,6 +139,9 @@ class QueryActionLogger {
 	 * @param array<string, mixed>|null                      $variables
 	 * @param \WPGraphQL\Request                             $request
 	 * @param string|null                                    $query_id
+	 *
+	 * @phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
+	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
 	 */
 	public function log_before_response_returned(
 		array|ExecutionResult $filtered_response,
@@ -170,6 +173,9 @@ class QueryActionLogger {
 				'request'        => $request,
 				'query_id'       => $query_id,
 			];
+			if ( ! $this->should_log_response( $this->config ) ) {
+				unset( $context['response'] );
+			}
 			$level   = Level::Info;
 			$message = 'WPGraphQL Response';
 			$errors  = $this->get_response_errors( $response );

@@ -60,23 +60,4 @@ final class Events {
 	 * @var string
 	 */
 	public const REQUEST_RESULTS = 'graphql_request_results';
-
-	/**
-	 * WPGraphQL filter: graphql_debug_enabled.
-	 *
-	 * Determines if GraphQL Debug is enabled. Useful for toggling logging.
-	 *
-	 * @var string
-	 */
-	public const DEBUG_ENABLED = 'graphql_debug_enabled';
-
-	/**
-	 * WPGraphQL filter: graphql_app_context_config.
-	 *
-	 * Filters the config for the AppContext. Useful for storing temporary
-	 * data for the duration of a request.
-	 *
-	 * @var string
-	 */
-	public const APP_CONTEXT_CONFIG = 'graphql_app_context_config';
 }
