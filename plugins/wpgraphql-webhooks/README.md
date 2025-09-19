@@ -6,6 +6,15 @@ A WordPress plugin that extends [WPGraphQL](https://www.wpgraphql.com/) to suppo
 
 **⚠️ Work in Progress:** This plugin is under active development and not yet production-ready.
 
+-----
+
+[![Version](https://img.shields.io/github/v/release/wpengine/hwptoolkit?include_prereleases&label=version&filter=%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-*)](https://github.com/wpengine/hwptoolkit/releases)
+[![License](https://img.shields.io/badge/license-GPLv2%2B-green)](https://www.gnu.org/licenses/gpl-2.0.html)
+![GitHub forks](https://img.shields.io/github/forks/wpengine/hwptoolkit?style=social)
+![GitHub stars](https://img.shields.io/github/stars/wpengine/hwptoolkit?style=social)
+-----
+
+
 ## Features
 
 - Subscribe external services to WordPress content events
