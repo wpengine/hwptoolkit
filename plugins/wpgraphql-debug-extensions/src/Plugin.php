@@ -11,6 +11,8 @@ namespace WPGraphQL\Debug;
 
 use AxeWP\GraphQL\Helper\Helper;
 use WPGraphQL\Debug\Analysis\QueryAnalyzer;
+use WPGraphQL\Debug\Analysis\Rules\ExcessiveFields;
+use WPGraphQL\Debug\Analysis\Rules\NestedQuery;
 use WPGraphQL\Utils\QueryAnalyzer as OriginalQueryAnalyzer;
 use WPGraphQL\Debug\Analysis\Rules\Complexity;
 use WPGraphQL\Debug\Analysis\Rules\UnfilteredLists;
@@ -80,10 +82,24 @@ if ( ! class_exists( 'WPGraphQL\Debug\Plugin' ) ) :
 				}
 				if ( $query_analyzer_instance instanceof OriginalQueryAnalyzer ) {
 					$debug_analyzer = new QueryAnalyzer( $query_analyzer_instance );
-					$debug_analyzer->addAnalyzerItem( new Complexity() );
-					$debug_analyzer->addAnalyzerItem( new UnfilteredLists() );
-					$debug_analyzer->init();
 
+					$analyzer_items = [ 
+						'complexity' => [ 'class' => Complexity::class, 'args' => [] ],
+						'unfiltered_lists' => [ 'class' => UnfilteredLists::class, 'args' => [] ],
+						'nested_query' => [ 'class' => NestedQuery::class, 'args' => [ ] ],
+						'excessive_fields' => [ 'class' => ExcessiveFields::class, 'args' => [ ] ],
+					];
+					$analyzer_items = apply_filters( 'graphql_debug_extensions_analyzer_items', $analyzer_items );
+
+					foreach ( $analyzer_items as $item_config ) {
+						$class_name = $item_config['class'];
+						$args = $item_config['args'] ?? [];
+						
+						$instance = new $class_name( ...$args );
+						$debug_analyzer->addAnalyzerItem( $instance );
+					}
+
+					$debug_analyzer->init();
 					$initialized = true;
 				}
 			}, 10, 2 );

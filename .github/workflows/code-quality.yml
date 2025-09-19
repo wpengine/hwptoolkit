@@ -22,8 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Detect plugins has php code quality configuration
     outputs:
-      plugins: ${{ steps.detect.outputs.plugins }}
-      has-plugins: ${{ steps.detect.outputs.has-plugins }}
+      plugins: ${{ steps.detect-plugin-slug.outputs.plugins }}
+      has-plugins: ${{ steps.detect-plugin-slug.outputs.has-plugins }}
       php-version: ${{ steps.detect-php-version.outputs.php-version }}
     steps:
       - name: Checkout

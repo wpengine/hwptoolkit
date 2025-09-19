@@ -8,6 +8,7 @@
 	findUnusedBaselineEntry="true"
 	findUnusedCode="false"
 	phpVersion="8.1"
+	cacheDirectory=".psalm-cache"
 >
 	<projectFiles>
 		<file name="wpgraphql-logging.php"/>
@@ -16,6 +17,7 @@
 		<file name="vendor/autoload.php"/>
 		<directory name="src"/>
 	</projectFiles>
+
 
 	<plugins>
 		<pluginClass class="PsalmWordPress\Plugin"/>
@@ -34,5 +36,17 @@
 				<file name="src/Logger/Database/DatabaseEntity.php"/>
 			</errorLevel>
 		</MissingFile>
+
+		<RedundantCast>
+			<errorLevel type="suppress">
+				<file name="src/Admin/View/Templates/wpgraphql-logger-view.php"/>
+			</errorLevel>
+		</RedundantCast>
+
+		<PossiblyInvalidArgument>
+			<errorLevel type="suppress">
+				<file name="src/Admin/View/Templates/wpgraphql-logger-filters.php"/>
+			</errorLevel>
+		</PossiblyInvalidArgument>
 	</issueHandlers>
 </psalm>

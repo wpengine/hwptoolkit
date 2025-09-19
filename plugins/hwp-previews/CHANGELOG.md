@@ -1,5 +1,23 @@
 # HWP Previews
 
+## 0.0.11
+
+### Patch Changes
+
+- [#406](https://github.com/wpengine/hwptoolkit/pull/406) [`7e5a134`](https://github.com/wpengine/hwptoolkit/commit/7e5a13476a3bfba0b92479ff2a03acc01875ff28) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Fix for the admin settings page to check capabilities.
+
+## 0.0.10
+
+### Patch Changes
+
+- [#377](https://github.com/wpengine/hwptoolkit/pull/377) [`90e14d8`](https://github.com/wpengine/hwptoolkit/commit/90e14d85c338ca23d20678ff57cf8496c37585dd) Thanks [@colinmurphy](https://github.com/colinmurphy)! - Fixed priority issue with ACF and Previews.
+
+## 0.0.9
+
+### Patch Changes
+
+- [#370](https://github.com/wpengine/hwptoolkit/pull/370) [`e8f3904`](https://github.com/wpengine/hwptoolkit/commit/e8f39041e114a05db37de6dc38714e278a2d9f95) Thanks [@colinmurphy](https://github.com/colinmurphy)! - bug: Fixed issue with retrieving post types before ACF hook initialisation.
+
 ## 0.0.8
 
 ### Patch Changes

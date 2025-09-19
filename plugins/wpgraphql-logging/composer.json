@@ -3,7 +3,7 @@
 	"type": "wordpress-plugin",
   	"description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
 	"license": "GPL-2.0",
-	"version": "0.0.1",
+	"version": "0.0.8",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
@@ -26,7 +26,8 @@
 		"monolog"
 	],
 	"require": {
-		"php": "^8.1",
+		"php": ">=8.1.2",
+		"league/csv": "^9.9",
 		"monolog/monolog": "^3.9"
 	},
 	"minimum-stability": "dev",
@@ -53,6 +54,7 @@
 		"slevomat/coding-standard": "^8.0",
 		"szepeviktor/phpstan-wordpress": "^2.0",
 		"wp-cli/wp-cli-bundle": "^2.8.1",
+		"wp-graphql/wp-graphql": "^2.3",
 		"wp-graphql/wp-graphql-testcase": "^3.0.1"
 	},
 	"config": {
@@ -62,7 +64,7 @@
 		},
 		"optimize-autoloader": true,
 		"platform": {
-			"php": "8.1"
+			"php": "8.1.2"
 		},
 		"preferred-install": "dist",
 		"sort-packages": true
@@ -80,7 +82,7 @@
 			"/.DS_Store",
 			"/.docker/",
 			"/.env.dist",
-			"/ACTIONS_AND_FILTERS.md",
+			"/docs",
 			"/TESTING.md",
 			"/Thumbs.db",
 			"/artifacts",
@@ -142,9 +144,8 @@
 		"phpstan": [
 			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
 		],
-		"php:psalm": "psalm",
-		"php:psalm:info": "psalm --show-info=true",
-		"php:psalm:fix": "psalm --alter",
+		"php:psalm": "psalm --no-progress",
+		"php:psalm:fix": "psalm --alter --no-progress",
 		"qa": "sh bin/local/run-qa.sh",
 		"test": [
 			"sh bin/local/run-unit-tests.sh coverage",

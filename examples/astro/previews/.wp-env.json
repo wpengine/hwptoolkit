@@ -1,0 +1,25 @@
+{
+  "phpVersion": "8.3",
+  "plugins": [
+    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.8/hwp-previews.zip",
+    "https://github.com/wp-graphql/wpgraphql-ide/releases/latest/download/wpgraphql-ide.zip"
+  ],
+  "themes": ["https://downloads.wordpress.org/theme/nude.1.2.zip"],
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": false,
+    "GRAPHQL_DEBUG": true,
+    "WP_DEBUG_LOG": true,
+    "WP_DEBUG_DISPLAY": false,
+    "SAVEQUERIES": false
+  },
+  "mappings": {
+    "db": "./wp-env/db",
+    "wp-content/uploads": "./wp-env/uploads",
+    ".htaccess": "./wp-env/setup/.htaccess"
+  },
+  "lifecycleScripts": {
+    "afterStart": "wp-env run cli -- wp theme activate nude && wp-env run cli -- wp theme delete --all && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+  }
+}

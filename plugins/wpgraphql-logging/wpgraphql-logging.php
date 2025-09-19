@@ -7,7 +7,7 @@
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
- * Version: 0.0.1
+ * Version: 0.0.8
  * Text Domain: wpgraphql-logging
  * Domain Path: /languages
  * Requires at least: 6.5
@@ -64,7 +64,8 @@ if ( ! function_exists( 'wpgraphql_logging_init' ) ) {
 	function wpgraphql_logging_init(): void {
 		wpgraphql_logging_constants();
 		wpgraphql_logging_plugin_init();
-		wpgraphql_logging_plugin_admin_notice();
+		wpgraphql_logging_plugin_admin_notice_correct_build();
+		wpgraphql_logging_plugin_admin_notice_min_php_version();
 	}
 }
 
@@ -75,7 +76,7 @@ if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
 	function wpgraphql_logging_constants(): void {
 
 		if ( ! defined( 'WPGRAPHQL_LOGGING_VERSION' ) ) {
-			define( 'WPGRAPHQL_LOGGING_VERSION', '0.0.1' );
+			define( 'WPGRAPHQL_LOGGING_VERSION', '0.0.8' );
 		}
 
 		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
@@ -84,6 +85,14 @@ if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
 
 		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_URL' ) ) {
 			define( 'WPGRAPHQL_LOGGING_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_KEY' ) ) {
+			define( 'WPGRAPHQL_LOGGING_SETTINGS_KEY', 'wpgraphql_logging_settings' );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP' ) ) {
+			define( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP', 'wpgraphql_logging_settings_group' );
 		}
 	}
 }
@@ -102,11 +111,11 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_init' ) ) {
 }
 
 
-if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice' ) ) {
+if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_correct_build' ) ) {
 	/**
 	 * Display an admin notice if the plugin is not properly initialized.
 	 */
-	function wpgraphql_logging_plugin_admin_notice(): void {
+	function wpgraphql_logging_plugin_admin_notice_correct_build(): void {
 		if ( defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
 			return;
 		}
@@ -130,6 +139,34 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' ) ) {
+	/**
+	 * Display an admin notice if the PHP version is not met.
+	 */
+	function wpgraphql_logging_plugin_admin_notice_min_php_version(): void {
+		if ( version_compare( PHP_VERSION, '8.1.2', '>=' ) ) {
+			return;
+		}
+
+		add_action(
+			'admin_notices',
+			static function (): void {
+				?>
+				<div class="error notice">
+					<p>
+						<?php
+						echo 'PHP ' . PHP_VERSION . ' is not supported. Please upgrade to PHP 8.1.2 or higher in order to use WPGraphQL Logging Plugin.';
+						?>
+					</p>
+				</div>
+				<?php
+			},
+			10,
+			0
+		);
+	}
+}
+
 /**
  * Load plugin text domain.
  */
@@ -140,4 +177,6 @@ function wpgraphql_logging_load_textdomain(): void {
 add_action( 'init', 'wpgraphql_logging_load_textdomain', 1, 0 );
 
 /** @psalm-suppress HookNotFound */
-wpgraphql_logging_init();
+add_action( 'plugins_loaded', static function (): void {
+	wpgraphql_logging_init();
+}, 10, 0 );
