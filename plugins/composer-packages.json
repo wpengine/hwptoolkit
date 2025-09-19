@@ -211,6 +211,32 @@
       }
     },
     "wpengine/wpgraphql-debug-extensions": {
+      "0.0.2": {
+        "name": "wpengine/wpgraphql-debug-extensions",
+        "version": "0.0.2",
+        "type": "wordpress-plugin",
+        "description": "Debug extensions for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-debug-extensions-wordpress-plugin-0.0.2/wpgraphql-debug-extensions.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
       "0.0.1": {
         "name": "wpengine/wpgraphql-debug-extensions",
         "version": "0.0.1",
@@ -238,9 +264,35 @@
         }
       }
     },
-    "wpengine/wp-graphql-webhooks": {
+    "wpengine/wpgraphql-webhooks": {
+      "0.0.6": {
+        "name": "wpengine/wpgraphql-webhooks",
+        "version": "0.0.6",
+        "type": "wordpress-plugin",
+        "description": "Headless webhooks for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.6/wpgraphql-webhooks.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
       "0.0.4": {
-        "name": "wpengine/wp-graphql-webhooks",
+        "name": "wpengine/wpgraphql-webhooks",
         "version": "0.0.4",
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
@@ -258,7 +310,7 @@
           "email": "support@wpengine.com"
         },
         "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.4/wp-graphql-webhooks.zip",
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.4/wpgraphql-webhooks.zip",
           "type": "zip"
         },
         "require": {
@@ -266,7 +318,7 @@
         }
       },
       "0.0.3": {
-        "name": "wpengine/wp-graphql-webhooks",
+        "name": "wpengine/wpgraphql-webhooks",
         "version": "0.0.3",
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
@@ -284,7 +336,7 @@
           "email": "support@wpengine.com"
         },
         "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.3/wp-graphql-webhooks.zip",
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.3/wpgraphql-webhooks.zip",
           "type": "zip"
         },
         "require": {
@@ -292,7 +344,7 @@
         }
       },
       "0.0.2": {
-        "name": "wpengine/wp-graphql-webhooks",
+        "name": "wpengine/wpgraphql-webhooks",
         "version": "0.0.2",
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
@@ -310,7 +362,7 @@
           "email": "support@wpengine.com"
         },
         "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.2/wp-graphql-webhooks.zip",
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.2/wpgraphql-webhooks.zip",
           "type": "zip"
         },
         "require": {
