@@ -1,5 +1,11 @@
 # @wpengine/wpgraphql-webhooks-wordpress-plugin
 
+## 0.0.6
+
+### Patch Changes
+
+- [#414](https://github.com/wpengine/hwptoolkit/pull/414) [`3d89e33`](https://github.com/wpengine/hwptoolkit/commit/3d89e33326b4f94ca19a568e03b30eb5dc532220) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Renamed plugin to wpgraphql-webhooks from wp-graphql-webhooks
+
 ## 0.0.5
 
 ### Patch Changes
