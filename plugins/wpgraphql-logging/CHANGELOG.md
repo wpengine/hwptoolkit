@@ -1,5 +1,11 @@
 # WPGraphQL Logging
 
+## 0.0.10
+
+### Patch Changes
+
+- [#412](https://github.com/wpengine/hwptoolkit/pull/412) [`4aae0fa`](https://github.com/wpengine/hwptoolkit/commit/4aae0fa56aedd64b30add448cf0df43e55b71455) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Various snags.
+
 ## 0.0.9
 
 ### Patch Changes
