@@ -18,7 +18,6 @@
 		<directory name="src"/>
 	</projectFiles>
 
-
 	<plugins>
 		<pluginClass class="PsalmWordPress\Plugin"/>
 	</plugins>
@@ -48,5 +47,26 @@
 				<file name="src/Admin/View/Templates/wpgraphql-logger-filters.php"/>
 			</errorLevel>
 		</PossiblyInvalidArgument>
+
+		<UndefinedClass>
+			<errorLevel type="suppress">
+				<referencedClass name="GraphQL\Executor\ExecutionResult"/>
+			</errorLevel>
+			<errorLevel type="suppress">
+				<referencedClass name="GraphQL\Server\OperationParams"/>
+			</errorLevel>
+			<errorLevel type="suppress">
+				<referencedClass name="WPGraphQL\Request"/>
+			</errorLevel>
+			<errorLevel type="suppress">
+				<referencedClass name="WPGraphQL\WPSchema"/>
+			</errorLevel>
+		</UndefinedClass>
+
+		<UndefinedDocblockClass>
+			<errorLevel type="suppress">
+				<referencedClass name="GraphQL\Server\OperationParams"/>
+			</errorLevel>
+		</UndefinedDocblockClass>
 	</issueHandlers>
 </psalm>

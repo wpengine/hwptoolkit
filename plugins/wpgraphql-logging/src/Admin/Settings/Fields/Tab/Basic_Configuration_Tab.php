@@ -53,6 +53,20 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 	public const EVENT_LOG_SELECTION = 'event_log_selection';
 
 	/**
+	 * The field ID for the exclude query text input.
+	 *
+	 * @var string
+	 */
+	public const EXCLUDE_QUERY = 'exclude_query';
+
+	/**
+	 * The field ID for whether to log the response from the WPGGraphQL query into the context object.
+	 *
+	 * @var string
+	 */
+	public const LOG_RESPONSE = 'log_response';
+
+	/**
 	 * Get the name/identifier of the tab.
 	 */
 	public function get_name(): string {
@@ -93,10 +107,19 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 			__( 'e.g., 192.168.1.1, 10.0.0.1', 'wpgraphql-logging' )
 		);
 
+		$fields[ self::EXCLUDE_QUERY ] = new Text_Input_Field(
+			self::EXCLUDE_QUERY,
+			$this->get_name(),
+			__( 'Exclude Queries', 'wpgraphql-logging' ),
+			'',
+			__( 'Comma-separated list of GraphQL query names to exclude from logging.', 'wpgraphql-logging' ),
+			__( 'e.g., __schema,SeedNode,__typename', 'wpgraphql-logging' )
+		);
+
 		$fields[ self::ADMIN_USER_LOGGING ] = new Checkbox_Field(
 			self::ADMIN_USER_LOGGING,
 			$this->get_name(),
-			__( 'Log only for admin users', 'wpgraphql-logging' ),
+			__( 'Admin User Logging', 'wpgraphql-logging' ),
 			'',
 			__( 'Log only for admin users.', 'wpgraphql-logging' )
 		);
@@ -132,6 +155,14 @@ class Basic_Configuration_Tab implements Settings_Tab_Interface {
 			'',
 			__( 'Select which points in the request lifecycle to log. By default, no events are logged.', 'wpgraphql-logging' ),
 			true
+		);
+
+		$fields[ self::LOG_RESPONSE ] = new Checkbox_Field(
+			self::LOG_RESPONSE,
+			$this->get_name(),
+			__( 'Log Response', 'wpgraphql-logging' ),
+			'',
+			__( 'Whether or not to log the response from the WPGraphQL query into the context object.', 'wpgraphql-logging' ),
 		);
 
 		return apply_filters( 'wpgraphql_logging_basic_configuration_fields', $fields );

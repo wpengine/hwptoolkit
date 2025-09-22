@@ -48,6 +48,35 @@ Once you have the composer repository setup, please run `composer req wpengine/w
 
 Plugin should start logging data, once activated.
 
+---
+
+## Uninstallation and Data Cleanup
+
+By default, WPGraphQL Logging preserves all logged data when the plugin is deactivated to prevent accidental data loss. If you want to completely remove all plugin data (including database tables) when deactivating the plugin, you must explicitly enable this behavior.
+
+### Enabling Database Cleanup on Deactivation
+
+To enable automatic database cleanup when the plugin is deactivated, add the following constant to your `wp-config.php` file or in a must-use plugin:
+
+```php
+define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
+```
+
+> [!WARNING]
+> **Data Loss Warning**: When `WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN` is defined as `true`, deactivating the plugin will permanently delete all logged data and drop the plugin's database tables. This action is irreversible.
+
+### Manual Data Cleanup
+
+If you prefer to manually clean up data without defining the constant, you can:
+
+1. Use the plugin's admin interface to clear logs (when available)
+2. Manually drop the database table: `{$wpdb->prefix}wpgraphql_logging`
+3. Remove plugin options from the WordPress options table
+
+---
+
+@TODO add more info once we have configuration setup.
+
 @TODO add more info once we have configuration setup.
 
 
