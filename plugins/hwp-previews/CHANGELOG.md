@@ -1,5 +1,19 @@
 # HWP Previews
 
+## 0.0.12
+
+### Patch Changes
+
+- [#416](https://github.com/wpengine/hwptoolkit/pull/416) [`641fa27`](https://github.com/wpengine/hwptoolkit/commit/641fa27d11a62fe2433a96299776732435a1eacd) Thanks [@ahuseyn](https://github.com/ahuseyn)! - Fixed security vulnerability by updating @wordpress/scripts from 30.18.0 to 30.24.0.
+  Other packages bumped:
+
+  - @changesets/cli
+  - @playwright/test
+  - @wordpress/e2e-test-utils-playwright
+  - @wordpress/env
+  - @wordpress/jest-console
+  - @wordpress/scripts
+
 ## 0.0.11
 
 ### Patch Changes

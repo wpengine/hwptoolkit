@@ -1,6 +1,6 @@
 {
 	"name": "@wpengine/wpgraphql-webhooks-wordpress-plugin",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"private": true,
 	"description": "Webhooks solution for WordPress",
 	"scripts": {
@@ -15,6 +15,6 @@
 		"@wordpress/e2e-test-utils-playwright": "^1.26.0",
 		"@wordpress/env": "^10.26.0",
 		"@wordpress/jest-console": "^8.26.0",
-		"@wordpress/scripts": "^30.19.0"
+		"@wordpress/scripts": "^30.24.0"
 	}
 }
