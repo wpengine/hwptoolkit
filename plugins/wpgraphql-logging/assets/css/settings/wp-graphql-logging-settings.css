@@ -85,3 +85,8 @@ settings_page_wpgraphql-logging #poststuff .postbox .inside h2 {
 	margin-left: 30px;
 	padding-bottom: 16px;
 }
+
+
+.wpgraphql-logging-custom:not(.block) {
+	display: none;
+}

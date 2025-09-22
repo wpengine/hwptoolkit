@@ -120,11 +120,11 @@ class LogsRepository {
 		global $wpdb;
 		$table_name = DatabaseEntity::get_table_name();
 
-		$result = $wpdb->query( $wpdb->prepare(
-			"DELETE FROM %i WHERE datetime < %s",
+		$result = $wpdb->query( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			'DELETE FROM %i WHERE datetime < %s',
 			$table_name,
 			$date->format( 'Y-m-d H:i:s' )
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		) );
 		return false !== $result;
 	}
 
