@@ -135,6 +135,126 @@ wpgraphql-logging/
 
 ---
 
+## Data Sanitization
+
+WPGraphQL Logging includes robust data sanitization capabilities to help you protect sensitive information while maintaining useful logs for debugging and monitoring. The sanitization system allows you to automatically clean, anonymize, or remove sensitive fields from log records before they are stored.
+
+### Why Data Sanitization Matters
+
+When logging GraphQL requests, context data often contains sensitive information such as:
+- User authentication tokens
+- Personal identification information (PII)
+- Password fields
+- Session data
+- Internal system information
+
+Data sanitization ensures compliance with privacy regulations (GDPR, CCPA) and security best practices while preserving the debugging value of your logs.
+
+### Sanitization Methods
+
+The plugin offers two sanitization approaches:
+
+#### 1. Recommended Rules (Default)
+Pre-configured rules that automatically sanitize common WordPress and WPGraphQL sensitive fields:
+- `request.app_context.viewer.data` - User data object
+- `request.app_context.viewer.allcaps` - User capabilities
+- `request.app_context.viewer.cap_key` - Capability keys
+- `request.app_context.viewer.caps` - User capability array
+
+#### 2. Custom Rules
+Define your own sanitization rules using dot notation to target specific fields:
+
+**Field Path Examples:**
+```
+variables.password
+request.headers.authorization
+user.email
+variables.input.creditCard
+```
+
+### Sanitization Actions
+
+For each field, you can choose from three sanitization actions:
+
+| Action | Description | Example |
+|--------|-------------|---------|
+| **Remove** | Completely removes the field from logs | `password: "secret123"` → *field removed* |
+| **Anonymize** | Replaces value with `***` | `email: "user@example.com"` → `email: "***"` |
+| **Truncate** | Limits string length to 47 characters + `...` | `longText: "Very long text..."` → `longText: "Very long text that gets cut off here and mo..."` |
+
+### Configuration
+
+Enable and configure data sanitization through the WordPress admin:
+
+1. Navigate to **GraphQL Logging → Settings**
+2. Click the **Data Management** tab
+3. Enable **Data Sanitization**
+4. Choose your sanitization method:
+   - **Recommended**: Uses pre-configured rules for common sensitive fields
+   - **Custom**: Define your own field-specific rules
+
+#### Custom Configuration Fields
+
+When using custom rules, configure the following fields:
+
+- **Fields to Remove**: Comma-separated list of field paths to completely remove
+- **Fields to Anonymize**: Comma-separated list of field paths to replace with `***`
+- **Fields to Truncate**: Comma-separated list of field paths to limit length
+
+**Example Configuration:**
+```
+Remove: variables.password, request.headers.authorization
+Anonymize: user.email, variables.input.personalInfo
+Truncate: query, variables.input.description
+```
+
+### Developer Hooks
+
+Customize sanitization behavior using WordPress filters:
+
+```php
+// Enable/disable sanitization programmatically
+add_filter( 'wpgraphql_logging_data_sanitization_enabled', function( $enabled ) {
+    return current_user_can( 'manage_options' ) ? false : $enabled;
+});
+
+// Modify recommended rules
+add_filter( 'wpgraphql_logging_data_sanitization_recommended_rules', function( $rules ) {
+    $rules['custom.sensitive.field'] = 'remove';
+    return $rules;
+});
+
+// Modify all sanitization rules
+add_filter( 'wpgraphql_logging_data_sanitization_rules', function( $rules ) {
+    // Add additional rules or modify existing ones
+    $rules['request.custom_header'] = 'anonymize';
+    return $rules;
+});
+
+// Modify the final log record after sanitization
+add_filter( 'wpgraphql_logging_data_sanitization_record', function( $record ) {
+    // Additional processing after sanitization
+    return $record;
+});
+```
+
+### Performance Considerations
+
+- Sanitization runs on every log record when enabled
+- Complex nested field paths may impact performance on high-traffic sites
+- Consider using recommended rules for optimal performance
+- Test custom rules thoroughly to ensure they target the intended fields
+
+### Security Best Practices
+
+1. **Review logs regularly** to ensure sanitization is working as expected
+2. **Test field paths** in a development environment before applying to production
+3. **Use remove over anonymize** for highly sensitive data
+4. **Monitor performance impact** when implementing extensive custom rules
+5. **Keep rules updated** as your GraphQL schema evolves
+
+---
+
 ## Usage
 
 WPGraphQL Logging Plugin is highly configurable and extendable and built with developers in mind to allow them to modify, change or add data, loggers etc to this plugin. Please read the docs below:
