@@ -164,13 +164,14 @@ class QueryActionLogger {
 			if ( ! in_array( Events::BEFORE_RESPONSE_RETURNED, $selected_events, true ) ) {
 				return;
 			}
-			$context = [
+			$encoded_request = wp_json_encode( $request );
+			$context         = [
 				'response'       => $response,
 				'schema'         => $schema,
 				'operation_name' => $operation,
 				'query'          => $query,
 				'variables'      => $variables,
-				'request'        => $request,
+				'request'        => false !== $encoded_request ? json_decode( $encoded_request, true ) : null,
 				'query_id'       => $query_id,
 			];
 			if ( ! $this->should_log_response( $this->config ) ) {

@@ -130,13 +130,14 @@ class QueryFilterLogger {
 			}
 
 			/** @var \GraphQL\Server\OperationParams $params */
-			$params  = $request->params;
-			$context = [
+			$params          = $request->params;
+			$encoded_request = wp_json_encode( $request );
+			$context         = [
 				'response'       => $response,
 				'operation_name' => $params->operation,
 				'query'          => $params->query,
 				'variables'      => $params->variables,
-				'request'        => $request,
+				'request'        => false !== $encoded_request ? json_decode( $encoded_request, true ) : null,
 				'query_id'       => $query_id,
 			];
 			if ( ! $this->should_log_response( $this->config ) ) {
