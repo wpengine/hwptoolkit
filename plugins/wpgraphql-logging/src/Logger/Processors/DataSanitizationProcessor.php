@@ -6,7 +6,7 @@ namespace WPGraphQL\Logging\Logger\Processors;
 
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Data_Management_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
 
 /**
  * This class is responsible for sanitizing data in log records
@@ -35,7 +35,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 	 * Check if data sanitization is enabled.
 	 */
 	protected function is_enabled(): bool {
-		$is_enabled = (bool) ( $this->config[ Data_Management_Tab::DATA_SANITIZATION_ENABLED ] ?? false );
+		$is_enabled = (bool) ( $this->config[ DataManagementTab::DATA_SANITIZATION_ENABLED ] ?? false );
 		return apply_filters( 'wpgraphql_logging_data_sanitization_enabled', $is_enabled );
 	}
 
@@ -45,7 +45,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 	 * @return array<string, mixed> The sanitization rules.
 	 */
 	protected function get_rules(): array {
-		$method = $this->config[ Data_Management_Tab::DATA_SANITIZATION_METHOD ] ?? 'none';
+		$method = $this->config[ DataManagementTab::DATA_SANITIZATION_METHOD ] ?? 'none';
 
 
 		if ( 'recommended' === $method ) {
@@ -79,9 +79,9 @@ class DataSanitizationProcessor implements ProcessorInterface {
 
 		$rules  = [];
 		$fields = [
-			'anonymize' => $this->config[ Data_Management_Tab::DATA_SANITIZATION_CUSTOM_FIELD_ANONYMIZE ] ?? [],
-			'remove'    => $this->config[ Data_Management_Tab::DATA_SANITIZATION_CUSTOM_FIELD_REMOVE ] ?? [],
-			'truncate'  => $this->config[ Data_Management_Tab::DATA_SANITIZATION_CUSTOM_FIELD_TRUNCATE ] ?? [],
+			'anonymize' => $this->config[ DataManagementTab::DATA_SANITIZATION_CUSTOM_FIELD_ANONYMIZE ] ?? [],
+			'remove'    => $this->config[ DataManagementTab::DATA_SANITIZATION_CUSTOM_FIELD_REMOVE ] ?? [],
+			'truncate'  => $this->config[ DataManagementTab::DATA_SANITIZATION_CUSTOM_FIELD_TRUNCATE ] ?? [],
 		];
 
 		foreach ( $fields as $action => $field_string ) {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings\Fields\Field;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
 
 /**
  * Abstract Settings Field class for WPGraphQL Logging.
@@ -15,7 +15,7 @@ use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface;
  *
  * @since 0.0.1
  */
-abstract class Abstract_Settings_Field implements Settings_Field_Interface {
+abstract class AbstractSettingsField implements SettingsFieldInterface {
 	/**
 	 * Constructor.
 	 *

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Scheduler;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Data_Management_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
 use WPGraphQL\Logging\Logger\Database\LogsRepository;
 
 /**
@@ -75,11 +75,11 @@ class DataDeletionScheduler {
 	 */
 	public function perform_deletion(): void {
 
-		if ( false === (bool) $this->config[ Data_Management_Tab::DATA_DELETION_ENABLED ] ) {
+		if ( false === (bool) $this->config[ DataManagementTab::DATA_DELETION_ENABLED ] ) {
 			return;
 		}
 
-		$retention_days = $this->config[ Data_Management_Tab::DATA_RETENTION_DAYS ];
+		$retention_days = $this->config[ DataManagementTab::DATA_RETENTION_DAYS ];
 		if ( ! is_numeric( $retention_days ) ) {
 			return;
 		}

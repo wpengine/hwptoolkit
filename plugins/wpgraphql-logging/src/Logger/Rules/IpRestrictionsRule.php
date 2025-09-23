@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Rules;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 
 /**
  * Rule to check if logging should occur based on IP restrictions.
@@ -24,7 +24,7 @@ class IpRestrictionsRule implements LoggingRuleInterface {
 	 */
 	public function passes(array $config, ?string $query_string = null): bool {
 
-		$ip_restrictions = $config[ Basic_Configuration_Tab::IP_RESTRICTIONS ] ?? '';
+		$ip_restrictions = $config[ BasicConfigurationTab::IP_RESTRICTIONS ] ?? '';
 		if ( empty( $ip_restrictions ) ) {
 			return true;
 		}

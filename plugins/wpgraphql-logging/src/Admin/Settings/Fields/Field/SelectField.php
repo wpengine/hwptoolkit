@@ -13,7 +13,7 @@ namespace WPGraphQL\Logging\Admin\Settings\Fields\Field;
  *
  * @since 0.0.1
  */
-class Select_Field extends Abstract_Settings_Field {
+class SelectField extends AbstractSettingsField {
 	/**
 	 * Constructor.
 	 *

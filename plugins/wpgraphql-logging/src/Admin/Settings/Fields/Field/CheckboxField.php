@@ -13,7 +13,7 @@ namespace WPGraphQL\Logging\Admin\Settings\Fields\Field;
  *
  * @since 0.0.1
  */
-class Checkbox_Field extends Abstract_Settings_Field {
+class CheckboxField extends AbstractSettingsField {
 	/**
 	 * Render the checkbox field.
 	 *

@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-use WPGraphQL\Logging\Admin\Settings\Logging_Settings_Service;
+use WPGraphQL\Logging\Admin\Settings\LoggingSettingsService;
 
 $wpgraphql_logging_tabs_config = (array) get_query_var( 'wpgraphql_logging_main_page_config' );
 $wpgraphql_logging_current_tab = (string) ( $wpgraphql_logging_tabs_config['current_tab'] ?? '' );
@@ -37,7 +37,7 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 							<div class="inside">
 								<?php
 								// Settings sections.
-								settings_fields( Logging_Settings_Service::get_settings_group() );
+								settings_fields( LoggingSettingsService::get_settings_group() );
 								do_settings_sections( 'wpgraphql-logging-' . $wpgraphql_logging_current_tab );
 								submit_button();
 								?>
@@ -94,7 +94,7 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 										break;
 								}
 								?>
-																		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . \WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG ) ); ?>" class="button">
+																		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . \WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG ) ); ?>" class="button">
 			<?php esc_html_e( 'View Logs', 'wpgraphql-logging' ); ?>
 		</a>
 							</div>

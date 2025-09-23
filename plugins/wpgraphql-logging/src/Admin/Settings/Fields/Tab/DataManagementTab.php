@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings\Fields\Tab;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Checkbox_Field;
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Select_Field;
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Input_Field;
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Integer_Field;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\SelectField;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\TextInputField;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\TextIntegerField;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface;
 
 /**
  * Data Management Tab class.
@@ -16,7 +17,7 @@ use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Integer_Field;
  *
  * @since 0.0.1
  */
-class Data_Management_Tab implements Settings_Tab_Interface {
+class DataManagementTab implements SettingsTabInterface {
 	/**
 	 * The field ID for the enabled checkbox.
 	 *
@@ -85,12 +86,12 @@ class Data_Management_Tab implements Settings_Tab_Interface {
 	/**
 	 * Get the fields for this tab.
 	 *
-	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface> Array of fields keyed by field ID.
+	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface> Array of fields keyed by field ID.
 	 */
 	public function get_fields(): array {
 		$fields = [];
 
-		$fields[ self::DATA_DELETION_ENABLED ] = new Checkbox_Field(
+		$fields[ self::DATA_DELETION_ENABLED ] = new CheckboxField(
 			self::DATA_DELETION_ENABLED,
 			$this->get_name(),
 			__( 'Data Deletion Enabled', 'wpgraphql-logging' ),
@@ -98,7 +99,7 @@ class Data_Management_Tab implements Settings_Tab_Interface {
 			__( 'Enable or disable data deletion for WPGraphQL logging.', 'wpgraphql-logging' ),
 		);
 
-		$fields[ self::DATA_RETENTION_DAYS ] = new Text_Integer_Field(
+		$fields[ self::DATA_RETENTION_DAYS ] = new TextIntegerField(
 			self::DATA_RETENTION_DAYS,
 			$this->get_name(),
 			__( 'Number of Days to Retain Logs', 'wpgraphql-logging' ),
@@ -108,7 +109,7 @@ class Data_Management_Tab implements Settings_Tab_Interface {
 			'30'
 		);
 
-		$fields[ self::DATA_SANITIZATION_ENABLED ] = new Checkbox_Field(
+		$fields[ self::DATA_SANITIZATION_ENABLED ] = new CheckboxField(
 			self::DATA_SANITIZATION_ENABLED,
 			$this->get_name(),
 			__( 'Data Sanitization Enabled', 'wpgraphql-logging' ),
@@ -117,7 +118,7 @@ class Data_Management_Tab implements Settings_Tab_Interface {
 		);
 
 
-		$fields[ self::DATA_SANITIZATION_METHOD ] = new Select_Field(
+		$fields[ self::DATA_SANITIZATION_METHOD ] = new SelectField(
 			self::DATA_SANITIZATION_METHOD,
 			$this->get_name(),
 			__( 'Data Sanitization Method', 'wpgraphql-logging' ),
@@ -131,7 +132,7 @@ class Data_Management_Tab implements Settings_Tab_Interface {
 		);
 
 
-		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_ANONYMIZE ] = new Text_Input_Field(
+		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_ANONYMIZE ] = new TextInputField(
 			self::DATA_SANITIZATION_CUSTOM_FIELD_ANONYMIZE,
 			$this->get_name(),
 			__( 'Custom Fields to Anonymize', 'wpgraphql-logging' ),
@@ -140,7 +141,7 @@ class Data_Management_Tab implements Settings_Tab_Interface {
 			'e.g., user_email, user_ip'
 		);
 
-		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_REMOVE ] = new Text_Input_Field(
+		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_REMOVE ] = new TextInputField(
 			self::DATA_SANITIZATION_CUSTOM_FIELD_REMOVE,
 			$this->get_name(),
 			__( 'Custom Fields to Remove', 'wpgraphql-logging' ),
@@ -148,7 +149,7 @@ class Data_Management_Tab implements Settings_Tab_Interface {
 			__( 'Comma-separated list of custom fields to remove.', 'wpgraphql-logging' ),
 		);
 
-		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_TRUNCATE ] = new Text_Input_Field(
+		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_TRUNCATE ] = new TextInputField(
 			self::DATA_SANITIZATION_CUSTOM_FIELD_TRUNCATE,
 			$this->get_name(),
 			__( 'Custom Fields to Truncate', 'wpgraphql-logging' ),

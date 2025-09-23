@@ -6,7 +6,7 @@ namespace WPGraphQL\Logging\Events;
 
 use GraphQL\Executor\ExecutionResult;
 use Monolog\Level;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Logger\LoggingHelper;
 use WPGraphQL\Request;
@@ -64,7 +64,7 @@ class QueryActionLogger {
 			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
 				return;
 			}
-			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
 			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
 				return;
 			}
@@ -107,7 +107,7 @@ class QueryActionLogger {
 			if ( ! $this->is_logging_enabled( $this->config, $params->query ) ) {
 				return;
 			}
-			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
 			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
 				return;
 			}
@@ -157,7 +157,7 @@ class QueryActionLogger {
 			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
 				return;
 			}
-			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
 			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
 				return;
 			}

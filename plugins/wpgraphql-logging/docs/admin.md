@@ -6,34 +6,34 @@ This document explains how the WPGraphQL Logging admin settings UI is built and 
 
 ## Architecture Overview
 
-- **Settings page entry**: `WPGraphQL\Logging\Admin\Settings_Page`
+- **Settings page entry**: `WPGraphQL\Logging\Admin\SettingsPage`
   - Registers the submenu page and orchestrates fields and tabs
   - Hooks added: `init` (init fields), `admin_menu` (page), `admin_init` (fields), `admin_enqueue_scripts` (assets)
-- **Menu page**: `WPGraphQL\Logging\Admin\Settings\Menu\Menu_Page`
+- **Menu page**: `WPGraphQL\Logging\Admin\Settings\Menu\MenuPage`
   - Adds a submenu under Settings → WPGraphQL Logging (`wpgraphql-logging`)
   - Renders template `src/Admin/Settings/Templates/admin.php`
-- **Form manager**: `WPGraphQL\Logging\Admin\Settings\Settings_Form_Manager`
+- **Form manager**: `WPGraphQL\Logging\Admin\Settings\SettingsFormManager`
   - Registers the settings (`register_setting`) and sections/fields per tab
   - Sanitizes and saves values per tab; unknown fields are pruned
-- **Field collection**: `WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Collection`
-  - Holds all tabs and fields. A default `Basic_Configuration_Tab` is registered
-- **Tabs**: Implement `Settings_Tab_Interface` with `get_name()`, `get_label()`, `get_fields()`
-- **Fields**: Implement `Settings_Field_Interface` or use built-ins:
-  - `Field\Checkbox_Field`
-  - `Field\Text_Input_Field`
-  - `Field\Select_Field`
+- **Field collection**: `WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection`
+  - Holds all tabs and fields. A default `BasicConfigurationTab` is registered
+- **Tabs**: Implement `SettingsTabInterface` with `get_name()`, `get_label()`, `get_fields()`
+- **Fields**: Implement `SettingsFieldInterface` or use built-ins:
+  - `Field\CheckboxField`
+  - `Field\TextInputField`
+  - `Field\SelectField`
 
 Settings are stored in an array option. Keys are filterable:
 
 - Option key: `wpgraphql_logging_settings` (filter `wpgraphql_logging_settings_group_option_key`)
 - Settings group: `wpgraphql_logging_settings_group` (filter `wpgraphql_logging_settings_group_settings_group`)
 
-To read values at runtime, use `WPGraphQL\Logging\Admin\Settings\Logging_Settings_Service`:
+To read values at runtime, use `WPGraphQL\Logging\Admin\Settings\LoggingSettingsService`:
 
 ```php
-use WPGraphQL\Logging\Admin\Settings\Logging_Settings_Service;
+use WPGraphQL\Logging\Admin\Settings\LoggingSettingsService;
 
-$settings = new Logging_Settings_Service();
+$settings = new LoggingSettingsService();
 $enabled = $settings->get_setting('basic_configuration', 'enabled', false);
 ```
 
@@ -41,11 +41,11 @@ $enabled = $settings->get_setting('basic_configuration', 'enabled', false);
 
 ## Hooks Reference (Admin)
 
-- Action: `wpgraphql_logging_settings_init( Settings_Page $instance )`
+- Action: `wpgraphql_logging_settings_init( SettingsPage $instance )`
   - Fired after the settings page is initialized
-- Action: `wpgraphql_logging_settings_field_collection_init( Settings_Field_Collection $collection )`
+- Action: `wpgraphql_logging_settings_field_collection_init( SettingsFieldCollection $collection )`
   - Fired after default tabs/fields are registered; primary extension point to add tabs/fields
-- Action: `wpgraphql_logging_settings_form_manager_init( Settings_Form_Manager $manager )`
+- Action: `wpgraphql_logging_settings_form_manager_init( SettingsFormManager $manager )`
   - Fired when the form manager is constructed
 - Filter: `wpgraphql_logging_settings_group_option_key( string $option_key )`
   - Change the option key used to store settings
@@ -53,14 +53,14 @@ $enabled = $settings->get_setting('basic_configuration', 'enabled', false);
   - Change the settings group name used in `register_setting`
 
 - Filter: `wpgraphql_logging_basic_configuration_fields( array $fields )`
-  - Modify the default fields rendered in the `basic_configuration` tab. You can add, remove, or replace fields by returning a modified associative array of `field_id => Settings_Field_Interface`.
+  - Modify the default fields rendered in the `basic_configuration` tab. You can add, remove, or replace fields by returning a modified associative array of `field_id => SettingsFieldInterface`.
   - Example:
   ```php
-  use WPGraphQL\Logging\Admin\Settings\Fields\Field\Checkbox_Field;
+  use WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
 
   add_filter('wpgraphql_logging_basic_configuration_fields', function(array $fields): array {
       // Add a custom toggle into the Basic Configuration tab
-      $fields['enable_feature_x'] = new Checkbox_Field(
+      $fields['enable_feature_x'] = new CheckboxField(
           'enable_feature_x',
           'basic_configuration',
           'Enable Feature X',
@@ -69,7 +69,7 @@ $enabled = $settings->get_setting('basic_configuration', 'enabled', false);
       );
 
       // Optionally remove an existing field
-      // unset($fields[ WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab::DATA_SAMPLING ]);
+      // unset($fields[ WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab::DATA_SAMPLING ]);
 
       return $fields;
   });
@@ -84,17 +84,17 @@ Related (non-admin) hooks for context:
 
 ## Add a New Tab
 
-Create a tab class implementing `Settings_Tab_Interface` and register it during `wpgraphql_logging_settings_field_collection_init`.
+Create a tab class implementing `SettingsTabInterface` and register it during `wpgraphql_logging_settings_field_collection_init`.
 
 ```php
 <?php
 namespace MyPlugin\WPGraphQLLogging;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Collection;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface;
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Input_Field;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\TextInputField;
 
-class My_Custom_Tab implements Settings_Tab_Interface {
+class My_Custom_Tab implements SettingsTabInterface {
     public function get_name(): string {
         return 'my_custom_tab';
     }
@@ -105,7 +105,7 @@ class My_Custom_Tab implements Settings_Tab_Interface {
 
     public function get_fields(): array {
         return [
-            'my_setting' => new Text_Input_Field(
+            'my_setting' => new TextInputField(
                 'my_setting',
                 $this->get_name(),
                 'My Setting',
@@ -117,7 +117,7 @@ class My_Custom_Tab implements Settings_Tab_Interface {
     }
 }
 
-add_action('wpgraphql_logging_settings_field_collection_init', function (Settings_Field_Collection $collection): void {
+add_action('wpgraphql_logging_settings_field_collection_init', function (SettingsFieldCollection $collection): void {
     $collection->add_tab(new My_Custom_Tab());
 });
 ```
@@ -137,13 +137,13 @@ You can add fields directly to the shared field collection. Ensure the field’s
 <?php
 namespace MyPlugin\WPGraphQLLogging;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Collection;
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Checkbox_Field;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
 
-add_action('wpgraphql_logging_settings_field_collection_init', function (Settings_Field_Collection $collection): void {
+add_action('wpgraphql_logging_settings_field_collection_init', function (SettingsFieldCollection $collection): void {
     $collection->add_field(
         'enable_feature_x',
-        new Checkbox_Field(
+        new CheckboxField(
             'enable_feature_x',
             'basic_configuration', // target the built-in Basic Configuration tab
             'Enable Feature X',
@@ -170,9 +170,9 @@ Tips:
 Example of reading a value elsewhere:
 
 ```php
-use WPGraphQL\Logging\Admin\Settings\Logging_Settings_Service;
+use WPGraphQL\Logging\Admin\Settings\LoggingSettingsService;
 
-$settings = new Logging_Settings_Service();
+$settings = new LoggingSettingsService();
 $thresholdSeconds = (float) $settings->get_setting('basic_configuration', 'performance_metrics', '0');
 ```
 

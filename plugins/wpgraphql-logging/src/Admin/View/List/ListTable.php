@@ -14,7 +14,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 /**
- * List_Table class for WPGraphQL Logging.
+ * ListTable class for WPGraphQL Logging.
  *
  * This class handles the display of the logs in a table format.
  *
@@ -22,7 +22,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  *
  * @since 0.0.1
  */
-class List_Table extends WP_List_Table {
+class ListTable extends WP_List_Table {
 	/**
 	 * Default number of items per page.
 	 *
@@ -299,7 +299,7 @@ class List_Table extends WP_List_Table {
 	 * @return string The rendered ID column or null.
 	 */
 	public function column_id( DatabaseEntity $item ): string {
-		$url     = \WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG;
+		$url     = \WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG;
 		$actions = [
 			'view'     => sprintf(
 				'<a href="?page=%s&action=%s&log=%d">%s</a>',

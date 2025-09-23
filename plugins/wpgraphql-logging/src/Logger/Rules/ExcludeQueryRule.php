@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Rules;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 
 /**
  * Rule to check if the query is excluded from logging.
@@ -23,7 +23,7 @@ class ExcludeQueryRule implements LoggingRuleInterface {
 	 * @return bool True if the rule passes (logging should continue).
 	 */
 	public function passes(array $config, ?string $query_string = null): bool {
-		$queries = $config[ Basic_Configuration_Tab::EXCLUDE_QUERY ] ?? '';
+		$queries = $config[ BasicConfigurationTab::EXCLUDE_QUERY ] ?? '';
 		if ( null === $query_string ) {
 			return true;
 		}

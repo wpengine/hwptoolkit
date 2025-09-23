@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings\Fields\Field;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Input_Field;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\TextInputField;
 
 /**
  * Text Integer Field class for WPGraphQL Logging settings.
@@ -15,7 +15,7 @@ use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Input_Field;
  *
  * @since 0.0.1
  */
-class Text_Integer_Field extends Text_Input_Field {
+class TextIntegerField extends TextInputField {
 	/**
 	 * Sanitize the text input field value.
 	 *

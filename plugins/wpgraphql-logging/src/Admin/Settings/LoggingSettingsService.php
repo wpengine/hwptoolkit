@@ -13,7 +13,7 @@ namespace WPGraphQL\Logging\Admin\Settings;
  *
  * @since 0.0.1
  */
-class Logging_Settings_Service {
+class LoggingSettingsService {
 	/**
 	 * The settings value
 	 *
