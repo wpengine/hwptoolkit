@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Scheduler;
 
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
 use WPGraphQL\Logging\Logger\Database\LogsRepository;
 
@@ -42,8 +43,8 @@ class DataDeletionScheduler {
 	 * Private constructor to prevent direct instantiation.
 	 */
 	protected function __construct(readonly LogsRepository $repository) {
-		$full_config  = get_option( WPGRAPHQL_LOGGING_SETTINGS_KEY, [] );
-		$this->config = $full_config['data_management'] ?? [];
+		$config_helper = ConfigurationHelper::get_instance();
+		$this->config  = $config_helper->get_data_management_config();
 	}
 
 	/**

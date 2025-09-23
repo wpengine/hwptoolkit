@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\SettingsPage;
 use WPGraphQL\Logging\Admin\ViewLogsPage;
 use WPGraphQL\Logging\Events\EventManager;
@@ -55,6 +56,9 @@ final class Plugin {
 	 * Initialize the plugin admin, frontend & api functionality.
 	 */
 	public function setup(): void {
+		// Initialize configuration caching hooks.
+		ConfigurationHelper::init_cache_hooks();
+
 		SettingsPage::init();
 		ViewLogsPage::init();
 		QueryEventLifecycle::init();

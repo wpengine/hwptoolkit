@@ -6,6 +6,7 @@ namespace WPGraphQL\Logging\Logger\Processors;
 
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
 
 /**
@@ -27,8 +28,8 @@ class DataSanitizationProcessor implements ProcessorInterface {
 	 * DataSanitizationProcessor constructor.
 	 */
 	public function __construct() {
-		$full_config  = get_option( WPGRAPHQL_LOGGING_SETTINGS_KEY, [] );
-		$this->config = $full_config['data_management'] ?? [];
+		$config_helper = ConfigurationHelper::get_instance();
+		$this->config  = $config_helper->get_data_management_config();
 	}
 
 	/**
