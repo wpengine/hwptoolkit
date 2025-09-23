@@ -1,28 +1,22 @@
-// Add this to your admin JavaScript file
 document.addEventListener('DOMContentLoaded', function() {
-
-    const sanitizationMethodSelect = document.querySelector("#data_sanitization_method");
-	if (! sanitizationMethodSelect || sanitizationMethodSelect.length === 0) {
+	const sanitizationMethodSelect = document.querySelector("#data_sanitization_method");
+	if (!sanitizationMethodSelect) {
 		return;
 	}
 
 	function toggleCustomFields() {
-        const isCustom = sanitizationMethodSelect.value === 'custom';
+		const isCustom = sanitizationMethodSelect.value === 'custom';
+		const customElements = document.querySelectorAll('.wpgraphql-logging-custom');
 
-		if (isCustom) {
-			document.querySelectorAll('.wpgraphql-logging-custom').forEach((el) => {
+		customElements.forEach((el) => {
+			if (isCustom) {
 				el.classList.add('block');
-			});
-		} else {
-			document.querySelectorAll('.wpgraphql-logging-custom').forEach((el) => {
+			} else {
 				el.classList.remove('block');
-			});
-		}
-    }
+			}
+		});
+	}
 
-	// Initial check on page load
 	toggleCustomFields();
-
-	// Listen for changes
 	sanitizationMethodSelect.addEventListener('change', toggleCustomFields);
 });
