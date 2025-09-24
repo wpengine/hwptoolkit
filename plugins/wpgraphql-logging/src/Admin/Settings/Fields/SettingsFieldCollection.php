@@ -82,7 +82,7 @@ class SettingsFieldCollection {
 	 * @param \WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface $tab The tab to add.
 	 */
 	public function add_tab( SettingsTabInterface $tab ): void {
-		$this->tabs[ $tab->get_name() ] = $tab;
+		$this->tabs[ $tab::get_name() ] = $tab;
 
 		foreach ( $tab->get_fields() as $field_key => $field ) {
 			$this->add_field( $field_key, $field );

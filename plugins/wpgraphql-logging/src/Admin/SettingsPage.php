@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Admin;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface;
 use WPGraphQL\Logging\Admin\Settings\Menu\MenuPage;
 use WPGraphQL\Logging\Admin\Settings\SettingsFormManager;
@@ -94,7 +95,7 @@ class SettingsPage {
 				continue;
 			}
 
-			$tab_labels[ $tab_key ] = $tab->get_label();
+			$tab_labels[ $tab_key ] = $tab::get_label();
 		}
 
 		$page = new MenuPage(
@@ -134,25 +135,34 @@ class SettingsPage {
 	public function get_current_tab( array $tabs = [] ): string {
 		$tabs = $this->get_tabs( $tabs );
 		if ( empty( $tabs ) ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
 		if ( ! isset( $_GET['tab'] ) || ! is_string( $_GET['tab'] ) ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
 		$tab = sanitize_text_field( $_GET['tab'] );
 
 		if ( ! is_string( $tab ) || '' === $tab ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 
 		if ( array_key_exists( $tab, $tabs ) ) {
 			return $tab;
 		}
 
-		return 'basic_configuration';
+		return $this->get_default_tab();
+	}
+
+	/**
+	 * Get the default tab slug.
+	 *
+	 * @return string The default tab slug.
+	 */
+	public function get_default_tab(): string {
+		return BasicConfigurationTab::get_name();
 	}
 
 	/**

@@ -4,27 +4,15 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings;
 
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
+
 /**
  * Configuration Helper class
  *
  * This class provides a centralized and cached way to access WPGraphQL Logging configuration.
  * It implements a singleton pattern to ensure configuration is only loaded once per request
  * and provides convenient methods for accessing different configuration sections.
- *
- * Usage Examples:
- * ```php
- * // Get the helper instance
- * $config = ConfigurationHelper::get_instance();
- *
- * // Get a specific setting
- * $log_level = $config->get_setting('basic_configuration', 'log_level', 'info');
- *
- * // Check if a feature is enabled
- * $is_enabled = $config->is_enabled('data_management', 'data_sanitization_enabled');
- *
- * // Get an entire configuration section
- * $basic_config = $config->get_basic_config();
- * ```
  *
  * @package WPGraphQL\Logging
  *
@@ -114,7 +102,7 @@ class ConfigurationHelper {
 	 * @return array<string, mixed>
 	 */
 	public function get_basic_config(): array {
-		return $this->get_section_config( 'basic_configuration' );
+		return $this->get_section_config( BasicConfigurationTab::get_name() );
 	}
 
 	/**
@@ -123,7 +111,7 @@ class ConfigurationHelper {
 	 * @return array<string, mixed>
 	 */
 	public function get_data_management_config(): array {
-		return $this->get_section_config( 'data_management' );
+		return $this->get_section_config( DataManagementTab::get_name() );
 	}
 
 	/**

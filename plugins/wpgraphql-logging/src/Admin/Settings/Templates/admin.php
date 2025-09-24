@@ -9,6 +9,8 @@
 
 declare(strict_types=1);
 
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
 use WPGraphQL\Logging\Admin\Settings\LoggingSettingsService;
 
 $wpgraphql_logging_tabs_config = (array) get_query_var( 'wpgraphql_logging_main_page_config' );
@@ -60,7 +62,7 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 
 								<?php
 								switch ( $wpgraphql_logging_current_tab ) {
-									case 'basic_configuration':
+									case BasicConfigurationTab::get_name():
 										?>
 										<p><?php esc_html_e( 'Configure the fundamental logging settings to control when and how WPGraphQL requests are logged.', 'wpgraphql-logging' ); ?></p>
 										<ul class="wpgraphql-logging-feature-list">
@@ -75,7 +77,7 @@ $wpgraphql_logging_tabs        = (array) ( $wpgraphql_logging_tabs_config['tabs'
 										<?php
 										break;
 
-									case 'data_management':
+									case DataManagementTab::get_name():
 										?>
 										<p><?php esc_html_e( 'Manage how logging data is sanitized and deleted.', 'wpgraphql-logging' ); ?></p>
 										<ul class="wpgraphql-logging-feature-list">
