@@ -14,7 +14,7 @@ use WPGraphQL\Logging\Logger\Database\LogsRepository;
  *
  * @since 0.0.1
  */
-class Download_Log_Service {
+class DownloadLogService {
 	/**
 	 * Generates and serves a CSV file for a single log entry.
 	 *

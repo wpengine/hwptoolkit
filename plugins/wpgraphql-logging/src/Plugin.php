@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
-use WPGraphQL\Logging\Admin\Settings_Page;
-use WPGraphQL\Logging\Admin\View_Logs_Page;
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
+use WPGraphQL\Logging\Admin\SettingsPage;
+use WPGraphQL\Logging\Admin\ViewLogsPage;
 use WPGraphQL\Logging\Events\EventManager;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Scheduler\DataDeletionScheduler;
 
 /**
  * Plugin class for WPGraphQL Logging.
@@ -54,9 +56,13 @@ final class Plugin {
 	 * Initialize the plugin admin, frontend & api functionality.
 	 */
 	public function setup(): void {
-		Settings_Page::init();
-		View_Logs_Page::init();
+		// Initialize configuration caching hooks.
+		ConfigurationHelper::init_cache_hooks();
+
+		SettingsPage::init();
+		ViewLogsPage::init();
 		QueryEventLifecycle::init();
+		DataDeletionScheduler::init();
 	}
 
 	/**
@@ -105,6 +111,9 @@ final class Plugin {
 	 * @since 0.0.1
 	 */
 	public static function deactivate(): void {
+
+		DataDeletionScheduler::clear_scheduled_deletion();
+
 		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
 			return;
 		}

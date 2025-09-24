@@ -14,7 +14,7 @@ namespace WPGraphQL\Logging\Admin\Settings\Fields\Tab;
  *
  * @since 0.0.1
  */
-interface Settings_Tab_Interface {
+interface SettingsTabInterface {
 	/**
 	 * Get the name of the tab.
 	 *
@@ -32,7 +32,7 @@ interface Settings_Tab_Interface {
 	/**
 	 * Get the fields for this tab.
 	 *
-	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface> Array of fields keyed by field ID.
+	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface> Array of fields keyed by field ID.
 	 */
 	public function get_fields(): array;
 }

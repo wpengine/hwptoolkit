@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Events;
 
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Logger\LoggerService;
 
 /**
@@ -58,9 +59,9 @@ class QueryEventLifecycle {
 	 * @param \WPGraphQL\Logging\Logger\LoggerService $logger The logger instance.
 	 */
 	protected function __construct( LoggerService $logger ) {
-		$this->logger = $logger;
-		$full_config  = get_option( WPGRAPHQL_LOGGING_SETTINGS_KEY, [] );
-		$this->config = $full_config['basic_configuration'] ?? [];
+		$this->logger  = $logger;
+		$config_helper = ConfigurationHelper::get_instance();
+		$this->config  = $config_helper->get_basic_config();
 
 		// Initialize the specialized logger components.
 		$this->action_logger = new QueryActionLogger( $this->logger, $this->config );

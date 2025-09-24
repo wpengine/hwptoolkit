@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\wpunit\Admin\Settings\Fields\Field;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Text_Input_Field;
-use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\TextInputField;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 class TextInputFieldTest extends WPTestCase {
 
-	protected ?Text_Input_Field $field = null;
+	protected ?TextInputField $field = null;
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->field = new Text_Input_Field(
+		$this->field = new TextInputField(
 			'ip_restrictions',
 			'basic_configuration',
 			'IP Restrictions',
@@ -79,7 +79,7 @@ class TextInputFieldTest extends WPTestCase {
 
 	public function test_sanitize_field_email() {
 
-		$field = new Text_Input_Field(
+		$field = new TextInputField(
 			'email_address',
 			'basic_configuration',
 			'Email Address',
@@ -95,7 +95,7 @@ class TextInputFieldTest extends WPTestCase {
 
 	public function test_sanitize_field_url() {
 
-		$field = new Text_Input_Field(
+		$field = new TextInputField(
 			'url',
 			'basic_configuration',
 			'URL',
@@ -143,7 +143,7 @@ class TextInputFieldTest extends WPTestCase {
 
 	public function test_get_field_value() {
 		// Use a field with a non-empty default value to verify fallbacks
-		$field = new Text_Input_Field(
+		$field = new TextInputField(
 			'test_field',
 			'basic_configuration',
 			'Test Field',
@@ -180,7 +180,7 @@ class TextInputFieldTest extends WPTestCase {
 
 		// 5) Empty field ID -> default
 		// Create a subclass overriding get_id to simulate empty ID
-		$emptyIdField = new class('ignored', $tab_key, 'Title', 'css', 'desc', 'ph', 'DEF') extends Text_Input_Field {
+		$emptyIdField = new class('ignored', $tab_key, 'Title', 'css', 'desc', 'ph', 'DEF') extends TextInputField {
 			public function get_id(): string { return ''; }
 		};
 		$html = $emptyIdField->render_field( [ $tab_key => [ 'ignored' => 'value' ] ], $settings_key, $tab_key );

@@ -11,7 +11,7 @@ namespace WPGraphQL\Logging\Admin\Settings\Fields;
  *
  * @since 0.0.1
  */
-interface Settings_Field_Interface {
+interface SettingsFieldInterface {
 	/**
 	 * Render the settings field
 	 *

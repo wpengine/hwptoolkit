@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\wpunit\Admin\Settings\Fields\Field;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Checkbox_Field;
-use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 class CheckboxFieldTest extends WPTestCase {
 
-	protected ?Checkbox_Field $field = null;
+	protected ?CheckboxField $field = null;
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->field = new Checkbox_Field(
+		$this->field = new CheckboxField(
 			'enable_logging',
 			'basic_configuration',
 			'Enable Logging',
