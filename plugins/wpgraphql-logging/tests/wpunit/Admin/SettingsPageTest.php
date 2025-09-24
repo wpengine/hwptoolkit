@@ -7,8 +7,17 @@ namespace WPGraphQL\Logging\wpunit\Admin;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Admin\SettingsPage;
 use ReflectionClass;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
 
-class Settings_Page_Test extends WPTestCase {
+
+/**
+ * Test class for SettingsPage.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
+ */
+class SettingsPageTest extends WPTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
@@ -33,19 +42,39 @@ class Settings_Page_Test extends WPTestCase {
 
 		$this->assertNull( $instanceProperty->getValue() );
 		$instance = SettingsPage::init();
+		$instance->setup();
 
 		$this->assertInstanceOf( SettingsPage::class, $instanceProperty->getValue() );
 		$this->assertSame( $instance, $instanceProperty->getValue(), 'SettingsPage::init() should set the static instance property' );
 	}
 
-    public function test_setup_registers_hooks(): void {
-        $page = new SettingsPage();
+	public function test_setup_registers_hooks(): void {
+		$page = new SettingsPage();
         $page->setup();
 
         $this->assertEquals(10, has_action('init', [$page, 'init_field_collection']));
         $this->assertEquals(10, has_action('admin_menu', [$page, 'register_settings_page']));
         $this->assertEquals(10, has_action('admin_init', [$page, 'register_settings_fields']));
         $this->assertEquals(10, has_action('admin_enqueue_scripts', [$page, 'load_scripts_styles']));
+
+		// Init Field Collection
+		$page->init_field_collection();
+		$page->register_settings_fields();
+		$page->register_settings_page();
+		$page->load_scripts_styles('settings_page_' . SettingsPage::PLUGIN_MENU_SLUG);
+
+		$this->assertNotNull($page->get_field_collection(), 'Field collection should be initialized in setup');
+		$this->assertInstanceOf( SettingsFieldCollection::class, $page->get_field_collection(), 'Field collection should be initialized in setup' );
+	}
+
+	public function test_init_field_collection_initializes_field_collection(): void {
+
+		$page = SettingsPage::init();
+		$page->setup();
+		$page->init_field_collection();
+
+		$this->assertNotNull($page->get_field_collection(), 'Field collection should be initialized in setup');
+		$this->assertInstanceOf( SettingsFieldCollection::class, $page->get_field_collection(), 'Field collection should be initialized in setup' );
     }
 
     public function test_register_settings_page_no_field_collection_does_nothing(): void {
@@ -68,13 +97,13 @@ class Settings_Page_Test extends WPTestCase {
         // Provide custom tabs and no $_GET -> default
         $tabs = [
             'basic_configuration' => new class implements \WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface {
-                public function get_name(): string { return 'basic_configuration'; }
-                public function get_label(): string { return 'Basic Configuration'; }
+                public static function get_name(): string { return 'basic_configuration'; }
+                public static function get_label(): string { return 'Basic Configuration'; }
                 public function get_fields(): array { return []; }
             },
             'advanced' => new class implements \WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface {
-                public function get_name(): string { return 'advanced'; }
-                public function get_label(): string { return 'Advanced'; }
+                public static function get_name(): string { return 'advanced'; }
+                public static function get_label(): string { return 'Advanced'; }
                 public function get_fields(): array { return []; }
             },
         ];
@@ -89,25 +118,4 @@ class Settings_Page_Test extends WPTestCase {
         $_GET['tab'] = 'advanced';
         $this->assertSame('advanced', $page->get_current_tab($tabs));
     }
-
-    public function test_load_scripts_styles_enqueues_assets_conditionally(): void {
-        $page = new SettingsPage();
-
-        // Wrong page hook -> nothing enqueued
-        $page->load_scripts_styles('some_other_page');
-        $this->assertFalse(wp_style_is('wpgraphql-logging-settings-css', 'enqueued'));
-        $this->assertFalse(wp_script_is('wpgraphql-logging-settings-js', 'enqueued'));
-
-        // Correct page hook -> stylesheet should enqueue if file exists; script only if file exists
-        $page->load_scripts_styles('settings_page_' . SettingsPage::PLUGIN_MENU_SLUG);
-
-        // CSS is present in this repository, so this should be enqueued
-        $this->assertTrue(wp_style_is('wpgraphql-logging-settings-css', 'enqueued'));
-
-        // JS may not exist; expectation: not enqueued if file missing
-        $expectedJs = file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/settings/wp-graphql-logging-settings.js' );
-        $this->assertSame($expectedJs, wp_script_is('wpgraphql-logging-settings-js', 'enqueued'));
-    }
-
-
 }

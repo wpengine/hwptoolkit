@@ -80,14 +80,22 @@ class SettingsPage {
 	}
 
 	/**
+	 * Get the field collection.
+	 */
+	public function get_field_collection(): ?SettingsFieldCollection {
+		return $this->field_collection;
+	}
+
+	/**
 	 * Registers the settings page.
 	 */
 	public function register_settings_page(): void {
-		if ( is_null( $this->field_collection ) ) {
+		$collection = $this->get_field_collection();
+		if ( is_null( $collection ) ) {
 			return;
 		}
 
-		$tabs = $this->field_collection->get_tabs();
+		$tabs = $collection->get_tabs();
 
 		$tab_labels = [];
 		foreach ( $tabs as $tab_key => $tab ) {
@@ -102,7 +110,7 @@ class SettingsPage {
 			__( 'WPGraphQL Logging Settings', 'wpgraphql-logging' ),
 			'WPGraphQL Logging',
 			self::PLUGIN_MENU_SLUG,
-			trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'src/Admin/Settings/Templates/admin.php',
+			$this->get_admin_template(),
 			[
 				'wpgraphql_logging_main_page_config' => [
 					'tabs'        => $tab_labels,
@@ -115,13 +123,24 @@ class SettingsPage {
 	}
 
 	/**
+	 * Get the admin template path.
+	 *
+	 * @return string The path to the admin template file.
+	 */
+	public function get_admin_template() : string {
+		$template_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'src/Admin/Settings/Templates/admin.php';
+		return (string) apply_filters( 'wpgraphql_logging_admin_template_path', $template_path );
+	}
+
+	/**
 	 * Registers the settings fields for each tab.
 	 */
 	public function register_settings_fields(): void {
-		if ( ! isset( $this->field_collection ) ) {
+		$collection = $this->get_field_collection();
+		if ( ! isset( $collection ) ) {
 			return;
 		}
-		$settings_manager = new SettingsFormManager( $this->field_collection );
+		$settings_manager = new SettingsFormManager( $collection );
 		$settings_manager->render_form();
 	}
 
@@ -200,6 +219,8 @@ class SettingsPage {
 			WPGRAPHQL_LOGGING_VERSION,
 			true
 		);
+
+		do_action( 'wpgraphql_logging_admin_enqueue_scripts', $hook_suffix );
 	}
 
 	/**
@@ -213,8 +234,10 @@ class SettingsPage {
 		if ( ! empty( $tabs ) ) {
 			return $tabs;
 		}
-		if ( ! is_null( $this->field_collection ) ) {
-			return $this->field_collection->get_tabs();
+
+		$collection = $this->get_field_collection();
+		if ( ! is_null( $collection ) ) {
+			return $collection->get_tabs();
 		}
 
 		return [];

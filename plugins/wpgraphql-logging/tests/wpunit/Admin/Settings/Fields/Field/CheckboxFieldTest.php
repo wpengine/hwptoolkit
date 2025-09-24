@@ -8,6 +8,13 @@ use WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
+/**
+ * Test class for CheckboxField.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
+ */
 class CheckboxFieldTest extends WPTestCase {
 
 	protected ?CheckboxField $field = null;
