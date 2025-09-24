@@ -24,7 +24,7 @@ class ExcludeQueryRule implements LoggingRuleInterface {
 	 */
 	public function passes(array $config, ?string $query_string = null): bool {
 		$queries = $config[ BasicConfigurationTab::EXCLUDE_QUERY ] ?? '';
-		if ( null === $query_string ) {
+		if ( null === $query_string || '' === trim( $queries ) ) {
 			return true;
 		}
 
