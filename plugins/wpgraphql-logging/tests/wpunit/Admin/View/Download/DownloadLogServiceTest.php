@@ -8,7 +8,7 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Admin\View\Download\DownloadLogService;
 use WPGraphQL\Logging\Logger\Database\LogsRepository;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
-
+use Mockery;
 
 
 /**
@@ -59,11 +59,6 @@ class DownloadLogServiceTest extends WPTestCase {
 		$this->repository = new LogsRepository();
 	}
 
-	public function tearDown(): void {
-		$this->repository->delete_all();
-		parent::tearDown();
-	}
-
 	public function set_as_admin(): void {
 		$admin_user = $this->factory->user->create(['role' => 'administrator']);
 		wp_set_current_user($admin_user);
@@ -100,8 +95,26 @@ class DownloadLogServiceTest extends WPTestCase {
 
 	public function test_generate_csv_returns_valid_csv(): void {
 		$this->set_as_admin();
-		$entity = DatabaseEntity::create(...array_values($this->fixture));
-		$log_id = $entity->save();
+		// Mock a database entity instead of creating a real one
+		$entity = \Mockery::mock(DatabaseEntity::class);
+		$entity->shouldReceive('get_id')->andReturn(123);
+		$entity->shouldReceive('get_datetime')->andReturn('2023-01-01 12:00:00');
+		$entity->shouldReceive('get_level')->andReturn($this->fixture['level']);
+		$entity->shouldReceive('get_level_name')->andReturn($this->fixture['level_name']);
+		$entity->shouldReceive('get_message')->andReturn($this->fixture['message']);
+		$entity->shouldReceive('get_channel')->andReturn($this->fixture['channel']);
+		$entity->shouldReceive('get_query')->andReturn($this->fixture['extra']['wpgraphql_query']);
+		$entity->shouldReceive('get_context')->andReturn($this->fixture['context']);
+		$entity->shouldReceive('get_extra')->andReturn($this->fixture['extra']);
+
+		// Mock the repository to return our mocked entity
+		$this->repository = \Mockery::mock(LogsRepository::class);
+		$this->repository->shouldReceive('find_by_id')->with(123)->andReturn($entity);
+
+		// Inject the mocked repository into the service
+		$this->service = new DownloadLogService($this->repository);
+
+		$log_id = 123;
 
 
 		$headers = $this->service->get_headers($entity);
