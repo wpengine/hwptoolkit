@@ -97,7 +97,7 @@ class BasicConfigurationTab implements SettingsTabInterface {
 			__( 'Exclude Queries', 'wpgraphql-logging' ),
 			'',
 			__( 'Comma-separated list of GraphQL query names to exclude from logging.', 'wpgraphql-logging' ),
-			__( 'e.g., __schema,SeedNode,__typename', 'wpgraphql-logging' )
+			__( 'e.g., __schema,GetSeedNode', 'wpgraphql-logging' )
 		);
 
 		$fields[ self::ADMIN_USER_LOGGING ] = new CheckboxField(
