@@ -130,6 +130,9 @@ class ViewLogsPage {
 			'jquery-ui-timepicker-addon',
 			'jQuery(document).ready(function($){ $(".wpgraphql-logging-datepicker").datetimepicker({ dateFormat: "yy-mm-dd", timeFormat: "HH:mm:ss" }); });'
 		);
+
+		// Allow other plugins to enqueue their own scripts/styles.
+		do_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', $hook_suffix );
 	}
 
 	/**

@@ -250,7 +250,10 @@ class DatabaseEntity {
 			return null;
 		}
 
-		$query = $context['query'];
+		$query = $context['query'] ?? null;
+		if ( is_string( $query ) ) {
+			return $query;
+		}
 
 		$request = $context['request'] ?? null;
 		if ( empty( $request ) || ! is_array( $request ) ) {
