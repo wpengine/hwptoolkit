@@ -75,7 +75,7 @@ class DatabaseEntityTest extends WPTestCase
 		];
 
         // Create and save the entity
-        $entity = DatabaseEntity::create(...array_values($log_data));
+        $entity = DatabaseEntity::create(...$log_data);
         $insert_id = $entity->save();
 
 		$this->assertIsInt( $insert_id );
@@ -283,7 +283,7 @@ class DatabaseEntityTest extends WPTestCase
 		];
 
         // Create and save the entity
-        $entity = DatabaseEntity::create(...array_values($log_data));
+        $entity = DatabaseEntity::create(...$log_data);
         $insert_id = $entity->save();
 
 		$where_clauses = [
