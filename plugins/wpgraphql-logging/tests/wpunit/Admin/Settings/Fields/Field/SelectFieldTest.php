@@ -2,20 +2,28 @@
 
 declare(strict_types=1);
 
-namespace WPGraphQL\Logging\wpunit\Admin\Settings\Fields\Field;
+namespace WPGraphQL\Logging\Tests\Admin\Settings\Fields\Field;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\Select_Field;
-use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface;
+use WPGraphQL\Logging\Admin\Settings\Fields\Field\SelectField;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
+
+/**
+ * Test class for SelectField.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
+ */
 class SelectFieldTest extends WPTestCase {
 
-	protected ?Select_Field $field = null;
-	protected ?Select_Field $multipleField = null;
+	protected ?SelectField $field = null;
+	protected ?SelectField $multipleField = null;
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->field = new Select_Field(
+		$this->field = new SelectField(
 			'log_level',
 			'basic_configuration',
 			'Log Level',
@@ -30,7 +38,7 @@ class SelectFieldTest extends WPTestCase {
 			false
 		);
 
-		$this->multipleField = new Select_Field(
+		$this->multipleField = new SelectField(
 			'query_types',
 			'basic_configuration',
 			'Query Types',

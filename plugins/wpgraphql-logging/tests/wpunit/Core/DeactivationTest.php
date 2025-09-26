@@ -7,9 +7,12 @@ namespace WPGraphQL\Logging\Tests\Core;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
+
 /**
- * Test class for the de-activation callback.
+ * Test for the deactivation callback
  *
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
  */
 class DeactivationTest extends WPTestCase {
 	protected function setUp(): void {

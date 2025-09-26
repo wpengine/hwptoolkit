@@ -9,10 +9,12 @@ use ReflectionClass;
 use WPGraphQL\Logging\Events\EventManager;
 use WPGraphQL\Logging\Events\Events;
 
+
 /**
- * Class EventManagerTest
+ * Test for the EventManager
  *
- * Tests for the EventManager class.
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
  */
 class EventManagerTest extends WPTestCase {
 

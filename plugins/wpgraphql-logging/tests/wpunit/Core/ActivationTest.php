@@ -8,8 +8,12 @@ namespace WPGraphQL\Logging\Tests\Core;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
+
 /**
- * Test class for the activation callback.
+ * Test for the activation callback
+ *
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
  */
 class ActivationTest extends WPTestCase {
 

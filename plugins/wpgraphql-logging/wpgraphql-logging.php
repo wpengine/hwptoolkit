@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Requires at least: 6.5
  * Tested up to: 6.8.2
- * Requires PHP: 8.1+
+ * Requires PHP: 8.1.2+
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: wp-graphql
@@ -179,4 +179,4 @@ add_action( 'init', 'wpgraphql_logging_load_textdomain', 1, 0 );
 /** @psalm-suppress HookNotFound */
 add_action( 'plugins_loaded', static function (): void {
 	wpgraphql_logging_init();
-}, 10, 0 );
+}, 100, 0 );

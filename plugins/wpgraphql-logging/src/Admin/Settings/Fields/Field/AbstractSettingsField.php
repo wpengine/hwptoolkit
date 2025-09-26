@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings\Fields\Field;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface;
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
 
 /**
  * Abstract Settings Field class for WPGraphQL Logging.
@@ -15,7 +16,7 @@ use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Interface;
  *
  * @since 0.0.1
  */
-abstract class Abstract_Settings_Field implements Settings_Field_Interface {
+abstract class AbstractSettingsField implements SettingsFieldInterface {
 	/**
 	 * Constructor.
 	 *
@@ -84,7 +85,8 @@ abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 		$tab_key      = (string) ( $args['tab_key'] ?? '' );
 		$settings_key = (string) ( $args['settings_key'] ?? '' );
 
-		$option_value = (array) get_option( $settings_key, [] );
+		$config_helper = ConfigurationHelper::get_instance();
+		$option_value  = $config_helper->get_config();
 
 		$id = $this->get_field_name( $settings_key, $tab_key, $this->get_id() );
 

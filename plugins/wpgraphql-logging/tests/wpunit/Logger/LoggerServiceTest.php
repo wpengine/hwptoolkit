@@ -12,10 +12,12 @@ use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 use Monolog\LogRecord;
 
+
 /**
- * Class LoggerServiceTest
+ * Test for the LoggerService
  *
- * Tests for the LoggerService class.
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
  */
 class LoggerServiceTest extends WPTestCase
 {

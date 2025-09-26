@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Database;
 
+use DateTime;
+
 /**
  * LogsRepository class for WPGraphQL Logging.
  *
@@ -20,7 +22,6 @@ class LogsRepository {
 	 * @return array<\WPGraphQL\Logging\Logger\Database\DatabaseEntity>
 	 */
 	public function get_logs(array $args = []): array {
-		global $wpdb;
 		$defaults = [
 			'number'  => 100,
 			'offset'  => 0,
@@ -106,6 +107,23 @@ class LogsRepository {
 		}
 
 		$result = $wpdb->delete( $table_name, [ 'id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return false !== $result;
+	}
+
+	/**
+	 * Delete a logs entry older than a specific date.
+	 *
+	 * @param \DateTime $date The date to delete logs older than.
+	 */
+	public function delete_log_older_than(DateTime $date): bool {
+		global $wpdb;
+		$table_name = DatabaseEntity::get_table_name();
+
+		$result = $wpdb->query( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			'DELETE FROM %i WHERE datetime < %s',
+			$table_name,
+			$date->format( 'Y-m-d H:i:s' )
+		) );
 		return false !== $result;
 	}
 

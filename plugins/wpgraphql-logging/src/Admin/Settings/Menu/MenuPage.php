@@ -13,7 +13,7 @@ namespace WPGraphQL\Logging\Admin\Settings\Menu;
  *
  * @since 0.0.1
  */
-class Menu_Page {
+class MenuPage {
 	/**
 	 * The title of the page.
 	 *

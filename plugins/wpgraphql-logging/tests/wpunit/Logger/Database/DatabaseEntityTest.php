@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-namespace WPGraphQL\Logging\Tests\Database;
+namespace WPGraphQL\Logging\Tests\Logger\Database;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use DateTimeImmutable;
 use ReflectionClass;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use Mockery;
 
 /**
- * Class DatabaseEntityTest
- *
- * Tests for the DatabaseEntity class.
+ * Test for the DatabaseEntity
  *
  * @package WPGraphQL\Logging
  * @since 0.0.1
@@ -76,7 +75,7 @@ class DatabaseEntityTest extends WPTestCase
 		];
 
         // Create and save the entity
-        $entity = DatabaseEntity::create(...array_values($log_data));
+        $entity = DatabaseEntity::create(...$log_data);
         $insert_id = $entity->save();
 
 		$this->assertIsInt( $insert_id );
@@ -178,4 +177,123 @@ class DatabaseEntityTest extends WPTestCase
         // 6. Assert that the save method returned 0, indicating failure.
         $this->assertSame(0, $result_id, 'The save() method should return 0 when the database insert fails.');
     }
+
+	public function test_get_query() : void
+	{
+		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity->shouldReceive('get_context')->andReturn([
+			'query' => 'query GetAllPosts { posts { nodes { title content } } }'
+		]);
+
+		$this->assertEquals(
+			'query GetAllPosts { posts { nodes { title content } } }',
+			$mockEntity->get_query()
+		);
+	}
+
+	public function test_get_query_in_request() : void
+	{
+		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity->shouldReceive('get_context')->andReturn([
+			'request' => [
+				'params' => [
+					'query' => 'query GetAllPosts { posts { nodes { title content } } }'
+				]
+			]
+		]);
+
+		$this->assertEquals(
+			'query GetAllPosts { posts { nodes { title content } } }',
+			$mockEntity->get_query()
+		);
+	}
+
+	public function test_get_invalid_query() : void
+	{
+		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity->shouldReceive('get_context')->andReturn([
+			'request' => 'query GetAllPosts { posts { nodes { title content } } }'
+		]);
+
+		$this->assertNull(
+			$mockEntity->get_query()
+		);
+
+		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity->shouldReceive('get_context')->andReturn([
+			'request' => [
+				'query GetAllPosts { posts { nodes { title content } } }'
+			]
+		]);
+
+		$this->assertNull(
+			$mockEntity->get_query()
+		);
+
+		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity->shouldReceive('get_context')->andReturn([]);
+
+		$this->assertNull(
+			$mockEntity->get_query()
+		);
+
+
+		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity->shouldReceive('get_context')->andReturn([
+			'request' => [
+				'params' => [
+					'invalid_key' => 'query GetAllPosts { posts { nodes { title content } } }'
+				]
+			]
+		]);
+
+		$this->assertNull(
+			$mockEntity->get_query()
+		);
+	}
+
+	public function test_find_logs() : void {
+
+		$log_data = [
+			'channel'    => 'wpgraphql_logging',
+			'level'      => 200,
+			'level_name' => 'INFO',
+			'message'    => 'WPGraphQL Outgoing Response',
+			'context'    => [
+				'site_url'      => 'http://test.local',
+				'wp_version'    => '6.8.2',
+				'wp_debug_mode' => true,
+				'plugin_version'=> '0.0.1'
+			],
+			'extra'      => [
+				'ip' => '127.0.0.1',
+				'url' => '/index.php?graphql',
+				'server' => 'test.local',
+				'referrer' => 'http://test.local/wp-admin/admin.php?page=graphiql-ide',
+				'process_id' => 5819,
+				'http_method' => 'POST',
+				'memory_usage' => '14 MB',
+				'wpgraphql_query' => 'query GetPost($uri: ID!) { post(id: $uri, idType: URI) { title content } }',
+				'memory_peak_usage' => '14 MB',
+				'wpgraphql_variables' => [
+					'uri' => 'hello-world'
+				],
+				'wpgraphql_operation_name' => 'GetPost'
+			]
+		];
+
+        // Create and save the entity
+        $entity = DatabaseEntity::create(...$log_data);
+        $insert_id = $entity->save();
+
+		$where_clauses = [
+			'level' => 200,
+			'id' => $insert_id
+		];
+		$logs = DatabaseEntity::find_logs(10, 0, $where_clauses, 'id', 'DESC');
+		$this->assertIsArray($logs);
+		$this->assertCount(1, $logs);
+		$this->assertInstanceOf(DatabaseEntity::class, $logs[0]);
+
+	}
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin;
 
-use WPGraphQL\Logging\Admin\View\Download\Download_Log_Service;
-use WPGraphQL\Logging\Admin\View\List\List_Table;
+use WPGraphQL\Logging\Admin\View\Download\DownloadLogService;
+use WPGraphQL\Logging\Admin\View\List\ListTable;
 use WPGraphQL\Logging\Logger\Database\LogsRepository;
 
 /**
@@ -15,7 +15,7 @@ use WPGraphQL\Logging\Logger\Database\LogsRepository;
  *
  * @since 0.0.1
  */
-class View_Logs_Page {
+class ViewLogsPage {
 	/**
 	 * The admin page slug.
 	 *
@@ -40,7 +40,7 @@ class View_Logs_Page {
 	/**
 	 * Initializes the view logs page.
 	 */
-	public static function init(): ?View_Logs_Page {
+	public static function init(): ?ViewLogsPage {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return null;
 		}
@@ -130,6 +130,9 @@ class View_Logs_Page {
 			'jquery-ui-timepicker-addon',
 			'jQuery(document).ready(function($){ $(".wpgraphql-logging-datepicker").datetimepicker({ dateFormat: "yy-mm-dd", timeFormat: "HH:mm:ss" }); });'
 		);
+
+		// Allow other plugins to enqueue their own scripts/styles.
+		do_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', $hook_suffix );
 	}
 
 	/**
@@ -181,7 +184,19 @@ class View_Logs_Page {
 			return;
 		}
 
-		$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
+		$redirect_url = $this->get_redirect_url();
+
+		wp_safe_redirect( $redirect_url );
+		exit;
+	}
+
+	/**
+	 * Constructs the redirect URL with filter parameters.
+	 *
+	 * @return string The constructed redirect URL.
+	 */
+	public function get_redirect_url(): string {
+			$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
 
 		$possible_filters = [
 			'start_date',
@@ -202,9 +217,7 @@ class View_Logs_Page {
 			return '' !== $value;
 		} ), $redirect_url );
 		$redirect_url = apply_filters( 'wpgraphql_logging_filter_redirect_url', $redirect_url, $filters );
-
-		wp_safe_redirect( $redirect_url );
-		exit;
+		return (string) $redirect_url;
 	}
 
 	/**
@@ -231,7 +244,7 @@ class View_Logs_Page {
 	 */
 	protected function render_list_page(): void {
 		// Variable required for list template.
-		$list_table    = new List_Table( new LogsRepository() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
+		$list_table    = new ListTable( new LogsRepository() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
 		$list_template = apply_filters(
 			'wpgraphql_logging_list_template',
 			__DIR__ . '/View/Templates/wpgraphql-logger-list.php'
@@ -248,7 +261,7 @@ class View_Logs_Page {
 		}
 
 		$log_id     = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$downloader = new Download_Log_Service();
+		$downloader = new DownloadLogService();
 		$downloader->generate_csv( $log_id );
 	}
 

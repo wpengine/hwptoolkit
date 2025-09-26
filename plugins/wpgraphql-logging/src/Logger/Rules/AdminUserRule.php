@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Rules;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 
 /**
  * Rule to check if logging should occur based on admin user setting.
@@ -24,7 +24,7 @@ class AdminUserRule implements LoggingRuleInterface {
 	 */
 	public function passes(array $config, ?string $query_string = null): bool {
 
-		$is_admin_user = (bool) ( $config[ Basic_Configuration_Tab::ADMIN_USER_LOGGING ] ?? false );
+		$is_admin_user = (bool) ( $config[ BasicConfigurationTab::ADMIN_USER_LOGGING ] ?? false );
 		if ( ! $is_admin_user ) {
 			return true;
 		}

@@ -13,7 +13,7 @@ namespace WPGraphQL\Logging\Admin\Settings\Fields\Field;
  *
  * @since 0.0.1
  */
-class Text_Input_Field extends Abstract_Settings_Field {
+class TextInputField extends AbstractSettingsField {
 	/**
 	 * Constructor.
 	 *
@@ -70,14 +70,6 @@ class Text_Input_Field extends Abstract_Settings_Field {
 	 * @return string The sanitized string value.
 	 */
 	public function sanitize_field( $value ): string {
-		if ( 'email' === $this->get_input_type() ) {
-			return sanitize_email( (string) $value );
-		}
-
-		if ( 'url' === $this->get_input_type() ) {
-			return esc_url_raw( (string) $value );
-		}
-
 		return sanitize_text_field( (string) $value );
 	}
 

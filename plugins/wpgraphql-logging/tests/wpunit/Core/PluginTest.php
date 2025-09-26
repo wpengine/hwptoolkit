@@ -9,11 +9,12 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use ReflectionClass;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 
+
 /**
- * Class PluginTest
+ * Test for the Plugin
  *
- * Tests for the Plugin class
- *
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
  */
 class PluginTest extends WPTestCase {
 

@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Collection;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface;
-use WPGraphQL\Logging\Admin\Settings\Menu\Menu_Page;
-use WPGraphQL\Logging\Admin\Settings\Settings_Form_Manager;
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface;
+use WPGraphQL\Logging\Admin\Settings\Menu\MenuPage;
+use WPGraphQL\Logging\Admin\Settings\SettingsFormManager;
 
 /**
- * Settings_Page class for WPGraphQL Logging.
+ * SettingsPage class for WPGraphQL Logging.
  *
  * This class handles the registration of the settings page, settings fields, and loading of scripts and styles for the plugin.
  *
@@ -18,7 +20,7 @@ use WPGraphQL\Logging\Admin\Settings\Settings_Form_Manager;
  *
  * @since 0.0.1
  */
-class Settings_Page {
+class SettingsPage {
 	/**
 	 * @var string The slug for the plugin menu.
 	 */
@@ -27,21 +29,21 @@ class Settings_Page {
 	/**
 	 * The field collection.
 	 *
-	 * @var \WPGraphQL\Logging\Admin\Settings\Fields\Settings_Field_Collection|null
+	 * @var \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection|null
 	 */
-	protected ?Settings_Field_Collection $field_collection = null;
+	protected ?SettingsFieldCollection $field_collection = null;
 
 	/**
 	 * The instance of the plugin.
 	 *
-	 * @var \WPGraphQL\Logging\Admin\Settings_Page|null
+	 * @var \WPGraphQL\Logging\Admin\SettingsPage|null
 	 */
-	protected static ?Settings_Page $instance = null;
+	protected static ?SettingsPage $instance = null;
 
 	/**
 	 * Initializes the settings page.
 	 */
-	public static function init(): ?Settings_Page {
+	public static function init(): ?SettingsPage {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return null;
 		}
@@ -54,7 +56,7 @@ class Settings_Page {
 		/**
 		 * Fire off init action.
 		 *
-		 * @param \WPGraphQL\Logging\Admin\Settings_Page $instance the instance of the plugin class.
+		 * @param \WPGraphQL\Logging\Admin\SettingsPage $instance the instance of the plugin class.
 		 */
 		do_action( 'wpgraphql_logging_settings_init', self::$instance );
 
@@ -75,33 +77,41 @@ class Settings_Page {
 	 * Initialize the field collection.
 	 */
 	public function init_field_collection(): void {
-		$this->field_collection = new Settings_Field_Collection();
+		$this->field_collection = new SettingsFieldCollection();
+	}
+
+	/**
+	 * Get the field collection.
+	 */
+	public function get_field_collection(): ?SettingsFieldCollection {
+		return $this->field_collection;
 	}
 
 	/**
 	 * Registers the settings page.
 	 */
 	public function register_settings_page(): void {
-		if ( is_null( $this->field_collection ) ) {
+		$collection = $this->get_field_collection();
+		if ( is_null( $collection ) ) {
 			return;
 		}
 
-		$tabs = $this->field_collection->get_tabs();
+		$tabs = $collection->get_tabs();
 
 		$tab_labels = [];
 		foreach ( $tabs as $tab_key => $tab ) {
-			if ( ! is_a( $tab, Settings_Tab_Interface::class ) ) {
+			if ( ! is_a( $tab, SettingsTabInterface::class ) ) {
 				continue;
 			}
 
-			$tab_labels[ $tab_key ] = $tab->get_label();
+			$tab_labels[ $tab_key ] = $tab::get_label();
 		}
 
-		$page = new Menu_Page(
+		$page = new MenuPage(
 			__( 'WPGraphQL Logging Settings', 'wpgraphql-logging' ),
 			'WPGraphQL Logging',
 			self::PLUGIN_MENU_SLUG,
-			trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'src/Admin/Settings/Templates/admin.php',
+			$this->get_admin_template(),
 			[
 				'wpgraphql_logging_main_page_config' => [
 					'tabs'        => $tab_labels,
@@ -114,45 +124,66 @@ class Settings_Page {
 	}
 
 	/**
+	 * Get the admin template path.
+	 *
+	 * @return string The path to the admin template file.
+	 */
+	public function get_admin_template(): string {
+		$template_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'src/Admin/Settings/Templates/admin.php';
+		return (string) apply_filters( 'wpgraphql_logging_admin_template_path', $template_path );
+	}
+
+	/**
 	 * Registers the settings fields for each tab.
 	 */
 	public function register_settings_fields(): void {
-		if ( ! isset( $this->field_collection ) ) {
+		$collection = $this->get_field_collection();
+		if ( ! isset( $collection ) ) {
 			return;
 		}
-		$settings_manager = new Settings_Form_Manager( $this->field_collection );
+		$configuration_helper = ConfigurationHelper::get_instance();
+		$settings_manager     = new SettingsFormManager( $collection, $configuration_helper );
 		$settings_manager->render_form();
 	}
 
 	/**
 	 * Get the current tab for the settings page.
 	 *
-	 * @param array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface> $tabs Optional. The available tabs. If not provided, uses the instance tabs.
+	 * @param array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface> $tabs Optional. The available tabs. If not provided, uses the instance tabs.
 	 *
 	 * @return string The current tab slug.
 	 */
 	public function get_current_tab( array $tabs = [] ): string {
 		$tabs = $this->get_tabs( $tabs );
 		if ( empty( $tabs ) ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
 		if ( ! isset( $_GET['tab'] ) || ! is_string( $_GET['tab'] ) ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
 		$tab = sanitize_text_field( $_GET['tab'] );
 
 		if ( ! is_string( $tab ) || '' === $tab ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 
 		if ( array_key_exists( $tab, $tabs ) ) {
 			return $tab;
 		}
 
-		return 'basic_configuration';
+		return $this->get_default_tab();
+	}
+
+	/**
+	 * Get the default tab slug.
+	 *
+	 * @return string The default tab slug.
+	 */
+	public function get_default_tab(): string {
+		return BasicConfigurationTab::get_name();
 	}
 
 	/**
@@ -190,21 +221,25 @@ class Settings_Page {
 			WPGRAPHQL_LOGGING_VERSION,
 			true
 		);
+
+		do_action( 'wpgraphql_logging_admin_enqueue_scripts', $hook_suffix );
 	}
 
 	/**
 	 * Get the tabs for the settings page.
 	 *
-	 * @param array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface> $tabs Optional. The available tabs. If not provided, uses the instance tabs.
+	 * @param array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface> $tabs Optional. The available tabs. If not provided, uses the instance tabs.
 	 *
-	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Tab\Settings_Tab_Interface> The tabs.
+	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface> The tabs.
 	 */
 	protected function get_tabs(array $tabs = []): array {
 		if ( ! empty( $tabs ) ) {
 			return $tabs;
 		}
-		if ( ! is_null( $this->field_collection ) ) {
-			return $this->field_collection->get_tabs();
+
+		$collection = $this->get_field_collection();
+		if ( ! is_null( $collection ) ) {
+			return $collection->get_tabs();
 		}
 
 		return [];

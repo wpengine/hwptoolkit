@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * @package WPGraphQL\Logger\Admin\View\List\Templates
  *
- * @var \WPGraphQL\Logging\Admin\View\List\List_Table $list_table List table instance.
+ * @var \WPGraphQL\Logging\Admin\View\List\ListTable $list_table List table instance.
  *
  * @since 0.0.1
  */
