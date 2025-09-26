@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin;
 
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface;
@@ -127,7 +128,7 @@ class SettingsPage {
 	 *
 	 * @return string The path to the admin template file.
 	 */
-	public function get_admin_template() : string {
+	public function get_admin_template(): string {
 		$template_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'src/Admin/Settings/Templates/admin.php';
 		return (string) apply_filters( 'wpgraphql_logging_admin_template_path', $template_path );
 	}
@@ -140,7 +141,8 @@ class SettingsPage {
 		if ( ! isset( $collection ) ) {
 			return;
 		}
-		$settings_manager = new SettingsFormManager( $collection );
+		$configuration_helper = ConfigurationHelper::get_instance();
+		$settings_manager     = new SettingsFormManager( $collection, $configuration_helper );
 		$settings_manager->render_form();
 	}
 
