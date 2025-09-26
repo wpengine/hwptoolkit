@@ -184,7 +184,19 @@ class ViewLogsPage {
 			return;
 		}
 
-		$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
+		$redirect_url = $this->get_redirect_url();
+
+		wp_safe_redirect( $redirect_url );
+		exit;
+	}
+
+	/**
+	 * Constructs the redirect URL with filter parameters.
+	 *
+	 * @return string The constructed redirect URL.
+	 */
+	public function get_redirect_url(): string {
+			$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
 
 		$possible_filters = [
 			'start_date',
@@ -205,9 +217,7 @@ class ViewLogsPage {
 			return '' !== $value;
 		} ), $redirect_url );
 		$redirect_url = apply_filters( 'wpgraphql_logging_filter_redirect_url', $redirect_url, $filters );
-
-		wp_safe_redirect( $redirect_url );
-		exit;
+		return (string) $redirect_url;
 	}
 
 	/**

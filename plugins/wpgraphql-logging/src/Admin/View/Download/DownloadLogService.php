@@ -7,7 +7,6 @@ namespace WPGraphQL\Logging\Admin\View\Download;
 use League\Csv\Writer;
 use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 use WPGraphQL\Logging\Logger\Database\LogsRepository;
-use WPGraphQL\Logging\Logger\LoggerService;
 
 /**
  * Service for handling log downloads.
@@ -62,9 +61,9 @@ class DownloadLogService {
 	/**
 	 * Get default CSV headers.
 	 *
-	 * @param DatabaseEntity $log The log entry.
+	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log The log entry.
 	 *
-	 * @return array The default CSV headers.
+	 * @return array<string> The default CSV headers.
 	 */
 	public function get_headers(DatabaseEntity $log): array {
 		$headers = [
@@ -84,19 +83,19 @@ class DownloadLogService {
 	/**
 	 * Get CSV content for a log entry.
 	 *
-	 * @param DatabaseEntity $log The log entry.
+	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log The log entry.
 	 *
-	 * @return array The CSV content for the log entry.
+	 * @return array<string> The CSV content for the log entry.
 	 */
 	public function get_content(DatabaseEntity $log): array {
 		$content = [
-			$log->get_id() ?? '',
-			$log->get_datetime() ?? '',
-			$log->get_level() ?? '',
-			$log->get_level_name() ?? '',
-			$log->get_message() ?? '',
-			$log->get_channel() ?? '',
-			$log->get_query() ?? '',
+			$log->get_id(),
+			$log->get_datetime(),
+			$log->get_level(),
+			$log->get_level_name(),
+			$log->get_message(),
+			$log->get_channel(),
+			$log->get_query(),
 			wp_json_encode( $log->get_context() ),
 			wp_json_encode( $log->get_extra() ),
 		];
