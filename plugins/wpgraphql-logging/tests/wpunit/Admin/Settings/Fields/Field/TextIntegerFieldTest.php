@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WPGraphQL\Logging\wpunit\Admin\Settings\Fields\Field;
+namespace WPGraphQL\Logging\Tests\Admin\Settings\Fields;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\Field\TextIntegerField;
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;

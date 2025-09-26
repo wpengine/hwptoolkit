@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\WPUnit\Admin\Settings;
+namespace WPGraphQL\Logging\Tests\Admin\Settings;
 
 use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use Codeception\TestCase\WPTestCase;

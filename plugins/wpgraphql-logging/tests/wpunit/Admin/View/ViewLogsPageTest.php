@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\WPUnit\Admin\View;
+namespace WPGraphQL\Logging\Tests\Admin\View;
 
 
 use WPGraphQL\Logging\Admin\ViewLogsPage;
@@ -10,6 +10,12 @@ use WPGraphQL\Logging\Logger\Database\LogsRepository;
 use Codeception\TestCase\WPTestCase;
 use Brain\Monkey;
 
+/**
+ * Test for the ViewLogsPage
+ *
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
+ */
 class ViewLogsPageTest extends WPTestCase {
 
 

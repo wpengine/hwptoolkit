@@ -22,7 +22,6 @@ class LogsRepository {
 	 * @return array<\WPGraphQL\Logging\Logger\Database\DatabaseEntity>
 	 */
 	public function get_logs(array $args = []): array {
-		global $wpdb;
 		$defaults = [
 			'number'  => 100,
 			'offset'  => 0,

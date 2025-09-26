@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WPGraphQL\Logging\wpunit\Admin;
+namespace WPGraphQL\Logging\Tests\Admin;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Admin\SettingsPage;

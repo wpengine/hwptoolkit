@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\WPUnit\Admin\Settings\Fields;
+namespace WPGraphQL\Logging\Tests\Admin\Settings\Fields;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WPGraphQL\Logging\wpunit\Admin\View\Download;
+namespace WPGraphQL\Logging\Tests\Admin\View\Download;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Admin\View\Download\DownloadLogService;

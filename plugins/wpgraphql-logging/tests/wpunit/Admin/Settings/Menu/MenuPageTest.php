@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\WPUnit\Admin\Settings\Menu;
+namespace WPGraphQL\Logging\Tests\Admin\Settings\Menu;
 
 use WPGraphQL\Logging\Admin\SettingsPage;
 use WPGraphQL\Logging\Admin\Settings\Menu\MenuPage;

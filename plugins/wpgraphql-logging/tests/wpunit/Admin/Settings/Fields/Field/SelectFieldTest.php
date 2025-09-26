@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WPGraphQL\Logging\wpunit\Admin\Settings\Fields\Field;
+namespace WPGraphQL\Logging\Tests\Admin\Settings\Fields\Field;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\Field\SelectField;
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
