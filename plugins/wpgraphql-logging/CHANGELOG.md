@@ -1,5 +1,11 @@
 # WPGraphQL Logging
 
+## 0.0.11
+
+### Patch Changes
+
+- [#420](https://github.com/wpengine/hwptoolkit/pull/420) [`7bf9cb6`](https://github.com/wpengine/hwptoolkit/commit/7bf9cb625e1bee86af9436f8747ee1a24d1b273d) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Added data management for the logging plugin.
+
 ## 0.0.10
 
 ### Patch Changes
