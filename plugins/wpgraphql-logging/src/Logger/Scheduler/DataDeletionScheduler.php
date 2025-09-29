@@ -90,7 +90,7 @@ class DataDeletionScheduler {
 		}
 
 		try {
-			self::delete_old_logs( $retention_days );
+			$this->delete_old_logs( $retention_days );
 		} catch ( \Throwable $e ) {
 			do_action('wpgraphql_logging_cleanup_error', [
 				'error_message'  => $e->getMessage(),
