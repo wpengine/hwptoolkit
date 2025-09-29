@@ -1,14 +1,15 @@
-settings_page_wpgraphql-logging #poststuff .postbox .inside h2 {
+.settings_page_wpgraphql-logging #poststuff .postbox .inside h2 {
 	font-size: 1.3em;
 	font-weight: 600;
 	padding-left: 0;
 }
 
-
+.form-table td input[type="number"],
 .form-table td input[type="text"] {
 	width: calc(99% - 24px);
 	display: inline-block;
 }
+
 .form-table td select {
 	width: calc(99% - 24px);
 	display: inline-block;
@@ -47,12 +48,11 @@ settings_page_wpgraphql-logging #poststuff .postbox .inside h2 {
 .wpgraphql-logging-tooltip .tooltip-text::after {
 	content: "";
 	position: absolute;
-	top: 0;
+	top: 50%;
 	left: -10px;
 	border-width: 6px;
 	border-style: solid;
 	border-color: transparent #1d2327 transparent transparent;
-	top: 50%;
 	transform: translateY(-50%);
 }
 
@@ -71,16 +71,19 @@ settings_page_wpgraphql-logging #poststuff .postbox .inside h2 {
 .wpgraphql-logging-docs ul li:before {
 	content: url(../../icons/doc.svg);
 	height: 1em;
+	width: 0.5em;
 	margin-left: -29px;
 	margin-top: -2px;
 	position: absolute;
-	width: 0.5em;
 }
-
 
 .wpgraphql-logging-feature-list {
 	list-style-type: disc;
 	font-size: 1.1em;
 	margin-left: 30px;
 	padding-bottom: 16px;
+}
+
+.wpgraphql-logging-custom:not(.block) {
+	display: none;
 }

@@ -17,7 +17,7 @@ declare(strict_types=1);
 			admin_url(
 				sprintf(
 					'admin.php?page=%s&action=%s&log=%d',
-					\WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG,
+					\WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG,
 					'download',
 					$log->get_id()
 				)
@@ -71,7 +71,7 @@ declare(strict_types=1);
 	</table>
 
 	<p>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . \WPGraphQL\Logging\Admin\View_Logs_Page::ADMIN_PAGE_SLUG ) ); ?>" class="button">
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . \WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG ) ); ?>" class="button">
 			<?php esc_html_e( 'Back to Logs', 'wpgraphql-logging' ); ?>
 		</a>
 	</p>

@@ -6,7 +6,7 @@ namespace WPGraphQL\Logging\Events;
 
 use GraphQL\Executor\ExecutionResult;
 use Monolog\Level;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Logger\LoggingHelper;
 use WPGraphQL\Logging\Logger\Rules\EnabledRule;
@@ -63,7 +63,7 @@ class QueryFilterLogger {
 	 */
 	public function log_graphql_request_data( array $query_data ): array {
 		try {
-			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
 			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
 				return $query_data;
 			}
@@ -121,7 +121,7 @@ class QueryFilterLogger {
 				return $response;
 			}
 
-			$selected_events = $this->config[ Basic_Configuration_Tab::EVENT_LOG_SELECTION ] ?? [];
+			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
 			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
 				return $response;
 			}
@@ -130,13 +130,14 @@ class QueryFilterLogger {
 			}
 
 			/** @var \GraphQL\Server\OperationParams $params */
-			$params  = $request->params;
-			$context = [
+			$params          = $request->params;
+			$encoded_request = wp_json_encode( $request );
+			$context         = [
 				'response'       => $response,
 				'operation_name' => $params->operation,
 				'query'          => $params->query,
 				'variables'      => $params->variables,
-				'request'        => $request,
+				'request'        => false !== $encoded_request ? json_decode( $encoded_request, true ) : null,
 				'query_id'       => $query_id,
 			];
 			if ( ! $this->should_log_response( $this->config ) ) {

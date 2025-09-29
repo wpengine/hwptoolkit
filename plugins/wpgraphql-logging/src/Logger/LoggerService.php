@@ -12,6 +12,7 @@ use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\ProcessorInterface;
 use Monolog\Processor\WebProcessor;
 use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
+use WPGraphQL\Logging\Logger\Processors\DataSanitizationProcessor;
 use WPGraphQL\Logging\Logger\Processors\RequestHeadersProcessor;
 
 /**
@@ -225,6 +226,7 @@ class LoggerService {
 			new WebProcessor(), // Logs web request data. e.g. IP address, request method, URI, etc.
 			new ProcessIdProcessor(), // Logs the process ID.
 			new RequestHeadersProcessor(), // Custom processor to capture request headers.
+			new DataSanitizationProcessor(), // Custom processor to sanitize data in log records.
 		];
 
 		// Filter for users to add their own processors.

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Rules;
 
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\Basic_Configuration_Tab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 
 /**
  * Rule to check if logging is enabled.
@@ -23,7 +23,7 @@ class SamplingRateRule implements LoggingRuleInterface {
 	 * @return bool True if the rule passes (logging should continue).
 	 */
 	public function passes(array $config, ?string $query_string = null): bool {
-		$sampling_rate = (int) ( $config[ Basic_Configuration_Tab::DATA_SAMPLING ] ?? 100 );
+		$sampling_rate = (int) ( $config[ BasicConfigurationTab::DATA_SAMPLING ] ?? 100 );
 		$rand          = wp_rand( 0, 100 );
 		return $rand <= $sampling_rate;
 	}
