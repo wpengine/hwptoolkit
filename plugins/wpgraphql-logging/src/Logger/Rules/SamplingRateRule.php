@@ -24,7 +24,12 @@ class SamplingRateRule implements LoggingRuleInterface {
 	 */
 	public function passes(array $config, ?string $query_string = null): bool {
 		$sampling_rate = (int) ( $config[ BasicConfigurationTab::DATA_SAMPLING ] ?? 100 );
-		$rand          = wp_rand( 0, 100 );
+		// If sampling rate is 0, never log.
+		if ( 1 > $sampling_rate ) {
+			return false;
+		}
+
+		$rand = wp_rand( 1, 100 );
 		return $rand <= $sampling_rate;
 	}
 
