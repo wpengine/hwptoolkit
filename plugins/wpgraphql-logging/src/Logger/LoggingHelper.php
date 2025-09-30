@@ -53,6 +53,17 @@ trait LoggingHelper {
 		if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
 			return false;
 		}
+		return $this->is_selected_event( $event );
+	}
+
+	/**
+	 * Check if the event is selected in the configuration.
+	 *
+	 * @param string $event The event name to check.
+	 *
+	 * @return bool True if the event is selected, false otherwise.
+	 */
+	public function is_selected_event(string $event): bool {
 		$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
 		if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
 			return false;

@@ -260,4 +260,47 @@ class QueryFilterLoggerTest extends WPTestCase {
 		$this->assertEquals('This is meta value.', $log_entry->get_context()['meta_data']);
 		$this->assertEquals(Level::Debug->value, $log_entry->get_level());
 	}
+
+
+	/**************************************************************
+	 * add_response_headers
+	 **************************************************************/
+	public function test_graphql_response_headers_logging_disabled(): void {
+		$instance = $this->create_instance(
+			[
+				BasicConfigurationTab::ENABLED => false,
+			]
+		);
+		$headers = ['Content-Type' => 'application/json'];
+		$result = $instance->add_logging_headers($headers);
+		$this->assertSame($headers, $result);
+	}
+
+	public function test_graphql_response_headers_logging_not_selected(): void {
+		$instance = $this->create_instance(
+			[
+				BasicConfigurationTab::ENABLED => true,
+				BasicConfigurationTab::EVENT_LOG_SELECTION => [Events::PRE_REQUEST],
+			]
+		);
+		$headers = ['Content-Type' => 'application/json'];
+		$result = $instance->add_logging_headers($headers);
+		$this->assertSame($headers, $result);
+	}
+
+
+	public function test_graphql_response_headers_logging_add_header(): void {
+		$instance = $this->create_instance(
+			[
+				BasicConfigurationTab::ENABLED => true,
+				BasicConfigurationTab::EVENT_LOG_SELECTION => [Events::RESPONSE_HEADERS_TO_SEND],
+			]
+		);
+		$headers = ['Content-Type' => 'application/json'];
+		$result = $instance->add_logging_headers($headers);
+		$this->assertNotSame($headers, $result);
+		$this->assertArrayHasKey('X-WPGraphQL-Logging-ID', $result);
+		$this->assertNotEmpty($result['X-WPGraphQL-Logging-ID']);
+		$this->assertCount(2, $result);
+	}
 }

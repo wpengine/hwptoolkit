@@ -166,6 +166,10 @@ class QueryFilterLogger {
 			return $headers;
 		}
 
+		if ( ! $this->is_selected_event( Events::RESPONSE_HEADERS_TO_SEND ) ) {
+			return $headers;
+		}
+
 		$request_id                        = uniqid( 'wpgql_log_' );
 		$headers['X-WPGraphQL-Logging-ID'] = $request_id;
 
