@@ -26,12 +26,10 @@ class DataDeletionSchedulerTest extends WPTestCase {
 		$this->repository = new LogsRepository();
 		$this->generate_logs();
 		$this->initial_log_count = $this->get_total_log_count();
-		// wp_clear_scheduled_hook(DataDeletionScheduler::DELETION_HOOK);
 	}
 
 	protected function tearDown(): void {
 		$this->delete_logs();
-		// wp_clear_scheduled_hook(DataDeletionScheduler::DELETION_HOOK);
 		parent::tearDown();
 	}
 

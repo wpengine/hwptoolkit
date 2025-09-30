@@ -61,16 +61,10 @@ class QueryActionLogger {
 	 */
 	public function log_pre_request( ?string $query, ?string $operation_name, ?array $variables ): void {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
+			if ( ! $this->should_log_event( Events::PRE_REQUEST, $query ) ) {
 				return;
 			}
-			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-				return;
-			}
-			if ( ! in_array( Events::PRE_REQUEST, $selected_events, true ) ) {
-				return;
-			}
+
 			$context = [
 				'query'          => $query,
 				'variables'      => $variables,
@@ -97,23 +91,21 @@ class QueryActionLogger {
 	public function log_graphql_before_execute( Request $request ): void {
 		try {
 			/** @var \GraphQL\Server\OperationParams $params */
-			$params  = $request->params;
+			$params = $request->params;
+			if ( null === $params || ! \is_object( $params ) ) {
+				return;
+			}
+			$query = $params->query;
+			if ( ! $this->should_log_event( Events::BEFORE_GRAPHQL_EXECUTION, $query ) ) {
+				return;
+			}
+
 			$context = [
-				'query'          => $params->query,
+				'query'          => $query,
 				'operation_name' => $params->operation,
 				'variables'      => $params->variables,
 				'params'         => $params,
 			];
-			if ( ! $this->is_logging_enabled( $this->config, $params->query ) ) {
-				return;
-			}
-			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-				return;
-			}
-			if ( ! in_array( Events::BEFORE_GRAPHQL_EXECUTION, $selected_events, true ) ) {
-				return;
-			}
 
 			$payload = EventManager::transform( Events::BEFORE_GRAPHQL_EXECUTION, [
 				'context' => $context,
@@ -154,16 +146,10 @@ class QueryActionLogger {
 		?string $query_id
 	): void {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
+			if ( ! $this->should_log_event( Events::BEFORE_RESPONSE_RETURNED, $query ) ) {
 				return;
 			}
-			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-				return;
-			}
-			if ( ! in_array( Events::BEFORE_RESPONSE_RETURNED, $selected_events, true ) ) {
-				return;
-			}
+
 			$encoded_request = wp_json_encode( $request );
 			$context         = [
 				'response'       => $response,
@@ -194,6 +180,25 @@ class QueryActionLogger {
 		} catch ( \Throwable $e ) {
 			$this->process_application_error( Events::BEFORE_RESPONSE_RETURNED, $e );
 		}
+	}
+
+	/**
+	 * Determine if the event should be logged based on the configuration and selected events.
+	 *
+	 * @param string      $event The event name.
+	 * @param string|null $query The GraphQL query (optional).
+	 *
+	 * @return bool True if the event should be logged, false otherwise.
+	 */
+	public function should_log_event(string $event, ?string $query = null): bool {
+		if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
+			return false;
+		}
+		$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
+		if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
+			return false;
+		}
+		return in_array( $event, $selected_events, true );
 	}
 
 	/**
