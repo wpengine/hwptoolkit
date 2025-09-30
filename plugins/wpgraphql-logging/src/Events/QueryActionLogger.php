@@ -6,7 +6,6 @@ namespace WPGraphQL\Logging\Events;
 
 use GraphQL\Executor\ExecutionResult;
 use Monolog\Level;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Logger\LoggingHelper;
 use WPGraphQL\Request;
@@ -183,25 +182,6 @@ class QueryActionLogger {
 	}
 
 	/**
-	 * Determine if the event should be logged based on the configuration and selected events.
-	 *
-	 * @param string      $event The event name.
-	 * @param string|null $query The GraphQL query (optional).
-	 *
-	 * @return bool True if the event should be logged, false otherwise.
-	 */
-	public function should_log_event(string $event, ?string $query = null): bool {
-		if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
-			return false;
-		}
-		$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-		if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-			return false;
-		}
-		return in_array( $event, $selected_events, true );
-	}
-
-	/**
 	 * Get the context for the response.
 	 *
 	 * @param array<mixed>|\GraphQL\Executor\ExecutionResult $response The response.
@@ -223,15 +203,5 @@ class QueryActionLogger {
 		}
 
 		return $errors;
-	}
-
-	/**
-	 * Handles and logs application errors.
-	 *
-	 * @param string     $event
-	 * @param \Throwable $exception
-	 */
-	protected function process_application_error( string $event, \Throwable $exception ): void {
-        error_log( 'Error for WPGraphQL Logging - ' . $event . ': ' . $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine() ); //phpcs:ignore
 	}
 }

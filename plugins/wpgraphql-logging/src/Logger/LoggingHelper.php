@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger;
 
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Logger\Rules\AdminUserRule;
 use WPGraphQL\Logging\Logger\Rules\EnabledRule;
 use WPGraphQL\Logging\Logger\Rules\ExcludeQueryRule;
@@ -41,6 +42,25 @@ trait LoggingHelper {
 	}
 
 	/**
+	 * Determine if the event should be logged based on the configuration and selected events.
+	 *
+	 * @param string      $event The event name.
+	 * @param string|null $query The GraphQL query (optional).
+	 *
+	 * @return bool True if the event should be logged, false otherwise.
+	 */
+	public function should_log_event(string $event, ?string $query = null): bool {
+		if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
+			return false;
+		}
+		$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
+		if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
+			return false;
+		}
+		return in_array( $event, $selected_events, true );
+	}
+
+	/**
 	 * Get the rule manager, initializing it if necessary.
 	 */
 	protected function get_rule_manager(): RuleManager {
@@ -74,5 +94,15 @@ trait LoggingHelper {
 		 * @param array<string, mixed>  $config     The current logging configuration.
 		 */
 		return apply_filters( 'wpgraphql_logging_is_enabled', $is_enabled, $config );
+	}
+
+	/**
+	 * Handles and logs application errors.
+	 *
+	 * @param string     $event
+	 * @param \Throwable $exception
+	 */
+	protected function process_application_error( string $event, \Throwable $exception ): void {
+        error_log( 'Error for WPGraphQL Logging - ' . $event . ': ' . $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine() ); //phpcs:ignore
 	}
 }

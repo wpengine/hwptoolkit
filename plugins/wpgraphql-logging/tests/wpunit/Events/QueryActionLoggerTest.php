@@ -21,7 +21,7 @@ use WPGraphQL\WPSchema;
 use WPGraphQL\Request;
 
 /**
- * Class QueryActionLoggerTest
+ * Tests for the QueryActionLogger class.
  *
  * @package WPGraphQL\Logging\Tests\Events
  *
@@ -419,6 +419,7 @@ class QueryActionLoggerTest extends WPTestCase {
 
 		$this->assertEquals(Level::Error->value, $log->get_level());
 		$this->assertArrayHasKey('errors', $log->get_context());
+		$this->assertEquals('WPGraphQL Response with Errors', $log->get_message());
 	}
 
 
