@@ -67,22 +67,6 @@ class BasicConfigurationTab implements SettingsTabInterface {
 	public const LOG_RESPONSE = 'log_response';
 
 	/**
-	 * Get the name/identifier of the tab.
-	 */
-	public function get_name(): string {
-		return 'basic_configuration';
-	}
-
-	/**
-	 * Get the label of the tab.
-	 *
-	 * @return string The tab label.
-	 */
-	public function get_label(): string {
-		return 'Basic Configuration';
-	}
-
-	/**
 	 * Get the fields for this tab.
 	 *
 	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface> Array of fields keyed by field ID.
@@ -92,7 +76,7 @@ class BasicConfigurationTab implements SettingsTabInterface {
 
 		$fields[ self::ENABLED ] = new CheckboxField(
 			self::ENABLED,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Enabled', 'wpgraphql-logging' ),
 			'',
 			__( 'Enable or disable WPGraphQL logging.', 'wpgraphql-logging' ),
@@ -100,7 +84,7 @@ class BasicConfigurationTab implements SettingsTabInterface {
 
 		$fields[ self::IP_RESTRICTIONS ] = new TextInputField(
 			self::IP_RESTRICTIONS,
-			$this->get_name(),
+			self::get_name(),
 			__( 'IP Restrictions', 'wpgraphql-logging' ),
 			'',
 			__( 'Comma-separated list of IPv4/IPv6 addresses to restrict logging to. Leave empty to log from all IPs.', 'wpgraphql-logging' ),
@@ -109,16 +93,16 @@ class BasicConfigurationTab implements SettingsTabInterface {
 
 		$fields[ self::EXCLUDE_QUERY ] = new TextInputField(
 			self::EXCLUDE_QUERY,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Exclude Queries', 'wpgraphql-logging' ),
 			'',
 			__( 'Comma-separated list of GraphQL query names to exclude from logging.', 'wpgraphql-logging' ),
-			__( 'e.g., __schema,SeedNode,__typename', 'wpgraphql-logging' )
+			__( 'e.g., __schema,GetSeedNode', 'wpgraphql-logging' )
 		);
 
 		$fields[ self::ADMIN_USER_LOGGING ] = new CheckboxField(
 			self::ADMIN_USER_LOGGING,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Admin User Logging', 'wpgraphql-logging' ),
 			'',
 			__( 'Log only for admin users.', 'wpgraphql-logging' )
@@ -126,7 +110,7 @@ class BasicConfigurationTab implements SettingsTabInterface {
 
 		$fields[ self::DATA_SAMPLING ] = new SelectField(
 			self::DATA_SAMPLING,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Data Sampling Rate', 'wpgraphql-logging' ),
 			[
 				'10'  => __( '10% (Every 10th request)', 'wpgraphql-logging' ),
@@ -142,7 +126,7 @@ class BasicConfigurationTab implements SettingsTabInterface {
 
 		$fields[ self::EVENT_LOG_SELECTION ] = new SelectField(
 			self::EVENT_LOG_SELECTION,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Log Points', 'wpgraphql-logging' ),
 			[
 				Events::PRE_REQUEST              => __( 'Pre Request', 'wpgraphql-logging' ),
@@ -159,12 +143,28 @@ class BasicConfigurationTab implements SettingsTabInterface {
 
 		$fields[ self::LOG_RESPONSE ] = new CheckboxField(
 			self::LOG_RESPONSE,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Log Response', 'wpgraphql-logging' ),
 			'',
 			__( 'Whether or not to log the response from the WPGraphQL query into the context object.', 'wpgraphql-logging' ),
 		);
 
 		return apply_filters( 'wpgraphql_logging_basic_configuration_fields', $fields );
+	}
+
+	/**
+	 * Get the name/identifier of the tab.
+	 */
+	public static function get_name(): string {
+		return 'basic_configuration';
+	}
+
+	/**
+	 * Get the label of the tab.
+	 *
+	 * @return string The tab label.
+	 */
+	public static function get_label(): string {
+		return 'Basic Configuration';
 	}
 }

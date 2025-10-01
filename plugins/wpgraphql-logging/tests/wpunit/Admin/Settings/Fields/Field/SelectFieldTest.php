@@ -2,12 +2,20 @@
 
 declare(strict_types=1);
 
-namespace WPGraphQL\Logging\wpunit\Admin\Settings\Fields\Field;
+namespace WPGraphQL\Logging\Tests\Admin\Settings\Fields\Field;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\Field\SelectField;
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
+
+/**
+ * Test class for SelectField.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
+ */
 class SelectFieldTest extends WPTestCase {
 
 	protected ?SelectField $field = null;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Admin\View\Download;
 
 use League\Csv\Writer;
+use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 use WPGraphQL\Logging\Logger\Database\LogsRepository;
 
 /**
@@ -49,6 +50,22 @@ class DownloadLogService {
 		}
 		$writer = Writer::createFromStream( $output );
 
+		$headers = $this->get_headers( $log );
+		$content = $this->get_content( $log );
+		$writer->insertOne( $headers );
+		$writer->insertOne( $content );
+		fclose( $output );
+		exit;
+	}
+
+	/**
+	 * Get default CSV headers.
+	 *
+	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log The log entry.
+	 *
+	 * @return array<string> The default CSV headers.
+	 */
+	public function get_headers(DatabaseEntity $log): array {
 		$headers = [
 			'ID',
 			'Date',
@@ -60,7 +77,17 @@ class DownloadLogService {
 			'Context',
 			'Extra',
 		];
+		return apply_filters( 'wpgraphql_logging_csv_headers', $headers, $log->get_id(), $log );
+	}
 
+	/**
+	 * Get CSV content for a log entry.
+	 *
+	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log The log entry.
+	 *
+	 * @return array<string> The CSV content for the log entry.
+	 */
+	public function get_content(DatabaseEntity $log): array {
 		$content = [
 			$log->get_id(),
 			$log->get_datetime(),
@@ -72,13 +99,6 @@ class DownloadLogService {
 			wp_json_encode( $log->get_context() ),
 			wp_json_encode( $log->get_extra() ),
 		];
-
-
-		$headers = apply_filters( 'wpgraphql_logging_csv_headers', $headers, $log_id, $log );
-		$content = apply_filters( 'wpgraphql_logging_csv_content', $content, $log_id, $log );
-		$writer->insertOne( $headers );
-		$writer->insertOne( $content );
-		fclose( $output );
-		exit;
+		return apply_filters( 'wpgraphql_logging_csv_content', $content, $log->get_id(), $log );
 	}
 }

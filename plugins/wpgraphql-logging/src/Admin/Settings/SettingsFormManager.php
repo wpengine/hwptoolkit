@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings;
 
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
 
 /**
@@ -18,8 +19,9 @@ use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
 class SettingsFormManager {
 	/**
 	 * @param \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection $field_collection        Collection of fields to be registered in the settings sections.
+	 * @param \WPGraphQL\Logging\Admin\Settings\ConfigurationHelper            $configuration_helper        The configuration helper instance to access settings.
 	 */
-	public function __construct(readonly SettingsFieldCollection $field_collection ) {
+	public function __construct(readonly SettingsFieldCollection $field_collection, readonly ConfigurationHelper $configuration_helper) {
 		/**
 		 * Fire off init action.
 		 *
@@ -48,7 +50,7 @@ class SettingsFormManager {
 		);
 
 		foreach ( $this->field_collection->get_tabs() as $tab ) {
-			$this->render_tab_section( $tab->get_name(), $tab->get_label() );
+			$this->render_tab_section( $tab::get_name(), $tab::get_label() );
 		}
 	}
 
@@ -110,14 +112,14 @@ class SettingsFormManager {
 	 * Get the option key for the settings group.
 	 */
 	public function get_option_key(): string {
-		return LoggingSettingsService::get_option_key();
+		return $this->configuration_helper->get_option_key();
 	}
 
 	/**
 	 * Get the settings group for the options.
 	 */
 	public function get_settings_group(): string {
-		return LoggingSettingsService::get_settings_group();
+		return $this->configuration_helper->get_settings_group();
 	}
 
 	/**

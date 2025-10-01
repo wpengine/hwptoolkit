@@ -239,7 +239,7 @@ class DatabaseEntity {
 	/**
 	 * Extracts and returns the GraphQL query from the context, if available.
 	 *
-	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
+	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh, Generic.Metrics.CyclomaticComplexity.TooHigh
 	 *
 	 * @return string|null The GraphQL query string, or null if not available.
 	 */
@@ -250,7 +250,10 @@ class DatabaseEntity {
 			return null;
 		}
 
-		$query = $context['query'];
+		$query = $context['query'] ?? null;
+		if ( is_string( $query ) ) {
+			return $query;
+		}
 
 		$request = $context['request'] ?? null;
 		if ( empty( $request ) || ! is_array( $request ) ) {

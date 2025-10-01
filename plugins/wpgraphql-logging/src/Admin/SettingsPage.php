@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin;
 
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface;
 use WPGraphQL\Logging\Admin\Settings\Menu\MenuPage;
 use WPGraphQL\Logging\Admin\Settings\SettingsFormManager;
@@ -79,14 +81,22 @@ class SettingsPage {
 	}
 
 	/**
+	 * Get the field collection.
+	 */
+	public function get_field_collection(): ?SettingsFieldCollection {
+		return $this->field_collection;
+	}
+
+	/**
 	 * Registers the settings page.
 	 */
 	public function register_settings_page(): void {
-		if ( is_null( $this->field_collection ) ) {
+		$collection = $this->get_field_collection();
+		if ( is_null( $collection ) ) {
 			return;
 		}
 
-		$tabs = $this->field_collection->get_tabs();
+		$tabs = $collection->get_tabs();
 
 		$tab_labels = [];
 		foreach ( $tabs as $tab_key => $tab ) {
@@ -94,14 +104,14 @@ class SettingsPage {
 				continue;
 			}
 
-			$tab_labels[ $tab_key ] = $tab->get_label();
+			$tab_labels[ $tab_key ] = $tab::get_label();
 		}
 
 		$page = new MenuPage(
 			__( 'WPGraphQL Logging Settings', 'wpgraphql-logging' ),
 			'WPGraphQL Logging',
 			self::PLUGIN_MENU_SLUG,
-			trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'src/Admin/Settings/Templates/admin.php',
+			$this->get_admin_template(),
 			[
 				'wpgraphql_logging_main_page_config' => [
 					'tabs'        => $tab_labels,
@@ -114,13 +124,25 @@ class SettingsPage {
 	}
 
 	/**
+	 * Get the admin template path.
+	 *
+	 * @return string The path to the admin template file.
+	 */
+	public function get_admin_template(): string {
+		$template_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'src/Admin/Settings/Templates/admin.php';
+		return (string) apply_filters( 'wpgraphql_logging_admin_template_path', $template_path );
+	}
+
+	/**
 	 * Registers the settings fields for each tab.
 	 */
 	public function register_settings_fields(): void {
-		if ( ! isset( $this->field_collection ) ) {
+		$collection = $this->get_field_collection();
+		if ( ! isset( $collection ) ) {
 			return;
 		}
-		$settings_manager = new SettingsFormManager( $this->field_collection );
+		$configuration_helper = ConfigurationHelper::get_instance();
+		$settings_manager     = new SettingsFormManager( $collection, $configuration_helper );
 		$settings_manager->render_form();
 	}
 
@@ -134,25 +156,34 @@ class SettingsPage {
 	public function get_current_tab( array $tabs = [] ): string {
 		$tabs = $this->get_tabs( $tabs );
 		if ( empty( $tabs ) ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
 		if ( ! isset( $_GET['tab'] ) || ! is_string( $_GET['tab'] ) ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
 		$tab = sanitize_text_field( $_GET['tab'] );
 
 		if ( ! is_string( $tab ) || '' === $tab ) {
-			return 'basic_configuration';
+			return $this->get_default_tab();
 		}
 
 		if ( array_key_exists( $tab, $tabs ) ) {
 			return $tab;
 		}
 
-		return 'basic_configuration';
+		return $this->get_default_tab();
+	}
+
+	/**
+	 * Get the default tab slug.
+	 *
+	 * @return string The default tab slug.
+	 */
+	public function get_default_tab(): string {
+		return BasicConfigurationTab::get_name();
 	}
 
 	/**
@@ -190,6 +221,8 @@ class SettingsPage {
 			WPGRAPHQL_LOGGING_VERSION,
 			true
 		);
+
+		do_action( 'wpgraphql_logging_admin_enqueue_scripts', $hook_suffix );
 	}
 
 	/**
@@ -203,8 +236,10 @@ class SettingsPage {
 		if ( ! empty( $tabs ) ) {
 			return $tabs;
 		}
-		if ( ! is_null( $this->field_collection ) ) {
-			return $this->field_collection->get_tabs();
+
+		$collection = $this->get_field_collection();
+		if ( ! is_null( $collection ) ) {
+			return $collection->get_tabs();
 		}
 
 		return [];

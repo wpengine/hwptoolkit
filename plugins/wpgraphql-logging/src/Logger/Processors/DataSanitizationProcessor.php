@@ -35,7 +35,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 	/**
 	 * Check if data sanitization is enabled.
 	 */
-	protected function is_enabled(): bool {
+	public function is_enabled(): bool {
 		$is_enabled = (bool) ( $this->config[ DataManagementTab::DATA_SANITIZATION_ENABLED ] ?? false );
 		return apply_filters( 'wpgraphql_logging_data_sanitization_enabled', $is_enabled );
 	}
@@ -52,7 +52,8 @@ class DataSanitizationProcessor implements ProcessorInterface {
 		if ( 'recommended' === $method ) {
 			return apply_filters( 'wpgraphql_logging_data_sanitization_rules', $this->get_recommended_rules() );
 		}
-			return apply_filters( 'wpgraphql_logging_data_sanitization_rules', $this->get_custom_rules() );
+
+		return apply_filters( 'wpgraphql_logging_data_sanitization_rules', $this->get_custom_rules() );
 	}
 
 	/**
@@ -92,7 +93,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 
 			$field_string = trim( $field_string );
 			$field_list   = array_filter(
-				explode( ',', $field_string ),
+				array_map( 'trim', explode( ',', $field_string ) ),
 				static function ($value) {
 					return '' !== $value;
 				}
@@ -102,6 +103,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 				$rules[ $field ] = $action;
 			}
 		}
+
 		return $rules;
 	}
 
@@ -140,8 +142,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 		$current = &$data;
 		foreach ( $keys as $segment ) {
 			if ( ! is_array( $current ) || ! isset( $current[ $segment ] ) ) {
-				$null = null;
-				return $null;
+				return null;
 			}
 			$current = &$current[ $segment ];
 		}

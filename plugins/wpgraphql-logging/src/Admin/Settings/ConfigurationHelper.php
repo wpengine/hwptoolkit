@@ -4,27 +4,15 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings;
 
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
+
 /**
  * Configuration Helper class
  *
  * This class provides a centralized and cached way to access WPGraphQL Logging configuration.
  * It implements a singleton pattern to ensure configuration is only loaded once per request
  * and provides convenient methods for accessing different configuration sections.
- *
- * Usage Examples:
- * ```php
- * // Get the helper instance
- * $config = ConfigurationHelper::get_instance();
- *
- * // Get a specific setting
- * $log_level = $config->get_setting('basic_configuration', 'log_level', 'info');
- *
- * // Check if a feature is enabled
- * $is_enabled = $config->is_enabled('data_management', 'data_sanitization_enabled');
- *
- * // Get an entire configuration section
- * $basic_config = $config->get_basic_config();
- * ```
  *
  * @package WPGraphQL\Logging
  *
@@ -87,13 +75,13 @@ class ConfigurationHelper {
 	 * Get configuration for a specific section (tab).
 	 *
 	 * @param string               $section The configuration section key.
-	 * @param array<string, mixed> $default_value Default value if section not found.
+	 * @param array<string, mixed> $default_value_value Default value if section not found.
 	 *
 	 * @return array<string, mixed>
 	 */
-	public function get_section_config( string $section, array $default_value = [] ): array {
+	public function get_section_config( string $section, array $default_value_value = [] ): array {
 		$config = $this->get_config();
-		return $config[ $section ] ?? $default_value;
+		return $config[ $section ] ?? $default_value_value;
 	}
 
 	/**
@@ -101,11 +89,11 @@ class ConfigurationHelper {
 	 *
 	 * @param string $section     The configuration section key.
 	 * @param string $setting_key The setting key within the section.
-	 * @param mixed  $default_value     Default value if setting not found.
+	 * @param mixed  $default_value_value     Default value if setting not found.
 	 */
-	public function get_setting( string $section, string $setting_key, $default_value = null ): mixed {
+	public function get_setting( string $section, string $setting_key, $default_value_value = null ): mixed {
 		$section_config = $this->get_section_config( $section );
-		return $section_config[ $setting_key ] ?? $default_value;
+		return $section_config[ $setting_key ] ?? $default_value_value;
 	}
 
 	/**
@@ -114,7 +102,7 @@ class ConfigurationHelper {
 	 * @return array<string, mixed>
 	 */
 	public function get_basic_config(): array {
-		return $this->get_section_config( 'basic_configuration' );
+		return $this->get_section_config( BasicConfigurationTab::get_name() );
 	}
 
 	/**
@@ -123,7 +111,7 @@ class ConfigurationHelper {
 	 * @return array<string, mixed>
 	 */
 	public function get_data_management_config(): array {
-		return $this->get_section_config( 'data_management' );
+		return $this->get_section_config( DataManagementTab::get_name() );
 	}
 
 	/**
@@ -148,15 +136,6 @@ class ConfigurationHelper {
 	}
 
 	/**
-	 * Reload the configuration from the database.
-	 * This bypasses any cache and forces a fresh load.
-	 */
-	public function reload_config(): void {
-		$this->clear_cache();
-		$this->load_config();
-	}
-
-	/**
 	 * Get the option key for the settings.
 	 */
 	public function get_option_key(): string {
@@ -168,6 +147,18 @@ class ConfigurationHelper {
 	 */
 	public function get_settings_group(): string {
 		return (string) apply_filters( 'wpgraphql_logging_settings_group_settings_group', WPGRAPHQL_LOGGING_SETTINGS_GROUP );
+	}
+
+	/**
+	 * Get the raw option value from the database.
+	 *
+	 * @param string $option_key The option key to retrieve.
+	 * @param mixed  $default_value    Default value if option not found.
+	 *
+	 * @return array<string, mixed> The option value as an array.
+	 */
+	public function get_option_value( string $option_key, mixed $default_value = null ): array {
+		return (array) get_option( $option_key, $default_value );
 	}
 
 	/**
@@ -213,7 +204,7 @@ class ConfigurationHelper {
 		}
 
 		// Load from database.
-		$this->config = (array) get_option( $option_key, [] );
+		$this->config = $this->get_option_value( $option_key, [] );
 
 		// Cache the result in both cache groups.
 		wp_cache_set( $option_key, $this->config, self::CACHE_GROUP, $cache_duration );

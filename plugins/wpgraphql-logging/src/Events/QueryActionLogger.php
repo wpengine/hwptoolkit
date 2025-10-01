@@ -6,7 +6,6 @@ namespace WPGraphQL\Logging\Events;
 
 use GraphQL\Executor\ExecutionResult;
 use Monolog\Level;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Logger\LoggingHelper;
 use WPGraphQL\Request;
@@ -61,16 +60,10 @@ class QueryActionLogger {
 	 */
 	public function log_pre_request( ?string $query, ?string $operation_name, ?array $variables ): void {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
+			if ( ! $this->should_log_event( Events::PRE_REQUEST, $query ) ) {
 				return;
 			}
-			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-				return;
-			}
-			if ( ! in_array( Events::PRE_REQUEST, $selected_events, true ) ) {
-				return;
-			}
+
 			$context = [
 				'query'          => $query,
 				'variables'      => $variables,
@@ -97,23 +90,21 @@ class QueryActionLogger {
 	public function log_graphql_before_execute( Request $request ): void {
 		try {
 			/** @var \GraphQL\Server\OperationParams $params */
-			$params  = $request->params;
+			$params = $request->params;
+			if ( null === $params || ! \is_object( $params ) ) {
+				return;
+			}
+			$query = $params->query;
+			if ( ! $this->should_log_event( Events::BEFORE_GRAPHQL_EXECUTION, $query ) ) {
+				return;
+			}
+
 			$context = [
-				'query'          => $params->query,
+				'query'          => $query,
 				'operation_name' => $params->operation,
 				'variables'      => $params->variables,
 				'params'         => $params,
 			];
-			if ( ! $this->is_logging_enabled( $this->config, $params->query ) ) {
-				return;
-			}
-			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-				return;
-			}
-			if ( ! in_array( Events::BEFORE_GRAPHQL_EXECUTION, $selected_events, true ) ) {
-				return;
-			}
 
 			$payload = EventManager::transform( Events::BEFORE_GRAPHQL_EXECUTION, [
 				'context' => $context,
@@ -154,16 +145,10 @@ class QueryActionLogger {
 		?string $query_id
 	): void {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
+			if ( ! $this->should_log_event( Events::BEFORE_RESPONSE_RETURNED, $query ) ) {
 				return;
 			}
-			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-				return;
-			}
-			if ( ! in_array( Events::BEFORE_RESPONSE_RETURNED, $selected_events, true ) ) {
-				return;
-			}
+
 			$encoded_request = wp_json_encode( $request );
 			$context         = [
 				'response'       => $response,
@@ -218,15 +203,5 @@ class QueryActionLogger {
 		}
 
 		return $errors;
-	}
-
-	/**
-	 * Handles and logs application errors.
-	 *
-	 * @param string     $event
-	 * @param \Throwable $exception
-	 */
-	protected function process_application_error( string $event, \Throwable $exception ): void {
-        error_log( 'Error for WPGraphQL Logging - ' . $event . ': ' . $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine() ); //phpcs:ignore
 	}
 }

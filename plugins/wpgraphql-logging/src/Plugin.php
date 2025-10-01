@@ -47,7 +47,7 @@ final class Plugin {
 		 *
 		 * @param \WPGraphQL\Logging\Plugin $instance the instance of the plugin class.
 		 */
-		do_action( 'wpgraphql_logging_init', self::$instance );
+		do_action( 'wpgraphql_logging_plugin_init', self::$instance );
 
 		return self::$instance;
 	}
@@ -56,13 +56,13 @@ final class Plugin {
 	 * Initialize the plugin admin, frontend & api functionality.
 	 */
 	public function setup(): void {
-		// Initialize configuration caching hooks.
 		ConfigurationHelper::init_cache_hooks();
-
 		SettingsPage::init();
 		ViewLogsPage::init();
 		QueryEventLifecycle::init();
 		DataDeletionScheduler::init();
+
+		do_action( 'wpgraphql_logging_plugin_setup', self::$instance );
 	}
 
 	/**

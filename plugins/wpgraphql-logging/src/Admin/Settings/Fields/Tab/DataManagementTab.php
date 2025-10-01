@@ -68,22 +68,6 @@ class DataManagementTab implements SettingsTabInterface {
 	public const DATA_SANITIZATION_CUSTOM_FIELD_TRUNCATE = 'data_sanitization_custom_field_truncate';
 
 	/**
-	 * Get the name/identifier of the tab.
-	 */
-	public function get_name(): string {
-		return 'data_management';
-	}
-
-	/**
-	 * Get the label of the tab.
-	 *
-	 * @return string The tab label.
-	 */
-	public function get_label(): string {
-		return 'Data Management';
-	}
-
-	/**
 	 * Get the fields for this tab.
 	 *
 	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface> Array of fields keyed by field ID.
@@ -93,7 +77,7 @@ class DataManagementTab implements SettingsTabInterface {
 
 		$fields[ self::DATA_DELETION_ENABLED ] = new CheckboxField(
 			self::DATA_DELETION_ENABLED,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Data Deletion Enabled', 'wpgraphql-logging' ),
 			'',
 			__( 'Enable or disable data deletion for WPGraphQL logging.', 'wpgraphql-logging' ),
@@ -101,7 +85,7 @@ class DataManagementTab implements SettingsTabInterface {
 
 		$fields[ self::DATA_RETENTION_DAYS ] = new TextIntegerField(
 			self::DATA_RETENTION_DAYS,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Number of Days to Retain Logs', 'wpgraphql-logging' ),
 			'',
 			__( 'Number of days to retain log data before deletion.', 'wpgraphql-logging' ),
@@ -111,7 +95,7 @@ class DataManagementTab implements SettingsTabInterface {
 
 		$fields[ self::DATA_SANITIZATION_ENABLED ] = new CheckboxField(
 			self::DATA_SANITIZATION_ENABLED,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Data Sanitization Enabled', 'wpgraphql-logging' ),
 			'',
 			__( 'Enable or disable data sanitization for WPGraphQL logging.', 'wpgraphql-logging' ),
@@ -120,7 +104,7 @@ class DataManagementTab implements SettingsTabInterface {
 
 		$fields[ self::DATA_SANITIZATION_METHOD ] = new SelectField(
 			self::DATA_SANITIZATION_METHOD,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Data Sanitization Method', 'wpgraphql-logging' ),
 			[
 				'recommended' => __( 'Recommended', 'wpgraphql-logging' ),
@@ -134,7 +118,7 @@ class DataManagementTab implements SettingsTabInterface {
 
 		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_ANONYMIZE ] = new TextInputField(
 			self::DATA_SANITIZATION_CUSTOM_FIELD_ANONYMIZE,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Custom Fields to Anonymize', 'wpgraphql-logging' ),
 			'wpgraphql-logging-custom',
 			__( 'Comma-separated list of custom fields to anonymize.', 'wpgraphql-logging' ),
@@ -143,7 +127,7 @@ class DataManagementTab implements SettingsTabInterface {
 
 		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_REMOVE ] = new TextInputField(
 			self::DATA_SANITIZATION_CUSTOM_FIELD_REMOVE,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Custom Fields to Remove', 'wpgraphql-logging' ),
 			'wpgraphql-logging-custom',
 			__( 'Comma-separated list of custom fields to remove.', 'wpgraphql-logging' ),
@@ -151,12 +135,28 @@ class DataManagementTab implements SettingsTabInterface {
 
 		$fields[ self::DATA_SANITIZATION_CUSTOM_FIELD_TRUNCATE ] = new TextInputField(
 			self::DATA_SANITIZATION_CUSTOM_FIELD_TRUNCATE,
-			$this->get_name(),
+			self::get_name(),
 			__( 'Custom Fields to Truncate', 'wpgraphql-logging' ),
 			'wpgraphql-logging-custom',
 			__( 'Comma-separated list of custom fields to truncate.', 'wpgraphql-logging' ),
 		);
 
 		return apply_filters( 'wpgraphql_logging_data_management_fields', $fields );
+	}
+
+	/**
+	 * Get the name/identifier of the tab.
+	 */
+	public static function get_name(): string {
+		return 'data_management';
+	}
+
+	/**
+	 * Get the label of the tab.
+	 *
+	 * @return string The tab label.
+	 */
+	public static function get_label(): string {
+		return 'Data Management';
 	}
 }

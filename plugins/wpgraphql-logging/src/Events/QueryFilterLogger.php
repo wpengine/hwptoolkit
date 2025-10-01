@@ -6,7 +6,6 @@ namespace WPGraphQL\Logging\Events;
 
 use GraphQL\Executor\ExecutionResult;
 use Monolog\Level;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Logger\LoggingHelper;
 use WPGraphQL\Logging\Logger\Rules\EnabledRule;
@@ -63,16 +62,8 @@ class QueryFilterLogger {
 	 */
 	public function log_graphql_request_data( array $query_data ): array {
 		try {
-			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-				return $query_data;
-			}
-			if ( ! in_array( Events::REQUEST_DATA, $selected_events, true ) ) {
-				return $query_data;
-			}
-
 			$query_string = $query_data['query'] ?? null;
-			if ( ! $this->is_logging_enabled( $this->config, $query_string ) ) {
+			if ( ! $this->should_log_event( Events::REQUEST_DATA, $query_string ) ) {
 				return $query_data;
 			}
 
@@ -82,8 +73,11 @@ class QueryFilterLogger {
 				'operation_name' => $query_data['operationName'] ?? null,
 			];
 
-			$payload = EventManager::transform( Events::REQUEST_DATA, [ 'context' => $context ] );
-			$this->logger->log( Level::Info, 'WPGraphQL Request Data', $payload['context'] );
+			$payload = EventManager::transform( Events::REQUEST_DATA, [
+				'context' => $context,
+				'level'   => Level::Info,
+			] );
+			$this->logger->log( $payload['level'], 'WPGraphQL Request Data', $payload['context'] );
 			EventManager::publish( Events::REQUEST_DATA, [ 'context' => $payload['context'] ] );
 		} catch ( \Throwable $e ) {
 			$this->process_application_error( Events::REQUEST_DATA, $e );
@@ -117,15 +111,7 @@ class QueryFilterLogger {
 		?string $query_id
 	): array|ExecutionResult {
 		try {
-			if ( ! $this->is_logging_enabled( $this->config, $query ) ) {
-				return $response;
-			}
-
-			$selected_events = $this->config[ BasicConfigurationTab::EVENT_LOG_SELECTION ] ?? [];
-			if ( ! is_array( $selected_events ) || empty( $selected_events ) ) {
-				return $response;
-			}
-			if ( ! in_array( Events::REQUEST_RESULTS, $selected_events, true ) ) {
+			if ( ! $this->should_log_event( Events::REQUEST_RESULTS, $query ) ) {
 				return $response;
 			}
 
@@ -134,9 +120,9 @@ class QueryFilterLogger {
 			$encoded_request = wp_json_encode( $request );
 			$context         = [
 				'response'       => $response,
-				'operation_name' => $params->operation,
-				'query'          => $params->query,
-				'variables'      => $params->variables,
+				'operation_name' => $params->operation ?? null,
+				'query'          => $params->query ?? null,
+				'variables'      => $params->variables ?? null,
 				'request'        => false !== $encoded_request ? json_decode( $encoded_request, true ) : null,
 				'query_id'       => $query_id,
 			];
@@ -180,19 +166,13 @@ class QueryFilterLogger {
 			return $headers;
 		}
 
+		if ( ! $this->is_selected_event( Events::RESPONSE_HEADERS_TO_SEND ) ) {
+			return $headers;
+		}
+
 		$request_id                        = uniqid( 'wpgql_log_' );
 		$headers['X-WPGraphQL-Logging-ID'] = $request_id;
 
 		return $headers;
-	}
-
-	/**
-	 * Handles and logs application errors.
-	 *
-	 * @param string     $event The name of the event where the error occurred.
-	 * @param \Throwable $exception The exception that was caught.
-	 */
-	protected function process_application_error( string $event, \Throwable $exception ): void {
-        error_log( 'Error for WPGraphQL Logging - ' . $event . ': ' . $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine() ); //phpcs:ignore
 	}
 }
