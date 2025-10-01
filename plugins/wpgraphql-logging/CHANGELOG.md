@@ -1,5 +1,11 @@
 # WPGraphQL Logging
 
+## 0.0.12
+
+### Patch Changes
+
+- [#423](https://github.com/wpengine/hwptoolkit/pull/423) [`ef373fa`](https://github.com/wpengine/hwptoolkit/commit/ef373fa9710dd05bde9c33b7eb758f73686f0bd3) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Fixed some snags for events and event manager. Added and updated PHPUnit tests and coverage now above 90%.
+
 ## 0.0.11
 
 ### Patch Changes
