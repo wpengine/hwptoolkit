@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Logger;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
-use WPGraphQL\Logging\Logger\Rules\AdminUserRule;
 use WPGraphQL\Logging\Logger\Rules\EnabledRule;
 use WPGraphQL\Logging\Logger\Rules\ExcludeQueryRule;
 use WPGraphQL\Logging\Logger\Rules\IpRestrictionsRule;
@@ -82,7 +81,6 @@ trait LoggingHelper {
 		$this->rule_manager->add_rule( new QueryNullRule() );
 		$this->rule_manager->add_rule( new SamplingRateRule() );
 		$this->rule_manager->add_rule( new EnabledRule() );
-		$this->rule_manager->add_rule( new AdminUserRule() );
 		$this->rule_manager->add_rule( new IpRestrictionsRule() );
 		$this->rule_manager->add_rule( new ExcludeQueryRule() );
 		apply_filters( 'wpgraphql_logging_rule_manager', $this->rule_manager );

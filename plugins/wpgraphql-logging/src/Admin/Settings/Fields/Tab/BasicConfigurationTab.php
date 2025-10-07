@@ -39,13 +39,6 @@ class BasicConfigurationTab implements SettingsTabInterface {
 	public const DATA_SAMPLING = 'data_sampling';
 
 	/**
-	 * The field ID for the user-based logging select.
-	 *
-	 * @var string
-	 */
-	public const ADMIN_USER_LOGGING = 'admin_user_logging';
-
-	/**
 	 * The field ID for the log point selection select.
 	 *
 	 * @var string
@@ -98,14 +91,6 @@ class BasicConfigurationTab implements SettingsTabInterface {
 			'',
 			__( 'Comma-separated list of GraphQL query names to exclude from logging.', 'wpgraphql-logging' ),
 			__( 'e.g., __schema,GetSeedNode', 'wpgraphql-logging' )
-		);
-
-		$fields[ self::ADMIN_USER_LOGGING ] = new CheckboxField(
-			self::ADMIN_USER_LOGGING,
-			self::get_name(),
-			__( 'Admin User Logging', 'wpgraphql-logging' ),
-			'',
-			__( 'Log only for admin users.', 'wpgraphql-logging' )
 		);
 
 		$fields[ self::DATA_SAMPLING ] = new SelectField(

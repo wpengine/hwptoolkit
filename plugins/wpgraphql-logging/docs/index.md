@@ -87,7 +87,6 @@ Once the plugin is activated, you can activate and configure the plugin under Se
 - **Enabled**: The master switch to turn logging on or off.
 - **IP Restrictions**: A comma-separated list of IPv4/IPv6 addresses. When set, only requests originating from these IPs will be logged. This is particularly useful for developers who wish to log only their own queries.
 - **Exclude Queries**: A comma-separated list of GraphQL query or mutation names to be excluded from logging. This helps reduce noise by ignoring frequent or uninteresting operations.
-- **Admin User Logging**: A toggle to control whether queries made by users with administrative privileges are logged.
 - **Data Sampling Rate**: A dropdown to select the percentage of requests that will be logged. This is useful for managing log volume on high-traffic sites by only capturing a sample of the total requests.
 - **Log Points**: A multi-select field to choose the specific WPGraphQL lifecycle events for which data should be logged.
 - **Log Response**: A toggle to determine whether the GraphQL response body should be included in the log. Disabling this can reduce the size of your log data.
