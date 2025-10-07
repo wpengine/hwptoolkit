@@ -37,6 +37,6 @@ class SamplingRateRule implements LoggingRuleInterface {
 	 * Get the rule name for debugging.
 	 */
 	public function get_name(): string {
-		return 'enabled_rule';
+		return 'sampling_rate_rule';
 	}
 }
