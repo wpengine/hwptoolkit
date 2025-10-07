@@ -10,6 +10,13 @@ You can also install them manually from our [Releases](https://github.com/wpengi
 - WordPress 6.0+
 - PHP 7.4+
 
+### Available Plugins
+
+- [wpengine/hwp-previews](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#readme)
+- [wpengine/wpgraphql-webhooks](https://github.com/wpengine/hwptoolkit/tree/main/plugins/wpgraphql-webhooks#readme)
+- [wpengine/wpgraphql-debug-extensions](https://github.com/wpengine/hwptoolkit/tree/main/plugins/wpgraphql-debug-extensions#readme)
+- [wpengine/wpgraphql-logging](https://github.com/wpengine/hwptoolkit/tree/main/plugins/wpgraphql-logging#readme)
+
 ## Quick Start: Example `composer.json`
 
 Copy and use this example as your `composer.json` for a typical WordPress project using HWP Toolkit plugins:
@@ -26,7 +33,9 @@ Copy and use this example as your `composer.json` for a typical WordPress projec
   ],
   "require": {
     "wpengine/hwp-previews": "*",
-    "wpengine/wpgraphql-webhooks": "*"
+    "wpengine/wpgraphql-webhooks": "*",
+    "wpengine/wpgraphql-debug-extensions": "*",
+    "wpengine/wpgraphql-logging": "*"
   },
   "config": {
     "allow-plugins": {
@@ -57,7 +66,7 @@ Copy and use this example as your `composer.json` for a typical WordPress projec
 To update to the latest version:
 
 ```bash
-composer update wpengine/hwp-previews wpengine/wpgraphql-webhooks
+composer update wpengine/hwp-previews wpengine/wpgraphql-webhooks wpengine/wpgraphql-debug-extensions wpengine/wpgraphql-logging
 ```
 
 ---
