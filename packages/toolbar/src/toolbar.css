@@ -1,53 +1,36 @@
-/**
- * Headless WordPress Toolbar Styles
- * Minimal, themeable styles for the toolbar
- * @package @wpengine/hwp-toolbar
- */
-
 :root {
-  /* Color Palette */
   --hwp-toolbar-bg: #ffffff;
-  --hwp-toolbar-border: #ddd;
-  --hwp-toolbar-text: #2c3338;
-  --hwp-toolbar-primary: #0073aa;
-  --hwp-toolbar-primary-hover: #005a87;
+  --hwp-toolbar-border: #d0d0d0;
+  --hwp-toolbar-text: #1a1a1a;
+  --hwp-toolbar-primary: #0066cc;
+  --hwp-toolbar-primary-hover: #004999;
   --hwp-toolbar-button-bg: #ffffff;
-  --hwp-toolbar-button-hover: #f0f0f0;
-  --hwp-toolbar-shadow: rgba(0, 0, 0, 0.1);
-
-  /* Spacing */
-  --hwp-toolbar-height: 48px;
-  --hwp-toolbar-padding: 0 20px;
-  --hwp-toolbar-gap: 8px;
-  --hwp-toolbar-button-padding: 8px 16px;
-
-  /* Typography */
+  --hwp-toolbar-button-hover: #f5f5f5;
+  --hwp-toolbar-shadow: rgba(0, 0, 0, 0.08);
+  --hwp-toolbar-height: 46px;
+  --hwp-toolbar-padding: 0 16px;
+  --hwp-toolbar-gap: 6px;
+  --hwp-toolbar-button-padding: 6px 12px;
   --hwp-toolbar-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --hwp-toolbar-font-size: 14px;
+  --hwp-toolbar-font-size: 13px;
   --hwp-toolbar-font-weight: 500;
-
-  /* Z-index */
   --hwp-toolbar-z-index: 9999;
-
-  /* Border Radius */
-  --hwp-toolbar-radius: 4px;
+  --hwp-toolbar-radius: 3px;
 }
 
-/* Dark Mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    --hwp-toolbar-bg: #1e1e1e;
-    --hwp-toolbar-border: #3a3a3a;
-    --hwp-toolbar-text: #e0e0e0;
-    --hwp-toolbar-primary: #2271b1;
-    --hwp-toolbar-primary-hover: #135e96;
+    --hwp-toolbar-bg: #1a1a1a;
+    --hwp-toolbar-border: #3d3d3d;
+    --hwp-toolbar-text: #e8e8e8;
+    --hwp-toolbar-primary: #4d9fff;
+    --hwp-toolbar-primary-hover: #6bb0ff;
     --hwp-toolbar-button-bg: #2a2a2a;
-    --hwp-toolbar-button-hover: #383838;
+    --hwp-toolbar-button-hover: #333333;
     --hwp-toolbar-shadow: rgba(0, 0, 0, 0.3);
   }
 }
 
-/* Toolbar Container */
 #hwp-toolbar,
 .hwp-toolbar {
   position: fixed;
@@ -61,7 +44,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--hwp-toolbar-padding);
-  box-shadow: 0 -2px 10px var(--hwp-toolbar-shadow);
+  box-shadow: 0 -1px 4px var(--hwp-toolbar-shadow);
   gap: var(--hwp-toolbar-gap);
   z-index: var(--hwp-toolbar-z-index);
   font-family: var(--hwp-toolbar-font-family);
@@ -70,7 +53,6 @@
   box-sizing: border-box;
 }
 
-/* Toolbar Sections */
 .hwp-toolbar-section {
   display: flex;
   align-items: center;
@@ -93,7 +75,6 @@
   justify-content: flex-end;
 }
 
-/* Toolbar Buttons */
 .hwp-toolbar-button {
   padding: var(--hwp-toolbar-button-padding);
   background: var(--hwp-toolbar-button-bg);
@@ -127,7 +108,6 @@
   outline-offset: 2px;
 }
 
-/* Active Button State */
 .hwp-toolbar-button-active,
 .hwp-toolbar-button.hwp-toolbar-button-active {
   background: var(--hwp-toolbar-primary);
@@ -138,7 +118,6 @@
   background: var(--hwp-toolbar-primary-hover);
 }
 
-/* User Button */
 .hwp-toolbar-user {
   margin-left: auto;
   background: var(--hwp-toolbar-primary);
@@ -151,7 +130,6 @@
   border-color: var(--hwp-toolbar-primary-hover);
 }
 
-/* User Avatar */
 .hwp-toolbar-avatar {
   width: 24px;
   height: 24px;
@@ -160,7 +138,6 @@
   border: 1px solid currentColor;
 }
 
-/* Badge */
 .hwp-toolbar-badge {
   background: #d63638;
   color: white;
@@ -173,7 +150,6 @@
   text-align: center;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   :root {
     --hwp-toolbar-padding: 0 12px;
@@ -186,12 +162,10 @@
     gap: 6px;
   }
 
-  /* Hide text on smaller screens, keep icons */
   .hwp-toolbar-button span:not(.hwp-toolbar-badge) {
     display: none;
   }
 
-  /* Show user name on mobile */
   .hwp-toolbar-user span {
     display: inline;
   }
@@ -203,7 +177,6 @@
   }
 }
 
-/* Print */
 @media print {
   #hwp-toolbar,
   .hwp-toolbar {
@@ -211,7 +184,6 @@
   }
 }
 
-/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .hwp-toolbar-button {
     transition: none;
@@ -222,7 +194,6 @@
   }
 }
 
-/* High Contrast Mode */
 @media (prefers-contrast: high) {
   :root {
     --hwp-toolbar-border: #000;

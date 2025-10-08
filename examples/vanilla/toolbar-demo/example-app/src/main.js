@@ -4,7 +4,10 @@ import './style.css';
 
 const WP_URL = 'http://localhost:8888';
 
-// Create toolbar instance
+// ============================================================================
+// Initialize Toolbar
+// ============================================================================
+
 const toolbar = new Toolbar({
   onPreviewChange: (enabled) => {
     console.log('Preview mode:', enabled);
@@ -12,24 +15,41 @@ const toolbar = new Toolbar({
   }
 });
 
-// Create renderer
+// Render toolbar to DOM
 const renderer = new VanillaRenderer(toolbar, 'toolbar');
 
-// Subscribe to state changes for display
+// ============================================================================
+// Register Custom Nodes
+// ============================================================================
+
+// Simple home button
+toolbar.register('home', 'Home', () => {
+  console.log('Navigate to home');
+  window.location.href = '/';
+});
+
+// ============================================================================
+// State Management
+// ============================================================================
+
+// Subscribe to state changes for debugging display
 toolbar.subscribe((nodes, state) => {
   document.getElementById('state').textContent = JSON.stringify(state, null, 2);
 });
 
-// Fetch real WordPress user
+// ============================================================================
+// Demo Actions
+// ============================================================================
+
 window.login = async () => {
   try {
-    // For demo: just set mock authenticated user
-    // In production, you'd authenticate first via WordPress login
     const response = await fetch(`${WP_URL}/?rest_route=/wp/v2/users/1`);
 
     if (response.ok) {
       const user = await response.json();
-      toolbar.setState({
+
+      // Use setWordPressContext for WordPress-specific state
+      toolbar.setWordPressContext({
         user: {
           id: user.id,
           name: user.name,
@@ -40,6 +60,7 @@ window.login = async () => {
           url: WP_URL
         }
       });
+
       console.log('User logged in:', user.name);
     } else {
       console.error('WordPress not available');
@@ -52,13 +73,16 @@ window.login = async () => {
 };
 
 window.logout = () => {
-  toolbar.setState({
+  // Clear WordPress context
+  toolbar.setWordPressContext({
     user: null,
     post: null,
-    site: null,
-    preview: false
+    site: null
   });
-  toolbar.clear();
+
+  // Reset preview mode
+  toolbar.setState({ preview: false });
+
   console.log('User logged out');
 };
 
@@ -109,7 +133,8 @@ window.fetchPosts = async () => {
 };
 
 function loadPost(post) {
-  toolbar.setState({
+  // Use setWordPressContext for WordPress post data
+  toolbar.setWordPressContext({
     post: {
       id: post.databaseId,
       title: post.title,
@@ -120,69 +145,6 @@ function loadPost(post) {
   });
   console.log('Post loaded:', post.title);
 }
-
-// Mock data functions (for when WordPress isn't running)
-window.addPost = () => {
-  toolbar.setState({
-    post: {
-      id: 123,
-      title: 'Hello World',
-      type: 'post',
-      status: 'draft',
-      slug: 'hello-world'
-    }
-  });
-  console.log('Mock post added');
-};
-
-window.addPage = () => {
-  toolbar.setState({
-    post: {
-      id: 456,
-      title: 'About Us',
-      type: 'page',
-      status: 'publish',
-      slug: 'about'
-    }
-  });
-  console.log('Mock page added');
-};
-
-window.clearPost = () => {
-  toolbar.setState({ post: null, preview: false });
-  console.log('Post context cleared');
-};
-
-let customNodeCount = 0;
-window.addNode = () => {
-  customNodeCount++;
-  toolbar.register(
-    `custom-${customNodeCount}`,
-    `Custom ${customNodeCount}`,
-    () => {
-      console.log(`Custom node ${customNodeCount} clicked`);
-      alert(`Custom Action ${customNodeCount}`);
-    }
-  );
-  console.log(`Added custom node ${customNodeCount}`);
-};
-
-window.clearAll = () => {
-  toolbar.clear();
-  toolbar.setState({
-    user: null,
-    post: null,
-    site: null,
-    preview: false
-  });
-  console.log('Toolbar cleared');
-};
-
-// Initialize with home button
-toolbar.register('home', 'Home', () => {
-  console.log('Navigate to home');
-  window.location.href = '/';
-});
 
 // Console greeting
 console.log('%cHeadless WordPress Toolbar', 'font-size: 18px; font-weight: bold; color: #0073aa;');

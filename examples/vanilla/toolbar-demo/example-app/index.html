@@ -11,53 +11,26 @@
     <p>A framework-agnostic toolbar for headless WordPress sites</p>
 
     <section class="controls">
-      <h2>User Context</h2>
+      <h2>Demo Controls</h2>
       <button onclick="login()">Login</button>
       <button onclick="logout()">Logout</button>
-    </section>
-
-    <section class="controls">
-      <h2>Post Context</h2>
       <button onclick="fetchPosts()">Fetch Posts</button>
-      <button onclick="addPost()">Add Mock Post</button>
-      <button onclick="addPage()">Add Mock Page</button>
-      <button onclick="clearPost()">Clear Post</button>
       <div id="wordpress-posts"></div>
     </section>
 
-    <section class="controls">
-      <h2>Toolbar Management</h2>
-      <button onclick="addNode()">Add Custom Node</button>
-      <button onclick="clearAll()">Clear All</button>
-    </section>
-
     <section class="state">
-      <h2>Current State:</h2>
+      <h2>Current State</h2>
       <pre id="state"></pre>
     </section>
 
     <section class="info">
-      <h2>Try This:</h2>
+      <h2>Try This</h2>
       <ol>
-        <li>Click "Login" to fetch real WP user</li>
-        <li>Click "Fetch Posts" to load real posts</li>
-        <li>Click a post to add it to toolbar</li>
-        <li>See WordPress controls appear in toolbar</li>
-        <li>Click "Preview" to toggle preview mode</li>
-        <li>Click "Edit post" to open in WordPress (opens new tab)</li>
+        <li>Click "Login" to authenticate with WordPress</li>
+        <li>Click "Fetch Posts" to load posts from WordPress</li>
+        <li>Click a post to view toolbar controls</li>
+        <li>Use the toolbar at the bottom to preview or edit</li>
       </ol>
-    </section>
-
-    <section class="features">
-      <h2>Features:</h2>
-      <ul>
-        <li>✅ Framework-agnostic (works with any JS framework)</li>
-        <li>✅ No 401 errors on page load (performance optimized)</li>
-        <li>✅ Full TypeScript support</li>
-        <li>✅ Dark/light mode automatic</li>
-        <li>✅ Fully themeable with CSS variables</li>
-        <li>✅ Responsive design</li>
-      </ul>
     </section>
   </main>
 
