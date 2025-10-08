@@ -1,193 +1,411 @@
-### Admin and Settings
+## Admin Reference
 
-This document explains how the WPGraphQL Logging admin settings UI is built and how to extend it with your own tabs and fields.
+The WPGraphQL Logging plugin provides several filters and actions in the Admin area that allow developers to extend and customize functionality. This reference documents all available hooks with real-world examples.
 
 ---
 
-## Architecture Overview
 
-- **Settings page entry**: `WPGraphQL\Logging\Admin\SettingsPage`
-  - Registers the submenu page and orchestrates fields and tabs
-  - Hooks added: `init` (init fields), `admin_menu` (page), `admin_init` (fields), `admin_enqueue_scripts` (assets)
-- **Menu page**: `WPGraphQL\Logging\Admin\Settings\Menu\MenuPage`
-  - Adds a submenu under Settings → WPGraphQL Logging (`wpgraphql-logging`)
-  - Renders template `src/Admin/Settings/Templates/admin.php`
-- **Form manager**: `WPGraphQL\Logging\Admin\Settings\SettingsFormManager`
-  - Registers the settings (`register_setting`) and sections/fields per tab
-  - Sanitizes and saves values per tab; unknown fields are pruned
-- **Field collection**: `WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection`
-  - Holds all tabs and fields. A default `BasicConfigurationTab` is registered
-- **Tabs**: Implement `SettingsTabInterface` with `get_name()`, `get_label()`, `get_fields()`
-- **Fields**: Implement `SettingsFieldInterface` or use built-ins:
-  - `Field\CheckboxField`
-  - `Field\TextInputField`
-  - `Field\SelectField`
+### Class: `SettingsPage`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/SettingsPage.php>
 
-Settings are stored in an array option. Keys are filterable:
+#### Action: `wpgraphql_logging_settings_init`
+Fires once the Settings Page singleton is initialized.
 
-- Option key: `wpgraphql_logging_settings` (filter `wpgraphql_logging_settings_group_option_key`)
-- Settings group: `wpgraphql_logging_settings_group` (filter `wpgraphql_logging_settings_group_settings_group`)
+Parameters:
+- `$instance` (SettingsPage) Settings page instance
 
-To read values at runtime, use `WPGraphQL\Logging\Admin\Settings\LoggingSettingsService`:
-
+Example:
 ```php
-use WPGraphQL\Logging\Admin\Settings\LoggingSettingsService;
-
-$settings = new LoggingSettingsService();
-$enabled = $settings->get_setting('basic_configuration', 'enabled', false);
+add_action( 'wpgraphql_logging_settings_init', function( $settings_page ) {
+    add_action( 'admin_notices', function() {
+		echo '<div class="notice notice-warning"><p>Custom notice.</p>
+    });
+}, 10, 1 );
 ```
 
----
+#### Action: `wpgraphql_logging_admin_enqueue_scripts`
+Fires when scripts/styles are enqueued for the Settings page.
 
-## Hooks Reference (Admin)
+Parameters:
+- `$hook_suffix` (string) Current admin page hook
 
-- Action: `wpgraphql_logging_settings_init( SettingsPage $instance )`
-  - Fired after the settings page is initialized
-- Action: `wpgraphql_logging_settings_field_collection_init( SettingsFieldCollection $collection )`
-  - Fired after default tabs/fields are registered; primary extension point to add tabs/fields
-- Action: `wpgraphql_logging_settings_form_manager_init( SettingsFormManager $manager )`
-  - Fired when the form manager is constructed
-- Filter: `wpgraphql_logging_settings_group_option_key( string $option_key )`
-  - Change the option key used to store settings
-- Filter: `wpgraphql_logging_settings_group_settings_group( string $group )`
-  - Change the settings group name used in `register_setting`
-
-- Filter: `wpgraphql_logging_basic_configuration_fields( array $fields )`
-  - Modify the default fields rendered in the `basic_configuration` tab. You can add, remove, or replace fields by returning a modified associative array of `field_id => SettingsFieldInterface`.
-  - Example:
-  ```php
-  use WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
-
-  add_filter('wpgraphql_logging_basic_configuration_fields', function(array $fields): array {
-      // Add a custom toggle into the Basic Configuration tab
-      $fields['enable_feature_x'] = new CheckboxField(
-          'enable_feature_x',
-          'basic_configuration',
-          'Enable Feature X',
-          '',
-          'Turn on extra logging for Feature X.'
-      );
-
-      // Optionally remove an existing field
-      // unset($fields[ WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab::DATA_SAMPLING ]);
-
-      return $fields;
-  });
-  ```
-
-Related (non-admin) hooks for context:
-
-- Action: `wpgraphql_logging_init( Plugin $instance )` (plugin initialized)
-- Action: `wpgraphql_logging_activate` / `wpgraphql_logging_deactivate`
-
----
-
-## Add a New Tab
-
-Create a tab class implementing `SettingsTabInterface` and register it during `wpgraphql_logging_settings_field_collection_init`.
-
+Example:
 ```php
-<?php
-namespace MyPlugin\WPGraphQLLogging;
+add_action( 'wpgraphql_logging_admin_enqueue_scripts', function( $hook_suffix ) {
+	wp_enqueue_style( 'my-logging-admin', plugins_url( 'assets/css/admin.css', __FILE__ ), [], '1.0.0' );
+}, 10, 1 );
+```
 
-use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
-use WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface;
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\TextInputField;
+#### Filter: `wpgraphql_logging_admin_template_path`
+Filters the admin template path used to render the Settings page.
 
-class My_Custom_Tab implements SettingsTabInterface {
-    public function get_name(): string {
-        return 'my_custom_tab';
-    }
+Parameters:
+- `$template_path` (string) Default template path
 
-    public function get_label(): string {
-        return 'My Custom Tab';
-    }
+Returns: string
 
-    public function get_fields(): array {
-        return [
-            'my_setting' => new TextInputField(
-                'my_setting',
-                $this->get_name(),
-                'My Setting',
-                '',
-                'Describe what this setting does.',
-                'e.g., value'
-            ),
-        ];
-    }
-}
-
-add_action('wpgraphql_logging_settings_field_collection_init', function (SettingsFieldCollection $collection): void {
-    $collection->add_tab(new My_Custom_Tab());
+Example:
+```php
+add_filter( 'wpgraphql_logging_admin_template_path', function( $template_path ) {
+	return plugin_dir_path( __FILE__ ) . 'templates/custom-admin.php';
 });
 ```
 
-Notes:
+---
 
-- `get_name()` must be a unique slug; it is used in the admin page URL (`tab` query arg) and section IDs
-- Fields returned by `get_fields()` must set their `tab` to this slug so they render on the tab
+### Class: `Settings\Fields\SettingsFieldCollection`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/Settings/Fields/SettingsFieldCollection.php>
+
+#### Action: `wpgraphql_logging_settings_field_collection_init`
+Allows developers to register additional settings tabs/fields.
+
+Parameters:
+- `$collection` (SettingsFieldCollection) The collection instance
+
+Example:
+```php
+add_action( 'wpgraphql_logging_settings_field_collection_init', function( $collection ) {
+	$collection->add_tab( new \MyPlugin\Admin\Settings\Fields\Tab\MyCustomTab() );
+}, 10, 1 );
+```
+
+>[NOTE]
+> See our how to guide [How to add a new Settings tab to WPGraphQL Logging](../how-to/admin_add_new_tab.md)
+
 
 ---
 
-## Add a Field to an Existing Tab
+### Class: `Settings\Tab\BasicConfigurationTab`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/Settings/Fields/Tab/BasicConfigurationTab.php>
 
-You can add fields directly to the shared field collection. Ensure the field’s `tab` matches the target tab name.
+#### Filter: `wpgraphql_logging_basic_configuration_fields`
+Filters the field definitions for the Basic Configuration tab.
 
+Parameters:
+- `$fields` (array) Map of field id => field object
+
+Returns: array
+
+Example:
 ```php
-<?php
-namespace MyPlugin\WPGraphQLLogging;
-
-use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection;
-use WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
-
-add_action('wpgraphql_logging_settings_field_collection_init', function (SettingsFieldCollection $collection): void {
-    $collection->add_field(
-        'enable_feature_x',
-        new CheckboxField(
-            'enable_feature_x',
-            'basic_configuration', // target the built-in Basic Configuration tab
-            'Enable Feature X',
-            '',
-            'Turn on extra logging for Feature X.'
-        )
-    );
+add_filter( 'wpgraphql_logging_basic_configuration_fields', function( $fields ) {
+	$fields['my_setting'] = new \WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField(
+		'my_setting',
+		'basic_configuration',
+		__( 'My Setting', 'my-plugin' )
+	);
+	return $fields;
 });
 ```
 
-Tips:
-
-- Only fields present in the collection are saved; unknown keys are pruned during sanitize
-- Field input names follow: `{$option_key}[{$tab}][{$field_id}]`
-
 ---
 
-## Reading/Saving Behavior
+### Class: `Settings\Tab\DataManagementTab`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/Settings/Fields/Tab/DataManagementTab.php>
 
-- Each submit saves only the current tab’s fields
-- Sanitization is delegated to each field via `sanitize_field($value)`
-- Unknown fields or tabs are ignored/pruned
+#### Filter: `wpgraphql_logging_data_management_fields`
+Filters the field definitions for the Data Management tab.
 
-Example of reading a value elsewhere:
+Parameters:
+- `$fields` (array) Map of field id => field object
 
+Returns: array
+
+Example:
 ```php
-use WPGraphQL\Logging\Admin\Settings\LoggingSettingsService;
-
-$settings = new LoggingSettingsService();
-$thresholdSeconds = (float) $settings->get_setting('basic_configuration', 'performance_metrics', '0');
+add_filter( 'wpgraphql_logging_data_management_fields', function( $fields ) {
+	$fields['my_purge_days'] = new \WPGraphQL\Logging\Admin\Settings\Fields\Field\TextIntegerField(
+		'my_purge_days',
+		'data_management',
+		__( 'Purge After (days)', 'my-plugin' )
+	);
+	return $fields;
+});
 ```
 
 ---
 
-## Common Use Cases
+### Class: `Settings\ConfigurationHelper`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/Settings/ConfigurationHelper.php>
 
-- Add organization-specific logging toggles (privacy, PII redaction)
-- Integrate with other plugins by exposing their settings under a new tab
-- Provide presets for log points (e.g., only log slow queries) via a custom select field
+#### Filter: `wpgraphql_logging_settings_group_option_key`
+Filters the option key used to store settings.
+
+Parameters:
+- `$option_key` (string)
+
+Returns: string
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_settings_group_option_key', function( $option_key ) {
+	return $option_key . '_' . wp_get_environment_type();
+});
+```
+
+#### Filter: `wpgraphql_logging_settings_group_settings_group`
+Filters the settings group name.
+
+Parameters:
+- `$settings_group` (string)
+
+Returns: string
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_settings_group_settings_group', function( $group ) {
+	return is_multisite() ? 'network_' . $group : $group;
+});
+```
 
 ---
 
-## Admin Page Details
+### Class: `Settings\SettingsFormManager`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/Settings/SettingsFormManager.php>
 
-- Menu: Settings → WPGraphQL Logging (`admin.php?page=wpgraphql-logging`)
-- Tabs: `admin.php?page=wpgraphql-logging&tab={tab_slug}`
-- Sections and fields are rendered with `do_settings_sections('wpgraphql-logging-{tab_slug}')`
+#### Action: `wpgraphql_logging_settings_form_manager_init`
+Fires when the settings form manager is initialized.
+
+Parameters:
+- `$instance` (SettingsFormManager)
+
+Example:
+```php
+add_action( 'wpgraphql_logging_settings_form_manager_init', function( $manager ) {
+	// Place for validation/transform hooks tied to registration lifecycle
+}, 10, 1 );
+```
+
+---
+
+### Class: `ViewLogsPage`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/ViewLogsPage.php>
+
+#### Action: `wpgraphql_logging_view_logs_init`
+Fires once the View Logs page singleton is initialized.
+
+Parameters:
+- `$instance` (ViewLogsPage)
+
+Example:
+```php
+add_action( 'wpgraphql_logging_view_logs_init', function( $view_logs_page ) {
+	// e.g. register custom columns or UI
+}, 10, 1 );
+```
+
+#### Action: `wpgraphql_logging_view_logs_admin_enqueue_scripts`
+Fires when scripts/styles are enqueued for the View Logs page.
+
+Parameters:
+- `$hook_suffix` (string)
+
+Example:
+```php
+add_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', function( $hook_suffix ) {
+	wp_enqueue_script( 'my-view-logs', plugins_url( 'assets/js/view-logs.js', __FILE__ ), [ 'jquery' ], '1.0.0', true );
+}, 10, 1 );
+```
+
+#### Filter: `wpgraphql_logging_filter_redirect_url`
+Filters the redirect URL after submitting filters.
+
+Parameters:
+- `$redirect_url` (string)
+- `$filters` (array)
+
+Returns: string
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_filter_redirect_url', function( $redirect_url, $filters ) {
+	return add_query_arg( 'my_flag', '1', $redirect_url );
+}, 10, 2 );
+```
+
+#### Filter: `wpgraphql_logging_list_template`
+Filters the template path for the logs list.
+
+Parameters:
+- `$template_path` (string)
+
+Returns: string
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_list_template', function( $template_path ) {
+	return plugin_dir_path( __FILE__ ) . 'templates/custom-list.php';
+});
+```
+
+#### Filter: `wpgraphql_logging_view_template`
+Filters the template path for the single log view.
+
+Parameters:
+- `$template_path` (string)
+
+Returns: string
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_view_template', function( $template_path ) {
+	return plugin_dir_path( __FILE__ ) . 'templates/custom-view.php';
+});
+```
+
+---
+
+### Class: `View\List\ListTable`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/View/List/ListTable.php>
+
+#### Filter: `wpgraphql_logging_logs_table_column_headers`
+Filters the table columns and sorting metadata.
+
+Parameters:
+- `$column_headers` (array) [ columns, hidden, sortable, primary ]
+
+Returns: array
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_logs_table_column_headers', function( $headers ) {
+	$headers[0]['app_name'] = __( 'App', 'my-plugin' );
+	return $headers;
+});
+```
+
+#### Filter: `wpgraphql_logging_logs_table_query_args`
+Filters the repository query args used to fetch logs.
+
+Parameters:
+- `$args` (array)
+
+Returns: array
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_logs_table_query_args', function( $args ) {
+	$args['where'][] = "JSON_EXTRACT(context, '$.app_id') IS NOT NULL";
+	return $args;
+});
+```
+
+#### Filter: `wpgraphql_logging_logs_table_column_value`
+Filters the rendered value for each column.
+
+Parameters:
+- `$value` (mixed)
+- `$item` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+- `$column_name` (string)
+
+Returns: mixed
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_logs_table_column_value', function( $value, $item, $column ) {
+	if ( 'message' === $column ) {
+		return wp_trim_words( (string) $value, 20 );
+	}
+	return $value;
+}, 10, 3 );
+```
+
+#### Filter: `wpgraphql_logging_logs_table_where_clauses`
+Filters the computed WHERE clauses before querying.
+
+Parameters:
+- `$where_clauses` (array)
+- `$request` (array)
+
+Returns: array
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_logs_table_where_clauses', function( $where, $request ) {
+	if ( ! empty( $request['status_code'] ) ) {
+		$code    = absint( $request['status_code'] );
+		$where[] = "JSON_EXTRACT(context, '$.status_code') = {$code}";
+	}
+	return $where;
+}, 10, 2 );
+```
+
+#### Filter: `wpgraphql_logging_filters_template`
+Filters the template path for the filters UI.
+
+Parameters:
+- `$template_path` (string)
+
+Returns: string
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_filters_template', function( $template_path ) {
+	return plugin_dir_path( __FILE__ ) . 'templates/custom-filters.php';
+});
+```
+
+---
+
+### Class: `View\Download\DownloadLogService`
+Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Admin/View/Download/DownloadLogService.php>
+
+#### Filter: `wpgraphql_logging_csv_filename`
+Filters the CSV filename used for a single log export.
+
+Parameters:
+- `$filename` (string)
+
+Returns: string
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_csv_filename', function( $filename ) {
+	return 'myapp_' . gmdate( 'Ymd_His' ) . '.csv';
+});
+```
+
+#### Filter: `wpgraphql_logging_csv_headers`
+Filters the CSV column headers.
+
+Parameters:
+- `$headers` (array)
+- `$log_id` (int)
+- `$log` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+
+Returns: array
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_csv_headers', function( $headers ) {
+	return array_merge( $headers, [ 'Environment', 'Endpoint' ] );
+}, 10, 3 );
+```
+
+#### Filter: `wpgraphql_logging_csv_content`
+Filters the CSV row values.
+
+Parameters:
+- `$content` (array)
+- `$log_id` (int)
+- `$log` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+
+Returns: array
+
+Example:
+```php
+add_filter( 'wpgraphql_logging_csv_content', function( $content, $log_id, $log ) {
+	$context = $log->get_context();
+	return array_merge( $content, [
+		$context['environment'] ?? 'prod',
+		$context['headless_endpoint'] ?? '',
+	] );
+}, 10, 3 );
+```
+
+---
+
+### Class: `Settings\Templates\admin.php` and View Templates
+Source: `src/Admin/Settings/Templates/admin.php`, `src/Admin/View/Templates/*.php`
+
+These templates are referenced by the template path filters above and do not define hooks themselves.

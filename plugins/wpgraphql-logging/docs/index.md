@@ -179,6 +179,10 @@ The plugin is developer focussed and can be extended in multiple ways.
 ## Admin - (admin configuration, view and functionality)
 
 - [Actions/Filters](reference/admin.md)
+- [How to add a new Settings tab to WPGraphQL Logging](how-to/admin_add_new_tab.md)
+- [How to add a new field to an existing tab and query it](how-to/admin_add_fields.md)
+- [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
+
 
 @TODO - How to guides
 
@@ -193,110 +197,4 @@ The plugin is developer focussed and can be extended in multiple ways.
 @TODO - How to guides
 
 
----- 
-
-# Old Notes
-
-- Need to be refactored.
-
-
-
-
-
-
-### Developer Hooks
-
-Customize sanitization behavior using WordPress filters:
-
-```php
-// Enable/disable sanitization programmatically
-add_filter( 'wpgraphql_logging_data_sanitization_enabled', function( $enabled ) {
-	return current_user_can( 'manage_options' ) ? false : $enabled;
-});
-
-// Modify recommended rules
-add_filter( 'wpgraphql_logging_data_sanitization_recommended_rules', function( $rules ) {
-	$rules['custom.sensitive.field'] = 'remove';
-	return $rules;
-});
-
-// Modify all sanitization rules
-add_filter( 'wpgraphql_logging_data_sanitization_rules', function( $rules ) {
-	// Add additional rules or modify existing ones
-	$rules['request.custom_header'] = 'anonymize';
-	return $rules;
-});
-
-// Modify the final log record after sanitization
-add_filter( 'wpgraphql_logging_data_sanitization_record', function( $record ) {
-	// Additional processing after sanitization
-	return $record;
-});
-```
-
-### Performance Considerations
-
-- Sanitization runs on every log record when enabled
-- Complex nested field paths may impact performance on high-traffic sites
-- Consider using recommended rules for optimal performance
-- Test custom rules thoroughly to ensure they target the intended fields
-
-### Security Best Practices
-
-1. **Review logs regularly** to ensure sanitization is working as expected
-2. **Test field paths** in a development environment before applying to production
-3. **Use remove over anonymize** for highly sensitive data
-4. **Monitor performance impact** when implementing extensive custom rules
-5. **Keep rules updated** as your GraphQL schema evolves
-
----
-
-## Usage
-
-WPGraphQL Logging Plugin is highly configurable and extendable and built with developers in mind to allow them to modify, change or add data, loggers etc to this plugin. Please read the docs below:
-
-
-The following documentation is available in the `docs/` directory:
-
-- [Events](docs/Events.md):
-  Learn about the event system, available events, and how to subscribe, transform, or listen to WPGraphQL Logging events.
-
-- [Logging](docs/Logging.md):
-  Learn about the logging system, Monolog integration, handlers, processors, and how to use or extend the logger.
-
-- [Admin](docs/admin.md):
-  Learn how the admin settings page works, all available hooks, and how to add tabs/fields via actions and filters.
-
----
-
-
-
----
-
-## Admin & Settings
-
-See `docs/admin.md` for a full overview of the admin/settings architecture, hooks, and examples for adding tabs and fields.
-
-## Testing
-
-See [Testing.md](TESTING.md) for details on how to test the plugin.
-
-## Screenshots
-
-@TODO - When before BETA release.
-
-
-
-### Manual Data Cleanup
-
-If you prefer to manually clean up data without defining the constant, you can:
-
-1. Use the plugin's admin interface to clear logs (when available)
-2. Manually drop the database table: `{$wpdb->prefix}wpgraphql_logging`
-3. Remove plugin options from the WordPress options table
-
----
-
-@TODO add more info once we have configuration setup.
-
-@TODO add more info once we have configuration setup.
+----
