@@ -1,0 +1,40 @@
+{
+  "name": "@wpengine/hwp-toolbar",
+  "version": "0.0.1",
+  "description": "Framework-agnostic toolbar for headless WordPress applications",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles": "./src/toolbar.css"
+  },
+  "files": [
+    "dist",
+    "src/toolbar.css"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "wordpress",
+    "headless",
+    "toolbar",
+    "wpgraphql",
+    "headless-wordpress",
+    "cms"
+  ],
+  "author": "WP Engine",
+  "license": "BSD-0-Clause",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

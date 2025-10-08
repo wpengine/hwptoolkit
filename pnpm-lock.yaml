@@ -56,6 +56,12 @@ importers:
         specifier: ^8.13.0
         version: 8.13.0
 
+  packages/toolbar:
+    devDependencies:
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
   plugins/hwp-previews: {}
 
   plugins/wpgraphql-debug-extensions:

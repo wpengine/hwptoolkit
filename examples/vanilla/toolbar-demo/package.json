@@ -1,0 +1,32 @@
+{
+  "name": "toolbar-demo",
+  "version": "1.0.0",
+  "description": "Vanilla JavaScript example using Vite for the Headless WordPress Toolbar",
+  "scripts": {
+    "example:build": "npm run example:dev:install && npm run wp:start && npm run example:start",
+    "example:dev:install": "cd example-app && npm install && cd ..",
+    "example:start": "npm run wp:start && npm run example:dev",
+    "example:stop": "npm run wp:stop",
+    "example:prune": "wp-env destroy && npm run example:build && npm run example:start",
+    "example:dev": "npm --prefix ./example-app run dev",
+    "wp:start": "npm install && wp-env start",
+    "wp:stop": "wp-env stop",
+    "wp:destroy": "wp-env destroy",
+    "wp-env": "wp-env"
+  },
+  "keywords": [
+    "headless",
+    "wordpress",
+    "vanilla",
+    "vite",
+    "toolbar",
+    "headless-cms",
+    "wpgraphql",
+    "headless-wordpress"
+  ],
+  "author": "hwptoolkit",
+  "license": "BSD-0-Clause",
+  "dependencies": {
+    "@wordpress/env": "^10.31.0"
+  }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Headless WordPress Toolbar Demo</title>
+</head>
+<body>
+  <main class="container">
+    <h1>Headless WordPress Toolbar Demo</h1>
+    <p>A framework-agnostic toolbar for headless WordPress sites</p>
+
+    <section class="controls">
+      <h2>User Context</h2>
+      <button onclick="login()">Login</button>
+      <button onclick="logout()">Logout</button>
+    </section>
+
+    <section class="controls">
+      <h2>Post Context</h2>
+      <button onclick="addPost()">Add Post</button>
+      <button onclick="addPage()">Add Page</button>
+      <button onclick="clearPost()">Clear Post</button>
+    </section>
+
+    <section class="controls">
+      <h2>Toolbar Management</h2>
+      <button onclick="addNode()">Add Custom Node</button>
+      <button onclick="clearAll()">Clear All</button>
+    </section>
+
+    <section class="state">
+      <h2>Current State:</h2>
+      <pre id="state"></pre>
+    </section>
+
+    <section class="info">
+      <h2>Try This:</h2>
+      <ol>
+        <li>Click "Login" to authenticate</li>
+        <li>Click "Add Post" to load content</li>
+        <li>See WordPress controls appear in the toolbar at the bottom</li>
+        <li>Click "Preview" to toggle preview mode</li>
+        <li>Click "Edit post" to open in WordPress (opens new tab)</li>
+        <li>Click "WP Admin" to open WordPress dashboard</li>
+      </ol>
+    </section>
+
+    <section class="features">
+      <h2>Features:</h2>
+      <ul>
+        <li>✅ Framework-agnostic (works with any JS framework)</li>
+        <li>✅ No 401 errors on page load (performance optimized)</li>
+        <li>✅ Full TypeScript support</li>
+        <li>✅ Dark/light mode automatic</li>
+        <li>✅ Fully themeable with CSS variables</li>
+        <li>✅ Responsive design</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Toolbar will be rendered here -->
+  <div id="toolbar"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

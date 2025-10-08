@@ -1,0 +1,17 @@
+{
+  "name": "toolbar-demo-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@wpengine/hwp-toolbar": "file:../../../../packages/toolbar"
+  },
+  "devDependencies": {
+    "vite": "^6.0.11"
+  }
+}
