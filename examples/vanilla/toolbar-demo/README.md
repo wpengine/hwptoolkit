@@ -26,7 +26,7 @@ This example demonstrates how to integrate the Headless WordPress Toolbar into a
 From the example directory:
 
 ```bash
-# Install dependencies and start
+# Install dependencies and start WordPress + Vite
 npm run example:build
 
 # Or, if already set up:
@@ -34,8 +34,10 @@ npm run example:start
 ```
 
 The example will be available at:
-- Frontend: http://localhost:3000
-- WordPress Admin: http://localhost:8888/wp-admin (admin / password)
+- **Frontend**: http://localhost:3000
+- **WordPress**: http://localhost:8888
+- **WordPress Admin**: http://localhost:8888/wp-admin (`admin` / `password`)
+- **GraphQL**: http://localhost:8888/?graphql
 
 ## Project Structure
 
@@ -72,26 +74,57 @@ const toolbar = new Toolbar({
 const renderer = new VanillaRenderer(toolbar, 'toolbar');
 ```
 
-### 2. WordPress Context
+### 2. Real WordPress Integration
+
+The example fetches real data from WordPress:
 
 ```javascript
+// Fetch WordPress user via REST API
+const response = await fetch('http://localhost:8888/?rest_route=/wp/v2/users/1');
+const user = await response.json();
+
 toolbar.setState({
-  user: { id: 1, name: 'Admin' },
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  },
   site: {
     url: 'http://localhost:8888',
     adminUrl: 'http://localhost:8888/wp-admin'
-  },
-  post: {
-    id: 123,
-    title: 'Hello World',
-    type: 'post',
-    status: 'draft',
-    slug: 'hello-world'
   }
 });
 ```
 
-### 3. Custom Nodes
+### 3. GraphQL Posts
+
+Fetch posts using WPGraphQL:
+
+```javascript
+const response = await fetch('http://localhost:8888/?graphql', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    query: `
+      query GetPosts {
+        posts(first: 5) {
+          nodes {
+            databaseId
+            title
+            slug
+            status
+          }
+        }
+      }
+    `
+  })
+});
+
+const { data } = await response.json();
+// Use posts to populate toolbar
+```
+
+### 4. Custom Nodes
 
 ```javascript
 toolbar.register('home', 'Home', () => {
@@ -99,7 +132,7 @@ toolbar.register('home', 'Home', () => {
 });
 ```
 
-### 4. State Subscription
+### 5. State Subscription
 
 ```javascript
 toolbar.subscribe((nodes, state) => {
@@ -134,8 +167,10 @@ The wp-env configuration includes:
 
 - WordPress with WPGraphQL plugin
 - Admin credentials: `admin` / `password`
-- GraphQL endpoint: http://localhost:8888/graphql
+- GraphQL endpoint: `http://localhost:8888/?graphql`
+- REST API endpoint: `http://localhost:8888/?rest_route=/wp/v2/...`
 - Pretty permalinks enabled
+- CORS headers enabled for localhost:3000
 
 ## Using with Vite
 

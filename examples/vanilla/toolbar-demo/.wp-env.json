@@ -10,7 +10,8 @@
   },
   "port": 8888,
   "mappings": {
-    "db": "./wp-env/db"
+    "db": "./wp-env/db",
+    "wp-content/mu-plugins": "./mu-plugin.php"
   },
   "lifecycleScripts": {
     "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"

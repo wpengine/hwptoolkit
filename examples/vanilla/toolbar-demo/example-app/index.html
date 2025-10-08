@@ -18,9 +18,11 @@
 
     <section class="controls">
       <h2>Post Context</h2>
-      <button onclick="addPost()">Add Post</button>
-      <button onclick="addPage()">Add Page</button>
+      <button onclick="fetchPosts()">Fetch Posts</button>
+      <button onclick="addPost()">Add Mock Post</button>
+      <button onclick="addPage()">Add Mock Page</button>
       <button onclick="clearPost()">Clear Post</button>
+      <div id="wordpress-posts"></div>
     </section>
 
     <section class="controls">
@@ -37,12 +39,12 @@
     <section class="info">
       <h2>Try This:</h2>
       <ol>
-        <li>Click "Login" to authenticate</li>
-        <li>Click "Add Post" to load content</li>
-        <li>See WordPress controls appear in the toolbar at the bottom</li>
+        <li>Click "Login" to fetch real WP user</li>
+        <li>Click "Fetch Posts" to load real posts</li>
+        <li>Click a post to add it to toolbar</li>
+        <li>See WordPress controls appear in toolbar</li>
         <li>Click "Preview" to toggle preview mode</li>
         <li>Click "Edit post" to open in WordPress (opens new tab)</li>
-        <li>Click "WP Admin" to open WordPress dashboard</li>
       </ol>
     </section>
 
