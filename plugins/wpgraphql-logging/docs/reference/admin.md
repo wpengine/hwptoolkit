@@ -2,6 +2,15 @@
 
 The WPGraphQL Logging plugin provides several filters and actions in the Admin area that allow developers to extend and customize functionality. This reference documents all available hooks with real-world examples.
 
+## Table of Contents
+
+- [SettingsPage](#class-settingspage)
+- [Settings\ConfigurationHelper](#class-settingsconfigurationhelper)
+- [Settings\SettingsFormManager](#class-settingssettingsformmanager)
+- [ViewLogsPage](#class-viewlogspage)
+- [Settings\Templates\admin.php and View Templates](#class-settingstemplatesadminphp-and-view-templates)
+
+
 ---
 
 

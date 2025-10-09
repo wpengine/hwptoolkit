@@ -119,7 +119,7 @@ Plugin::on(Events::BEFORE_RESPONSE_RETURNED, function(array $payload): void {
 ```
 
 >[!NOTE]
-> You should be able to a handler too if you want to log data to that service with the Logger Service
+> You can also add a custom handler if you want to log data to that service via the LoggerService.
 
 
 

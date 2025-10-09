@@ -4,9 +4,9 @@
 
 - [Project Structure](#project-structure)
 - [Key Features](#key-features)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Admin Interface](#admin-interface)
+- [Setup](#setup)
+- [Basic Configuration](#basic-configuration)
+- [Viewing Logs](#viewing-logs)
 - [Uninstallation and Data Cleanup](#uninstallation-and-data-cleanup)
 - [How‑to Guides](#how‑to-guides)
 - [Reference](#reference)
@@ -23,14 +23,14 @@ wpgraphql-logging/
 │   ├── Admin/                  # Admin settings, menu, and settings page logic
 │   	├── Settings/             # Admin settings functionality for displaying and saving data.
 │   ├── Events/                 # Event logging, pub/sub event manager for extending the logging.
-│   ├── Logger/                 # Logging logic, logger service, Monolog handlers & processors
-│   	├── Database/            	# Database Entity and Helper
-│   	├── Handlers/            	# Monolog WordPress Database Handler for logging data
-│   	├── Processors/           # Monolog Processors for data sanitzation and adding request headers.
-│   	├── Rules/            		# Rules and Rule Manager on whether we log a query
+│   ├── Logger/                 # Logger service, Monolog handlers & processors
+│   	├── Database/            	# Database entity and helper
+│   	├── Handlers/            	# Monolog WordPress database handler for logging data
+│   	├── Processors/           # Monolog processors for data sanitization and request headers
+│   	├── Rules/            		# Rules and RuleManager to decide whether to log a query
 │   	├── Scheduler/            # Automated data cleanup and maintenance tasks
 │   ├── Plugin.php              # Main plugin class (entry point)
-│   └── Autoload.php            # PSR-4 autoloader
+│   └── Autoloader.php          # PSR-4 autoloader
 ├── tests/                      # All test suites
 │   ├── wpunit/                 # WPBrowser/Codeception unit tests
 ├── [wpgraphql-logging.php]
@@ -100,10 +100,10 @@ Once the plugin is activated, you can activate and configure the plugin under Se
 - **Log Points**: A multi-select field to choose the specific WPGraphQL lifecycle events for which data should be logged.
 - **Log Response**: A toggle to determine whether the GraphQL response body should be included in the log. Disabling this can reduce the size of your log data.
 
->[Note]
-> The configuration for these rules are set in a rule manager service which checks to see if a event should be logged, based on whether it passes all rules or not. More docs on the rule manager can be found here @TODO
+>[!NOTE]
+> Logging enablement is determined by a set of rules managed by a `RuleManager`. All rules must pass to log a request. See the Logger reference for the RuleManager hook: [wpgraphql_logging_rule_manager](reference/logging.md#trait-loggerlogginghelper).
 
-You want to add a new rule. See our guide here @TODO
+You want to add a new rule. See: How‑to guides (`docs/how-to/logger_add_new_rule.md`).
 
 
 ### Data Management
@@ -131,7 +131,7 @@ Once configured to log data you can find logs under "GraphQL Logs" in the WordPr
 
 ![Admin View](screenshots/admin_view.png)
 
-This extends the WordPress WP List Table class but you can do the following.
+This extends the WordPress `WP_List_Table` class but you can do the following.
 
 ### Download the log
 
@@ -153,16 +153,13 @@ You can filter the log by
 
 ![Admin View with Filters](screenshots/admin_view_filters.png)
 
->[Note]
-> We only show the `info` and `error` levels as these are the only levels logged out of the box. If you need to change this, you can update the admin template. See @TODO
+>[!NOTE]
+> The default UI highlights Info and Error levels. To customize visible columns and sorting, filter `wpgraphql_logging_logs_table_column_headers` (see Admin reference).
 
 
 ### Bulk Actions
 
 Currently you can delete selected or all logs.
-
-If you want to customize this. @TODO
-
 
 
 ## Uninstallation and Data Cleanup
@@ -193,7 +190,11 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 - [How to use the WPGraphQL Logging events pub/sub system](how-to/events_pub_sub.md)
 
 ### Logging
-- @TODO — add how‑to guides for LoggerService, handlers, processors, rules
+
+- [How to Add a New Handler (File Logging)](how-to/logger_add_new_handler.md)
+- [How to Add a New Processor](how-to/logger_add_new_processor.md)
+- [How to Add a New Rule (Query must contain string)](how-to/logger_add_new_rule.md)
+
 
 ## Reference
 

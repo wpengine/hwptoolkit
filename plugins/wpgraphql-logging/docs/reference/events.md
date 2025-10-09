@@ -2,6 +2,12 @@
 
 The WPGraphQL Logging plugin exposes a lightweight pub/sub system for WPGraphQL lifecycle events and bridges them to standard WordPress actions/filters.
 
+## Table of Contents
+
+- [Events\Events](#class-eventsevents)
+- [Events\EventManager](#class-eventseventmanager)
+
+
 ---
 
 ### Class: `Events\Events`
@@ -18,7 +24,6 @@ Constants that map to WPGraphQL core hooks:
 
 Use these with the `Plugin` helpers or the `EventManager` directly.
 
-@TODO See the how to guide on logging a new event.
 
 ---
 
