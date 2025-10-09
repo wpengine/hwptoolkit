@@ -1,0 +1,110 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  background: #f9f9f9;
+  padding-bottom: 60px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+h1 {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  color: #222;
+}
+
+h2 {
+  font-size: 0.75rem;
+  margin: 1rem 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+p {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.controls,
+.state,
+.info {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 2px;
+}
+
+.controls button {
+  padding: 4px 10px;
+  margin: 3px 3px 3px 0;
+  border: 1px solid #d0d0d0;
+  background: white;
+  color: #555;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 2px;
+}
+
+.controls button:hover {
+  background: #fafafa;
+  border-color: #999;
+}
+
+#wordpress-posts button {
+  padding: 4px 10px;
+  margin: 3px 3px 3px 0;
+  border: 1px solid #d0d0d0;
+  background: white;
+  color: #555;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 2px;
+}
+
+#wordpress-posts button:hover {
+  background: #fafafa;
+  border-color: #999;
+}
+
+.state pre {
+  background: #fafafa;
+  color: #444;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-family: monospace;
+  overflow-x: auto;
+  border: 1px solid #eee;
+  border-radius: 2px;
+}
+
+.info ol {
+  margin-left: 1.25rem;
+  font-size: 0.8125rem;
+}
+
+.info li {
+  margin: 0.25rem 0;
+  color: #666;
+}

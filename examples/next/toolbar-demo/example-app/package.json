@@ -1,0 +1,23 @@
+{
+  "name": "toolbar-demo-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "node ../scripts/setup-env.js",
+    "dev": "bash dev.sh",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@wpengine/hwp-toolbar": "workspace:*",
+    "next": "^15.4.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}
