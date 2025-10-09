@@ -7,10 +7,10 @@ A lightweight, performant toolbar for headless WordPress. Works with any JavaScr
 ## Features
 
 - 🎯 **Framework Agnostic** - Works with React, Vue, Svelte, or vanilla JavaScript
-- ⚡ **Zero Dependencies** - Lightweight and fast
+- ⚡ **Zero Dependencies** - Core library has no dependencies
 - 🔒 **Type Safe** - Full TypeScript support
-- 🎨 **Themeable** - CSS custom properties for styling
-- 🌓 **Dark Mode** - Automatic support
+- 🪝 **React Hooks** - First-class React support with hooks
+- 🎨 **Headless UI** - Full control over rendering and styling
 
 ## Installation
 
@@ -20,26 +20,53 @@ npm install @wpengine/hwp-toolbar
 
 ## Quick Start
 
+### Vanilla JavaScript
+
 ```javascript
 import { Toolbar, VanillaRenderer } from '@wpengine/hwp-toolbar';
 import '@wpengine/hwp-toolbar/styles';
 
-// Create toolbar
 const toolbar = new Toolbar({
   onPreviewChange: (enabled) => {
     console.log('Preview mode:', enabled);
   }
 });
 
-// Set WordPress context
 toolbar.setWordPressContext({
   user: { id: 1, name: 'Admin' },
   site: { url: 'https://example.com', adminUrl: 'https://example.com/wp-admin' },
   post: { id: 123, title: 'Hello World', type: 'post', status: 'draft', slug: 'hello-world' }
 });
 
-// Render
 const renderer = new VanillaRenderer(toolbar, 'toolbar');
+```
+
+### React (Recommended)
+
+```tsx
+import { Toolbar } from '@wpengine/hwp-toolbar';
+import { useToolbar } from '@wpengine/hwp-toolbar/react';
+
+const toolbar = new Toolbar({
+  onPreviewChange: (enabled) => {
+    console.log('Preview mode:', enabled);
+  }
+});
+
+function MyToolbar() {
+  const { state, nodes } = useToolbar(toolbar);
+
+  return (
+    <div className="toolbar">
+      {nodes.map(node => (
+        <button key={node.id} onClick={node.onClick}>
+          {typeof node.label === 'function' ? node.label() : node.label}
+        </button>
+      ))}
+      {state.user && <span>User: {state.user.name}</span>}
+    </div>
+  );
+}
 ```
 
 ## API
@@ -122,33 +149,56 @@ Available variables:
 - `--hwp-toolbar-primary-hover` - Primary button hover
 - And more...
 
-## Framework Examples
+## React Hooks API
 
-### React
+### `useToolbar(toolbar)`
+
+Returns both state and nodes in a single hook:
 
 ```tsx
-import { useEffect, useRef } from 'react';
-import { Toolbar, VanillaRenderer } from '@wpengine/hwp-toolbar';
+import { useToolbar } from '@wpengine/hwp-toolbar/react';
 
-function WordPressToolbar({ user, post, site }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-
-    const toolbar = new Toolbar();
-    toolbar.setWordPressContext({ user, post, site });
-    const renderer = new VanillaRenderer(toolbar, ref.current);
-
-    return () => {
-      renderer.destroy();
-      toolbar.destroy();
-    };
-  }, [user, post, site]);
-
-  return <div ref={ref} />;
+function MyToolbar() {
+  const { state, nodes } = useToolbar(toolbar);
+  // Full control over rendering
 }
 ```
+
+### `useToolbarState(toolbar)`
+
+Subscribe to toolbar state only:
+
+```tsx
+import { useToolbarState } from '@wpengine/hwp-toolbar/react';
+
+function UserDisplay() {
+  const state = useToolbarState(toolbar);
+  return <div>{state.user?.name}</div>;
+}
+```
+
+### `useToolbarNodes(toolbar)`
+
+Subscribe to visible nodes only:
+
+```tsx
+import { useToolbarNodes } from '@wpengine/hwp-toolbar/react';
+
+function ToolbarButtons() {
+  const nodes = useToolbarNodes(toolbar);
+  return (
+    <>
+      {nodes.map(node => (
+        <button key={node.id} onClick={node.onClick}>
+          {typeof node.label === 'function' ? node.label() : node.label}
+        </button>
+      ))}
+    </>
+  );
+}
+```
+
+## Framework Examples
 
 ### Vue
 

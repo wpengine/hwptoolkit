@@ -36,17 +36,43 @@ export interface ToolbarState {
   isHeadless: boolean;
 }
 
+export interface ToolbarBranding {
+  logo?: string;
+  title?: string;
+  url?: string;
+  position?: 'left' | 'center' | 'right';
+}
+
+export interface ToolbarTheme {
+  variables?: Record<string, string>;
+  className?: string;
+}
+
 export interface ToolbarConfig {
+  branding?: ToolbarBranding;
+  theme?: ToolbarTheme;
   onPreviewChange?: (enabled: boolean) => void;
 }
 
 export type NodeCallback = () => void;
 export type LabelFunction = () => string;
+export type NodeType = 'button' | 'link' | 'image' | 'dropdown' | 'divider' | 'custom';
+export type NodePosition = 'left' | 'center' | 'right';
+export type CustomRenderFunction = (state: ToolbarState) => HTMLElement;
 
 export interface ToolbarNode {
   id: string;
-  label: string | LabelFunction;
-  onClick: NodeCallback;
+  type?: NodeType;
+  label?: string | LabelFunction;
+  onClick?: NodeCallback;
+  href?: string;
+  target?: string;
+  src?: string;
+  alt?: string;
+  items?: ToolbarNode[];
+  render?: CustomRenderFunction;
+  className?: string;
+  position?: NodePosition;
 }
 
 // ============================================================================
@@ -100,15 +126,23 @@ export class Toolbar {
     });
   }
 
-  register(id: string, label: string | LabelFunction, onClick?: NodeCallback): this {
-    if (typeof label === 'function' && !onClick) {
+  register(id: string, labelOrNode: string | LabelFunction | Partial<ToolbarNode>, onClick?: NodeCallback): this {
+    if (typeof labelOrNode === 'object') {
+      // register(id, nodeConfig)
+      this.nodes.set(id, {
+        id,
+        type: 'button',
+        ...labelOrNode
+      } as ToolbarNode);
+    } else if (typeof labelOrNode === 'function' && !onClick) {
       // register(id, onClick)
-      this.nodes.set(id, { id, label: id, onClick: label });
+      this.nodes.set(id, { id, type: 'button', label: id, onClick: labelOrNode });
     } else {
       // register(id, label, onClick)
       this.nodes.set(id, {
         id,
-        label,
+        type: 'button',
+        label: labelOrNode,
         onClick: onClick || (() => {})
       });
     }
@@ -191,9 +225,11 @@ export class VanillaRenderer {
   private toolbar: Toolbar;
   private element: HTMLElement | null;
   private unsubscribe: (() => void) | null = null;
+  private config: ToolbarConfig;
 
   constructor(toolbar: Toolbar, elementOrId: string | HTMLElement) {
     this.toolbar = toolbar;
+    this.config = (toolbar as any).config || {};
 
     if (typeof elementOrId === 'string') {
       this.element = document.getElementById(elementOrId);
@@ -202,44 +238,197 @@ export class VanillaRenderer {
       this.element = elementOrId;
     }
 
+    this.applyTheme();
     this.unsubscribe = this.toolbar.subscribe((nodes, state) => {
       this.render(nodes, state);
     });
+  }
+
+  private applyTheme(): void {
+    if (!this.element) return;
+
+    if (this.config.theme?.className) {
+      this.element.classList.add(this.config.theme.className);
+    }
+
+    if (this.config.theme?.variables) {
+      Object.entries(this.config.theme.variables).forEach(([key, value]) => {
+        this.element!.style.setProperty(key, value);
+      });
+    }
   }
 
   private render(nodes: ToolbarNode[], state: ToolbarState): void {
     if (!this.element) return;
     this.element.innerHTML = '';
     this.element.className = 'hwp-toolbar';
+    if (this.config.theme?.className) {
+      this.element.classList.add(this.config.theme.className);
+    }
 
-    // Render nodes
+    const leftSection = document.createElement('div');
+    leftSection.className = 'hwp-toolbar-section hwp-toolbar-left';
+
+    const centerSection = document.createElement('div');
+    centerSection.className = 'hwp-toolbar-section hwp-toolbar-center';
+
+    const rightSection = document.createElement('div');
+    rightSection.className = 'hwp-toolbar-section hwp-toolbar-right';
+
+    // Render branding
+    if (this.config.branding) {
+      const brandingEl = this.createBrandingElement(this.config.branding);
+      const position = this.config.branding.position || 'left';
+      if (position === 'left') leftSection.appendChild(brandingEl);
+      else if (position === 'center') centerSection.appendChild(brandingEl);
+      else rightSection.appendChild(brandingEl);
+    }
+
+    // Render nodes by position
     nodes.forEach(node => {
-      const btn = document.createElement('button');
-      btn.className = 'hwp-toolbar-button';
-      const labelText = typeof node.label === 'function' ? node.label() : node.label;
-      btn.textContent = labelText;
+      const element = this.createNodeElement(node, state);
+      if (!element) return;
 
-      if (node.id === 'preview' && state.preview) {
-        btn.classList.add('hwp-toolbar-button-active');
-      }
-
-      btn.onclick = () => node.onClick();
-      this.element!.appendChild(btn);
+      const position = node.position || 'left';
+      if (position === 'left') leftSection.appendChild(element);
+      else if (position === 'center') centerSection.appendChild(element);
+      else rightSection.appendChild(element);
     });
 
-    // User button
+    // User button (always right)
     if (state.user) {
-      const userBtn = document.createElement('button');
-      userBtn.className = 'hwp-toolbar-button hwp-toolbar-user';
-      userBtn.textContent = `User: ${state.user.name}`;
-      userBtn.onclick = () => {
-        if (confirm(`Logged in as: ${state.user!.name}\n\nLogout?`)) {
-          this.toolbar.setState({ user: null, post: null, site: null });
-          this.toolbar.clear();
-        }
-      };
-      this.element!.appendChild(userBtn);
+      const userBtn = this.createUserButton(state);
+      rightSection.appendChild(userBtn);
     }
+
+    this.element.appendChild(leftSection);
+    this.element.appendChild(centerSection);
+    this.element.appendChild(rightSection);
+  }
+
+  private createBrandingElement(branding: ToolbarBranding): HTMLElement {
+    const container = document.createElement('div');
+    container.className = 'hwp-toolbar-branding';
+
+    if (branding.logo) {
+      const img = document.createElement('img');
+      img.src = branding.logo;
+      img.alt = branding.title || 'Logo';
+      img.className = 'hwp-toolbar-logo';
+      container.appendChild(img);
+    }
+
+    if (branding.title) {
+      const title = document.createElement('span');
+      title.textContent = branding.title;
+      title.className = 'hwp-toolbar-brand-title';
+      container.appendChild(title);
+    }
+
+    if (branding.url) {
+      const wrapper = document.createElement('a');
+      wrapper.href = branding.url;
+      wrapper.className = 'hwp-toolbar-branding-link';
+      wrapper.appendChild(container);
+      return wrapper;
+    }
+
+    return container;
+  }
+
+  private createNodeElement(node: ToolbarNode, state: ToolbarState): HTMLElement | null {
+    const type = node.type || 'button';
+
+    if (type === 'divider') {
+      const divider = document.createElement('div');
+      divider.className = 'hwp-toolbar-divider';
+      return divider;
+    }
+
+    if (type === 'custom' && node.render) {
+      return node.render(state);
+    }
+
+    if (type === 'image' && node.src) {
+      const img = document.createElement('img');
+      img.src = node.src;
+      img.alt = node.alt || '';
+      img.className = `hwp-toolbar-image ${node.className || ''}`.trim();
+      if (node.onClick) img.onclick = () => node.onClick!();
+      return img;
+    }
+
+    if (type === 'link' && node.href) {
+      const link = document.createElement('a');
+      link.href = node.href;
+      link.target = node.target || '_blank';
+      link.className = `hwp-toolbar-link ${node.className || ''}`.trim();
+      const labelText = typeof node.label === 'function' ? node.label() : node.label || '';
+      link.textContent = labelText;
+      return link;
+    }
+
+    if (type === 'dropdown' && node.items) {
+      return this.createDropdown(node, state);
+    }
+
+    // Default: button
+    const btn = document.createElement('button');
+    btn.className = `hwp-toolbar-button ${node.className || ''}`.trim();
+    const labelText = typeof node.label === 'function' ? node.label() : node.label || '';
+    btn.textContent = labelText;
+
+    if (node.id === 'preview' && state.preview) {
+      btn.classList.add('hwp-toolbar-button-active');
+    }
+
+    if (node.onClick) btn.onclick = () => node.onClick!();
+    return btn;
+  }
+
+  private createDropdown(node: ToolbarNode, state: ToolbarState): HTMLElement {
+    const container = document.createElement('div');
+    container.className = 'hwp-toolbar-dropdown';
+
+    const trigger = document.createElement('button');
+    trigger.className = 'hwp-toolbar-dropdown-trigger hwp-toolbar-button';
+    const labelText = typeof node.label === 'function' ? node.label() : node.label || '';
+    trigger.textContent = labelText + ' ▾';
+
+    const menu = document.createElement('div');
+    menu.className = 'hwp-toolbar-dropdown-menu';
+    menu.style.display = 'none';
+
+    node.items!.forEach(item => {
+      const itemEl = document.createElement('button');
+      itemEl.className = 'hwp-toolbar-dropdown-item';
+      const itemLabel = typeof item.label === 'function' ? item.label() : item.label || '';
+      itemEl.textContent = itemLabel;
+      if (item.onClick) itemEl.onclick = () => item.onClick!();
+      menu.appendChild(itemEl);
+    });
+
+    trigger.onclick = () => {
+      const isOpen = menu.style.display === 'block';
+      menu.style.display = isOpen ? 'none' : 'block';
+    };
+
+    container.appendChild(trigger);
+    container.appendChild(menu);
+    return container;
+  }
+
+  private createUserButton(state: ToolbarState): HTMLElement {
+    const userBtn = document.createElement('button');
+    userBtn.className = 'hwp-toolbar-button hwp-toolbar-user';
+    userBtn.textContent = `User: ${state.user!.name}`;
+    userBtn.onclick = () => {
+      if (confirm(`Logged in as: ${state.user!.name}\n\nLogout?`)) {
+        this.toolbar.setState({ user: null, post: null, site: null });
+        this.toolbar.clear();
+      }
+    };
+    return userBtn;
   }
 
   destroy(): void {

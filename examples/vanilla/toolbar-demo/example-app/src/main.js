@@ -22,9 +22,7 @@ const renderer = new VanillaRenderer(toolbar, 'toolbar');
 // Register Custom Nodes
 // ============================================================================
 
-// Simple home button
 toolbar.register('home', 'Home', () => {
-  console.log('Navigate to home');
   window.location.href = '/';
 });
 
