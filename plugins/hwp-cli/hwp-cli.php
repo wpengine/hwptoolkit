@@ -3,7 +3,7 @@
  * Plugin Name: HWP CLI Plugin
  * Plugin URI: https://github.com/hwp/cli
  * Description: Command-line interface for Headless WordPress Toolkit
- * Version: 1.0.0
+ * Version: 0.1.0
  * Author: HWP Team
  * Author URI: https://github.com/hwp
  * License: MIT

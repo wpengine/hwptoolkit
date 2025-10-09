@@ -3,7 +3,7 @@
  * Plugin Name: HWP CORS Local
  * Plugin URI: https://github.com/wpengine/hwptoolkit
  * Description: Enables CORS headers for local headless WordPress development. Allows configurable frontend origins via HEADLESS_FRONTEND_URL constant.
- * Version: 1.0.0
+ * Version: 0.1.0
  * Author: WP Engine
  * Author URI: https://wpengine.com
  * License: GPL-2.0-or-later
@@ -65,8 +65,8 @@ function add_cors_headers( $value ) {
  * Initialize the plugin
  */
 function init() {
-	// Only enable CORS in development environments
-	if ( ! defined( 'WP_ENVIRONMENT_TYPE' ) || WP_ENVIRONMENT_TYPE === 'local' || WP_DEBUG ) {
+	// Only enable CORS in local development environments
+	if ( defined( 'WP_ENVIRONMENT_TYPE' ) && WP_ENVIRONMENT_TYPE === 'local' ) {
 		add_action( 'rest_api_init', function() {
 			remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 			add_filter( 'rest_pre_serve_request', __NAMESPACE__ . '\\add_cors_headers' );

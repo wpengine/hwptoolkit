@@ -3,7 +3,7 @@
  * Plugin Name: HWP Frontend Links
  * Plugin URI: https://github.com/wpengine/hwptoolkit
  * Description: Adds "View on Frontend" links to WordPress admin for headless sites. Supports single or multiple frontends.
- * Version: 1.0.0
+ * Version: 0.1.0
  * Author: WP Engine
  * Author URI: https://wpengine.com
  * License: GPL-2.0-or-later

@@ -3,7 +3,7 @@
  * Plugin Name: HWP WP-Env Helpers
  * Plugin URI: https://github.com/wpengine/hwptoolkit
  * Description: Fixes for wp-env quirks. Forces REST API to use ?rest_route= format to avoid .htaccess issues.
- * Version: 1.0.0
+ * Version: 0.1.0
  * Author: WP Engine
  * Author URI: https://wpengine.com
  * License: GPL-2.0-or-later
