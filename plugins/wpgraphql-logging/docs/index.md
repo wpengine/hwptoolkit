@@ -8,7 +8,7 @@
 - [Basic Configuration](#basic-configuration)
 - [Viewing Logs](#viewing-logs)
 - [Uninstallation and Data Cleanup](#uninstallation-and-data-cleanup)
-- [How‑to Guides](#how‑to-guides)
+- [How-to Guides](#how-to-guides)
 - [Reference](#reference)
 
 ---
@@ -103,7 +103,6 @@ Once the plugin is activated, you can activate and configure the plugin under Se
 >[!NOTE]
 > Logging enablement is determined by a set of rules managed by a `RuleManager`. All rules must pass to log a request. See the Logger reference for the RuleManager hook: [wpgraphql_logging_rule_manager](reference/logging.md#trait-loggerlogginghelper).
 
-You want to add a new rule. See: How‑to guides (`docs/how-to/logger_add_new_rule.md`).
 
 
 ### Data Management
@@ -178,7 +177,7 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 > **Data Loss Warning**: When `WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN` is defined as `true`, deactivating the plugin will permanently delete all logged data and drop the plugin's database tables. This action is irreversible.
 
 
-## How‑to Guides
+## How to Guides
 
 ### Admin
 - [How to add a new Settings tab to WPGraphQL Logging](how-to/admin_add_new_tab.md)

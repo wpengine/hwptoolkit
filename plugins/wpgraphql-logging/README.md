@@ -25,18 +25,19 @@ WPGraphQL Logging is a plugin that integrates directly with the WPGraphQL Query 
 
 ### Key Features
 *   **Granular Control**: Choose which events in the request lifecycle to log, giving you precise control over the data you capture.
-*   **Developer-Friendly Extensibility**: Built with developers in mind, it features a pub/sub system that allows you to hook into the logging pipeline, transform event data, and trigger custom actions.
+*   **Developer-Friendly Extensibility**: Built with developers in mind, it features a pub/sub system that allows you to hook into the logging pipeline, transform event data, and trigger custom actions. 
 *   **Flexible Log Handling**: Leverages the powerful Monolog logging library, enabling developers to add custom processors and handlers to route logs to various destinations like Slack, files, or external services.
 
+>[!IMPORTANT]
+>For detailed developer guides and examples, see our [How-To Guides](docs/index.md#how-to-guides).
 
 ---
 
 ## Requirements
 
-- WordPress 6.0+
-- WPGraphQL 2.0.0+
-- PHP 8.1.2+
+- WordPress 6.5+
 - WPGraphQL 2.3+
+- PHP 8.1.2+
 
 
 ## Installation
