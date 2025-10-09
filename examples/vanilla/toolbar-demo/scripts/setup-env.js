@@ -28,14 +28,13 @@ console.log(`  WordPress: ${ports.WP_PORT}`);
 console.log(`  WP Test: ${ports.WP_TEST_PORT}`);
 
 // Update .wp-env.json
-const pluginsDir = path.resolve(__dirname, '../../../../plugins');
 const wpEnvConfig = {
   phpVersion: '8.3',
   plugins: [
     'https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip',
-    path.join(pluginsDir, 'hwp-cors-local'),
-    path.join(pluginsDir, 'hwp-frontend-links'),
-    path.join(pluginsDir, 'hwp-wp-env-helpers')
+    '../../../../plugins/hwp-cors-local',
+    '../../../../plugins/hwp-frontend-links',
+    '../../../../plugins/hwp-wp-env-helpers'
   ],
   config: {
     WP_DEBUG: true,
@@ -59,15 +58,6 @@ const wpEnvPath = path.join(__dirname, '../.wp-env.json');
 fs.writeFileSync(wpEnvPath, JSON.stringify(wpEnvConfig, null, 2) + '\n');
 
 console.log(`✓ Updated .wp-env.json`);
-
-// Generate mu-plugin.php from template
-const muPluginTemplatePath = path.join(__dirname, '../../../../scripts/templates/mu-plugin.php');
-const muPluginTemplate = fs.readFileSync(muPluginTemplatePath, 'utf8');
-const muPluginContent = muPluginTemplate.replace(/{{FRONTEND_PORT}}/g, ports.FRONTEND_PORT);
-
-const muPluginPath = path.join(__dirname, '../mu-plugin.php');
-fs.writeFileSync(muPluginPath, muPluginContent);
-console.log(`✓ Generated mu-plugin.php`);
 
 // Copy .htaccess from template
 const htaccessTemplatePath = path.join(__dirname, '../../../../scripts/templates/.htaccess');

@@ -60,15 +60,6 @@ fs.writeFileSync(wpEnvPath, JSON.stringify(wpEnvConfig, null, 2) + '\n');
 
 console.log(`✓ Updated .wp-env.json`);
 
-// Generate mu-plugin.php from template
-const muPluginTemplatePath = path.join(__dirname, '../../../../scripts/templates/mu-plugin.php');
-const muPluginTemplate = fs.readFileSync(muPluginTemplatePath, 'utf8');
-const muPluginContent = muPluginTemplate.replace(/{{FRONTEND_PORT}}/g, ports.FRONTEND_PORT);
-
-const muPluginPath = path.join(__dirname, '../mu-plugin.php');
-fs.writeFileSync(muPluginPath, muPluginContent);
-console.log(`✓ Generated mu-plugin.php`);
-
 // Copy .htaccess from template
 const htaccessTemplatePath = path.join(__dirname, '../../../../scripts/templates/.htaccess');
 const htaccessPath = path.join(__dirname, '../.htaccess');

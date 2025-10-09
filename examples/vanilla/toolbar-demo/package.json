@@ -5,11 +5,10 @@
   "scripts": {
     "example:build": "npm run example:dev:install && npm run wp:start && npm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
-    "example:start": "node scripts/setup-env.js && npm run wp:ensure && concurrently \"npm run wp:start\" \"sleep 5 && npm run example:dev\"",
+    "example:start": "node scripts/setup-env.js && npm install && concurrently \"npm run wp:start\" \"sleep 5 && npm run example:dev\"",
     "example:stop": "npm run wp:stop",
     "example:prune": "wp-env destroy && npm run example:build && npm run example:start",
     "example:dev": "npm --prefix ./example-app run dev",
-    "wp:ensure": "npm install",
     "wp:start": "wp-env start",
     "wp:stop": "wp-env stop",
     "wp:destroy": "wp-env destroy",
