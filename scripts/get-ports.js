@@ -15,15 +15,19 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 
+// Port range constants for deterministic port assignment
+const PORT_RANGE = 900; // Number of ports to use
+const PORT_BASE = 100;  // Starting port (skip first 100 ports)
+
 /**
- * Simple hash function that converts a string to a number in range [0, 999]
+ * Simple hash function that converts a string to a number in range [PORT_BASE, PORT_BASE + PORT_RANGE - 1]
  */
 function hashToPort(str) {
   const hash = crypto.createHash('sha256').update(str).digest('hex');
-  // Take first 8 hex chars and convert to decimal, then mod 900 + 100 to get range [100, 999]
-  // This ensures we skip the first 100 ports to avoid conflicts with common services
+  // Take first 8 hex chars and convert to decimal, then mod PORT_RANGE + PORT_BASE to get range [PORT_BASE, PORT_BASE + PORT_RANGE - 1]
+  // This ensures we skip the first PORT_BASE ports to avoid conflicts with common services
   const num = parseInt(hash.substring(0, 8), 16);
-  return (num % 900) + 100;
+  return (num % PORT_RANGE) + PORT_BASE;
 }
 
 /**
