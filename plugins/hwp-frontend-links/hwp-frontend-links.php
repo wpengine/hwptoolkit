@@ -2,7 +2,7 @@
 /**
  * Plugin Name: HWP Frontend Links
  * Plugin URI: https://github.com/wpengine/hwptoolkit
- * Description: Adds "View on Frontend" links to WordPress admin for headless WordPress sites. Configure via HEADLESS_FRONTEND_URL constant.
+ * Description: Adds "View on Frontend" links to WordPress admin for headless sites. Supports single or multiple frontends.
  * Version: 1.0.0
  * Author: WP Engine
  * Author URI: https://wpengine.com
@@ -11,104 +11,153 @@
  * Requires at least: 6.0
  * Requires PHP: 7.4
  *
+ * Configuration:
+ *
+ * Single frontend:
+ * define( 'HEADLESS_FRONTEND_URL', 'https://example.com' );
+ *
+ * Multiple frontends:
+ * define( 'HWP_FRONTEND_LINKS', [
+ *   [ 'label' => 'Production', 'url' => 'https://example.com' ],
+ *   [ 'label' => 'Staging', 'url' => 'https://staging.example.com' ]
+ * ] );
+ *
  * @package HWP\FrontendLinks
  */
 
 namespace HWP\FrontendLinks;
 
-// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Get the frontend URL
+ * Get configured frontend URLs with labels
  *
- * @return string|null The frontend URL or null if not configured
+ * Supports both single frontend (HEADLESS_FRONTEND_URL) and multiple frontends
+ * (HWP_FRONTEND_LINKS) configurations. Returns normalized array of configs.
+ *
+ * @return array Array of frontend configurations with 'label' and 'url' keys
  */
-function get_frontend_url() {
-	if ( defined( 'HEADLESS_FRONTEND_URL' ) ) {
-		return rtrim( HEADLESS_FRONTEND_URL, '/' );
+function get_frontend_configs() {
+	$configs = [];
+
+	if ( defined( 'HWP_FRONTEND_LINKS' ) && is_array( HWP_FRONTEND_LINKS ) ) {
+		foreach ( HWP_FRONTEND_LINKS as $config ) {
+			if ( isset( $config['label'] ) && isset( $config['url'] ) ) {
+				$configs[] = [
+					'label' => $config['label'],
+					'url'   => rtrim( $config['url'], '/' ),
+				];
+			}
+		}
 	}
 
-	return null;
+	if ( empty( $configs ) && defined( 'HEADLESS_FRONTEND_URL' ) ) {
+		$configs[] = [
+			'label' => 'Frontend',
+			'url'   => rtrim( HEADLESS_FRONTEND_URL, '/' ),
+		];
+	}
+
+	return $configs;
 }
 
 /**
  * Build frontend URL for a post
  *
- * @param \WP_Post $post The post object
- * @return string|null The frontend URL for the post or null if not configured
+ * Constructs full frontend URL by combining base URL with post slug.
+ * Path construction is filterable via 'hwp_frontend_links_post_path'.
+ *
+ * @param \WP_Post $post          The post object
+ * @param string   $frontend_url  The frontend base URL
+ * @return string|null Frontend URL or null if invalid
  */
-function build_frontend_url( $post ) {
-	$frontend_url = get_frontend_url();
-
+function build_frontend_url( $post, $frontend_url ) {
 	if ( ! $frontend_url || ! $post ) {
 		return null;
 	}
 
-	// Allow filtering of the path construction
 	$path = apply_filters( 'hwp_frontend_links_post_path', '/' . $post->post_name, $post );
 
 	return $frontend_url . $path;
 }
 
 /**
- * Add "View on Frontend" link to admin bar
+ * Add frontend links to admin bar
  *
- * @param \WP_Admin_Bar $wp_admin_bar The admin bar instance
+ * Adds "View in [Label]" link(s) to admin bar for each configured frontend.
+ * Only displays on singular post/page views.
+ *
+ * @param \WP_Admin_Bar $wp_admin_bar Admin bar instance
  */
 function add_admin_bar_link( $wp_admin_bar ) {
-	if ( ! get_frontend_url() ) {
-		return;
-	}
+	$frontend_configs = get_frontend_configs();
 
-	// Only show for singular posts/pages
-	if ( ! is_singular() ) {
+	if ( empty( $frontend_configs ) || ! is_singular() ) {
 		return;
 	}
 
 	global $post;
 
-	$frontend_url = build_frontend_url( $post );
+	foreach ( $frontend_configs as $index => $config ) {
+		$frontend_url = build_frontend_url( $post, $config['url'] );
 
-	if ( ! $frontend_url ) {
-		return;
+		if ( ! $frontend_url ) {
+			continue;
+		}
+
+		$node_id = 'hwp-view-on-frontend' . ( $index > 0 ? '-' . $index : '' );
+		$title   = sprintf( __( 'View in %s', 'hwp-frontend-links' ), $config['label'] );
+
+		$wp_admin_bar->add_node( [
+			'id'     => $node_id,
+			'parent' => null,
+			'group'  => null,
+			'title'  => $title,
+			'href'   => $frontend_url,
+			'meta'   => [
+				'target' => '_blank',
+				'rel'    => 'noopener noreferrer',
+				'title'  => $title,
+			],
+		] );
 	}
-
-	$wp_admin_bar->add_node( [
-		'id'     => 'hwp-view-on-frontend',
-		'parent' => null,
-		'group'  => null,
-		'title'  => __( 'View on Frontend', 'hwp-frontend-links' ),
-		'href'   => $frontend_url,
-		'meta'   => [
-			'target' => '_blank',
-			'rel'    => 'noopener noreferrer',
-			'title'  => __( 'View this content on the headless frontend', 'hwp-frontend-links' ),
-		],
-	] );
 }
 
 /**
- * Add frontend link to post row actions
+ * Add frontend links to post row actions
  *
- * @param array    $actions An array of row action links
- * @param \WP_Post $post    The post object
+ * Adds "View in [Label]" link(s) to post/page row actions in admin lists
+ * for each configured frontend.
+ *
+ * @param array    $actions Row action links
+ * @param \WP_Post $post    Post object
  * @return array Modified actions array
  */
 function add_post_row_action( $actions, $post ) {
-	$frontend_url = build_frontend_url( $post );
+	$frontend_configs = get_frontend_configs();
 
-	if ( ! $frontend_url ) {
+	if ( empty( $frontend_configs ) ) {
 		return $actions;
 	}
 
-	$actions['hwp_view_frontend'] = sprintf(
-		'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-		esc_url( $frontend_url ),
-		__( 'View on Frontend', 'hwp-frontend-links' )
-	);
+	foreach ( $frontend_configs as $index => $config ) {
+		$frontend_url = build_frontend_url( $post, $config['url'] );
+
+		if ( ! $frontend_url ) {
+			continue;
+		}
+
+		$action_key = 'hwp_view_frontend' . ( $index > 0 ? '_' . $index : '' );
+		$label      = sprintf( __( 'View in %s', 'hwp-frontend-links' ), $config['label'] );
+
+		$actions[ $action_key ] = sprintf(
+			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_url( $frontend_url ),
+			esc_html( $label )
+		);
+	}
 
 	return $actions;
 }
@@ -118,7 +167,7 @@ function add_post_row_action( $actions, $post ) {
  */
 function init() {
 	// Only add frontend links if configured
-	if ( ! get_frontend_url() ) {
+	if ( empty( get_frontend_configs() ) ) {
 		return;
 	}
 
