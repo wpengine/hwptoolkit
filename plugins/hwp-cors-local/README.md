@@ -36,7 +36,7 @@ Or in `.wp-env.json`:
 
 ## Behavior
 
-- Only activates when `WP_ENVIRONMENT_TYPE` is `local` or `WP_DEBUG` is `true`
+- Only activates when `WP_ENVIRONMENT_TYPE` is `local` OR `WP_DEBUG` is `true`
 - Does not apply CORS headers if `HEADLESS_FRONTEND_URL` is not defined
 - Handles preflight OPTIONS requests automatically
 - Allows credentials and common HTTP methods (GET, POST, OPTIONS, PUT, DELETE)
@@ -50,8 +50,8 @@ Or in `.wp-env.json`:
 
 ## Security
 
-This plugin should only be used in local development environments. It is automatically disabled in production when:
-- `WP_ENVIRONMENT_TYPE` is not `local`
+This plugin should only be used in local development environments. It is automatically disabled in production when both conditions are met:
+- `WP_ENVIRONMENT_TYPE` is not `local` AND
 - `WP_DEBUG` is `false`
 
 ## Installation

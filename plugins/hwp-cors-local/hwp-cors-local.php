@@ -66,7 +66,10 @@ function add_cors_headers( $value ) {
  */
 function init() {
 	// Only enable CORS in local development environments
-	if ( defined( 'WP_ENVIRONMENT_TYPE' ) && WP_ENVIRONMENT_TYPE === 'local' ) {
+	$is_local = ( defined( 'WP_ENVIRONMENT_TYPE' ) && WP_ENVIRONMENT_TYPE === 'local' );
+	$is_debug = ( defined( 'WP_DEBUG' ) && WP_DEBUG );
+
+	if ( $is_local || $is_debug ) {
 		add_action( 'rest_api_init', function() {
 			remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 			add_filter( 'rest_pre_serve_request', __NAMESPACE__ . '\\add_cors_headers' );

@@ -12,7 +12,7 @@ Implemented a modular, production-ready plugin architecture for headless WordPre
 **Purpose**: Enables CORS headers for local development environments
 
 **Key Features**:
-- Only activates when `WP_ENVIRONMENT_TYPE === 'local'` or `WP_DEBUG === true`
+- Only activates when `WP_ENVIRONMENT_TYPE === 'local'` OR `WP_DEBUG === true`
 - Configurable via `HEADLESS_FRONTEND_URL` constant
 - Handles preflight OPTIONS requests automatically
 - Allows credentials and common HTTP methods (GET, POST, OPTIONS, PUT, DELETE)
