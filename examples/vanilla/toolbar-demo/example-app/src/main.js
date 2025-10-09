@@ -56,13 +56,24 @@ window.login = async () => {
       });
 
       console.log('User logged in:', user.name);
+    } else if (response.status === 404) {
+      console.error('User not found:', response.status);
+      alert(`User not found (404). WordPress may need initial setup.\n\nVisit: ${WP_URL}/wp-admin`);
+    } else if (response.status >= 500) {
+      console.error('WordPress server error:', response.status);
+      alert(`WordPress server error (${response.status}).\n\nCheck that WordPress is running:\nnpm run wp:start`);
     } else {
-      console.error('WordPress not available');
-      alert('WordPress is not running at ' + WP_URL);
+      console.error('WordPress API error:', response.status);
+      alert(`WordPress API returned ${response.status}.\n\nCheck WordPress configuration.`);
     }
   } catch (error) {
     console.error('Error connecting to WordPress:', error);
-    alert('Error: Make sure WordPress is running (npm run wp:start)');
+
+    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+      alert(`Cannot connect to WordPress at ${WP_URL}\n\nPossible issues:\n• WordPress is not running (run: npm run wp:start)\n• CORS is not configured\n• Wrong WordPress URL\n\nCheck the console for details.`);
+    } else {
+      alert(`Error: ${error.message}\n\nCheck the console for details.`);
+    }
   }
 };
 
