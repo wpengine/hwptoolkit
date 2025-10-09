@@ -11,7 +11,7 @@ export function Toolbar() {
 
   useEffect(() => {
     const unsubscribe = toolbar.subscribe(() => {
-      const config = (toolbar as any).config;
+      const config = toolbar.getConfig();
       setPosition(config?.position || 'bottom');
     });
     return unsubscribe;
