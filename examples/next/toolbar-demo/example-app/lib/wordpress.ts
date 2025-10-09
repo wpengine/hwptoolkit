@@ -25,9 +25,9 @@ export async function fetchFromWordPress(endpoint: string, options?: RequestInit
 }
 
 export async function getCurrentUser() {
-  // Fetch real user from WordPress REST API
-  // Using user ID 1 (default admin user in wp-env)
-  // In production, use /wp/v2/users/me with Application Passwords or OAuth
+  // Demo: Using user ID 1 (wp-env default admin) for simplicity
+  // Production: Use /wp/v2/users/me with Application Passwords or OAuth
+  // Note: This is acceptable in demos where auth setup would add unnecessary complexity
   return fetchFromWordPress('/wp/v2/users/1');
 }
 
