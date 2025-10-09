@@ -49,6 +49,7 @@ export interface ToolbarTheme {
 }
 
 export interface ToolbarConfig {
+  position?: 'top' | 'bottom';
   branding?: ToolbarBranding;
   theme?: ToolbarTheme;
   onPreviewChange?: (enabled: boolean) => void;
@@ -92,8 +93,21 @@ export class Toolbar {
   private config: ToolbarConfig;
 
   constructor(config: ToolbarConfig = {}) {
-    this.config = config;
+    this.config = {
+      position: 'bottom',
+      ...config
+    };
     this.registerDefaultNodes();
+  }
+
+  getConfig(): ToolbarConfig {
+    return { ...this.config };
+  }
+
+  setConfig(updates: Partial<ToolbarConfig>): this {
+    this.config = { ...this.config, ...updates };
+    this.notify();
+    return this;
   }
 
   private registerDefaultNodes(): void {
@@ -261,7 +275,8 @@ export class VanillaRenderer {
   private render(nodes: ToolbarNode[], state: ToolbarState): void {
     if (!this.element) return;
     this.element.innerHTML = '';
-    this.element.className = 'hwp-toolbar';
+    const position = this.config.position || 'bottom';
+    this.element.className = `hwp-toolbar hwp-toolbar-${position}`;
     if (this.config.theme?.className) {
       this.element.classList.add(this.config.theme.className);
     }

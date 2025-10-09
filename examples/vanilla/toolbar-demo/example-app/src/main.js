@@ -2,7 +2,7 @@ import { Toolbar, VanillaRenderer } from '@wpengine/hwp-toolbar';
 import '@wpengine/hwp-toolbar/styles';
 import './style.css';
 
-const WP_URL = 'http://localhost:8888';
+const WP_URL = import.meta.env.VITE_WP_URL;
 
 // ============================================================================
 // Initialize Toolbar

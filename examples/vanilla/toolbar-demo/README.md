@@ -35,9 +35,9 @@ npm run example:start
 
 The example will be available at:
 - **Frontend**: http://localhost:3000
-- **WordPress**: http://localhost:8888
-- **WordPress Admin**: http://localhost:8888/wp-admin (`admin` / `password`)
-- **GraphQL**: http://localhost:8888/?graphql
+- **WordPress**: http://localhost:8000
+- **WordPress Admin**: http://localhost:8000/wp-admin (`admin` / `password`)
+- **GraphQL**: http://localhost:8000/?graphql
 
 ## Project Structure
 
@@ -80,7 +80,7 @@ The example fetches real data from WordPress:
 
 ```javascript
 // Fetch WordPress user via REST API
-const response = await fetch('http://localhost:8888/?rest_route=/wp/v2/users/1');
+const response = await fetch('http://localhost:8000/?rest_route=/wp/v2/users/1');
 const user = await response.json();
 
 toolbar.setState({
@@ -90,8 +90,8 @@ toolbar.setState({
     email: user.email
   },
   site: {
-    url: 'http://localhost:8888',
-    adminUrl: 'http://localhost:8888/wp-admin'
+    url: 'http://localhost:8000',
+    adminUrl: 'http://localhost:8000/wp-admin'
   }
 });
 ```
@@ -101,7 +101,7 @@ toolbar.setState({
 Fetch posts using WPGraphQL:
 
 ```javascript
-const response = await fetch('http://localhost:8888/?graphql', {
+const response = await fetch('http://localhost:8000/?graphql', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -167,8 +167,8 @@ The wp-env configuration includes:
 
 - WordPress with WPGraphQL plugin
 - Admin credentials: `admin` / `password`
-- GraphQL endpoint: `http://localhost:8888/?graphql`
-- REST API endpoint: `http://localhost:8888/?rest_route=/wp/v2/...`
+- GraphQL endpoint: `http://localhost:8000/?graphql`
+- REST API endpoint: `http://localhost:8000/?rest_route=/wp/v2/...`
 - Pretty permalinks enabled
 - CORS headers enabled for localhost:3000
 

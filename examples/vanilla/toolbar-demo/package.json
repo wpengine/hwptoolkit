@@ -5,7 +5,7 @@
   "scripts": {
     "example:build": "npm run example:dev:install && npm run wp:start && npm run example:start",
     "example:dev:install": "cd example-app && npm install && cd ..",
-    "example:start": "npm run wp:start && npm run example:dev",
+    "example:start": "node scripts/setup-env.js && concurrently \"npm run wp:start\" \"npm run example:dev\"",
     "example:stop": "npm run wp:stop",
     "example:prune": "wp-env destroy && npm run example:build && npm run example:start",
     "example:dev": "npm --prefix ./example-app run dev",
@@ -27,6 +27,7 @@
   "author": "hwptoolkit",
   "license": "BSD-0-Clause",
   "dependencies": {
-    "@wordpress/env": "^10.31.0"
+    "@wordpress/env": "^10.31.0",
+    "concurrently": "^8.2.2"
   }
 }

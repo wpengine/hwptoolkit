@@ -8,12 +8,14 @@
     "WP_DEBUG_LOG": true,
     "GRAPHQL_DEBUG": true
   },
-  "port": 8888,
+  "port": 8644,
+  "testsPort": 8645,
   "mappings": {
     "db": "./wp-env/db",
-    "wp-content/mu-plugins": "./mu-plugin.php"
+    "wp-content/mu-plugins": "./mu-plugin.php",
+    ".htaccess": "./.htaccess"
   },
   "lifecycleScripts": {
-    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' --hard && wp-env run cli -- wp theme activate twentytwentyfour"
   }
 }

@@ -1,3 +1,5 @@
 packages:
   - 'packages/*'
   - 'plugins/*'
+  - 'examples/next/*/example-app'
+  - 'examples/vanilla/*/example-app'
