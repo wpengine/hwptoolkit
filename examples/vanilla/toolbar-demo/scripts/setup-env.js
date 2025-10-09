@@ -29,20 +29,24 @@ console.log(`  WP Test: ${ports.WP_TEST_PORT}`);
 
 // Update .wp-env.json
 const wpEnvConfig = {
-  phpVersion: '8.0',
+  phpVersion: '8.3',
   plugins: [
-    'https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip'
+    'https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip',
+    '../../../../plugins/hwp-cors-local',
+    '../../../../plugins/hwp-frontend-links',
+    '../../../../plugins/hwp-wp-env-helpers'
   ],
   config: {
     WP_DEBUG: true,
     WP_DEBUG_LOG: true,
-    GRAPHQL_DEBUG: true
+    GRAPHQL_DEBUG: true,
+    WP_HOME: `http://localhost:${ports.WP_PORT}`,
+    HEADLESS_FRONTEND_URL: `http://localhost:${ports.FRONTEND_PORT}`
   },
   port: ports.WP_PORT,
   testsPort: ports.WP_TEST_PORT,
   mappings: {
     db: './wp-env/db',
-    'wp-content/mu-plugins': './mu-plugin.php',
     '.htaccess': './.htaccess'
   },
   lifecycleScripts: {
