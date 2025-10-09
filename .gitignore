@@ -4,6 +4,9 @@ node_modules
 
 # Build outputs
 dist
+build
+.next
+out
 
 # Testing
 coverage
@@ -13,6 +16,7 @@ test-results/
 # WordPress
 .wp-env
 .wp-env.override.json
+wp-env/
 uploads/
 debug.log
 __MACOSX
@@ -29,4 +33,7 @@ __MACOSX
 ## Examples
 examples/**/package-lock.json
 examples/**/__MACOSX
+examples/**/mu-plugin.php
+examples/**/.htaccess
+examples/**/.wp-env.json
 ``
