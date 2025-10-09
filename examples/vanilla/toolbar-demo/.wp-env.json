@@ -1,7 +1,10 @@
 {
   "phpVersion": "8.3",
   "plugins": [
-    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip"
+    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "/Users/joe.fusco/Documents/GitHub/hwptoolkit/plugins/hwp-cors-local",
+    "/Users/joe.fusco/Documents/GitHub/hwptoolkit/plugins/hwp-frontend-links",
+    "/Users/joe.fusco/Documents/GitHub/hwptoolkit/plugins/hwp-wp-env-helpers"
   ],
   "config": {
     "WP_DEBUG": true,
@@ -14,7 +17,6 @@
   "testsPort": 8645,
   "mappings": {
     "db": "./wp-env/db",
-    "wp-content/mu-plugins": "./mu-plugin.php",
     ".htaccess": "./.htaccess"
   },
   "lifecycleScripts": {

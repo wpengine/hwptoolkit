@@ -28,13 +28,14 @@ console.log(`  WordPress: ${ports.WP_PORT}`);
 console.log(`  WP Test: ${ports.WP_TEST_PORT}`);
 
 // Update .wp-env.json
+const pluginsDir = path.resolve(__dirname, '../../../../plugins');
 const wpEnvConfig = {
   phpVersion: '8.3',
   plugins: [
     'https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip',
-    '../../../../plugins/hwp-cors-local',
-    '../../../../plugins/hwp-frontend-links',
-    '../../../../plugins/hwp-wp-env-helpers'
+    path.join(pluginsDir, 'hwp-cors-local'),
+    path.join(pluginsDir, 'hwp-frontend-links'),
+    path.join(pluginsDir, 'hwp-wp-env-helpers')
   ],
   config: {
     WP_DEBUG: true,
