@@ -1,7 +1,9 @@
 import { Toolbar } from '@wpengine/hwp-toolbar';
 
-// Singleton toolbar instance
-// This ensures the same toolbar state is shared across the app
+/**
+ * Singleton toolbar instance
+ * This ensures the same toolbar state is shared across the app
+ */
 export const toolbar = new Toolbar({
   onPreviewChange: (enabled) => {
     console.log('Preview mode:', enabled);
@@ -10,7 +12,11 @@ export const toolbar = new Toolbar({
   },
 });
 
-// Register custom nodes
+/**
+ * Register custom nodes
+ */
 toolbar.register('home', 'Home', () => {
   window.location.href = '/';
 });
+
+toolbar.register('demo-path', 'examples/next/toolbar-demo');

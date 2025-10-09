@@ -4,10 +4,9 @@ import './style.css';
 
 const WP_URL = import.meta.env.VITE_WP_URL;
 
-// ============================================================================
-// Initialize Toolbar
-// ============================================================================
-
+/**
+ * Initialize Toolbar
+ */
 const toolbar = new Toolbar({
   onPreviewChange: (enabled) => {
     console.log('Preview mode:', enabled);
@@ -15,30 +14,27 @@ const toolbar = new Toolbar({
   }
 });
 
-// Render toolbar to DOM
 const renderer = new VanillaRenderer(toolbar, 'toolbar');
 
-// ============================================================================
-// Register Custom Nodes
-// ============================================================================
-
+/**
+ * Register Custom Nodes
+ */
 toolbar.register('home', 'Home', () => {
   window.location.href = '/';
 });
 
-// ============================================================================
-// State Management
-// ============================================================================
+toolbar.register('demo-path', 'examples/vanilla/toolbar-demo');
 
-// Subscribe to state changes for debugging display
+/**
+ * State Management
+ */
 toolbar.subscribe((nodes, state) => {
   document.getElementById('state').textContent = JSON.stringify(state, null, 2);
 });
 
-// ============================================================================
-// Demo Actions
-// ============================================================================
-
+/**
+ * Demo Actions
+ */
 window.login = async () => {
   try {
     const response = await fetch(`${WP_URL}/?rest_route=/wp/v2/users/1`);
