@@ -15,9 +15,33 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 
-// Port range constants for deterministic port assignment
-const PORT_RANGE = 900; // Number of ports to use
-const PORT_BASE = 100;  // Starting port (skip first 100 ports)
+/**
+ * Port range constants for deterministic port assignment
+ *
+ * PORT_RANGE (900):
+ * - Provides space for up to 900 unique example configurations
+ * - Reduces collision probability while keeping ports in manageable range
+ * - Results in frontend ports between 3100-3999
+ * - Results in WordPress ports between 8100-8999
+ *
+ * PORT_BASE (100):
+ * - Skips first 100 offset values (0-99) to avoid very common ports
+ * - Prevents conflicts with default dev servers (3000, 8000, etc.)
+ * - Creates deterministic but collision-resistant port assignments
+ *
+ * Port Calculation Strategy:
+ * 1. Hash the example path (e.g., "vanilla/toolbar-demo") using SHA-256
+ * 2. Take first 8 hex characters and convert to decimal
+ * 3. Modulo PORT_RANGE to get offset (100-999)
+ * 4. Add offset to base ports: frontend (3000+offset), WordPress (8000+offset)
+ *
+ * This ensures:
+ * - Same example always gets same ports (deterministic)
+ * - Different examples very likely get different ports (collision resistant)
+ * - Ports are human-readable and debuggable
+ */
+const PORT_RANGE = 900;
+const PORT_BASE = 100;
 
 /**
  * Simple hash function that converts a string to a number in range [PORT_BASE, PORT_BASE + PORT_RANGE - 1]
