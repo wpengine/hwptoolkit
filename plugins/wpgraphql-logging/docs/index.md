@@ -2,16 +2,14 @@
 
 ## Table of Contents
 
-@TODO - Regenerate
-
-- [Overview](#overview)
-- [Getting Started](#getting-started)
-- [Features](#features)
-- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Key Features](#key-features)
+- [Installation](#installation)
 - [Configuration](#configuration)
-- [Admin & Settings](#admin--settings)
-- [Extending the Functionality](#extending-the-functionality)
-- [Testing](#testing)
+- [Admin Interface](#admin-interface)
+- [Uninstallation and Data Cleanup](#uninstallation-and-data-cleanup)
+- [How‑to Guides](#how‑to-guides)
+- [Reference](#reference)
 
 ---
 
@@ -47,32 +45,43 @@ wpgraphql-logging/
 
 ## Key Features
 
-@TODO
-
-- **Query event lifecycle logging**
+- **End-to-end GraphQL lifecycle logging**
   - **Pre Request** (`do_graphql_request`): captures `query`, `variables`, `operation_name`.
-  - **Before Execution** (`graphql_before_execute`): includes a snapshot of request `params`.
-  - **Before Response Returned** (`graphql_return_response`): inspects `response` and automatically upgrades level to Error when GraphQL `errors` are present (adds `errors` to context when found).
+  - **Before Execution** (`graphql_before_execute`): snapshots request `params`.
+  - **Before Response Returned** (`graphql_return_response`): inspects `response`; auto-elevates level to Error when GraphQL `errors` are present (adds `errors` to context).
 
-- **Built-in pub/sub event bus**
-  - In-memory event manager with priorities: `subscribe(event, listener, priority)` and `publish(event, payload)`.
-  - Transform pipeline: `transform(event, payload)` lets you mutate `context` and `level` before logging/publishing.
+- **Developer-friendly pub/sub and transform system**
+  - Programmatic API: `Plugin::on($event, $listener)`, `Plugin::transform($event, $callable)`, `Plugin::emit($event, $payload)`.
+  - Prioritized execution: lower priority runs earlier for both subscribers and transforms.
   - WordPress bridges: actions `wpgraphql_logging_event_{event}` and filters `wpgraphql_logging_filter_{event}` to integrate with standard hooks.
+  - Safe-by-default: exceptions in listeners/transforms are caught and logged; they do not break the pipeline.
+  - See: Reference › Events (`docs/reference/events.md`) and How‑to guides (`docs/how-to/events_pub_sub.md`, `docs/how-to/events_add_context.md`).
 
-- **Monolog-powered logging pipeline**
-  - Default handler: stores logs in a WordPress table (`{$wpdb->prefix}wpgraphql_logging`).
+- **Extensible Monolog pipeline**
+  - Default handler: `WordPressDatabaseHandler` stores logs in `{$wpdb->prefix}wpgraphql_logging`.
+  - Add handlers via filter `wpgraphql_logging_default_handlers` (e.g., file, Slack, HTTP, etc.).
+  - Add processors via filter `wpgraphql_logging_default_processors` (e.g., enrich records with user/site data).
+  - Customize `default_context` via `wpgraphql_logging_default_context`.
+  - Use `LoggerService::get_instance()` to build custom channels, handlers, processors.
+
+- **Configurable rule-based logging**
+  - Built-in rules: enabled toggle, IP restrictions, exclude queries, sampling rate, null query guard, response logging toggle.
+  - All rules are orchestrated by a `RuleManager` ensuring logs only emit when all rules pass.
+  - Extend rules: hook `wpgraphql_logging_rule_manager` to add custom `LoggingRuleInterface` implementations.
 
 - **Automated data management**
-  - **Daily cleanup scheduler**: Automatically removes old logs based on retention settings.
-  - **Configurable retention period**: Set how many days to keep log data (default: 30 days).
-  - **Manual cleanup**: Admin interface to trigger immediate cleanup of old logs.
-  - **Data sanitization**: Remove sensitive fields from logged data for privacy compliance.
+  - **Daily cleanup scheduler**: removes old logs based on retention.
+  - **Configurable retention period**: choose days to keep (default 30).
+  - **Manual cleanup**: trigger from the admin UI.
+  - **Data sanitization**: built-in `DataSanitizationProcessor` removes/anonymizes/truncates sensitive fields with recommended or custom rules.
 
-- **Simple developer API**
-  - `Plugin::on()` to subscribe, `Plugin::emit()` to publish, `Plugin::transform()` to modify payloads.
+- **Admin UI for operations**
+  - Logs list view with filters (level, date range) and CSV export.
+  - Bulk delete actions and visibility controls.
 
-- **Safe-by-default listeners/transforms**
-  - Exceptions in listeners/transforms are caught and logged without breaking the pipeline.
+- **Composable and testable architecture**
+  - Clear separation: Events bus, Logger service, Rules, Processors, Handlers.
+  - Designed for extension via interfaces, filters, and helper APIs.
 
 ---
 
@@ -172,29 +181,22 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 > **Data Loss Warning**: When `WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN` is defined as `true`, deactivating the plugin will permanently delete all logged data and drop the plugin's database tables. This action is irreversible.
 
 
-## Reference
+## How‑to Guides
 
-The plugin is developer focussed and can be extended in multiple ways.
-
-## Admin - (admin configuration, view and functionality)
-
-- [Actions/Filters](reference/admin.md)
+### Admin
 - [How to add a new Settings tab to WPGraphQL Logging](how-to/admin_add_new_tab.md)
 - [How to add a new field to an existing tab and query it](how-to/admin_add_fields.md)
 - [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
 
+### Events
+- [How to add context data to a logged WPGraphQL event](how-to/events_add_context.md)
+- [How to use the WPGraphQL Logging events pub/sub system](how-to/events_pub_sub.md)
 
-@TODO - How to guides
+### Logging
+- @TODO — add how‑to guides for LoggerService, handlers, processors, rules
 
-## Events - (Event Management, Adding and extending events, Using the pub/sub)
-- [Actions/Filters](reference/events.md)
+## Reference
 
-@TODO - How to guides
-
-## Logging -  (Logging Service, Monolog Handlers & Processors, Rule Manager, Data Management)
-- [Actions/Filters](reference/logging.md)
-
-@TODO - How to guides
-
-
-----
+- Admin: [Actions/Filters](reference/admin.md)
+- Events: [Actions/Filters](reference/events.md)
+- Logging: [Actions/Filters](reference/logging.md)
