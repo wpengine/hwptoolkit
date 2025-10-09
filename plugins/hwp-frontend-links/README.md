@@ -18,6 +18,8 @@ Provides quick access to view content on the headless frontend application from 
 
 ## Configuration
 
+### Single Frontend
+
 Define the frontend URL using the `HEADLESS_FRONTEND_URL` constant in `wp-config.php` or via wp-env:
 
 ```php
@@ -33,6 +35,20 @@ Or in `.wp-env.json`:
   }
 }
 ```
+
+### Multiple Frontends
+
+For projects with multiple frontend environments (staging, production, etc.), use the `HWP_FRONTEND_LINKS` constant to define multiple targets:
+
+```php
+define( 'HWP_FRONTEND_LINKS', [
+  [ 'label' => 'Production', 'url' => 'https://example.com' ],
+  [ 'label' => 'Staging', 'url' => 'https://staging.example.com' ],
+  [ 'label' => 'Local Dev', 'url' => 'http://localhost:3000' ]
+] );
+```
+
+Each frontend link will appear as a separate "View in [Label]" option in both the admin bar and row actions.
 
 ## Features
 
