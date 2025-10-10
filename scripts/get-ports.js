@@ -48,7 +48,7 @@ const PORT_BASE = 100;
  */
 function hashToPort(str) {
   const hash = crypto.createHash('sha256').update(str).digest('hex');
-  // Take first 8 hex chars and convert to decimal, then mod PORT_RANGE + PORT_BASE to get range [PORT_BASE, PORT_BASE + PORT_RANGE - 1]
+  // Take first 8 hex chars and convert to decimal, then take (num % PORT_RANGE) + PORT_BASE to get range [PORT_BASE, PORT_BASE + PORT_RANGE - 1]
   // This ensures we skip the first PORT_BASE ports to avoid conflicts with common services
   const num = parseInt(hash.substring(0, 8), 16);
   return (num % PORT_RANGE) + PORT_BASE;
