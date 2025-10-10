@@ -409,24 +409,67 @@ export class VanillaRenderer {
     trigger.className = 'hwp-toolbar-dropdown-trigger hwp-toolbar-button';
     const labelText = typeof node.label === 'function' ? node.label() : node.label || '';
     trigger.textContent = labelText + ' ▾';
+    trigger.setAttribute('aria-haspopup', 'true');
+    trigger.setAttribute('aria-expanded', 'false');
 
     const menu = document.createElement('div');
     menu.className = 'hwp-toolbar-dropdown-menu';
+    menu.setAttribute('role', 'menu');
     menu.style.display = 'none';
 
     node.items!.forEach(item => {
       const itemEl = document.createElement('button');
       itemEl.className = 'hwp-toolbar-dropdown-item';
+      itemEl.setAttribute('role', 'menuitem');
       const itemLabel = typeof item.label === 'function' ? item.label() : item.label || '';
       itemEl.textContent = itemLabel;
-      if (item.onClick) itemEl.onclick = () => item.onClick!();
+      if (item.onClick) {
+        itemEl.onclick = () => {
+          item.onClick!();
+          closeMenu();
+        };
+      }
       menu.appendChild(itemEl);
     });
 
-    trigger.onclick = () => {
+    const toggleMenu = () => {
       const isOpen = menu.style.display === 'block';
       menu.style.display = isOpen ? 'none' : 'block';
+      trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
     };
+
+    const closeMenu = () => {
+      menu.style.display = 'none';
+      trigger.setAttribute('aria-expanded', 'false');
+    };
+
+    // Click toggle
+    trigger.onclick = toggleMenu;
+
+    // Keyboard navigation
+    trigger.onkeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMenu();
+      } else if (e.key === 'Escape') {
+        closeMenu();
+      }
+    };
+
+    // Click outside to close
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!container.contains(e.target as Node)) {
+        closeMenu();
+      }
+    };
+
+    trigger.addEventListener('click', () => {
+      if (menu.style.display === 'block') {
+        document.addEventListener('click', handleClickOutside);
+      } else {
+        document.removeEventListener('click', handleClickOutside);
+      }
+    });
 
     container.appendChild(trigger);
     container.appendChild(menu);
