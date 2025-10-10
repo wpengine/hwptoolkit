@@ -2,4 +2,4 @@
 set -a
 source .env
 set +a
-next dev --port "$PORT"
+npx next dev --port "$PORT"

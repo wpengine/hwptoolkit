@@ -1,20 +1,28 @@
+/**
+ * React Hooks for Headless WordPress Toolbar
+ * Zustand-like hook pattern for React integration
+ * @package @wpengine/hwp-toolbar
+ */
+
 import { useState, useEffect, useMemo } from 'react';
-import type { Toolbar, ToolbarNode, ToolbarState } from './index';
 
 /**
  * React hook to subscribe to toolbar state changes
  * Similar to Zustand's useStore pattern
  *
  * @example
- * ```tsx
+ * ```jsx
  * function MyComponent() {
  *   const state = useToolbarState(toolbar);
  *   return <div>User: {state.user?.name}</div>;
  * }
  * ```
+ *
+ * @param {import('./core/Toolbar.js').Toolbar} toolbar
+ * @returns {import('./core/Toolbar.js').ToolbarState}
  */
-export function useToolbarState(toolbar: Toolbar): ToolbarState {
-  const [state, setState] = useState<ToolbarState>(() => toolbar.getState());
+export function useToolbarState(toolbar) {
+  const [state, setState] = useState(() => toolbar.getState());
 
   useEffect(() => {
     const unsubscribe = toolbar.subscribe((_, newState) => {
@@ -31,7 +39,7 @@ export function useToolbarState(toolbar: Toolbar): ToolbarState {
  * Returns visible nodes based on current state
  *
  * @example
- * ```tsx
+ * ```jsx
  * function ToolbarButtons() {
  *   const nodes = useToolbarNodes(toolbar);
  *   return (
@@ -45,9 +53,12 @@ export function useToolbarState(toolbar: Toolbar): ToolbarState {
  *   );
  * }
  * ```
+ *
+ * @param {import('./core/Toolbar.js').Toolbar} toolbar
+ * @returns {import('./core/Toolbar.js').ToolbarNode[]}
  */
-export function useToolbarNodes(toolbar: Toolbar): ToolbarNode[] {
-  const [nodes, setNodes] = useState<ToolbarNode[]>(() => toolbar.getVisibleNodes());
+export function useToolbarNodes(toolbar) {
+  const [nodes, setNodes] = useState(() => toolbar.getVisibleNodes());
 
   useEffect(() => {
     const unsubscribe = toolbar.subscribe((newNodes) => {
@@ -64,7 +75,7 @@ export function useToolbarNodes(toolbar: Toolbar): ToolbarNode[] {
  * Convenience hook for components that need both
  *
  * @example
- * ```tsx
+ * ```jsx
  * function MyToolbar() {
  *   const { state, nodes } = useToolbar(toolbar);
  *
@@ -76,11 +87,11 @@ export function useToolbarNodes(toolbar: Toolbar): ToolbarNode[] {
  *   );
  * }
  * ```
+ *
+ * @param {import('./core/Toolbar.js').Toolbar} toolbar
+ * @returns {{ state: import('./core/Toolbar.js').ToolbarState, nodes: import('./core/Toolbar.js').ToolbarNode[] }}
  */
-export function useToolbar(toolbar: Toolbar): {
-  state: ToolbarState;
-  nodes: ToolbarNode[];
-} {
+export function useToolbar(toolbar) {
   const state = useToolbarState(toolbar);
   const nodes = useToolbarNodes(toolbar);
 
