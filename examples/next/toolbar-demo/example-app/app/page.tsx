@@ -31,7 +31,8 @@ export default function Home() {
       console.log('User logged in:', user.name);
     } catch (error) {
       console.error('Error connecting to WordPress:', error);
-      alert('Error: Make sure wp-env is running (npx wp-env start)');
+      const message = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error connecting to WordPress:\n\n${message}`);
     }
   };
 
@@ -56,7 +57,8 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error fetching posts:', error);
-      alert('Error fetching posts. Make sure wp-env is running.');
+      const message = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error fetching posts:\n\n${message}`);
     }
   };
 

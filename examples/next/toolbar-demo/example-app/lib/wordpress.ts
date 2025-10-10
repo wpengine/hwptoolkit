@@ -9,16 +9,90 @@ export async function fetchFromWordPress(endpoint: string, options?: RequestInit
     });
 
     if (!response.ok) {
+      // Handle CORS errors (status 0 or null)
       if (response.status === 0 || !response.status) {
-        throw new Error('CORS error: Unable to connect to WordPress. Make sure WordPress is running and CORS is configured.');
+        throw new Error(
+          `CORS error: WordPress is blocking cross-origin requests.\n\n` +
+          `Possible causes:\n` +
+          `• WordPress is not running (run: npx wp-env start)\n` +
+          `• CORS plugin not active (check hwp-cors-local)\n` +
+          `• Wrong WordPress URL in .env`
+        );
       }
-      throw new Error(`WordPress API error: ${response.status} ${response.statusText}`);
+
+      // Try to parse WordPress error response
+      let errorDetails = '';
+      try {
+        const errorData = await response.json();
+        if (errorData.message) {
+          errorDetails = errorData.message;
+        }
+        if (errorData.code) {
+          errorDetails += ` (${errorData.code})`;
+        }
+      } catch {
+        // Response body not JSON, use status text
+        errorDetails = response.statusText;
+      }
+
+      // Handle specific status codes
+      if (response.status === 401) {
+        throw new Error(
+          `Authentication required (401).\n\n` +
+          `This endpoint requires authentication. ${errorDetails ? `\nDetails: ${errorDetails}` : ''}`
+        );
+      }
+
+      if (response.status === 403) {
+        throw new Error(
+          `Permission denied (403).\n\n` +
+          `You don't have permission to access this resource. ${errorDetails ? `\nDetails: ${errorDetails}` : ''}`
+        );
+      }
+
+      if (response.status === 404) {
+        const isRestRouteError = errorDetails.toLowerCase().includes('no route');
+        throw new Error(
+          `WordPress endpoint not found (404).\n\n` +
+          (isRestRouteError
+            ? `REST API routing error detected. This usually happens in wp-env when:\n` +
+              `• hwp-wp-env-helpers plugin is not loaded\n` +
+              `• Permalink structure conflicts with Docker\n\n` +
+              `Try restarting wp-env: npx wp-env destroy && npx wp-env start`
+            : `The endpoint ${endpoint} may not exist or WordPress needs configuration.`) +
+          (errorDetails ? `\n\nDetails: ${errorDetails}` : '')
+        );
+      }
+
+      if (response.status >= 500) {
+        throw new Error(
+          `WordPress server error (${response.status}).\n\n` +
+          `Possible causes:\n` +
+          `• WordPress fatal error or plugin conflict\n` +
+          `• Database connection issues\n` +
+          `• Check WordPress logs: npx wp-env run cli wp debug.log` +
+          (errorDetails ? `\n\nDetails: ${errorDetails}` : '')
+        );
+      }
+
+      // Generic error for other status codes
+      throw new Error(
+        `WordPress API error (${response.status})${errorDetails ? `\n\nDetails: ${errorDetails}` : ''}`
+      );
     }
 
     return response.json();
   } catch (error) {
+    // Network/connection errors
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error(`Cannot connect to WordPress at ${WP_API_URL}. Is wp-env running?`);
+      throw new Error(
+        `Cannot connect to WordPress at ${WP_API_URL}\n\n` +
+        `Possible causes:\n` +
+        `• WordPress is not running (run: npx wp-env start)\n` +
+        `• Wrong URL in .env file\n` +
+        `• Network/firewall blocking connection\n\n` +
+        `Check if WordPress is accessible: ${WP_API_URL}`
+      );
     }
     throw error;
   }
