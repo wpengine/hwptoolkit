@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Toolbar } from './components/Toolbar';
 import './globals.css';
+import '@wpengine/hwp-toolbar/styles';
 
 export const metadata: Metadata = {
   title: 'Toolbar Demo - React Hooks',

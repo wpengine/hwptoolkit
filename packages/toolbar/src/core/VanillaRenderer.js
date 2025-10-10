@@ -35,9 +35,28 @@ export class VanillaRenderer {
     }
 
     this.applyTheme();
+    this.addBodyClass();
     this.unsubscribe = this.toolbar.subscribe((nodes, state) => {
       this.render(nodes, state);
     });
+  }
+
+  /**
+   * Add body class for toolbar positioning
+   * @private
+   */
+  addBodyClass() {
+    const position = this.config.position || 'bottom';
+    document.body.classList.add(`hwp-has-toolbar-${position}`);
+  }
+
+  /**
+   * Remove body class for toolbar positioning
+   * @private
+   */
+  removeBodyClass() {
+    const position = this.config.position || 'bottom';
+    document.body.classList.remove(`hwp-has-toolbar-${position}`);
   }
 
   /**
@@ -313,5 +332,6 @@ export class VanillaRenderer {
   destroy() {
     if (this.unsubscribe) this.unsubscribe();
     if (this.element) this.element.innerHTML = '';
+    this.removeBodyClass();
   }
 }

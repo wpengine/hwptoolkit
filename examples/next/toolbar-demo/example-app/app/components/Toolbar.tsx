@@ -2,19 +2,27 @@
 
 import { useToolbar } from '@wpengine/hwp-toolbar/react';
 import { toolbar } from '@/lib/toolbar';
-import '@wpengine/hwp-toolbar/styles';
 import { useState, useEffect } from 'react';
 
 export function Toolbar() {
   const { state, nodes } = useToolbar(toolbar);
-  const [position, setPosition] = useState<'top' | 'bottom'>('bottom');
+  const [position, setPosition] = useState<'top' | 'bottom'>('top');
 
   useEffect(() => {
+    // Add body class for positioning
+    const position = toolbar.getConfig()?.position || 'bottom';
+    document.body.classList.add(`hwp-has-toolbar-${position}`);
+
     const unsubscribe = toolbar.subscribe(() => {
       const config = toolbar.getConfig();
       setPosition(config?.position || 'bottom');
     });
-    return unsubscribe;
+
+    return () => {
+      unsubscribe();
+      // Clean up body class
+      document.body.classList.remove(`hwp-has-toolbar-${position}`);
+    };
   }, []);
 
   const leftNodes = nodes.filter((node) => !node.position || node.position === 'left');

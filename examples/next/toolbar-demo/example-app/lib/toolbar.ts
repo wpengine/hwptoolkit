@@ -5,6 +5,7 @@ import { Toolbar } from '@wpengine/hwp-toolbar';
  * This ensures the same toolbar state is shared across the app
  */
 export const toolbar = new Toolbar({
+  position: 'top',
   onPreviewChange: (enabled) => {
     console.log('Preview mode:', enabled);
     // In a real app, you'd integrate with Next.js draft mode here

@@ -12,6 +12,7 @@
   --hwp-toolbar-z-index: 9999;
   --hwp-toolbar-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
   --hwp-toolbar-font-size: 13px;
+  --hwp-toolbar-height: 41px;
 }
 
 * {
@@ -168,9 +169,22 @@
   height: 24px;
 }
 
+body.hwp-has-toolbar-top {
+  padding-top: var(--hwp-toolbar-height);
+}
+
+body.hwp-has-toolbar-bottom {
+  padding-bottom: var(--hwp-toolbar-height);
+}
+
 @media print {
   #hwp-toolbar,
   .hwp-toolbar {
     display: none;
+  }
+
+  body.hwp-has-toolbar-top,
+  body.hwp-has-toolbar-bottom {
+    padding: 0;
   }
 }
