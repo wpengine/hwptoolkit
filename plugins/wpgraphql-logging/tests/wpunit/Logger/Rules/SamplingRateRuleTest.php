@@ -26,7 +26,7 @@ class SamplingRateRuleTest extends WPTestCase {
 	}
 
 	public function test_get_name_returns_correct_name(): void {
-		$this->assertEquals('enabled_rule', $this->rule->get_name());
+		$this->assertEquals('sampling_rate_rule', $this->rule->get_name());
 	}
 
 	public function test_passes_with_100_percent_sampling_rate(): void {

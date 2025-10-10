@@ -69,7 +69,6 @@ $wpgraphql_logging_tabs                 = (array) ( $wpgraphql_logging_tabs_conf
 										<ul class="wpgraphql-logging-feature-list">
 											<li><?php esc_html_e( 'Enable/disable logging', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Set IP restrictions', 'wpgraphql-logging' ); ?></li>
-											<li><?php esc_html_e( 'Log only for admin users', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Data sampling', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Log specific queries', 'wpgraphql-logging' ); ?></li>
 											<li><?php esc_html_e( 'Exclude queries', 'wpgraphql-logging' ); ?></li>
