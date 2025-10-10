@@ -21,7 +21,8 @@ export function Toolbar() {
     return () => {
       unsubscribe();
       // Clean up body class
-      document.body.classList.remove(`hwp-has-toolbar-${position}`);
+      const currentPosition = toolbar.getConfig()?.position || 'bottom';
+      document.body.classList.remove(`hwp-has-toolbar-${currentPosition}`);
     };
   }, []);
 
