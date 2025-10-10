@@ -25,9 +25,21 @@ export async function fetchFromWordPress(endpoint: string, options?: RequestInit
 }
 
 export async function getCurrentUser() {
-  // Demo: Using user ID 1 (wp-env default admin) for simplicity
-  // Production: Use /wp/v2/users/me with Application Passwords or OAuth
-  // Note: This is acceptable in demos where auth setup would add unnecessary complexity
+  // 🚨 WARNING: Demo-only code! 🚨
+  // This function uses a hardcoded user ID (1), which is the default admin in wp-env.
+  // DO NOT USE THIS PATTERN IN PRODUCTION. In production, use /wp/v2/users/me with proper authentication.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'getCurrentUser() uses a hardcoded user ID and MUST NOT be used in production. ' +
+      'Use /wp/v2/users/me with Application Passwords or OAuth instead.'
+    );
+  }
+  if (typeof window !== 'undefined' && window.console && window.console.warn) {
+    window.console.warn(
+      'WARNING: getCurrentUser() is using a hardcoded user ID (1). ' +
+      'This is for demo purposes only and MUST NOT be used in production.'
+    );
+  }
   return fetchFromWordPress('/wp/v2/users/1');
 }
 
