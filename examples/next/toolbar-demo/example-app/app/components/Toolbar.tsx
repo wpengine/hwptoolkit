@@ -79,7 +79,8 @@ export function Toolbar() {
           <button
             className="hwp-toolbar-button"
             onClick={() => {
-              if (confirm(`Logged in as: ${state.user!.name}\n\nLogout?`)) {
+              const user = state.user;
+              if (user && confirm(`Logged in as: ${user.name}\n\nLogout?`)) {
                 toolbar.setWordPressContext({
                   user: null,
                   post: null,
