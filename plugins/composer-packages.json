@@ -423,6 +423,32 @@
       }
     },
     "wpengine/wpgraphql-logging": {
+      "0.1.0": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.1.0",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.1.0/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
       "0.0.12": {
         "name": "wpengine/wpgraphql-logging",
         "version": "0.0.12",
