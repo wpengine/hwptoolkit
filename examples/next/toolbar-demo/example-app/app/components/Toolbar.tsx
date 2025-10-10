@@ -17,48 +17,55 @@ export function Toolbar() {
     return unsubscribe;
   }, []);
 
+  const leftNodes = nodes.filter((node) => !node.position || node.position === 'left');
+  const centerNodes = nodes.filter((node) => node.position === 'center');
+  const rightNodes = nodes.filter((node) => node.position === 'right');
+
+  const renderNode = (node: any) => {
+    const label = typeof node.label === 'function' ? node.label() : node.label;
+
+    if (node.type === 'divider') {
+      return <div key={node.id} className="hwp-toolbar-divider" />;
+    }
+
+    if (node.type === 'link' && node.href) {
+      return (
+        <a
+          key={node.id}
+          href={node.href}
+          target={node.target}
+          className="hwp-toolbar-link"
+        >
+          {label}
+        </a>
+      );
+    }
+
+    return (
+      <button
+        key={node.id}
+        onClick={node.onClick}
+        className={`hwp-toolbar-button ${
+          node.id === 'preview' && state.preview ? 'hwp-toolbar-button-active' : ''
+        }`}
+      >
+        {label}
+      </button>
+    );
+  };
+
   return (
     <div className={`hwp-toolbar hwp-toolbar-${position}`}>
       <div className="hwp-toolbar-section hwp-toolbar-left">
-        {nodes
-          .filter((node) => node.position !== 'right')
-          .map((node) => {
-            const label = typeof node.label === 'function' ? node.label() : node.label;
-
-            if (node.type === 'divider') {
-              return <div key={node.id} className="hwp-toolbar-divider" />;
-            }
-
-            if (node.type === 'link' && node.href) {
-              return (
-                <a
-                  key={node.id}
-                  href={node.href}
-                  target={node.target}
-                  className="hwp-toolbar-link"
-                >
-                  {label}
-                </a>
-              );
-            }
-
-            return (
-              <button
-                key={node.id}
-                onClick={node.onClick}
-                className={`hwp-toolbar-button ${
-                  node.id === 'preview' && state.preview ? 'hwp-toolbar-button-active' : ''
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
+        {leftNodes.map(renderNode)}
       </div>
 
-      <div className="hwp-toolbar-section hwp-toolbar-center"></div>
+      <div className="hwp-toolbar-section hwp-toolbar-center">
+        {centerNodes.map(renderNode)}
+      </div>
 
       <div className="hwp-toolbar-section hwp-toolbar-right">
+        {rightNodes.map(renderNode)}
         {state.user && (
           <button
             className="hwp-toolbar-button"
