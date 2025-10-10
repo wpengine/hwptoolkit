@@ -23,8 +23,6 @@ toolbar.register('home', 'Home', () => {
   window.location.href = '/';
 });
 
-toolbar.register('demo-path', 'examples/vanilla/toolbar-demo');
-
 /**
  * State Management
  */
