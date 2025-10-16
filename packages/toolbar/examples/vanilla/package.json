@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Vanilla JavaScript example using Vite for the Headless WordPress Toolbar",
   "scripts": {
-    "example:setup": "npm run app:install && npm run wp:start",
+    "example:setup": "npm install && npm run app:install && npm run wp:start",
     "example:start": "concurrently \"npm run wp:start\" \"sleep 5 && npm run app:dev\"",
     "example:stop": "npm run wp:stop",
     "example:prune": "npm run wp:destroy && npm run example:setup && npm run example:start",

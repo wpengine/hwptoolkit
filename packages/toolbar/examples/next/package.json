@@ -4,7 +4,7 @@
   "description": "React hooks toolbar demo with Next.js App Router",
   "private": true,
   "scripts": {
-    "example:setup": "npm run app:install && npm run wp:start",
+    "example:setup": "npm install && npm run app:install && npm run wp:start",
     "example:start": "concurrently \"npm run wp:start\" \"sleep 5 && npm run app:dev\"",
     "example:stop": "npm run wp:stop",
     "example:prune": "npm run wp:destroy && npm run example:setup && npm run example:start",

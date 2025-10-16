@@ -2,13 +2,17 @@
 
 In this example we show how to integrate the Headless WordPress Toolbar into a Next.js application using React hooks and WordPress backend using WPGraphQL.
 
+## Table of Contents
+
+
+
 ## Getting Started
 
 > [!IMPORTANT]
 > Docker Desktop needs to be installed to run WordPress locally.
 
 1. Create a `.env.local` file in the `examples/next/toolbar-demo` directory with the following content:
-   ```
+   ```env
    NEXT_PUBLIC_WP_URL=http://localhost:8888
    ```
 2. Run `npm run example:setup` to install dependencies and configure the local WP server.

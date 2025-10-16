@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@wpengine/hwp-toolbar": "file:../../../../packages/toolbar",
+    "@wpengine/hwp-toolbar": "file:../../../",
     "next": "^15.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

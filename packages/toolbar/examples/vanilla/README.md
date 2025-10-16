@@ -7,8 +7,17 @@ In this example we show how to integrate the Headless WordPress Toolbar into a v
 > [!IMPORTANT]
 > Docker Desktop needs to be installed to run WordPress locally.
 
-1. Run `npm run example:setup` to install dependencies and configure the local WP server.
-2. Run `npm run example:start` to start the WP server and Vite development server.
+
+1. Create a `.env.local` file in the `examples/next/toolbar-demo` directory with the following content:
+     ```env
+VITE_FRONTEND_PORT=3000
+VITE_WP_URL=http://localhost:8888
+VITE_WP_PORT=8888
+VITE_WP_TEST_PORT=8889
+   ```
+
+2. Run `npm run example:setup` to install dependencies and configure the local WP server.
+3. Run `npm run example:start` `to start the WP server and Vite development server.
 
 The example will be available at:
 - **Frontend**: http://localhost:3000
@@ -199,4 +208,4 @@ To reset the WP server and re-run setup you can run `npm run example:prune` and 
 
 ## License
 
-BSD-0-Clause
+BSD-2-Clause

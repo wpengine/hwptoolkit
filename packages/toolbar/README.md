@@ -4,6 +4,30 @@
 
 A lightweight, performant toolbar for headless WordPress. Works with any JavaScript framework or vanilla JS.
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+  - [Example Projects](#example-projects)
+  - [Vanilla JavaScript](#vanilla-javascript)
+  - [React (Recommended)](#react-recommended)
+- [Core API](#core-api)
+  - [Toolbar Class](#toolbar-class)
+  - [Renderers](#renderers)
+- [Styling](#styling)
+- [React Hooks API](#react-hooks-api)
+  - [`useToolbar(toolbar)`](#usetoolbartoolbar)
+  - [`useToolbarState(toolbar)`](#usetoolbarstatetoolbar)
+  - [`useToolbarNodes(toolbar)`](#usetoolbarnodestoolbar)
+- [Framework Examples](#framework-examples)
+  - [Vue](#vue)
+  - [Vanilla JavaScript](#vanilla-javascript-1)
+- [TypeScript](#typescript)
+- [Development](#development)
+- [License](#license)
+
+
 ## Features
 
 - 🎯 **Framework Agnostic** - Works with React, Vue, Svelte, or vanilla JavaScript
@@ -19,6 +43,15 @@ npm install @wpengine/hwp-toolbar
 ```
 
 ## Quick Start
+
+### Example Projects
+
+Check out the complete example projects in the `examples/` directory:
+
+- **Next.js**: `examples/next/` - Full Next.js application with Apollo GraphQL integration
+- **Vanilla JavaScript**: `examples/vanilla/` - Pure JavaScript implementation with demo HTML
+
+Each example includes setup instructions and demonstrates different integration patterns.
 
 ### Vanilla JavaScript
 
@@ -260,4 +293,4 @@ open demo.html
 
 ## License
 
-BSD-0-Clause
+BSD-2-Clause

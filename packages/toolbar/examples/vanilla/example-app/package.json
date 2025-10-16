@@ -9,9 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@wpengine/hwp-toolbar": "file:../../../../packages/toolbar"
-  },
-  "devDependencies": {
+    "@wpengine/hwp-toolbar": "file:../../../",
     "vite": "^6.0.11"
   }
 }
