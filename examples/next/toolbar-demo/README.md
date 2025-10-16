@@ -1,43 +1,35 @@
-# Toolbar Demo - React Hooks
+# Next.js Toolbar Demo
 
-React hooks example with Next.js App Router demonstrating the Headless WordPress Toolbar.
+In this example we show how to integrate the Headless WordPress Toolbar into a Next.js application using React hooks and WordPress backend using WPGraphQL.
 
-## Features
+## Getting Started
 
-- React hooks (`useToolbar`, `useToolbarState`, `useToolbarNodes`)
-- Next.js App Router (App Directory)
-- TypeScript
-- Framework-agnostic state management
-- WordPress context integration
+> [!IMPORTANT]
+> Docker Desktop needs to be installed to run WordPress locally.
 
-## Quick Start
+1. Create a `.env.local` file in the `examples/next/toolbar-demo` directory with the following content:
+   ```
+   NEXT_PUBLIC_WP_URL=http://localhost:8888
+   ```
+2. Run `npm run example:setup` to install dependencies and configure the local WP server.
+3. Run `npm run example:start` to start the WP server and Next.js development server.
 
-```bash
-# Install dependencies (from monorepo root)
-pnpm install
 
-# Start WordPress (from this directory)
-npx wp-env start
+>[!NOTE]
+> Port 8888 is the default port for wp-env.
 
-# Start Next.js dev server (from example-app directory)
-cd example-app
-pnpm dev
-```
+The example will be available at:
+- **Frontend**: http://localhost:3000
+- **WordPress**: http://localhost:8888
+- **WordPress Admin**: http://localhost:8888/wp-admin (`admin` / `password`)
+- **GraphQL**: http://localhost:8888/?graphql
 
-Open:
-- Next.js App: [http://localhost:3001](http://localhost:3001)
-- WordPress Admin: [http://localhost:8001/wp-admin](http://localhost:8001/wp-admin)
-  - Username: `admin`
-  - Password: `password`
+> [!NOTE]
+> When you kill the long running process this will not shutdown the local WP instance, only Next.js. You must run `npm run example:stop` to kill the local WP server.
 
-## Key Files
+## What This Example Shows
 
-- `lib/toolbar.ts` - Singleton toolbar instance
-- `lib/wordpress.ts` - WordPress REST API integration
-- `app/components/Toolbar.tsx` - Toolbar component using React hooks
-- `app/page.tsx` - Demo page with WordPress integration
-
-## Usage Pattern
+### 1. React Hooks Integration
 
 ```tsx
 import { toolbar } from '@/lib/toolbar';
@@ -48,90 +40,144 @@ function MyComponent() {
 
   return (
     <div>
-      {nodes.map(node => (
-        <button key={node.id} onClick={node.onClick}>
-          {typeof node.label === 'function' ? node.label() : node.label}
-        </button>
-      ))}
+      {/* Toolbar UI */}
     </div>
   );
 }
 ```
 
-## State Management
+### 2. WordPress Context Integration
 
-The toolbar follows modern state management patterns (TanStack/Zustand):
+```tsx
+import { fetchWordPressUser } from '@/lib/wordpress';
 
-1. **Framework-agnostic core** - `Toolbar` class manages state
-2. **React integration** - Hooks subscribe to state changes
-3. **Full UI control** - You render the toolbar however you want
-
-## WordPress Integration
-
-The demo integrates with a local WordPress instance via REST API.
-
-### Demo Authentication
-
-By default, the demo uses **mock authentication** to simplify the setup:
-
-```ts
-// Demo user (no actual WordPress login required)
-const user = await getCurrentUser(); // Returns mock user
-
-// Public posts endpoint (no authentication needed)
-const posts = await getPosts(); // Fetches from /wp/v2/posts
+// Fetch user and set WordPress context
+const user = await fetchWordPressUser();
+toolbar.setWordPressContext({
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  },
+  site: {
+    url: 'http://localhost:8888',
+    adminUrl: 'http://localhost:8888/wp-admin'
+  }
+});
 ```
 
-This lets you test the toolbar immediately without WordPress login complexity.
+### 3. State Management
 
-### Production Authentication
+```tsx
+const { state, nodes } = useToolbar(toolbar);
 
-For production use, implement proper authentication using **WordPress Application Passwords**:
+// Subscribe to state changes
+useEffect(() => {
+  console.log('Toolbar state:', state);
+}, [state]);
+```
 
-1. **Generate Application Password**:
-   - Go to WordPress Admin → Users → Profile
-   - Scroll to "Application Passwords"
-   - Create a new password
+### 4. Custom Node Registration
 
-2. **Configure Environment**:
-   ```bash
-   cp .env.local.example .env.local
-   # Add your credentials to .env.local
-   ```
+```tsx
+toolbar.register('home', 'Home', () => {
+  router.push('/');
+});
+```
 
-3. **Update `lib/wordpress.ts`**:
-   ```ts
-   const auth = btoa(`${process.env.WP_USERNAME}:${process.env.WP_APP_PASSWORD}`);
+## Features
 
-   export async function fetchFromWordPress(endpoint: string) {
-     const response = await fetch(`${WP_API_URL}/wp-json${endpoint}`, {
-       headers: {
-         'Authorization': `Basic ${auth}`
-       }
-     });
-     // ...
-   }
-   ```
+- ✅ React hooks (`useToolbar`, `useToolbarState`, `useToolbarNodes`)
+- ✅ Next.js App Router (App Directory)
+- ✅ TypeScript support
+- ✅ Framework-agnostic state management
+- ✅ WordPress context integration
+- ✅ Real WordPress data integration
+- ✅ WPGraphQL support
 
-### Features Demonstrated
+## Project Structure
 
-- **WordPress Connection**: Fetch data from WordPress REST API
-- **Post Management**: Load and display WordPress posts
-- **Dynamic Toolbar**: Nodes appear/disappear based on WordPress context
-- **Error Handling**: Clear error messages for connection issues
+```
+toolbar-demo/
+├── example-app/           # Next.js application
+│   ├── app/
+│   │   ├── components/    # React components
+│   │   │   └── Toolbar.tsx
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx      # Demo page
+│   ├── lib/
+│   │   ├── toolbar.ts    # Singleton toolbar instance
+│   │   └── wordpress.ts  # WordPress API integration
+│   ├── next.config.ts
+│   ├── package.json
+│   └── tsconfig.json
+├── wp-env/               # WordPress environment
+├── .wp-env.json          # wp-env configuration
+├── package.json
+└── README.md
+```
 
-### Troubleshooting
+## Available Scripts
 
-**CORS Errors**
-- Make sure wp-env is running: `npx wp-env start`
-- Check WordPress is accessible at http://localhost:8001
-- MU plugin should enable CORS headers automatically
+```bash
+# Initial setup - installs dependencies and starts WordPress
+npm run example:setup
 
-**Connection Failed**
-- Verify wp-env is running: `npx wp-env start`
-- Check the port matches `.wp-env.json` (default: 8001)
-- Try accessing http://localhost:8001 in your browser
+# Start development servers (WordPress + Next.js)
+npm run example:start
 
-**No Posts Available**
-- Create sample posts in WordPress Admin
-- Or run: `npx wp-env run cli wp post generate --count=5`
+# Stop WordPress server
+npm run example:stop
+
+# Reset everything and start fresh
+npm run example:prune
+
+# WordPress-only commands
+npm run wp:start
+npm run wp:stop
+npm run wp:destroy
+```
+
+## Key Files
+
+- **`lib/toolbar.ts`** - Singleton toolbar instance configuration
+- **`lib/wordpress.ts`** - WordPress REST API integration helpers
+- **`app/components/Toolbar.tsx`** - Main toolbar component using React hooks
+- **`app/page.tsx`** - Demo page showing WordPress integration
+
+## WordPress Setup
+
+The wp-env configuration includes:
+- WordPress with WPGraphQL plugin
+- Admin credentials: `admin` / `password`
+- GraphQL endpoint: `http://localhost:8888/?graphql`
+- REST API endpoint: `http://localhost:8888/?rest_route=/wp/v2/...`
+- Pretty permalinks enabled
+- CORS headers enabled for localhost:3000
+
+## Environment Configuration
+
+The example uses standard ports (3000 for frontend, 8888 for WordPress) to match other hwptoolkit examples.
+
+## TypeScript Support
+
+The example includes full TypeScript support with proper types for:
+- Toolbar state and nodes
+- WordPress API responses
+- React hook return types
+
+## Trouble Shooting
+
+To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.
+
+## Learn More
+
+- [@wpengine/hwp-toolbar documentation](../../../packages/toolbar/README.md)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Hooks Documentation](https://reactjs.org/docs/hooks-intro.html)
+- [WPGraphQL](https://www.wpgraphql.com/)
+
+## License
+
+BSD-3-Clause
