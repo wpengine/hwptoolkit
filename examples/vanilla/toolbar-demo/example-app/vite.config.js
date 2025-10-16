@@ -5,7 +5,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     server: {
-      port: parseInt(env.VITE_FRONTEND_PORT)
+      port: parseInt(env.VITE_FRONTEND_PORT || '3000')
     }
   };
 });

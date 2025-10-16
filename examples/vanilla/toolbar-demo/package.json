@@ -3,16 +3,15 @@
   "version": "1.0.0",
   "description": "Vanilla JavaScript example using Vite for the Headless WordPress Toolbar",
   "scripts": {
-    "example:build": "npm run example:dev:install && npm run wp:start && npm run example:start",
-    "example:dev:install": "cd example-app && npm install && cd ..",
-    "example:start": "node scripts/setup-env.js && npm install && concurrently \"npm run wp:start\" \"sleep 5 && npm run example:dev\"",
+    "example:setup": "npm run app:install && npm run wp:start",
+    "example:start": "concurrently \"npm run wp:start\" \"sleep 5 && npm run app:dev\"",
     "example:stop": "npm run wp:stop",
-    "example:prune": "wp-env destroy && npm run example:build && npm run example:start",
-    "example:dev": "npm --prefix ./example-app run dev",
+    "example:prune": "npm run wp:destroy && npm run example:setup && npm run example:start",
+    "app:dev": "cd example-app && npm run dev && cd ..",
+    "app:install": "cd example-app && npm install && cd ..",
     "wp:start": "wp-env start",
     "wp:stop": "wp-env stop",
-    "wp:destroy": "wp-env destroy",
-    "wp-env": "wp-env"
+    "wp:destroy": "wp-env destroy"
   },
   "keywords": [
     "headless",
