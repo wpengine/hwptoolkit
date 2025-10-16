@@ -289,7 +289,7 @@ export class VanillaRenderer {
 
     // Click outside to close
     const handleClickOutside = (e) => {
-      if (!container.contains(e.target)) {
+      if (!(e.target instanceof Element) || !container.contains(e.target)) {
         closeMenu();
       }
     };
