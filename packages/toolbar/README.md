@@ -30,11 +30,10 @@ A lightweight, performant toolbar for headless WordPress. Works with any JavaScr
 
 ## Features
 
-- 🎯 **Framework Agnostic** - Works with React, Vue, Svelte, or vanilla JavaScript
-- ⚡ **Zero Dependencies** - Core library has no dependencies
-- 🔒 **Type Safe** - Full TypeScript support
-- 🪝 **React Hooks** - First-class React support with hooks
-- 🎨 **Headless UI** - Full control over rendering and styling
+- **Framework Agnostic** - Works with React, Vue, Svelte, or vanilla JavaScript
+- **Zero Dependencies** - Core library has no dependencies
+- **React Hooks** - First-class React support with hooks
+- **Headless UI** - Full control over rendering and styling
 
 ## Installation
 
@@ -56,44 +55,44 @@ Each example includes setup instructions and demonstrates different integration 
 ### Vanilla JavaScript
 
 ```javascript
-import { Toolbar, VanillaRenderer } from '@wpengine/hwp-toolbar';
-import '@wpengine/hwp-toolbar/styles';
+import { Toolbar, VanillaRenderer } from "@wpengine/hwp-toolbar";
+import "@wpengine/hwp-toolbar/styles";
 
 const toolbar = new Toolbar({
   onPreviewChange: (enabled) => {
-    console.log('Preview mode:', enabled);
-  }
+    console.log("Preview mode:", enabled);
+  },
 });
 
 toolbar.setWordPressContext({
-  user: { id: 1, name: 'Admin' },
-  site: { url: 'https://example.com', adminUrl: 'https://example.com/wp-admin' },
-  post: { id: 123, title: 'Hello World', type: 'post', status: 'draft', slug: 'hello-world' }
+  user: { id: 1, name: "Admin" },
+  site: { url: "https://example.com", adminUrl: "https://example.com/wp-admin" },
+  post: { id: 123, title: "Hello World", type: "post", status: "draft", slug: "hello-world" },
 });
 
-const renderer = new VanillaRenderer(toolbar, 'toolbar');
+const renderer = new VanillaRenderer(toolbar, "toolbar");
 ```
 
 ### React (Recommended)
 
 ```tsx
-import { Toolbar } from '@wpengine/hwp-toolbar';
-import { useToolbar } from '@wpengine/hwp-toolbar/react';
+import { Toolbar } from "@wpengine/hwp-toolbar";
+import { useToolbar } from "@wpengine/hwp-toolbar/react";
 
 const toolbar = new Toolbar({
   onPreviewChange: (enabled) => {
-    console.log('Preview mode:', enabled);
-  }
+    console.log("Preview mode:", enabled);
+  },
 });
 
 function MyToolbar() {
   const { state, nodes } = useToolbar(toolbar);
 
   return (
-    <div className="toolbar">
-      {nodes.map(node => (
+    <div className='toolbar'>
+      {nodes.map((node) => (
         <button key={node.id} onClick={node.onClick}>
-          {typeof node.label === 'function' ? node.label() : node.label}
+          {typeof node.label === "function" ? node.label() : node.label}
         </button>
       ))}
       {state.user && <span>User: {state.user.name}</span>}
@@ -107,11 +106,13 @@ function MyToolbar() {
 ### Toolbar
 
 **Constructor**
+
 ```javascript
 new Toolbar(config?)
 ```
 
 **Config:**
+
 - `onPreviewChange?: (enabled: boolean) => void` - Preview toggle callback
 
 **Methods:**
@@ -139,9 +140,9 @@ toolbar.destroy()
 ### VanillaRenderer
 
 ```javascript
-const renderer = new VanillaRenderer(toolbar, 'element-id');
+const renderer = new VanillaRenderer(toolbar, "element-id");
 // or
-const renderer = new VanillaRenderer(toolbar, document.getElementById('toolbar'));
+const renderer = new VanillaRenderer(toolbar, document.getElementById("toolbar"));
 
 // Cleanup
 renderer.destroy();
@@ -160,7 +161,7 @@ The toolbar includes three built-in nodes:
 Import the base styles:
 
 ```javascript
-import '@wpengine/hwp-toolbar/styles';
+import "@wpengine/hwp-toolbar/styles";
 ```
 
 ### Customization
@@ -174,14 +175,6 @@ Override CSS custom properties:
 }
 ```
 
-Available variables:
-- `--hwp-toolbar-bg` - Background color
-- `--hwp-toolbar-border` - Border color
-- `--hwp-toolbar-text` - Text color
-- `--hwp-toolbar-primary` - Primary button color
-- `--hwp-toolbar-primary-hover` - Primary button hover
-- And more...
-
 ## React Hooks API
 
 ### `useToolbar(toolbar)`
@@ -189,7 +182,7 @@ Available variables:
 Returns both state and nodes in a single hook:
 
 ```tsx
-import { useToolbar } from '@wpengine/hwp-toolbar/react';
+import { useToolbar } from "@wpengine/hwp-toolbar/react";
 
 function MyToolbar() {
   const { state, nodes } = useToolbar(toolbar);
@@ -202,7 +195,7 @@ function MyToolbar() {
 Subscribe to toolbar state only:
 
 ```tsx
-import { useToolbarState } from '@wpengine/hwp-toolbar/react';
+import { useToolbarState } from "@wpengine/hwp-toolbar/react";
 
 function UserDisplay() {
   const state = useToolbarState(toolbar);
@@ -215,15 +208,15 @@ function UserDisplay() {
 Subscribe to visible nodes only:
 
 ```tsx
-import { useToolbarNodes } from '@wpengine/hwp-toolbar/react';
+import { useToolbarNodes } from "@wpengine/hwp-toolbar/react";
 
 function ToolbarButtons() {
   const nodes = useToolbarNodes(toolbar);
   return (
     <>
-      {nodes.map(node => (
+      {nodes.map((node) => (
         <button key={node.id} onClick={node.onClick}>
-          {typeof node.label === 'function' ? node.label() : node.label}
+          {typeof node.label === "function" ? node.label() : node.label}
         </button>
       ))}
     </>
@@ -241,8 +234,8 @@ function ToolbarButtons() {
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
-import { Toolbar, VanillaRenderer } from '@wpengine/hwp-toolbar';
+import { onMounted, onUnmounted, ref } from "vue";
+import { Toolbar, VanillaRenderer } from "@wpengine/hwp-toolbar";
 
 const toolbarRef = ref(null);
 let toolbar, renderer;
@@ -262,18 +255,6 @@ onUnmounted(() => {
 ### Vanilla JavaScript
 
 See `demo.html` for a complete example.
-
-## TypeScript
-
-```typescript
-import type {
-  Toolbar,
-  ToolbarState,
-  WordPressUser,
-  WordPressPost,
-  WordPressSite
-} from '@wpengine/hwp-toolbar';
-```
 
 ## Development
 
