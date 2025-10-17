@@ -7,19 +7,20 @@ In this example we show how to integrate the Headless WordPress Toolbar into a v
 > [!IMPORTANT]
 > Docker Desktop needs to be installed to run WordPress locally.
 
+1. Create a `.env.local` file in the `example-app` directory with the following content:
 
-1. Create a `.env.local` file in the `examples/next/toolbar-demo` directory with the following content:
-     ```env
+```env
 VITE_FRONTEND_PORT=3000
 VITE_WP_URL=http://localhost:8888
 VITE_WP_PORT=8888
 VITE_WP_TEST_PORT=8889
-   ```
+```
 
 2. Run `npm run example:setup` to install dependencies and configure the local WP server.
 3. Run `npm run example:start` `to start the WP server and Vite development server.
 
 The example will be available at:
+
 - **Frontend**: http://localhost:3000
 - **WordPress**: http://localhost:8888
 - **WordPress Admin**: http://localhost:8888/wp-admin (`admin` / `password`)
@@ -33,16 +34,16 @@ The example will be available at:
 ### 1. Basic Toolbar Integration
 
 ```javascript
-import { Toolbar, VanillaRenderer } from '@wpengine/hwp-toolbar';
-import '@wpengine/hwp-toolbar/styles';
+import { Toolbar, VanillaRenderer } from "@wpengine/hwp-toolbar";
+import "@wpengine/hwp-toolbar/styles";
 
 const toolbar = new Toolbar({
   onPreviewChange: (enabled) => {
-    console.log('Preview mode:', enabled);
-  }
+    console.log("Preview mode:", enabled);
+  },
 });
 
-const renderer = new VanillaRenderer(toolbar, 'toolbar');
+const renderer = new VanillaRenderer(toolbar, "toolbar");
 ```
 
 ### 2. WordPress Integration
@@ -51,28 +52,28 @@ The example fetches real data from WordPress:
 
 ```javascript
 // Fetch WordPress user via REST API
-const response = await fetch('http://localhost:8000/?rest_route=/wp/v2/users/1');
+const response = await fetch("http://localhost:8000/?rest_route=/wp/v2/users/1");
 const user = await response.json();
 
 toolbar.setWordPressContext({
   user: {
     id: user.id,
     name: user.name,
-    email: user.email
+    email: user.email,
   },
   site: {
-    url: 'http://localhost:8000',
-    adminUrl: 'http://localhost:8000/wp-admin'
-  }
+    url: "http://localhost:8000",
+    adminUrl: "http://localhost:8000/wp-admin",
+  },
 });
 ```
 
 ### 3. GraphQL Posts
 
 ```javascript
-const response = await fetch('http://localhost:8000/?graphql', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const response = await fetch("http://localhost:8000/?graphql", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     query: `
       query GetPosts {
@@ -85,16 +86,16 @@ const response = await fetch('http://localhost:8000/?graphql', {
           }
         }
       }
-    `
-  })
+    `,
+  }),
 });
 ```
 
 ### 4. Custom Node Registration
 
 ```javascript
-toolbar.register('home', 'Home', () => {
-  window.location.href = '/';
+toolbar.register("home", "Home", () => {
+  window.location.href = "/";
 });
 ```
 
@@ -102,21 +103,20 @@ toolbar.register('home', 'Home', () => {
 
 ```javascript
 toolbar.subscribe((nodes, state) => {
-  console.log('Toolbar state updated:', state);
+  console.log("Toolbar state updated:", state);
 });
 ```
 
 ## Features
 
-- ✅ Vanilla JavaScript (no framework)
-- ✅ Vite for fast development  
-- ✅ TypeScript support (types available)
-- ✅ WordPress toolbar integration
-- ✅ State management example
-- ✅ Custom node registration
-- ✅ Dark/light mode support
-- ✅ Real WordPress data integration
-- ✅ WPGraphQL support
+- Vanilla JavaScript (no framework)
+- Vite for fast development
+- WordPress toolbar integration
+- State management example
+- Custom node registration
+- Dark/light mode support
+- Real WordPress data integration
+- WPGraphQL support
 
 ## Project Structure
 
@@ -159,6 +159,7 @@ npm run wp:destroy
 ## WordPress Setup
 
 The wp-env configuration includes:
+
 - WordPress with WPGraphQL plugin
 - Admin credentials: `admin` / `password`
 - GraphQL endpoint: `http://localhost:8000/?graphql`
@@ -166,25 +167,12 @@ The wp-env configuration includes:
 - Pretty permalinks enabled
 - CORS headers enabled for localhost:3000
 
-## Environment Configuration
-
-The example uses standard ports (3000 for frontend, 8000 for WordPress) to match other hwptoolkit examples. 
-
-To customize ports, create a `.env` file in the `example-app/` directory:
-
-```
-VITE_FRONTEND_PORT=3000
-VITE_WP_URL=http://localhost:8888
-VITE_WP_PORT=8888
-VITE_WP_TEST_PORT=8889
-```
-
 ## Styling
 
 The example imports the base toolbar styles and adds custom demo styling:
 
 ```javascript
-import '@wpengine/hwp-toolbar/styles';
+import "@wpengine/hwp-toolbar/styles";
 ```
 
 Custom styles can override CSS variables:

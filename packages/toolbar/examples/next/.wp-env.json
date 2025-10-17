@@ -1,5 +1,5 @@
 {
-  "phpVersion": "8.3",
+  "phpVersion": "8.4",
   "plugins": [
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
     "../plugins/hwp-cors-local",
@@ -17,10 +17,9 @@
     "HEADLESS_FRONTEND_URL": "http://localhost:3000"
   },
   "mappings": {
-    "db": "./wp-env/db",
-    ".htaccess": "./.htaccess"
+    ".htaccess": "./wp-env/setup/.htaccess"
   },
   "lifecycleScripts": {
-    "afterStart": "wp-env run cli -- wp theme activate twentytwentyfour && wp-env run cli -- wp rewrite structure '/%postname%/' --hard"
+    "afterStart": "wp-env run cli -- wp theme activate twentytwentyfour && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }
 }

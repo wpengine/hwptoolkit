@@ -16,6 +16,9 @@
     "WP_HOME": "http://localhost:8888",
     "HEADLESS_FRONTEND_URL": "http://localhost:3000"
   },
+  "mappings": {
+    ".htaccess": "./wp-env/setup/.htaccess"
+  },
   "lifecycleScripts": {
     "afterStart": "wp-env run cli -- wp theme activate twentytwentyfour && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }

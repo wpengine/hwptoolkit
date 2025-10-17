@@ -4,25 +4,25 @@ In this example we show how to integrate the Headless WordPress Toolbar into a N
 
 ## Table of Contents
 
-
-
 ## Getting Started
 
 > [!IMPORTANT]
 > Docker Desktop needs to be installed to run WordPress locally.
 
 1. Create a `.env.local` file in the `examples/next/toolbar-demo` directory with the following content:
-   ```env
+
+```env
    NEXT_PUBLIC_WP_URL=http://localhost:8888
-   ```
+```
+
 2. Run `npm run example:setup` to install dependencies and configure the local WP server.
 3. Run `npm run example:start` to start the WP server and Next.js development server.
 
-
->[!NOTE]
+> [!NOTE]
 > Port 8888 is the default port for wp-env.
 
 The example will be available at:
+
 - **Frontend**: http://localhost:3000
 - **WordPress**: http://localhost:8888
 - **WordPress Admin**: http://localhost:8888/wp-admin (`admin` / `password`)
@@ -36,24 +36,20 @@ The example will be available at:
 ### 1. React Hooks Integration
 
 ```tsx
-import { toolbar } from '@/lib/toolbar';
-import { useToolbar } from '@wpengine/hwp-toolbar/react';
+import { toolbar } from "@/lib/toolbar";
+import { useToolbar } from "@wpengine/hwp-toolbar/react";
 
 function MyComponent() {
   const { state, nodes } = useToolbar(toolbar);
 
-  return (
-    <div>
-      {/* Toolbar UI */}
-    </div>
-  );
+  return <div>{/* Toolbar UI */}</div>;
 }
 ```
 
 ### 2. WordPress Context Integration
 
 ```tsx
-import { fetchWordPressUser } from '@/lib/wordpress';
+import { fetchWordPressUser } from "@/lib/wordpress";
 
 // Fetch user and set WordPress context
 const user = await fetchWordPressUser();
@@ -61,12 +57,12 @@ toolbar.setWordPressContext({
   user: {
     id: user.id,
     name: user.name,
-    email: user.email
+    email: user.email,
   },
   site: {
-    url: 'http://localhost:8888',
-    adminUrl: 'http://localhost:8888/wp-admin'
-  }
+    url: "http://localhost:8888",
+    adminUrl: "http://localhost:8888/wp-admin",
+  },
 });
 ```
 
@@ -77,27 +73,27 @@ const { state, nodes } = useToolbar(toolbar);
 
 // Subscribe to state changes
 useEffect(() => {
-  console.log('Toolbar state:', state);
+  console.log("Toolbar state:", state);
 }, [state]);
 ```
 
 ### 4. Custom Node Registration
 
 ```tsx
-toolbar.register('home', 'Home', () => {
-  router.push('/');
+toolbar.register("home", "Home", () => {
+  router.push("/");
 });
 ```
 
 ## Features
 
-- ✅ React hooks (`useToolbar`, `useToolbarState`, `useToolbarNodes`)
-- ✅ Next.js App Router (App Directory)
-- ✅ TypeScript support
-- ✅ Framework-agnostic state management
-- ✅ WordPress context integration
-- ✅ Real WordPress data integration
-- ✅ WPGraphQL support
+- React hooks (`useToolbar`, `useToolbarState`, `useToolbarNodes`)
+- Next.js App Router (App Directory)
+- TypeScript support
+- Framework-agnostic state management
+- WordPress context integration
+- Real WordPress data integration
+- WPGraphQL support
 
 ## Project Structure
 
@@ -153,6 +149,7 @@ npm run wp:destroy
 ## WordPress Setup
 
 The wp-env configuration includes:
+
 - WordPress with WPGraphQL plugin
 - Admin credentials: `admin` / `password`
 - GraphQL endpoint: `http://localhost:8888/?graphql`
@@ -160,13 +157,10 @@ The wp-env configuration includes:
 - Pretty permalinks enabled
 - CORS headers enabled for localhost:3000
 
-## Environment Configuration
-
-The example uses standard ports (3000 for frontend, 8888 for WordPress) to match other hwptoolkit examples.
-
 ## TypeScript Support
 
 The example includes full TypeScript support with proper types for:
+
 - Toolbar state and nodes
 - WordPress API responses
 - React hook return types
