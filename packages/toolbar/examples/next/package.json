@@ -1,0 +1,31 @@
+{
+  "name": "hwptoolkit-example-nextjs-toolbar-demo",
+  "version": "1.0.0",
+  "description": "React hooks toolbar demo with Next.js App Router",
+  "private": true,
+  "scripts": {
+    "example:setup": "npm install && npm run app:install && npm run wp:start",
+    "example:start": "concurrently \"npm run wp:start\" \"sleep 5 && npm run app:dev\"",
+    "example:stop": "npm run wp:stop",
+    "example:prune": "npm run wp:destroy && npm run example:setup && npm run example:start",
+    "app:dev": "cd example-app && npm run dev && cd ..",
+    "app:install": "cd example-app && npm install && cd ..",
+    "wp:start": "wp-env start",
+    "wp:stop": "wp-env stop",
+    "wp:destroy": "wp-env destroy"
+  },
+  "keywords": [
+    "headless",
+    "wordpress",
+    "nextjs",
+    "toolbar",
+    "react-hooks",
+    "wpgraphql"
+  ],
+  "author": "WP Engine",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@wordpress/env": "^10.31.0",
+    "concurrently": "^8.2.2"
+  }
+}

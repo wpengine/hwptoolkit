@@ -1,0 +1,17 @@
+{
+	"name": "wpengine/hwp-wp-env-helpers",
+	"type": "wordpress-plugin",
+	"description": "Fixes for wp-env quirks. Forces REST API to use ?rest_route= format to avoid .htaccess issues.",
+	"license": "GPL-2.0-or-later",
+	"version": "0.1.0",
+	"authors": [
+		{
+			"name": "WP Engine",
+			"email": "opensource@wpengine.com",
+			"homepage": "https://wpengine.com/"
+		}
+	],
+	"require": {
+		"php": "^7.4 || ^8.0"
+	}
+}

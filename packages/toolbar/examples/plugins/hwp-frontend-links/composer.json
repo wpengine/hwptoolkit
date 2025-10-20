@@ -1,0 +1,17 @@
+{
+	"name": "wpengine/hwp-frontend-links",
+	"type": "wordpress-plugin",
+	"description": "Adds \"View on Frontend\" links to WordPress admin for headless sites. Supports single or multiple frontends.",
+	"license": "GPL-2.0-or-later",
+	"version": "0.1.0",
+	"authors": [
+		{
+			"name": "WP Engine",
+			"email": "opensource@wpengine.com",
+			"homepage": "https://wpengine.com/"
+		}
+	],
+	"require": {
+		"php": "^7.4 || ^8.0"
+	}
+}

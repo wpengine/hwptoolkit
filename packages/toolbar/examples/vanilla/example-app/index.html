@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Headless WordPress Toolbar Demo</title>
+</head>
+<body>
+  <main class="container">
+    <h1>Headless WordPress Toolbar Demo</h1>
+    <p>A framework-agnostic toolbar for headless WordPress sites</p>
+
+    <section class="controls">
+      <h2>Demo Controls</h2>
+      <button onclick="login()">Login</button>
+      <button onclick="logout()">Logout</button>
+      <button onclick="fetchPosts()">Fetch Posts</button>
+      <div id="wordpress-posts"></div>
+    </section>
+
+    <section class="state">
+      <h2>Current State</h2>
+      <pre id="state"></pre>
+    </section>
+
+    <section class="info">
+      <h2>Try This</h2>
+      <ol>
+        <li>Click "Login" to authenticate with WordPress</li>
+        <li>Click "Fetch Posts" to load posts from WordPress</li>
+        <li>Click a post to view toolbar controls</li>
+        <li>Check the state below to see how it updates</li>
+      </ol>
+    </section>
+  </main>
+
+  <!-- Toolbar will be rendered here -->
+  <div id="toolbar"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

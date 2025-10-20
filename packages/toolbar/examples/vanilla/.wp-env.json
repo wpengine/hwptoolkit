@@ -1,0 +1,25 @@
+{
+  "phpVersion": "8.4",
+  "plugins": [
+    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "../plugins/hwp-cors-local",
+    "../plugins/hwp-frontend-links",
+    "../plugins/hwp-wp-env-helpers"
+  ],
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": false,
+    "GRAPHQL_DEBUG": true,
+    "WP_DEBUG_LOG": true,
+    "WP_DEBUG_DISPLAY": false,
+    "SAVEQUERIES": false,
+    "WP_HOME": "http://localhost:8888",
+    "HEADLESS_FRONTEND_URL": "http://localhost:3000"
+  },
+  "mappings": {
+    ".htaccess": "./wp-env/setup/.htaccess"
+  },
+  "lifecycleScripts": {
+    "afterStart": "wp-env run cli -- wp theme activate twentytwentyfour && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+  }
+}
