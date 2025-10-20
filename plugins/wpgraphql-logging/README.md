@@ -2,19 +2,21 @@
 
 A WPGraphQL logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
 
-> [!CAUTION]
-> This plugin is currently in beta state and is not production ready but please feel free to test.
-
 -----
 
-[![Version](https://img.shields.io/github/v/release/wpengine/hwptoolkit?include_prereleases&label=wpgraphql-logging&filter=%40wpengine%2Fwpgraphql-logging-wordpress-plugin-*)](https://github.com/wpengine/hwptoolkit/releases)
+[![Version](https://img.shields.io/github/v/release/wpengine/hwptoolkit?include_prereleases&label=prerelease&filter=%40wpengine%2Fwpgraphql-logging-wordpress-plugin-*)](https://github.com/wpengine/hwptoolkit/releases)
 [![License](https://img.shields.io/badge/license-GPLv2%2B-green)](https://www.gnu.org/licenses/gpl-2.0.html)
 ![GitHub forks](https://img.shields.io/github/forks/wpengine/hwptoolkit?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/wpengine/hwptoolkit?style=social)
-[![Testing Integration](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=wpgraphql-logging%20codeception%20tests&label=Automated%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
+[![Testing Integration](https://github.com/wpengine/hwptoolkit/actions/workflows/codeception.yml/badge.svg)](https://github.com/wpengine/hwptoolkit/actions/workflows/codeception.yml)
 [![Code Coverage](https://img.shields.io/badge/coverage-%3E90%25-brightgreen?label=Code%20Coverage)](https://github.com/wpengine/hwptoolkit/actions)
-[![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=wpgraphql-logging%20php%20code%20quality%20checks&label=Code%20Quality%20Checks)](https://github.com/wpengine/hwptoolkit/actions)
+[![Code Quality](https://github.com/wpengine/hwptoolkit/actions/workflows/code-quality.yml/badge.svg)](https://github.com/wpengine/hwptoolkit/actions/workflows/code-quality.yml)
 
+
+-----
+
+> [!CAUTION]
+> This plugin is currently in a beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible. You can create an issue at [https://github.com/wpengine/hwptoolkit/issues](https://github.com/wpengine/hwptoolkit/issues)
 
 -----
 
@@ -29,7 +31,7 @@ WPGraphQL Logging is a plugin that integrates directly with the WPGraphQL Query 
 *   **Flexible Log Handling**: Leverages the powerful Monolog logging library, enabling developers to add custom processors and handlers to route logs to various destinations like Slack, files, or external services.
 
 >[!IMPORTANT]
->For detailed developer guides and examples, see our [How-To Guides](docs/index.md#how-to-guides).
+>For detailed developer guides and examples, see our [How-To Guides](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/docs/index.md#how-to-guides).
 
 ---
 
@@ -58,7 +60,7 @@ Once installed and configured, the plugin should begin to log uncached WPGraphQL
 
 ## Documentation
 
-For detailed usage instructions, developer references, and examples, please visit the [Documentation](docs/index.md) folder included with this plugin.
+For detailed usage instructions, developer references, and examples, please visit the [Documentation](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/docs/index.md) folder included with this plugin.
 
 
 ## License
