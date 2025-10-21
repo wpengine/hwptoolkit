@@ -8,14 +8,14 @@
 
 -----
 
-[![Version](https://img.shields.io/github/v/release/wpengine/hwptoolkit?include_prereleases&label=previews&filter=%40wpengine%2Fhwp-previews-wordpress-plugin-*)](https://github.com/wpengine/hwptoolkit/releases)
+[![Version](https://img.shields.io/github/v/release/wpengine/hwptoolkit?include_prereleases&label=prerelease&filter=%40wpengine%2Fhwp-previews-wordpress-plugin-*)](https://github.com/wpengine/hwptoolkit/releases)
 [![License](https://img.shields.io/badge/license-GPLv2%2B-green)](https://www.gnu.org/licenses/gpl-2.0.html)
 ![GitHub forks](https://img.shields.io/github/forks/wpengine/hwptoolkit?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/wpengine/hwptoolkit?style=social)
-[![Testing Integration](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20codeception%20tests&label=Automated%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
+[![Testing Integration](https://github.com/wpengine/hwptoolkit/actions/workflows/codeception.yml/badge.svg)](https://github.com/wpengine/hwptoolkit/actions/workflows/codeception.yml)
 [![Code Coverage](https://img.shields.io/badge/coverage-%3E95%25-brightgreen?label=Code%20Coverage)](https://github.com/wpengine/hwptoolkit/actions)
-[![Code Quality](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20php%20code%20quality%20checks&label=Code%20Quality%20Checks)](https://github.com/wpengine/hwptoolkit/actions)
-[![End-to-End Tests](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20Playwright%20E2E%20Tests&label=End-to-End%20Tests)](https://github.com/wpengine/hwptoolkit/actions)
+[![Code Quality](https://github.com/wpengine/hwptoolkit/actions/workflows/code-quality.yml/badge.svg)](https://github.com/wpengine/hwptoolkit/actions/workflows/code-quality.yml)
+[![End-to-End Tests](https://github.com/wpengine/hwptoolkit/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/wpengine/hwptoolkit/actions/workflows/e2e-test.yml)
 -----
 
 
@@ -23,7 +23,7 @@
 > [!CAUTION]
 > This plugin is currently in a beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible. You can create an issue at [https://github.com/wpengine/hwptoolkit/issues](https://github.com/wpengine/hwptoolkit/issues)
 
----
+-----
 
 ## Table of Contents
 
