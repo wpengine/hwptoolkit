@@ -216,6 +216,27 @@ add_filter( 'wpgraphql_logging_database_name', function( string $name ) {
 });
 ```
 
+#### Filter: `wpgraphql_logging_allowed_orderby_columns`
+Filters the allowed columns for ORDER BY in `find_logs()` queries.
+
+**Security:** This filter adds whitelist validation to prevent SQL injection in ORDER BY clauses. Only columns in this array can be used for sorting.
+
+Parameters:
+- `$allowed_columns` (array<string>) Default allowed columns: `['id', 'datetime', 'level', 'level_name', 'channel', 'message']`
+
+Returns: array<string>
+
+Example:
+```php
+// Add custom column to allowed ORDER BY list
+add_filter( 'wpgraphql_logging_allowed_orderby_columns', function( array $columns ) {
+    $columns[] = 'custom_field';
+    return $columns;
+});
+```
+
+**Note:** If an invalid column is requested, the query will fallback to ordering by `id` (default).
+
 
 ---
 

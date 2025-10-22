@@ -278,7 +278,7 @@ class DatabaseEntity {
 	 * @param int                  $limit   The maximum number of log entries to return.
 	 * @param int                  $offset  The offset for pagination.
 	 * @param array<string, mixed> $where_clauses Optional. Additional WHERE conditions.
-	 * @param string               $orderby The column to order by.
+	 * @param string               $orderby The column to order by. Must be one of the allowed columns.
 	 * @param string               $order   The order direction (ASC or DESC).
 	 *
 	 * @return array<\WPGraphQL\Logging\Logger\Database\DatabaseEntity> An array of DatabaseEntity instances, or an empty array if none found.
@@ -286,8 +286,21 @@ class DatabaseEntity {
 	public static function find_logs(int $limit, int $offset, array $where_clauses = [], string $orderby = 'id', string $order = 'DESC'): array {
 		global $wpdb;
 		$table_name = self::get_table_name();
-		$order      = sanitize_text_field( strtoupper( $order ) );
-		$orderby    = sanitize_text_field( $orderby );
+
+		// Whitelist validation for ORDER BY column.
+		$allowed_orderby_columns = [ 'id', 'datetime', 'level', 'level_name', 'channel', 'message' ];
+		$allowed_orderby_columns = apply_filters( 'wpgraphql_logging_allowed_orderby_columns', $allowed_orderby_columns );
+
+		// Fallback to default if the orderby column is not allowed.
+		if ( ! in_array( $orderby, $allowed_orderby_columns, true ) ) {
+			$orderby = 'id';
+		}
+
+		// Whitelist validation for ORDER direction.
+		$order = strtoupper( $order );
+		if ( ! in_array( $order, [ 'ASC', 'DESC' ], true ) ) {
+			$order = 'DESC'; // Fallback to default.
+		}
 
 		$where = '';
 		foreach ( $where_clauses as $clause ) {
