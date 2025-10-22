@@ -38,7 +38,10 @@ class WordPressDatabaseHandler extends AbstractProcessingHandler {
 
 			$entity->save();
 		} catch ( Throwable $e ) {
-			error_log( 'Error logging to WordPress database: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			do_action( 'wpgraphql_logging_write_database_error', $e, $record );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'Error logging to WordPress database: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			}
 		}
 	}
 
