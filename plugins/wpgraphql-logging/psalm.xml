@@ -38,13 +38,13 @@
 
 		<RedundantCast>
 			<errorLevel type="suppress">
-				<file name="src/Admin/View/Templates/wpgraphql-logger-view.php"/>
+				<file name="src/Admin/View/Templates/WPGraphQLLoggerView.php"/>
 			</errorLevel>
 		</RedundantCast>
 
 		<PossiblyInvalidArgument>
 			<errorLevel type="suppress">
-				<file name="src/Admin/View/Templates/wpgraphql-logger-filters.php"/>
+				<file name="src/Admin/View/Templates/WPGraphQLLoggerFilters.php"/>
 			</errorLevel>
 		</PossiblyInvalidArgument>
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Log filters template.
  *

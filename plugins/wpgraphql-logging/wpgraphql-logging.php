@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load the autoloader.
+// Composer autoloader.
 require_once __DIR__ . '/src/Autoloader.php';
 if ( ! Autoloader::autoload() ) {
 	return;

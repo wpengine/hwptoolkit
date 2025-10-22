@@ -247,7 +247,7 @@ class ViewLogsPage {
 		$list_table    = new ListTable( new LogsRepository() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
 		$list_template = apply_filters(
 			'wpgraphql_logging_list_template',
-			__DIR__ . '/View/Templates/wpgraphql-logger-list.php'
+			__DIR__ . '/View/Templates/WPGraphQLLoggerList.php'
 		);
 		require_once $list_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
@@ -286,7 +286,7 @@ class ViewLogsPage {
 
 		$log_template = apply_filters(
 			'wpgraphql_logging_view_template',
-			__DIR__ . '/View/Templates/wpgraphql-logger-view.php'
+			__DIR__ . '/View/Templates/WPGraphQLLoggerView.php'
 		);
 
 		require_once $log_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
