@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/**
+ * Log filters template.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

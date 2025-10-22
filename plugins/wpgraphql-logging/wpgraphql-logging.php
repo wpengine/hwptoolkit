@@ -3,7 +3,7 @@
  * Plugin Name: WPGraphQL Logging
  * Plugin URI: https://github.com/wpengine/hwptoolkit
  * GitHub Plugin URI: https://github.com/wpengine/hwptoolkit
- * Description: A WPGraphQL logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
+ * Description: A WPGraphQL logging plugin that provides visibility into the request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application.
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
@@ -22,6 +22,8 @@
  * @package WPGraphQL\Logging
  *
  * @author WPEngine Headless OSS Team
+ *
+ * @since 0.0.1
  *
  * @license GPL-2
  */
