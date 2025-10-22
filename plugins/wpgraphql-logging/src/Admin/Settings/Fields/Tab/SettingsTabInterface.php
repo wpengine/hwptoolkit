@@ -4,35 +4,47 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings\Fields\Tab;
 
+use WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface;
+
 /**
- * Interface for settings field tabs.
+ * Interface for settings tabs.
  *
- * This interface defines the contract for tab classes that group related settings fields together.
- * Each tab implementation should provide a name and a collection of fields.
+ * Defines the contract for a settings tab that groups related fields.
+ * Each tab must provide its metadata and fields for registration in the WordPress Settings API.
  *
  * @package WPGraphQL\Logging
- *
  * @since 0.0.1
  */
 interface SettingsTabInterface {
-	/**
-	 * Get the fields for this tab.
-	 *
-	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface> Array of fields keyed by field ID.
-	 */
-	public function get_fields(): array;
 
-	/**
-	 * Get the name of the tab.
-	 *
-	 * @return string The tab name/identifier.
-	 */
-	public static function get_name(): string;
+    /**
+     * Get the settings fields for this tab.
+     *
+     * The returned array should be keyed by field ID and contain instances
+     * implementing SettingsFieldInterface. These fields will be rendered
+     * and registered automatically in the admin settings page.
+     *
+     * @return array<string, SettingsFieldInterface> Fields keyed by their unique ID.
+     */
+    public function get_fields(): array;
 
-	/**
-	 * Get the label of the tab.
-	 *
-	 * @return string The tab label.
-	 */
-	public static function get_label(): string;
+    /**
+     * Get the unique name/slug for this tab.
+     *
+     * Must be unique within the plugin to avoid conflicts between tabs.
+     * This name is used in URLs, queries, and as the array key for field storage.
+     *
+     * @return string The tab name/slug.
+     */
+    public static function get_name(): string;
+
+    /**
+     * Get the human-readable label for this tab.
+     *
+     * The label is displayed in the admin UI as the tab title.
+     * Should be internationalized using esc_html__().
+     *
+     * @return string The tab label.
+     */
+    public static function get_label(): string;
 }
