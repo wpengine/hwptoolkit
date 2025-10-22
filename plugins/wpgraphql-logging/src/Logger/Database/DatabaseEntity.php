@@ -363,7 +363,7 @@ class DatabaseEntity {
 	 * Creates the logging table in the database.
 	 */
 	public static function create_table(): void {
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php'; // @phpstan-ignore-line
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( self::get_schema() );
 	}
 
@@ -373,7 +373,7 @@ class DatabaseEntity {
 	public static function drop_table(): void {
 		global $wpdb;
 		$table_name = self::get_table_name();
-		$wpdb->query( "DROP TABLE IF EXISTS {$table_name}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table_name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 	}
 
 	/**
