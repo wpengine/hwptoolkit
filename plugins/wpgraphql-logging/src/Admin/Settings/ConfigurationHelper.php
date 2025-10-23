@@ -139,7 +139,7 @@ class ConfigurationHelper {
 	 * Get the option key for the settings.
 	 */
 	public function get_option_key(): string {
-		return (string) apply_filters( 'wpgraphql_logging_settings_group_option_key', WPGRAPHQL_LOGGING_SETTINGS_KEY );
+		return (string) apply_filters( 'wpgraphql_logging_settings_key', WPGRAPHQL_LOGGING_SETTINGS_KEY );
 	}
 
 	/**

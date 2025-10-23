@@ -168,6 +168,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 				break;
 			case 'truncate':
 				if ( is_string( $current[ $key ] ) ) {
+					// Truncate to 50 characters.
 					$current[ $key ] = substr( $current[ $key ], 0, 47 ) . '...';
 				}
 				break;
