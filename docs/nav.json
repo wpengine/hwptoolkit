@@ -9,27 +9,33 @@
 		"children": [
 			{
 				"title": "GET vs POST",
-				"route": "/toolkit/explanation/get-vs-post/"
+				"route": "/toolkit/explanation/get-vs-post/",
+				"append": ".md"
 			},
 			{
 				"title": "GraphQL Endpoints",
-				"route": "/toolkit/explanation/graphql-endpoints/"
+				"route": "/toolkit/explanation/graphql-endpoints/",
+				"append": ".md"
 			},
 			{
 				"title": "Headless Authentication",
-				"route": "/toolkit/explanation/headless-authentication/"
+				"route": "/toolkit/explanation/headless-authentication/",
+				"append": ".md"
 			},
 			{
 				"title": "Rendering Options",
-				"route": "/toolkit/explanation/rendering-options/"
+				"route": "/toolkit/explanation/rendering-options/",
+				"append": ".md"
 			},
 			{
 				"title": "Routing",
-				"route": "/toolkit/explanation/routing/"
+				"route": "/toolkit/explanation/routing/",
+				"append": ".md"
 			},
 			{
 				"title": "Sitemaps",
-				"route": "/toolkit/explanation/sitemaps/"
+				"route": "/toolkit/explanation/sitemaps/",
+				"append": ".md"
 			}
 		]
 	},
