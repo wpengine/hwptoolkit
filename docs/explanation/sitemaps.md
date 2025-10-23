@@ -1,3 +1,8 @@
+---
+title: "Sitemaps in Headless WordPress"
+description: "A guide on sitemaps in headless WordPress. It explains the challenges, and the different implementation approaches for sitemap generation."
+---
+
 # Sitemaps in WordPress: A Comprehensive Overview
 
 ## What is a Sitemap?

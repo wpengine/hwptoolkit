@@ -1,3 +1,8 @@
+---
+title: "Routing in Headledd WordPress"
+description: "A guide that explores the intricacies of implementing routing in a headless WordPress setup. It covers the core challenges, possible implementations, and advanced considerations for optimizing your headless WordPress site."
+---
+
 # Routing in Headless WordPress: A Comprehensive Guide
 
 This guide explores the intricacies of implementing routing in a headless WordPress setup. We'll cover the core challenges, possible implementations, and advanced considerations for optimizing your headless WordPress site.

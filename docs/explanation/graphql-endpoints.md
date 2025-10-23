@@ -1,3 +1,8 @@
+---
+title: "WPGraphQL Endpoints"
+description: "A guide on the differences between using /graphql and ?graphql WPGraphQL endpoints and how to customize them."
+---
+
 # Which WPGraphQL endpoints to use: /graphql vs ?graphql
 
 WPGraphQL exposes a GraphQL endpoint that developers can use to interact with the WordPress backend and retrieve data.
