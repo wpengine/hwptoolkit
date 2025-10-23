@@ -1,3 +1,9 @@
+---
+title: "Introduction"
+description: "Introduction to the Headless WordPress Toolkit, a modern, framework-agnostic collection of plugins and packages for building headless WordPress applications."
+---
+
+
 # Introduction
 
 ## What is the Headless WordPress Toolkit?
