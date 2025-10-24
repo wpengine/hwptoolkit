@@ -10,10 +10,10 @@
   ],
   "env": {
     "development": {
-      "port": 8890
+      "port": 8894
     },
     "tests": {
-      "port": 8891
+      "port": 8895
     }
   },
   "config": {
