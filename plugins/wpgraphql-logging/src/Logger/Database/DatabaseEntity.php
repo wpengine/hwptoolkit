@@ -366,7 +366,7 @@ class DatabaseEntity {
 		  datetime DATETIME NOT NULL,
 		  PRIMARY KEY  (id),
 		  INDEX channel_index (channel),
-		  INDEX level_name_index (level_name)
+		  INDEX level_name_index (level_name),
 		  INDEX level_index (level),
 		  INDEX datetime_index (datetime)
 	   ) {$charset_collate};
