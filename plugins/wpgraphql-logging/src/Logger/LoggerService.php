@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger;
 
+use Monolog\Handler\BufferHandler;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Logger;
 use Monolog\Processor\MemoryPeakUsageProcessor;
@@ -213,6 +214,15 @@ class LoggerService {
 	}
 
 	/**
+	 * Gets the Monolog logger instance.
+	 *
+	 * @return \Monolog\Logger The Monolog logger instance.
+	 */
+	public function get_monolog(): Logger {
+		return $this->monolog;
+	}
+
+	/**
 	 * Returns an array of default processors.
 	 *
 	 * @link https://seldaek.github.io/monolog
@@ -241,8 +251,11 @@ class LoggerService {
 	 * @return array<\Monolog\Handler\AbstractProcessingHandler>
 	 */
 	public static function get_default_handlers(): array {
+
+		$buffer_limit     = apply_filters( 'wpgraphql_logging_default_buffer_limit', 50 );
+		$database_handler = new BufferHandler( new WordPressDatabaseHandler(), $buffer_limit );
 		$default_handlers = [
-			new WordPressDatabaseHandler(),
+			$database_handler,
 		];
 
 		// Filter for users to add their own handlers.

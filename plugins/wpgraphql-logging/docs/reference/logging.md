@@ -39,6 +39,27 @@ add_filter( 'wpgraphql_logging_default_processors', function( array $processors 
 });
 ```
 
+#### Filter: `wpgraphql_logging_default_buffer_limit`
+Filters the default buffer limit for the BufferHandler.
+
+Parameters:
+- `$buffer_limit` (int) Current buffer limit (default: 50)
+
+Returns: int
+
+Example:
+```php
+
+add_filter( 'wpgraphql_logging_default_buffer_limit', function( int $buffer_limit ) {
+    // Increase buffer limit for high-traffic sites
+    return 100;
+});
+
+
+```
+
+
+
 #### Filter: `wpgraphql_logging_default_handlers`
 Filters the default handler list.
 
