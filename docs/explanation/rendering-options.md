@@ -1,3 +1,8 @@
+---
+title: "Headless WordPress Rendering Options"
+description: "A guide that explores the various approaches to rendering content from a headless WordPress installation, their trade-offs, and best practices."
+---
+
 # Headless WordPress Rendering Options
 ## Introduction
 
