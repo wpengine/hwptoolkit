@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Tests\Events;
 
 use WPGraphQL\Logging\Plugin;
+use Monolog\Handler\BufferHandler;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Events\QueryActionLogger;
 use WPGraphQL\Logging\Events\Events;
@@ -53,6 +54,15 @@ class QueryActionLoggerTest extends WPTestCase {
 	}
 
 	public function assert_log_count(int $expected_count): void {
+
+		// Flush the buffer handler to ensure the log count is accurate.
+		$handlers = $this->logger->get_monolog()->getHandlers();
+		foreach ($handlers as $handler) {
+			if ($handler instanceof BufferHandler) {
+				$handler->flush();
+			}
+		}
+
 		$actual_count = $this->get_log_count();
 		$this->assertEquals($expected_count, $actual_count, "Expected log count to be {$expected_count}, but got {$actual_count}.");
 	}

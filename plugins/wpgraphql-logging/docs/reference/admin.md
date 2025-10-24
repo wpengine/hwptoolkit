@@ -415,6 +415,11 @@ add_filter( 'wpgraphql_logging_csv_content', function( $content, $log_id, $log )
 ---
 
 ### Class: `Settings\Templates\admin.php` and View Templates
-Source: `src/Admin/Settings/Templates/admin.php`, `src/Admin/View/Templates/*.php`
+Source: `src/Admin/Settings/Templates/admin.php`, `src/Admin/View/Templates/WPGraphQLLogger*.php`
 
 These templates are referenced by the template path filters above and do not define hooks themselves.
+
+**Template Files:**
+- `WPGraphQLLoggerFilters.php` - Filter controls template
+- `WPGraphQLLoggerList.php` - Logs list table template  
+- `WPGraphQLLoggerView.php` - Single log detail view template

@@ -10,7 +10,7 @@ use WP_List_Table;
 
 // Include the WP_List_Table class if not already loaded.
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'; // @phpstan-ignore-line
+	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
 /**
@@ -498,7 +498,7 @@ class ListTable extends WP_List_Table {
 	protected function render_custom_filters(): void {
 		$template = apply_filters(
 			'wpgraphql_logging_filters_template',
-			__DIR__ . '/../Templates/wpgraphql-logger-filters.php'
+			__DIR__ . '/../Templates/WPGraphQLLoggerFilters.php'
 		);
 
 		if ( ! file_exists( $template ) ) {

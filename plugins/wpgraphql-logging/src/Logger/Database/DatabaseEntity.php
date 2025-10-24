@@ -278,7 +278,7 @@ class DatabaseEntity {
 	 * @param int                  $limit   The maximum number of log entries to return.
 	 * @param int                  $offset  The offset for pagination.
 	 * @param array<string, mixed> $where_clauses Optional. Additional WHERE conditions.
-	 * @param string               $orderby The column to order by.
+	 * @param string               $orderby The column to order by. Must be one of the allowed columns.
 	 * @param string               $order   The order direction (ASC or DESC).
 	 *
 	 * @return array<\WPGraphQL\Logging\Logger\Database\DatabaseEntity> An array of DatabaseEntity instances, or an empty array if none found.
@@ -286,8 +286,21 @@ class DatabaseEntity {
 	public static function find_logs(int $limit, int $offset, array $where_clauses = [], string $orderby = 'id', string $order = 'DESC'): array {
 		global $wpdb;
 		$table_name = self::get_table_name();
-		$order      = sanitize_text_field( strtoupper( $order ) );
-		$orderby    = sanitize_text_field( $orderby );
+
+		// Whitelist validation for ORDER BY column.
+		$allowed_orderby_columns = [ 'id', 'datetime', 'level', 'level_name', 'channel', 'message' ];
+		$allowed_orderby_columns = apply_filters( 'wpgraphql_logging_allowed_orderby_columns', $allowed_orderby_columns );
+
+		// Fallback to default if the orderby column is not allowed.
+		if ( ! in_array( $orderby, $allowed_orderby_columns, true ) ) {
+			$orderby = 'id';
+		}
+
+		// Whitelist validation for ORDER direction.
+		$order = strtoupper( $order );
+		if ( ! in_array( $order, [ 'ASC', 'DESC' ], true ) ) {
+			$order = 'DESC'; // Fallback to default.
+		}
 
 		$where = '';
 		foreach ( $where_clauses as $clause ) {
@@ -353,6 +366,7 @@ class DatabaseEntity {
 		  datetime DATETIME NOT NULL,
 		  PRIMARY KEY  (id),
 		  INDEX channel_index (channel),
+		  INDEX level_name_index (level_name),
 		  INDEX level_index (level),
 		  INDEX datetime_index (datetime)
 	   ) {$charset_collate};
@@ -363,7 +377,7 @@ class DatabaseEntity {
 	 * Creates the logging table in the database.
 	 */
 	public static function create_table(): void {
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php'; // @phpstan-ignore-line
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( self::get_schema() );
 	}
 
@@ -373,7 +387,7 @@ class DatabaseEntity {
 	public static function drop_table(): void {
 		global $wpdb;
 		$table_name = self::get_table_name();
-		$wpdb->query( "DROP TABLE IF EXISTS {$table_name}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table_name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 	}
 
 	/**

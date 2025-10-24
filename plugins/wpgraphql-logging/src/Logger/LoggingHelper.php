@@ -112,6 +112,10 @@ trait LoggingHelper {
 	 * @param \Throwable $exception
 	 */
 	protected function process_application_error( string $event, \Throwable $exception ): void {
-        error_log( 'Error for WPGraphQL Logging - ' . $event . ': ' . $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine() ); //phpcs:ignore
+
+		do_action( 'wpgraphql_logging_process_application_error', $event, $exception );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'Error for WPGraphQL Logging - ' . $event . ': ' . $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine() ); //phpcs:ignore
+		}
 	}
 }

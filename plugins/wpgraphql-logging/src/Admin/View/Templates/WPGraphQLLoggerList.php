@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Logs list view template using WP_List_Table.
  *
- * @package WPGraphQL\Logger\Admin\View\List\Templates
+ * @package WPGraphQL\Logging
  *
  * @var \WPGraphQL\Logging\Admin\View\List\ListTable $list_table List table instance.
  *

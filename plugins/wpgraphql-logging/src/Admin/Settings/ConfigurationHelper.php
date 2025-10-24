@@ -139,7 +139,7 @@ class ConfigurationHelper {
 	 * Get the option key for the settings.
 	 */
 	public function get_option_key(): string {
-		return (string) apply_filters( 'wpgraphql_logging_settings_group_option_key', WPGRAPHQL_LOGGING_SETTINGS_KEY );
+		return (string) apply_filters( 'wpgraphql_logging_settings_key', WPGRAPHQL_LOGGING_SETTINGS_KEY );
 	}
 
 	/**
@@ -185,7 +185,7 @@ class ConfigurationHelper {
 	protected function load_config(): void {
 		$option_key = $this->get_option_key();
 
-		$cache_duration = self::CACHE_DURATION;
+		$cache_duration = (int) apply_filters( 'wpgraphql_logging_config_cache_duration', self::CACHE_DURATION );
 
 		// Try to get from wp_cache first (in-memory cache).
 		$cached_config = wp_cache_get( $option_key, self::CACHE_GROUP );
