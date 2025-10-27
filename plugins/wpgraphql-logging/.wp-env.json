@@ -1,0 +1,21 @@
+{
+	"plugins": [
+		"https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+		"."
+	],
+	"env": {
+		"tests": {
+			"plugins": [
+				"https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+				".",
+				"./tests/e2e/plugins/reset-wpgraphql-logging-settings/"
+			]
+		}
+	},
+	"config": {
+		"WP_DEBUG": true
+	},
+	"mappings": {
+		".htaccess": "./wp-env/setup/.htaccess"
+	}
+}
