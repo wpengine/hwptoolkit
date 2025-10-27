@@ -13,7 +13,7 @@ export default function SingleProduct({ product }: SingleProductProps) {
 	const [quantity, setQuantity] = useState<number>(1);
 	const [activeTab, setActiveTab] = useState<string>("description");
 
-	const { addToCart, findCartItem, getCartItemCount, loading, cart } = useCart();
+	const { addToCart, findCartItem, loading, cart } = useCart();
 
 	if (!product) {
 		return null;
@@ -75,7 +75,6 @@ export default function SingleProduct({ product }: SingleProductProps) {
 				<p>Product ID: {product.databaseId}</p>
 				<p>Is in cart: {isInCart.toString()}</p>
 				<p>Current cart quantity: {currentCartQuantity}</p>
-				<p>Total cart items: {getCartItemCount()}</p>
 				<p>
 					Will {isInCart ? "update to" : "add"}: {isInCart ? currentCartQuantity + quantity : quantity}
 				</p>

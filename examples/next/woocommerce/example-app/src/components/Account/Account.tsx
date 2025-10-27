@@ -12,7 +12,8 @@ const GET_USER_SETTINGS = gql`
 			firstName
 			lastName
 			displayName
-
+			email
+			username
 			billing {
 				firstName
 				lastName
@@ -171,7 +172,7 @@ export default function Account() {
 	});
 	console.log("user data:", data);
 	const [activeTab, setActiveTab] = useState("dashboard");
-
+	
 	// Loading state
 	if (isLoading) {
 		return (
@@ -280,7 +281,7 @@ export default function Account() {
 		<div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
 			<div className="max-w-4xl mx-auto">
 				<div className="mb-8">
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome, {data?.viewer.name}</h1>
+					<h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome, {data?.customer.displayName}</h1>
 					<button onClick={logout} className="text-red-600 hover:underline">
 						Logout
 					</button>
@@ -293,10 +294,10 @@ export default function Account() {
 					) : data ? (
 						<div className="space-y-2">
 							<p>
-								<strong>Email:</strong> {data.viewer.email}
+								<strong>Email:</strong> {data.customer.email}
 							</p>
 							<p>
-								<strong>Username:</strong> {data.viewer.username}
+								<strong>Username:</strong> {data.customer.username}
 							</p>
 						</div>
 					) : (

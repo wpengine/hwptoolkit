@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { useMutation } from "@apollo/client";
 import { useCart } from "@/lib/AppProvider";
@@ -121,12 +122,13 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                                                 }`}
                                             >
                                                 {/* Product Image */}
-                                                {item.product?.node?.image ? (
-                                                    <Image
-                                                        src={item.product.node.image.sourceUrl}
-                                                        alt={item.product.node.name || "Product"}
-                                                        width={60}
-                                                        height={60}
+                                                <Link href={`/product/${item.product?.node?.slug}`}>
+                                                    {item.product?.node?.featuredImage ? (
+                                                        <Image
+                                                            src={item.product.node.featuredImage.node.sourceUrl}
+                                                            alt={item.product.node.name || "Product"}
+                                                            width={80}
+                                                            height={80}
                                                         className="rounded-md object-cover flex-shrink-0"
                                                     />
                                                 ) : (
@@ -141,6 +143,7 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                                                         </svg>
                                                     </div>
                                                 )}
+                                                </Link>
 
                                                 {/* Product Details */}
                                                 <div className="flex-1 min-w-0">
@@ -154,7 +157,9 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                                                     )}
 
                                                     {/* Price */}
-                                                    <p className="text-sm font-semibold text-green-600 mt-1">{item.total}</p>
+                                                    <p className="text-sm font-semibold text-green-600 mt-1">Subtotal: {item.subtotal}</p>
+                                                    <p className="text-sm font-semibold text-green-600 mt-1">Tax: {item.subtotalTax}</p>
+                                                    <p className="text-sm font-semibold text-green-600 mt-1">Total: {item.total}</p>
 
                                                     {/* Quantity Controls */}
                                                     <div className="flex items-center justify-between mt-3">
@@ -199,8 +204,16 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                             </div>
 
                             {/* Cart Footer */}
-                            <div className="border-t bg-gray-50 p-4 space-y-4" style={{ minHeight: "290px" }}>
+                            <div className="border-t bg-gray-50 p-4 space-y-4" style={{ minHeight: "410px" }}>
                                 {/* Cart Total */}
+                                <div className="flex items-center justify-between">
+                                    <span className="text-lg font-semibold text-gray-900">Subtotal:</span>
+                                    <span className="text-lg font-bold text-blue-600">{cart.subtotal}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-lg font-semibold text-gray-900">Tax:</span>
+                                    <span className="text-lg font-bold text-blue-600">{cart.totalTax}</span>
+                                </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-lg font-semibold text-gray-900">Total:</span>
                                     <span className="text-lg font-bold text-blue-600">{cart.total}</span>

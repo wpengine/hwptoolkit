@@ -324,17 +324,32 @@ export const GetProductVariation = gql`
 	}
 	${VariationContent}
 `;
-export const GetCart = gql`
-	query GetCart {
+
+//CART
+export const GetMiniCart = gql`
+	query GetMiniCart {
 		cart {
-			isEmpty
+			subtotal
+			totalTax
+			total
 			contents {
 				itemCount
 				nodes {
 					key
+					quantity
+					subtotal
+					subtotalTax
+					total
 					product {
 						node {
 							databaseId
+							name
+							slug
+							featuredImage {
+								node {
+									sourceUrl(size: THUMBNAIL)
+								}
+							}
 						}
 					}
 				}
@@ -461,19 +476,6 @@ export const RemoveCoupons = gql`
 	${CartContent}
 `;
 
-export const Login = gql`
-	mutation Login($username: String!, $password: String!) {
-		login(input: { username: $username, password: $password }) {
-			authToken
-			refreshToken
-			customer {
-				...CustomerFields
-			}
-		}
-	}
-	${CustomerFields}
-`;
-
 export const UpdateCustomer = gql`
 	mutation UpdateCustomer($input: UpdateCustomerInput!) {
 		updateCustomer(input: $input) {
@@ -485,42 +487,28 @@ export const UpdateCustomer = gql`
 	${CustomerFields}
 `;
 export const LOGIN_MUTATION = gql`
-    mutation loginWithPassword($username: String!, $password: String!) {
-        login(input: { provider: PASSWORD, credentials: { username: $username, password: $password } }) {
-            authToken
-            authTokenExpiration
-            refreshToken
-            refreshTokenExpiration
-            user {
-                id
-                email
-                databaseId
-            }
-            customer {
-                databaseId
-                billing {
-                    firstName
-                    lastName
-                    company
-                    address1
-                    address2
-                    city
-                    state
-                    country
-                    postcode
-                    phone
-                }
-            }
-        }
-    }
+	mutation loginWithPassword($username: String!, $password: String!) {
+		login(input: { provider: PASSWORD, credentials: { username: $username, password: $password } }) {
+			authToken
+			authTokenExpiration
+			refreshToken
+			refreshTokenExpiration
+			user {
+				id
+				email
+				databaseId
+				name
+			}
+		}
+	}
 `;
 
 export const REFRESH_TOKEN_MUTATION = gql`
-    mutation refreshToken($token: String!) {
-        refreshToken(input: { refreshToken: $token }) {
-            authToken
-            authTokenExpiration
-            success
-        }
-    }
+	mutation refreshToken($token: String!) {
+		refreshToken(input: { refreshToken: $token }) {
+			authToken
+			authTokenExpiration
+			success
+		}
+	}
 `;

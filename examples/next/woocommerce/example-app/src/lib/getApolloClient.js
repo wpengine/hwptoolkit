@@ -12,152 +12,14 @@ import useLocalStorage from "./storage";
 
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL || "http://localhost:8890";
 const graphqlPath = process.env.NEXT_PUBLIC_GRAPHQL_PATH || "/graphql";
-const SESSION_TOKEN_LS_KEY = 'woocommerce_session_token';
 
 const httpLink = new HttpLink({
   uri: `${baseUrl}${graphqlPath}`,
 });
 
-// Helper function to get session token
-async function getSessionToken(refresh = false) {
-  if (typeof window === 'undefined') return null;
-  
-  if (refresh) {
-    localStorage.removeItem(SESSION_TOKEN_LS_KEY);
-  }
-  
-  return localStorage.getItem(SESSION_TOKEN_LS_KEY);
-}
-
-// Helper function to set session token
-function setSessionToken(token) {
-  if (typeof window !== 'undefined' && token) {
-    localStorage.setItem(SESSION_TOKEN_LS_KEY, token);
-  }
-}
-
-// Session management link
-function createSessionLink() {
-  return setContext(async (operation) => {
-    const headers = {};
-    const sessionToken = await getSessionToken();
-
-    if (sessionToken) {
-      headers['woocommerce-session'] = `Session ${sessionToken}`;
-    }
-
-    return { headers };
-  });
-}
-
-// Error handling link
-function createErrorLink() {
-  return onError(({ graphQLErrors, operation, forward }) => {
-    const targetErrors = [
-      'The iss do not match with this server',
-      'invalid-secret-key | Expired token',
-      'invalid-secret-key | Signature verification failed',
-      'Expired token',
-      'Wrong number of segments',
-    ];
-    
-    let observable;
-    
-    if (graphQLErrors?.length) {
-      graphQLErrors.map(({ debugMessage, message }) => {
-        if (targetErrors.includes(message) || targetErrors.includes(debugMessage)) {
-          observable = new Observable((observer) => {
-            getSessionToken(true)
-              .then((sessionToken) => {
-                operation.setContext(({ headers = {} }) => {
-                  const nextHeaders = { ...headers };
-
-                  if (sessionToken) {
-                    nextHeaders['woocommerce-session'] = `Session ${sessionToken}`;
-                  } else {
-                    delete nextHeaders['woocommerce-session'];
-                  }
-
-                  return { headers: nextHeaders };
-                });
-              })
-              .then(() => {
-                const subscriber = {
-                  next: observer.next.bind(observer),
-                  error: observer.error.bind(observer),
-                  complete: observer.complete.bind(observer),
-                };
-                forward(operation).subscribe(subscriber);
-              })
-              .catch((error) => {
-                observer.error(error);
-              });
-          });
-        }
-      });
-    }
-    
-    return observable;
-  });
-}
-
-// Session update link - properly structured as Apollo Link
-function createUpdateLink() {
-  return new ApolloLink((operation, forward) => {
-    return forward(operation).map((response) => {
-      // Check for session header and update session in local storage accordingly
-      const context = operation.getContext();
-      
-      if (context.response && context.response.headers) {
-        const { headers } = context.response;
-        const oldSessionToken = localStorage.getItem(SESSION_TOKEN_LS_KEY);
-        const sessionToken = headers.get('woocommerce-session');
-        
-        if (sessionToken && sessionToken !== oldSessionToken) {
-          setSessionToken(sessionToken);
-          console.log('🔗 Updated session token:', sessionToken);
-        }
-      }
-
-      return response;
-    });
-  });
-}
-// const authLink = (storage) =>
-//   new ApolloLink((operation, forward) => {
-//     const storedTokens = storage.getItem("authTokens");
-//     if (!storedTokens) {
-//       return forward(operation);
-//     }
-
-//     try {
-//       const tokens = JSON.parse(storedTokens);
-//       if (!tokens || !tokens.authToken) {
-//         return forward(operation);
-//       }
-
-//       if (tokens.expiresAt && new Date() > new Date(tokens.expiresAt)) {
-//         console.warn("Auth token expired, removing from storage");
-//         storage.removeItem("authTokens");
-//         return forward(operation);
-//       }
-
-//       operation.setContext({
-//         headers: {
-//           Authorization: `Bearer ${tokens.authToken}`,
-//         },
-//       });
-
-//       return forward(operation);
-//     } catch (error) {
-//       console.error("Error parsing auth tokens:", error);
-//       storage.removeItem("authTokens");
-//       return forward(operation);
-//     }
-//   });
-// Auth link for JWT tokens
+// Unified auth link - handles auth token for both logged-in users and cart sessions
 function createAuthLink() {
-  return setContext(async (operation) => {
+  return setContext((operation) => {
     if (typeof window === 'undefined') return {};
     
     const storage = useLocalStorage;
@@ -169,16 +31,12 @@ function createAuthLink() {
 
     try {
       const tokens = JSON.parse(storedTokens);
-      if (!tokens || !tokens.authToken) {
+      
+      if (!tokens?.authToken) {
         return {};
-      }
+      }      
 
-      if (tokens.authTokenExpiration && new Date() > new Date(tokens.authTokenExpiration)) {
-        console.warn("Auth token expired, removing from storage");
-        storage.removeItem("authTokens");
-        return {};
-      }
-      console.log('auth OK')
+      // Use auth token for both authentication and session management
       return {
         headers: {
           Authorization: `Bearer ${tokens.authToken}`,
@@ -192,22 +50,64 @@ function createAuthLink() {
   });
 }
 
-// Error handling for auth issues
-const errorLink = onError(
-  ({ graphQLErrors, networkError, operation, forward }) => {
-    if (networkError && networkError.statusCode === 403) {
-      console.warn(
-        "403 Forbidden - clearing auth tokens and retrying without auth"
-      );
+// Error handling link for expired/invalid tokens
+function createErrorLink() {
+  return onError(({ graphQLErrors, operation, forward }) => {
+    const targetErrors = [
+      'The iss do not match with this server',
+      'invalid-secret-key | Expired token',
+      'invalid-secret-key | Signature verification failed',
+      'Expired token',
+      'Wrong number of segments',
+      'Internal server error',
+    ];
+    
+    if (graphQLErrors?.length) {
+      for (const { debugMessage, message } of graphQLErrors) {
+        if (targetErrors.includes(message) || targetErrors.includes(debugMessage)) {
+          console.warn('🔄 Auth error detected, clearing tokens...');
+          
+          // Clear expired/invalid tokens
+          const storage = useLocalStorage;
+          storage.removeItem("authTokens");
+          
+          // Return observable to retry without auth
+          return new Observable((observer) => {
+            operation.setContext(({ headers = {} }) => {
+              const { Authorization, ...restHeaders } = headers;
+              return { headers: restHeaders };
+            });
 
-      // Clear invalid tokens
-      if (typeof window !== 'undefined') {
-        const storage = useLocalStorage;
-        storage.removeItem("authTokens");
+            const subscriber = {
+              next: observer.next.bind(observer),
+              error: observer.error.bind(observer),
+              complete: observer.complete.bind(observer),
+            };
+            
+            forward(operation).subscribe(subscriber);
+          });
+        }
       }
+    }
+  });
+}
 
-      // Retry the operation without auth
-      return forward(operation);
+// Network error handling
+const networkErrorLink = onError(
+  ({ graphQLErrors, networkError, operation, forward }) => {
+    if (networkError) {
+      console.log(`Network error: ${networkError}`);
+      
+      if (networkError.statusCode === 403) {
+        console.warn("403 Forbidden - clearing auth tokens");
+        
+        if (typeof window !== 'undefined') {
+          const storage = useLocalStorage;
+          storage.removeItem("authTokens");
+        }
+
+        return forward(operation);
+      }
     }
 
     if (graphQLErrors) {
@@ -216,10 +116,6 @@ const errorLink = onError(
           `GraphQL error: Message: ${message}, Location: ${locations}, Path: ${path}`
         )
       );
-    }
-
-    if (networkError) {
-      console.log(`Network error: ${networkError}`);
     }
   }
 );
@@ -238,11 +134,9 @@ export default function getApolloClient() {
   return new ApolloClient({
     link: from([
       consoleLink,
-      errorLink,
+      networkErrorLink,
       createErrorLink(),
       createAuthLink(),
-      createSessionLink(),
-      createUpdateLink(),
       httpLink
     ]),
     cache: new InMemoryCache(),

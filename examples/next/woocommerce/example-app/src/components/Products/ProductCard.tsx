@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useCartMutations } from "@/lib/woocommerce/cart";
 import { Product } from "@/interfaces/product.interface";
 import React from "react";
+import { useCart } from "@/lib/AppProvider";
 
 export default function ProductCard({ product }: { product: Product }) {
-	const { addToCart, loading } = useCartMutations();
+	//const { addToCart, loading } = useCartMutations();
 	const [isAdding, setIsAdding] = useState(false);
 	const [addedToCart, setAddedToCart] = useState(false);
+	const { addToCart, findCartItem, loading, refreshCart } = useCart();
 
 	if (!product) {
 		return null;
@@ -24,29 +26,19 @@ export default function ProductCard({ product }: { product: Product }) {
 		setIsAdding(true);
 
 		try {
-			const { data, errors } = await addToCart({
-				variables: {
-					input: {
-						productId: product.databaseId,
-						quantity: 1,
-					},
-				},
-			});
+			const result = await addToCart(product.databaseId, 1);
 
-			if (errors) {
-				console.error("GraphQL errors:", errors);
-				throw new Error(errors[0]?.message || "Failed to add to cart");
+			if (result.errors) {
+				console.error("GraphQL errors:", result.errors);
+				throw new Error(result.errors[0]?.message || "Failed to add to cart");
 			}
-
-			if (data?.addToCart?.cartItem) {
+			console.log(result.success);
+			if (result.success) {
 				setAddedToCart(true);
-
-				// Refetch cart to update count
-				await refetch();
-
+				await refreshCart();
 				setTimeout(() => {
 					setAddedToCart(false);
-				}, 2000);
+				}, 500);
 			} else {
 				throw new Error("No cart item returned from mutation");
 			}
@@ -60,7 +52,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
 	const getButtonText = () => {
 		if (product.stockStatus === "OUT_OF_STOCK") return "Out of Stock";
-		if (isAdding || loading) return "Adding...";
+		if (isAdding) return "Adding...";
 		if (addedToCart) return "Added to Cart!";
 		return "Add to Cart";
 	};
@@ -68,7 +60,7 @@ export default function ProductCard({ product }: { product: Product }) {
 	const getButtonClass = () => {
 		let baseClass = "add-to-cart-btn";
 		if (addedToCart) baseClass += " added";
-		if (isAdding || loading) baseClass += " loading";
+		if (isAdding) baseClass += " loading";
 		return baseClass;
 	};
 
@@ -126,7 +118,7 @@ export default function ProductCard({ product }: { product: Product }) {
 			<div className="product-actions">
 				<button
 					className={getButtonClass()}
-					disabled={product.stockStatus === "OUT_OF_STOCK" || isAdding || loading}
+					disabled={product.stockStatus === "OUT_OF_STOCK" || isAdding}
 					onClick={handleAddToCart}
 				>
 					{getButtonText()}
