@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartMutations, useOtherCartMutations } from "@/lib/woocommerce/cart";
-import { useCart } from "@/lib/AppProvider";
+import { useCart } from "@/lib/woocommerce/CartProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 
 export default function Cart() {
@@ -18,7 +18,6 @@ export default function Cart() {
 		return <LoadingSpinner />;
 	}
 	
-	console.log("cart", cart);
 	const handleQuantityUpdate = async (cartKey: string, newQuantity: number) => {
 		if (newQuantity < 1) {
 			handleRemoveItem(cartKey);

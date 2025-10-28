@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Product } from "@/interfaces/product.interface";
-import { useCart } from "@/lib/AppProvider";
+import { useCart } from "@/lib/woocommerce/CartProvider";
 interface SingleProductProps {
 	product: Product;
 }

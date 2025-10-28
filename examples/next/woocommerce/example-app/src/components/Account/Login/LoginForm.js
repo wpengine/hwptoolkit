@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuth } from "@/lib/AppProvider";
+import { useAuth } from "@/lib/auth/AuthProvider";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const LoginForm = () => {

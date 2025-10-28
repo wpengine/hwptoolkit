@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useMutation } from "@apollo/client";
-import { useCart } from "@/lib/AppProvider";
+import { useCart } from "@/lib/woocommerce/CartProvider";
 import { RemoveItemFromCart, ClearCart } from "@/lib/woocommerce/graphQL";
 
 interface MiniCartProps {

@@ -512,3 +512,15 @@ export const REFRESH_TOKEN_MUTATION = gql`
 		}
 	}
 `;
+export const GET_VIEWER = gql`
+	query GetViewer {
+		viewer {
+			id
+			databaseId
+			email
+			name
+			firstName
+			lastName
+		}
+	}
+`;

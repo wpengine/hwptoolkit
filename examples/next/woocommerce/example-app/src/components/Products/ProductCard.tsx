@@ -1,10 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useCartMutations } from "@/lib/woocommerce/cart";
 import { Product } from "@/interfaces/product.interface";
 import React from "react";
-import { useCart } from "@/lib/AppProvider";
+import { useCart } from "@/lib/woocommerce/CartProvider";
 
 export default function ProductCard({ product }: { product: Product }) {
 	//const { addToCart, loading } = useCartMutations();

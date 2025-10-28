@@ -2,11 +2,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useAuthAdmin } from "@/lib/auth/AuthProvider";
+import { useCart } from "@/lib/woocommerce/CartProvider";
 import NavigationItem from "./NavigationItem";
 import MiniCart from "./MiniCart";
 import { flatListToHierarchical } from "@/lib/utils";
 import { useRouter } from "next/router";
-import { useApp } from "@/lib/AppProvider";
 import CartIconSVG from "@/assets/icons/cart-shopping-light-full.svg";
 import UserIconSVG from "@/assets/icons/user-regular-full.svg";
 import LoginSVG from "@/assets/icons/arrow-right-to-bracket-solid-full.svg";
@@ -33,9 +34,10 @@ const DropdownArrow = ({ className = "w-4 h-4" }) => (
 
 export default function Header({ headerData }) {
     const router = useRouter();
-    const { user, tokens, logout, cartItemCount } = useApp();
+    const { user, logout } = useAuthAdmin();
+    const { cartItemCount } = useCart();
     const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
-    const isAuthenticated = !!tokens?.authToken;
+    const isAuthenticated = !!user;
 
     const settingsData = headerData?.settings;
     const navigationData = headerData?.navigation;

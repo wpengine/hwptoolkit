@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import LoginForm from "@/components/Account/Login/LoginForm";
 import Link from "next/link";
-import { useAuth } from "@/lib/AppProvider";
+import { useAuthAdmin } from "@/lib/auth/AuthProvider";
 import { gql, useQuery } from "@apollo/client";
+import useLocalStorage from "@/lib/storage";
 
 const GET_USER_SETTINGS = gql`
 	query GetUserSettings {
@@ -164,17 +165,17 @@ const CustomerFields = gql`
 `;
 
 export default function Account() {
-	const { user, tokens, isLoading, logout, refreshAuth } = useAuth();
-	const isAuthenticated = !!tokens?.authToken;
-
+	const { user, isLoading, logout, refreshAuth } = useAuthAdmin();
+	const tokens = useLocalStorage.getFromLocalStorage("authTokens");
+	const isAuthenticated = !!user;
 	const { data, loading: userDataLoading } = useQuery(GET_USER_SETTINGS, {
 		skip: !isAuthenticated,
 	});
-	console.log("user data:", data);
+
 	const [activeTab, setActiveTab] = useState("dashboard");
-	
+
 	// Loading state
-	if (isLoading) {
+	if (isLoading || userDataLoading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center">
 				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -325,7 +326,7 @@ export default function Account() {
 					) : (
 						<p>No tokens available</p>
 					)}
-					<button onClick={async () => await refreshAuth()} className="mt-4 text-blue-600 hover:underline">
+					<button onClick={refreshAuth} className="mt-4 text-blue-600 hover:underline">
 						Refresh Tokens
 					</button>
 				</section>

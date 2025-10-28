@@ -1,93 +1,100 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { useNextNavigation } from "../navigation";
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useMutation } from "@apollo/client";
+import { useRouter } from "next/router";
 import useLocalStorage from "../storage";
-import { gql, useMutation } from "@apollo/client";
-
-const LOGIN_MUTATION = gql`
-	mutation loginWithPassword($username: String!, $password: String!) {
-		login(input: { provider: PASSWORD, credentials: { username: $username, password: $password } }) {
-			authToken
-			authTokenExpiration
-			refreshToken
-			refreshTokenExpiration
-			user {
-				id
-				email
-				databaseId
-			}
-			customer {
-				databaseId
-				billing {
-					firstName
-					lastName
-					company
-					address1
-					address2
-					city
-					state
-					country
-					postcode
-					phone
-				}
-			}
-		}
-	}
-`;
-
-const REFRESH_TOKEN_MUTATION = gql`
-	mutation refreshToken($token: String!) {
-		refreshToken(input: { refreshToken: $token }) {
-			authToken
-			authTokenExpiration
-			success
-		}
-	}
-`;
+import { LOGIN_MUTATION, REFRESH_TOKEN_MUTATION } from "@/lib/woocommerce/graphQL";
 
 const AuthContext = createContext(undefined);
 
-function AuthProvider({ children, storage = useLocalStorage, navigation = useNextNavigation() }) {
-	const [loginMutation] = useMutation(LOGIN_MUTATION);
-	const [refreshTokenMutation] = useMutation(REFRESH_TOKEN_MUTATION);
+export function AuthProvider({ children }) {
+	const router = useRouter();
+	const storage = useLocalStorage;
+
 	const [authState, setAuthState] = useState({
 		user: null,
-		customer: null,
 		tokens: null,
 		isLoading: true,
 	});
 
-	useEffect(() => {
-		const initializeAuth = () => {
+	const refreshIntervalRef = useRef(null);
+
+	const [loginMutation] = useMutation(LOGIN_MUTATION);
+	const [refreshTokenMutation] = useMutation(REFRESH_TOKEN_MUTATION);
+
+	// Login Function
+	const login = useCallback(
+		async (username, password) => {
 			try {
-				const storedTokens = storage.getItem("authTokens");
-				const storedUser = storage.getItem("user");
-				const storedCustomer = storage.getItem("customer");
+				const { data } = await loginMutation({
+					variables: { username, password },
+				});
 
-				if (storedTokens && storedUser) {
-					setAuthState({
-						tokens: JSON.parse(storedTokens),
-						user: JSON.parse(storedUser),
-						customer: storedCustomer ? JSON.parse(storedCustomer) : null,
-						isLoading: false,
-					});
-				} else {
-					setAuthState((prev) => ({ ...prev, isLoading: false }));
+				if (!data?.login) {
+					throw new Error("Login failed - no data returned");
 				}
+
+				const { user, ...tokens } = data.login;
+
+				storage.saveToLocalStorage("authTokens", tokens);
+				storage.saveToLocalStorage("user", user);
+
+				setAuthState({
+					user,
+					tokens,
+					isLoading: false,
+				});
+
+				router.push("/my-account");
 			} catch (error) {
-				console.error("Error initializing auth:", error);
-				setAuthState((prev) => ({ ...prev, isLoading: false }));
+				console.error("❌ Login error:", error);
+				throw error;
 			}
-		};
+		},
+		[loginMutation, router]
+	);
 
-		initializeAuth();
-	}, [storage]);
+	// Logout function
+	const logout = useCallback(() => {
+		if (refreshIntervalRef.current) {
+			clearInterval(refreshIntervalRef.current);
+			refreshIntervalRef.current = null;
+		}
 
-	const refreshAuth = async () => {
-		if (!authState.tokens?.refreshToken) return;
+		storage.removeItem("user");
+		storage.removeItem("authTokens");
+
+		setAuthState({
+			user: null,
+			tokens: null,
+			isLoading: false,
+		});
+
+		router.push("/");
+	}, [router]);
+
+	// Check if token should be refreshed (less than 2 minutes remaining)
+	const shouldRefreshToken = useCallback((tokens) => {
+		if (!tokens?.authTokenExpiration) return true;
+
+		const expirationTime = tokens.authTokenExpiration * 1000;
+		const currentTime = new Date().getTime();
+		const timeUntilExpiration = expirationTime - currentTime;
+
+		// Refresh if less than 2 minutes remaining
+		return timeUntilExpiration < 2 * 60 * 1000;
+	}, []);
+
+	// Refresh Auth Token - internal function, not exposed
+	const refreshAuth = useCallback(async () => {
+		const currentTokens = storage.getItem("authTokens") ? JSON.parse(storage.getItem("authTokens")) : null;
+
+		if (!currentTokens?.refreshToken) {
+			return false;
+		}
 
 		try {
 			const { data } = await refreshTokenMutation({
-				variables: { token: authState.tokens.refreshToken },
+				variables: { token: currentTokens.refreshToken },
 			});
 
 			const { authToken, authTokenExpiration, success } = data.refreshToken;
@@ -98,9 +105,9 @@ function AuthProvider({ children, storage = useLocalStorage, navigation = useNex
 
 			const newTokens = {
 				authToken,
-				refreshToken: authState.tokens.refreshToken,
+				refreshToken: currentTokens.refreshToken,
 				authTokenExpiration,
-				refreshTokenExpiration: authState.tokens.refreshTokenExpiration,
+				refreshTokenExpiration: currentTokens.refreshTokenExpiration,
 			};
 
 			storage.setItem("authTokens", JSON.stringify(newTokens));
@@ -109,116 +116,92 @@ function AuthProvider({ children, storage = useLocalStorage, navigation = useNex
 				...prev,
 				tokens: newTokens,
 			}));
+
+			return true;
 		} catch (error) {
-			console.error("Error refreshing token:", error);
+			console.error("❌ Error refreshing token:", error);
 			logout();
+			return false;
 		}
-	};
+	}, [refreshTokenMutation, logout]);
 
-	const login = async (username, password, onCartSync) => {
-		try {
-			console.log("🔐 Starting login process...");
+	// Initialize Auth on mount
+	useEffect(() => {
+		const storedTokens = storage.getFromLocalStorage("authTokens");
+		const storedUser = storage.getFromLocalStorage("user");
 
-			const { data } = await loginMutation({
-				variables: { username, password },
-			});
-
-			const { user, customer, ...tokens } = data.login;
-
-			console.log("✅ Login successful:", { user, customer });
-
-			// Store auth data
-			storage.setItem("authTokens", JSON.stringify(tokens));
-			storage.setItem("user", JSON.stringify(user));
-			if (customer) {
-				storage.setItem("customer", JSON.stringify(customer));
-			}
-
-			// Update auth state
+		if (storedTokens && storedUser) {
 			setAuthState({
-				user,
-				customer,
-				tokens,
+				user: storedUser,
+				tokens: storedTokens,
 				isLoading: false,
 			});
+		} else {
+			setAuthState({ user: null, tokens: null, isLoading: false });
+		}
+	}, []);
 
-			// Get customer ID for cart sync
-			const customerId = customer?.databaseId || user?.databaseId;
-			console.log("👤 Customer ID for cart sync:", customerId);
+	// Setup auto-refresh
+	useEffect(() => {
+		if (refreshIntervalRef.current) {
+			clearInterval(refreshIntervalRef.current);
+		}
 
-			// Sync cart if callback provided and customer ID exists
-			if (onCartSync && customerId) {
-				try {
-					console.log("🛒 Syncing cart for logged in user...");
-					await onCartSync(customerId);
-					console.log("✅ Cart sync completed");
-				} catch (cartError) {
-					console.error("❌ Cart sync failed:", cartError);
-					// Don't fail login if cart sync fails
+		if (authState.user && authState.tokens?.refreshToken) {
+			const checkAndRefresh = () => {
+				const tokens = storage.getItem("authTokens") ? JSON.parse(storage.getItem("authTokens")) : null;
+
+				if (tokens && shouldRefreshToken(tokens)) {
+					refreshAuth();
 				}
+			};
+
+			checkAndRefresh();
+			refreshIntervalRef.current = setInterval(checkAndRefresh, 60000);
+		}
+
+		return () => {
+			if (refreshIntervalRef.current) {
+				clearInterval(refreshIntervalRef.current);
 			}
-
-			navigation.push("/my-account");
-		} catch (error) {
-			console.error("Error during login:", error);
-			throw error;
-		}
-	};
-
-	const logout = (onCartLogout) => {
-		console.log("🔐 Logging out user...");
-
-		// Clear auth storage
-		storage.removeItem("authTokens");
-		storage.removeItem("user");
-		storage.removeItem("customer");
-		// Clear WooCommerce session token as well
-		if (typeof window !== "undefined") {
-			localStorage.removeItem("woocommerce_session_token");
-		}
-		// Update auth state
-		setAuthState({
-			user: null,
-			customer: null,
-			tokens: null,
-			isLoading: false,
-		});
-
-		// Handle cart logout if callback provided
-		if (onCartLogout) {
-			try {
-				console.log("🛒 Handling cart logout...");
-				onCartLogout();
-				console.log("✅ Cart logout handled");
-			} catch (cartError) {
-				console.error("❌ Cart logout failed:", cartError);
-			}
-		}
-
-		navigation.push("/");
-	};
-
-	return (
-		<AuthContext.Provider
-			value={{
-				...authState,
-				login,
-				logout,
-				refreshAuth,
-				customerId: authState.customer?.databaseId || authState.user?.databaseId || null,
-			}}
-		>
-			{children}
-		</AuthContext.Provider>
+		};
+	}, [authState.user, authState.tokens?.refreshToken]);
+	
+	const value = useMemo(
+		() => ({
+			user: authState.user,
+			isLoading: authState.isLoading,
+			refreshAuth,
+		}),
+		[authState.user, authState.isLoading, refreshAuth, authState.tokens]
 	);
+
+	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-const useAuth = () => {
+// 🔥 Optimized hook - derives values on-demand
+export const useAuth = () => {
 	const context = useContext(AuthContext);
-	if (context === undefined) {
-		throw new Error("useAuth must be used within an AuthProvider");
-	}
-	return context;
+	if (!context) throw new Error("useAuth must be used within an AuthProvider");
+
+	return useMemo(
+		() => ({
+			user: context.user,
+			isLoading: context.isLoading,
+		}),
+		[context.user, context.isLoading]
+	);
 };
 
-export { useAuth, AuthProvider };
+// Admin/Debug hook - for account page, debug tools, etc.
+export const useAuthAdmin = () => {
+	const context = useContext(AuthContext);
+	if (!context) throw new Error("useAuthAdmin must be used within an AuthProvider");
+
+	return {
+		...useAuth(),
+		logout: context.logout,
+		tokens: context.tokens,
+		refreshAuth: context.refreshAuth,
+	};
+};
