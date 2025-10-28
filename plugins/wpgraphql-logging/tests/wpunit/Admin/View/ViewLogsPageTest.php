@@ -6,7 +6,6 @@ namespace WPGraphQL\Logging\Tests\Admin\View;
 
 
 use WPGraphQL\Logging\Admin\ViewLogsPage;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
 use Codeception\TestCase\WPTestCase;
 use Brain\Monkey;
 

@@ -6,7 +6,9 @@ namespace WPGraphQL\Logging\Admin;
 
 use WPGraphQL\Logging\Admin\View\Download\DownloadLogService;
 use WPGraphQL\Logging\Admin\View\List\ListTable;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Database\LogsRepository;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
  * The view logs page class for WPGraphQL Logging.
@@ -196,7 +198,7 @@ class ViewLogsPage {
 	 * @return string The constructed redirect URL.
 	 */
 	public function get_redirect_url(): string {
-			$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
+		$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
 
 		$possible_filters = [
 			'start_date',
@@ -276,8 +278,8 @@ class ViewLogsPage {
 			return;
 		}
 
-		$repository = new LogsRepository();
-		$log        = $repository->get_log( $log_id );
+		$log_service = $this->get_log_service();
+		$log         = $log_service->find_entity_by_id( $log_id );
 
 		if ( is_null( $log ) ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Log not found.', 'wpgraphql-logging' ) . '</p></div>';
@@ -290,5 +292,14 @@ class ViewLogsPage {
 		);
 
 		require_once $log_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	}
+
+	/**
+	 * Retrieves the log service instance.
+	 *
+	 * @return \WPGraphQL\Logging\Logger\Api\LogServiceInterface The log service instance.
+	 */
+	protected function get_log_service(): LogServiceInterface {
+		return LogStoreService::get_log_service();
 	}
 }
