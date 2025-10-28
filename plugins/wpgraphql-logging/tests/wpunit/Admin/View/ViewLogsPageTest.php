@@ -214,11 +214,4 @@ class ViewLogsPageTest extends WPTestCase {
 			$url
 		);
 	}
-
-	public function test_get_log_service_returns_log_service_instance(): void {
-		$this->set_as_admin();
-		$instance = ViewLogsPage::init();
-		$log_service = $instance->get_log_service();
-		$this->assertInstanceOf(LogServiceInterface::class, $log_service);
-	}
 }
