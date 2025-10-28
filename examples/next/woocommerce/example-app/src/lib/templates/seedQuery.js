@@ -1,4 +1,3 @@
-//import { gql } from "@apollo/client";
 import { gql } from "../client"
 export const SEED_QUERY = gql`
   query GetSeedNode(

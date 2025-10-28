@@ -7,256 +7,232 @@ import { AddToCart, GetMiniCart, UpdateCartItemQuantities } from "@/lib/woocomme
 const CartContext = createContext(undefined);
 
 export function CartProvider({ children }) {
-    const storage = useLocalStorage;
-    const { userId, isAuthenticated } = useAuth(); // Subscribe to auth changes
+	const storage = useLocalStorage;
+	const { user, isLoading: authLoading } = useAuth();
 
-    const [cartData, setCartData] = useState(null);
-    const [isCartInitialized, setIsCartInitialized] = useState(false);
+	const [cartData, setCartData] = useState(null);
+	const [isCartInitialized, setIsCartInitialized] = useState(false);
 
-    // Cart Mutations
-    const [addToCartMutation, { loading: addToCartLoading }] = useMutation(AddToCart, {
-        onCompleted: (data) => {
-            if (data?.addToCart?.cart) {
-                setCartData(data.addToCart.cart);
-                saveCartToLocalStorage(data.addToCart.cart);
-            }
-        },
-        onError: (error) => console.error("❌ Add to cart error:", error),
-    });
+	// Cart Mutations
+	const [addToCartMutation, { loading: addToCartLoading }] = useMutation(AddToCart, {
+		onCompleted: (data) => {
+			if (data?.addToCart?.cart) {
+				setCartData(data.addToCart.cart);
+				storage.saveCartToLocalStorage(data.addToCart.cart);
+			}
+		},
+		onError: (error) => console.error("❌ Add to cart error:", error),
+	});
 
-    const [updateCartMutation, { loading: updateCartLoading }] = useMutation(UpdateCartItemQuantities, {
-        onCompleted: (data) => {
-            if (data?.updateItemQuantities?.cart) {
-                setCartData(data.updateItemQuantities.cart);
-                saveCartToLocalStorage(data.updateItemQuantities.cart);
-            }
-        },
-        onError: (error) => console.error("❌ Update cart error:", error),
-    });
+	const [updateCartMutation, { loading: updateCartLoading }] = useMutation(UpdateCartItemQuantities, {
+		onCompleted: (data) => {
+			if (data?.updateItemQuantities?.cart) {
+				setCartData(data.updateItemQuantities.cart);
+				storage.saveCartToLocalStorage(data.updateItemQuantities.cart);
+			}
+		},
+		onError: (error) => console.error("❌ Update cart error:", error),
+	});
 
-    const [getCartQuery, { loading: getCartLoading }] = useLazyQuery(GetMiniCart, {
-        onCompleted: (data) => {
-            if (data?.cart) {
-                setCartData(data.cart);
-                saveCartToLocalStorage(data.cart);
-            }
-        },
-        onError: (error) => console.error("❌ GetCart error:", error),
-        fetchPolicy: "network-only",
-        errorPolicy: "all",
-    });
+	const [getCartQuery, { loading: getCartLoading }] = useLazyQuery(GetMiniCart, {
+		onCompleted: (data) => {
+			if (data?.cart) {
+				setCartData(data.cart);
+				storage.saveCartToLocalStorage(data.cart);
+			}
+		},
+		onError: (error) => console.error("❌ GetCart error:", error),
+		fetchPolicy: "network-only",
+		errorPolicy: "all",
+	});
 
-    // Helper functions
-    const saveCartToLocalStorage = useCallback(
-        (cart) => {
-            if (cart) {
-                storage.setItem("woocommerce_cart", JSON.stringify(cart));
-            }
-        },
-        [storage]
-    );
+	// Initialize Cart when auth changes
+	useEffect(() => {
+		let isMounted = true;
 
-    const loadCartFromLocalStorage = useCallback(() => {
-        const data = storage.getItem("woocommerce_cart");
-        if (data) {
-            try {
-                return JSON.parse(data);
-            } catch (error) {
-                console.error("Error parsing cart:", error);
-                storage.removeItem("woocommerce_cart");
-            }
-        }
-        return null;
-    }, [storage]);
+		const initializeCart = async () => {
+			console.log("🛒 Initializing cart...", { user, isCartInitialized });
 
-    // Initialize Cart when auth changes
-    useEffect(() => {
-        let isMounted = true;
+			const localCart = storage.loadCartFromLocalStorage();
 
-        const initializeCart = async () => {
-            console.log("🛒 Initializing cart...", { userId, isCartInitialized });
+			if (!user) {
+				// Guest user
+				if (isMounted) {
+					setCartData(localCart || null);
+					setIsCartInitialized(true);
+				}
+			} else {
+				// Authenticated user
+				try {
+					const result = await getCartQuery();
+					if (isMounted) {
+						setCartData(result.data?.cart || localCart || null);
+						setIsCartInitialized(true);
+					}
+				} catch (error) {
+					console.error("❌ Cart error:", error);
+					if (isMounted) {
+						setCartData(localCart || null);
+						setIsCartInitialized(true);
+					}
+				}
+			}
+		};
 
-            const localCart = loadCartFromLocalStorage();
+		if (!authLoading && !isCartInitialized) {
+			initializeCart();
+		}
 
-            if (!userId) {
-                // Guest user
-                if (isMounted) {
-                    setCartData(localCart || null);
-                    setIsCartInitialized(true);
-                }
-            } else {
-                // Authenticated user
-                try {
-                    const result = await getCartQuery();
-                    if (isMounted) {
-                        setCartData(result.data?.cart || localCart || null);
-                        setIsCartInitialized(true);
-                    }
-                } catch (error) {
-                    console.error("❌ Cart error:", error);
-                    if (isMounted) {
-                        setCartData(localCart || null);
-                        setIsCartInitialized(true);
-                    }
-                }
-            }
-        };
+		return () => {
+			isMounted = false;
+		};
+	}, [user, authLoading, isCartInitialized]); // Reinitialize when user logs in/out
 
-        // Reset and reinitialize cart when userId changes
-        if (!isCartInitialized || cartData === null) {
-            initializeCart();
-        }
+	// Cart functions
+	const findCartItem = useCallback(
+		(productId, variationId = null) => {
+			if (!cartData?.contents?.nodes) return null;
 
-        return () => {
-            isMounted = false;
-        };
-    }, [userId]); // Reinitialize when user logs in/out
+			return cartData.contents.nodes.find((item) => {
+				const matchesProduct =
+					item.product?.node?.databaseId === parseInt(productId) || item.product?.databaseId === parseInt(productId);
 
-    // Cart functions
-    const findCartItem = useCallback(
-        (productId, variationId = null) => {
-            if (!cartData?.contents?.nodes) return null;
+				const matchesVariation = variationId
+					? item.variation?.node?.databaseId === parseInt(variationId) ||
+					  item.variation?.databaseId === parseInt(variationId)
+					: !item.variation?.node && !item.variation;
 
-            return cartData.contents.nodes.find((item) => {
-                const matchesProduct =
-                    item.product?.node?.databaseId === parseInt(productId) ||
-                    item.product?.databaseId === parseInt(productId);
+				return matchesProduct && matchesVariation;
+			});
+		},
+		[cartData]
+	);
 
-                const matchesVariation = variationId
-                    ? item.variation?.node?.databaseId === parseInt(variationId) ||
-                      item.variation?.databaseId === parseInt(variationId)
-                    : !item.variation?.node && !item.variation;
+	const addToCart = useCallback(
+		async (productId, quantity = 1, variationId = null) => {
+			try {
+				const existingItem = findCartItem(productId, variationId);
 
-                return matchesProduct && matchesVariation;
-            });
-        },
-        [cartData]
-    );
+				if (existingItem) {
+					const newQuantity = existingItem.quantity + quantity;
+					const { data, errors } = await updateCartMutation({
+						variables: {
+							items: [{ key: existingItem.key, quantity: newQuantity }],
+						},
+					});
 
-    const addToCart = useCallback(
-        async (productId, quantity = 1, variationId = null) => {
-            try {
-                const existingItem = findCartItem(productId, variationId);
+					if (errors?.length > 0) {
+						throw new Error(errors[0]?.message || "Failed to update cart");
+					}
 
-                if (existingItem) {
-                    const newQuantity = existingItem.quantity + quantity;
-                    const { data, errors } = await updateCartMutation({
-                        variables: {
-                            items: [{ key: existingItem.key, quantity: newQuantity }],
-                        },
-                    });
+					return { success: true, cart: data?.updateItemQuantities?.cart, action: "updated" };
+				} else {
+					const variables = {
+						productId: parseInt(productId),
+						quantity: parseInt(quantity),
+					};
 
-                    if (errors?.length > 0) {
-                        throw new Error(errors[0]?.message || "Failed to update cart");
-                    }
+					if (variationId) {
+						variables.variationId = parseInt(variationId);
+					}
 
-                    return { success: true, cart: data?.updateItemQuantities?.cart, action: "updated" };
-                } else {
-                    const variables = {
-                        productId: parseInt(productId),
-                        quantity: parseInt(quantity),
-                    };
+					const { data, errors } = await addToCartMutation({ variables });
 
-                    if (variationId) {
-                        variables.variationId = parseInt(variationId);
-                    }
+					if (errors?.length > 0) {
+						throw new Error(errors[0]?.message || "Failed to add to cart");
+					}
 
-                    const { data, errors } = await addToCartMutation({ variables });
+					return { success: true, cart: data?.addToCart?.cart, action: "added" };
+				}
+			} catch (error) {
+				console.error("❌ Add to cart error:", error);
+				return { success: false, error: error.message || "Failed to add to cart" };
+			}
+		},
+		[addToCartMutation, updateCartMutation, findCartItem]
+	);
 
-                    if (errors?.length > 0) {
-                        throw new Error(errors[0]?.message || "Failed to add to cart");
-                    }
+	const updateCartItemQuantity = useCallback(
+		async (itemKey, newQuantity) => {
+			try {
+				if (newQuantity <= 0) {
+					return { success: false, error: "Quantity must be greater than 0" };
+				}
 
-                    return { success: true, cart: data?.addToCart?.cart, action: "added" };
-                }
-            } catch (error) {
-                console.error("❌ Add to cart error:", error);
-                return { success: false, error: error.message || "Failed to add to cart" };
-            }
-        },
-        [addToCartMutation, updateCartMutation, findCartItem]
-    );
+				const { data, errors } = await updateCartMutation({
+					variables: {
+						items: [{ key: itemKey, quantity: parseInt(newQuantity) }],
+					},
+				});
 
-    const updateCartItemQuantity = useCallback(
-        async (itemKey, newQuantity) => {
-            try {
-                if (newQuantity <= 0) {
-                    return { success: false, error: "Quantity must be greater than 0" };
-                }
+				if (errors?.length > 0) {
+					throw new Error(errors[0]?.message || "Failed to update cart");
+				}
 
-                const { data, errors } = await updateCartMutation({
-                    variables: {
-                        items: [{ key: itemKey, quantity: parseInt(newQuantity) }],
-                    },
-                });
+				return { success: true, cart: data?.updateItemQuantities?.cart, action: "updated" };
+			} catch (error) {
+				console.error("❌ Update cart quantity error:", error);
+				return { success: false, error: error.message || "Failed to update cart quantity" };
+			}
+		},
+		[updateCartMutation]
+	);
 
-                if (errors?.length > 0) {
-                    throw new Error(errors[0]?.message || "Failed to update cart");
-                }
+	const clearCart = useCallback(() => {
+		storage.removeItem("woocommerce_cart");
+		setCartData(null);
+	}, [storage]);
 
-                return { success: true, cart: data?.updateItemQuantities?.cart, action: "updated" };
-            } catch (error) {
-                console.error("❌ Update cart quantity error:", error);
-                return { success: false, error: error.message || "Failed to update cart quantity" };
-            }
-        },
-        [updateCartMutation]
-    );
+	const refreshCart = useCallback(async () => {
+		try {
+			const result = await getCartQuery();
+			return result.data?.cart || null;
+		} catch (error) {
+			console.error("❌ Error refreshing cart:", error);
+			const localCart = storage.loadCartFromLocalStorage();
+			setCartData(localCart);
+			return localCart;
+		}
+	}, [getCartQuery, storage.loadCartFromLocalStorage]);
 
-    const clearCart = useCallback(() => {
-        storage.removeItem("woocommerce_cart");
-        setCartData(null);
-    }, [storage]);
+	// Computed values
+	const cartItemCount = useMemo(() => {
+		return cartData?.contents?.itemCount || 0;
+	}, [cartData]);
 
-    const refreshCart = useCallback(async () => {
-        try {
-            const result = await getCartQuery();
-            return result.data?.cart || null;
-        } catch (error) {
-            console.error("❌ Error refreshing cart:", error);
-            const localCart = loadCartFromLocalStorage();
-            setCartData(localCart);
-            return localCart;
-        }
-    }, [getCartQuery, loadCartFromLocalStorage]);
+	const cartItems = useMemo(() => {
+		return cartData?.contents?.nodes || [];
+	}, [cartData]);
 
-    // Computed values
-    const cartItemCount = useMemo(() => {
-        return cartData?.contents?.itemCount || 0;
-    }, [cartData]);
+	const cartTotal = useMemo(() => {
+		return cartData?.total || "0";
+	}, [cartData]);
 
-    const cartItems = useMemo(() => {
-        return cartData?.contents?.nodes || [];
-    }, [cartData]);
+	const value = {
+		// State
+		cart: cartData,
+		cartItemCount,
+		cartItems,
+		cartTotal,
+		isCartInitialized,
+		cartLoading: getCartLoading || addToCartLoading || updateCartLoading,
 
-    const cartTotal = useMemo(() => {
-        return cartData?.total || "0";
-    }, [cartData]);
-
-    const value = {
-        // State
-        cart: cartData,
-        cartItemCount,
-        cartItems,
-        cartTotal,
-        isCartInitialized,
-        cartLoading: getCartLoading || addToCartLoading || updateCartLoading,
-
-        // Functions
-        addToCart,
-        updateCartItemQuantity,
-        clearCart,
+		// Functions
+		addToCart,
+		updateCartItemQuantity,
+		clearCart,
+		refreshCart,
+		findCartItem,
         refreshCart,
-        findCartItem,
-    };
+	};
 
-    return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+	return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 export const useCart = () => {
-    const context = useContext(CartContext);
-    if (context === undefined) {
-        throw new Error("useCart must be used within a CartProvider");
-    }
-    return context;
+	const context = useContext(CartContext);
+	if (context === undefined) {
+		throw new Error("useCart must be used within a CartProvider");
+	}
+	return context;
 };

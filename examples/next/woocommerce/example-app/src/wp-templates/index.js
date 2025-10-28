@@ -1,44 +1,25 @@
 import dynamic from "next/dynamic";
 
-const home = dynamic(() => import("./home.js"), {
-  loading: () => <p>Loading Home Template...</p>,
-});
+const home = dynamic(() => import("./home.js"));
+const index = dynamic(() => import("./default.js"));
+const single = dynamic(() => import("./single.js"));
+const frontPage = dynamic(() => import("./front-page.js"));
+const archiveProduct = dynamic(() => import("./archive-product.js"));
+const page = dynamic(() => import("./page.js"));
 
-const index = dynamic(() => import("./default.js"), {
-  loading: () => <p>Loading Index Template...</p>,
-});
+// WooCommerce Templates
+const singleProduct = dynamic(() => import("./single-product.js"));
+const pageCart = dynamic(() => import("./page-cart.js"));
+const pageMyAccount = dynamic(() => import("./page-my-account.js"));
 
-const single = dynamic(() => import("./single.js"), {
-  loading: () => <p>Loading Single Template...</p>,
-});
-
-const frontPage = dynamic(() => import("./front-page.js"), {
-  loading: () => <p>Loading Front Page Template...</p>,
-});
-const archiveProduct = dynamic(() => import("./archive-product.js"), {
-  loading: () => <p>Loading Shop Template...</p>,
-});
-const page = dynamic(() => import("./page.js"), {
-  loading: () => <p>Loading Page Template...</p>,
-});
-//WC
-const singleProduct = dynamic(() => import("./single-product.js"), {
-  loading: () => <p>Loading Product Template...</p>,
-});
-const pageCart = dynamic(() => import("./page-cart.js"), {
-  loading: () => <p>Loading Cart Template...</p>,
-});
-const pageMyAccount = dynamic(() => import("./page-my-account.js"), {
-  loading: () => <p>Loading Account Template...</p>,
-});
 export default {
-  home,
-  index,
-  page,
-  single,
-  frontPage,
-  archiveProduct,
-  singleProduct,
-  pageCart,
-  pageMyAccount,
+    home,
+    index,
+    page,
+    single,
+    frontPage,
+    archiveProduct,
+    singleProduct,
+    pageCart,
+    pageMyAccount,
 };

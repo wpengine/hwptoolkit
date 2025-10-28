@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LoginForm from "@/components/Account/Login/LoginForm";
 import Link from "next/link";
 import { useAuthAdmin } from "@/lib/auth/AuthProvider";
 import { gql, useQuery } from "@apollo/client";
 import useLocalStorage from "@/lib/storage";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 
 const GET_USER_SETTINGS = gql`
 	query GetUserSettings {
@@ -165,22 +166,23 @@ const CustomerFields = gql`
 `;
 
 export default function Account() {
-	const { user, isLoading, logout, refreshAuth } = useAuthAdmin();
+	const { user, isLoading: authLoading, logout, refreshAuth } = useAuthAdmin();
 	const tokens = useLocalStorage.getFromLocalStorage("authTokens");
 	const isAuthenticated = !!user;
-	const { data, loading: userDataLoading } = useQuery(GET_USER_SETTINGS, {
+
+	const {
+		data,
+		loading: userDataLoading,
+		error,
+	} = useQuery(GET_USER_SETTINGS, {
 		skip: !isAuthenticated,
+		fetchPolicy: "network-only",
 	});
 
 	const [activeTab, setActiveTab] = useState("dashboard");
 
-	// Loading state
-	if (isLoading || userDataLoading) {
-		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-			</div>
-		);
+	if (authLoading || userDataLoading) {
+		return <LoadingSpinner />;
 	}
 
 	// Not authenticated - show login form

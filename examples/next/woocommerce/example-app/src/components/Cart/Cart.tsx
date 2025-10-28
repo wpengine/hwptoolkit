@@ -6,7 +6,7 @@ import { useCart } from "@/lib/woocommerce/CartProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 
 export default function Cart() {
-	const { cart, cartItems, loading, refreshCart, isInitialized } = useCart();
+	const { cart, cartItems, loading, refreshCart, isCartInitialized } = useCart();
 
 	const { updateItemQuantities, removeItemsFromCart, loading: mutationLoading } = useCartMutations();
 	const { applyCoupon, removeCoupons, loading: couponLoading } = useOtherCartMutations();
@@ -14,10 +14,10 @@ export default function Cart() {
 	const [couponCode, setCouponCode] = useState("");
 	const [updatingItems, setUpdatingItems] = useState({});
 
-	if (!isInitialized) {
+	if (!isCartInitialized) {
 		return <LoadingSpinner />;
 	}
-	
+
 	const handleQuantityUpdate = async (cartKey: string, newQuantity: number) => {
 		if (newQuantity < 1) {
 			handleRemoveItem(cartKey);
@@ -41,6 +41,7 @@ export default function Cart() {
 			});
 
 			if (data?.updateItemQuantities) {
+				console.log("update");
 				await refreshCart();
 			}
 		} catch (error) {

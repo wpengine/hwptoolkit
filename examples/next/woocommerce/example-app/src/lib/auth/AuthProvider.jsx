@@ -166,20 +166,23 @@ export function AuthProvider({ children }) {
 			}
 		};
 	}, [authState.user, authState.tokens?.refreshToken]);
-	
+
 	const value = useMemo(
 		() => ({
 			user: authState.user,
+			tokens: authState.tokens,
 			isLoading: authState.isLoading,
 			refreshAuth,
+			logout,
+			login,
 		}),
-		[authState.user, authState.isLoading, refreshAuth, authState.tokens]
+		[authState.user, authState.isLoading, authState.tokens, login, logout, refreshAuth]
 	);
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// 🔥 Optimized hook - derives values on-demand
+
 export const useAuth = () => {
 	const context = useContext(AuthContext);
 	if (!context) throw new Error("useAuth must be used within an AuthProvider");
@@ -188,18 +191,20 @@ export const useAuth = () => {
 		() => ({
 			user: context.user,
 			isLoading: context.isLoading,
+			login: context.login,
+			logout: context.logout,
 		}),
-		[context.user, context.isLoading]
+		[context.user, context.isLoading, context.login, context.logout]
 	);
 };
 
-// Admin/Debug hook - for account page, debug tools, etc.
 export const useAuthAdmin = () => {
 	const context = useContext(AuthContext);
 	if (!context) throw new Error("useAuthAdmin must be used within an AuthProvider");
 
 	return {
 		...useAuth(),
+		login: context.login,
 		logout: context.logout,
 		tokens: context.tokens,
 		refreshAuth: context.refreshAuth,
