@@ -207,6 +207,42 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 	}
 
 	/**
+	 * Extracts and returns the GraphQL query from the context, if available.
+	 *
+	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh, Generic.Metrics.CyclomaticComplexity.TooHigh
+	 *
+	 * @return string|null The GraphQL query string, or null if not available.
+	 */
+	public function get_query(): ?string {
+
+		$context = $this->get_context();
+		if ( empty( $context ) ) {
+			return null;
+		}
+
+		$query = $context['query'] ?? null;
+		if ( is_string( $query ) ) {
+			return $query;
+		}
+
+		$request = $context['request'] ?? null;
+		if ( empty( $request ) || ! is_array( $request ) ) {
+			return $query;
+		}
+
+		$params = $request['params'] ?? null;
+		if ( empty( $params ) || ! is_array( $params ) ) {
+			return $query;
+		}
+
+		if ( isset( $params['query'] ) && is_string( $params['query'] ) ) {
+			return $params['query'];
+		}
+
+		return $query;
+	}
+
+	/**
 	 * Saves the log entry to the database.
 	 *
 	 * @return int The ID of the saved log entry, or 0 on failure.

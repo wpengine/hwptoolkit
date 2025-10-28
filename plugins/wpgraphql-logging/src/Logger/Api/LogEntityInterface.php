@@ -90,6 +90,13 @@ interface LogEntityInterface {
 	public function get_datetime(): string;
 
 	/**
+	 * Gets the query of the log entry.
+	 *
+	 * @return string|null The query of the log entry.
+	 */
+	public function get_query(): ?string;
+
+	/**
 	 * Gets the schema for the log entry.
 	 *
 	 * @return string The schema for the log entry.

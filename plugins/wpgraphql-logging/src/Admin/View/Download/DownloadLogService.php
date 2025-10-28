@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Admin\View\Download;
 
 use League\Csv\Writer;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
+use WPGraphQL\Logging\Logger\Api\LogEntityInterface;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
  * Service for handling log downloads.
@@ -30,8 +30,10 @@ class DownloadLogService {
 			wp_die( esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) );
 		}
 
-		$repository = new LogsRepository();
-		$log        = $repository->get_log( $log_id );
+
+		$log_service = LogStoreService::get_log_service();
+		$log         = $log_service->find_entity_by_id( $log_id );
+
 		if ( is_null( $log ) ) {
 			wp_die( esc_html__( 'Log not found.', 'wpgraphql-logging' ) );
 		}
@@ -61,11 +63,11 @@ class DownloadLogService {
 	/**
 	 * Get default CSV headers.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log The log entry.
+	 * @param \WPGraphQL\Logging\Logger\Api\LogEntityInterface $log The log entry.
 	 *
 	 * @return array<string> The default CSV headers.
 	 */
-	public function get_headers(DatabaseEntity $log): array {
+	public function get_headers(LogEntityInterface $log): array {
 		$headers = [
 			'ID',
 			'Date',
@@ -83,11 +85,11 @@ class DownloadLogService {
 	/**
 	 * Get CSV content for a log entry.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log The log entry.
+	 * @param \WPGraphQL\Logging\Logger\Api\LogEntityInterface $log The log entry.
 	 *
 	 * @return array<string> The CSV content for the log entry.
 	 */
-	public function get_content(DatabaseEntity $log): array {
+	public function get_content(LogEntityInterface $log): array {
 		$content = [
 			$log->get_id(),
 			$log->get_datetime(),
