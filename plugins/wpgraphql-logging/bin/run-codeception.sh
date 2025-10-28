@@ -69,8 +69,8 @@ run_tests() {
 		# Prefer XML summary for robustness; fallback to HTML if present
 		if [[ -f "tests/_output/coverage.xml" ]]; then
 			# Extract total statements and covered statements from the summary metrics line
-			total_statements=$(grep -Eo 'statements="[0-9]+"' "tests/_output/coverage.xml" | tail -1 | grep -Eo '[0-9]+')
-			total_covered=$(grep -Eo 'coveredstatements="[0-9]+"' "tests/_output/coverage.xml" | tail -1 | grep -Eo '[0-9]+')
+			total_statements=$(grep -Eo 'statements="[0-9]+"' "tests/_output/coverage.xml" | head -1 | grep -Eo '[0-9]+')
+			total_covered=$(grep -Eo 'coveredstatements="[0-9]+"' "tests/_output/coverage.xml" | head -1 | grep -Eo '[0-9]+')
 			if [[ -n "$total_statements" && -n "$total_covered" && "$total_statements" -gt 0 ]]; then
 				coverage_percent=$(awk "BEGIN { printf \"%.2f\", ($total_covered / $total_statements) * 100 }")
 			fi
