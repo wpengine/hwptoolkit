@@ -67,9 +67,9 @@ class DataSanitizationProcessor implements ProcessorInterface {
 			'request.app_context.viewer.allcaps' => 'remove',
 			'request.app_context.viewer.cap_key' => 'remove',
 			'request.app_context.viewer.caps'    => 'remove',
-			'variables.username' 				 => 'anonymize',
-			'variables.password'				 => 'anonymize',
-			'variables.email'					 => 'anonymize',
+			'variables.username'                 => 'anonymize',
+			'variables.password'                 => 'anonymize',
+			'variables.email'                    => 'anonymize',
 		];
 
 		return apply_filters( 'wpgraphql_logging_data_sanitization_recommended_rules', $rules );
