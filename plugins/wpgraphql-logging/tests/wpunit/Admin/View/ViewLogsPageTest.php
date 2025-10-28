@@ -8,6 +8,7 @@ namespace WPGraphQL\Logging\Tests\Admin\View;
 use WPGraphQL\Logging\Admin\ViewLogsPage;
 use Codeception\TestCase\WPTestCase;
 use Brain\Monkey;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 
 /**
  * Test for the ViewLogsPage
@@ -212,5 +213,12 @@ class ViewLogsPageTest extends WPTestCase {
 			'&start_date=2025-01-01 00:00:00&end_date=2025-12-31 23:59:59&orderby=id&order=ASC',
 			$url
 		);
+	}
+
+	public function test_get_log_service_returns_log_service_instance(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+		$log_service = $instance->get_log_service();
+		$this->assertInstanceOf(LogServiceInterface::class, $log_service);
 	}
 }

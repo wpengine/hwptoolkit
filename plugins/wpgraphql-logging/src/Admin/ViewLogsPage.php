@@ -299,7 +299,7 @@ class ViewLogsPage {
 	 *
 	 * @return \WPGraphQL\Logging\Logger\Api\LogServiceInterface The log service instance.
 	 */
-	protected function get_log_service(): LogServiceInterface {
+	public function get_log_service(): LogServiceInterface {
 		return LogStoreService::get_log_service();
 	}
 }
