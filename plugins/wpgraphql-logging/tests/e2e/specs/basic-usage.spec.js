@@ -30,7 +30,6 @@ test.describe("Configure WPGraphQL Logging Plugin and Verify Logging Works", () 
 
 		await expect(page.locator(".notice.notice-success")).toBeVisible();
 
-		// Execute a GraphQL query
 		const response = await executeGraphQLQuery(request, GET_POSTS_QUERY);
 		expect(response.ok()).toBeTruthy();
 

@@ -8,6 +8,13 @@ export const GET_POSTS_QUERY = `
 				id
 				title
 				date
+				excerpt
+				author {
+					node {
+						id
+						name
+					}
+				}
 			}
 		}
 	}

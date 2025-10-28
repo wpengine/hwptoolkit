@@ -131,6 +131,16 @@ export async function getLogDetails(page, logId) {
 }
 
 /**
+ * Switch to a settings tab
+ */
+export async function switchToSettingsTab(page, tabName) {
+	await page
+		.locator("#wpbody-content")
+		.getByRole("link", { name: "Data Management" })
+		.click();
+}
+
+/**
  * Configure data management settings
  */
 export async function configureDataManagement(page, settings = {}) {
@@ -139,6 +149,9 @@ export async function configureDataManagement(page, settings = {}) {
 		dataRetentionDays = "30",
 		dataSanitizationEnabled = false,
 		dataSanitizationMethod = "recommended",
+		dataSanitizationCustomFieldAnonymize = "",
+		dataSanitizationCustomFieldRemove = "",
+		dataSanitizationCustomFieldTruncate = "",
 	} = settings;
 
 	// Switch to Data Management tab
@@ -177,6 +190,33 @@ export async function configureDataManagement(page, settings = {}) {
 			'select[name="wpgraphql_logging_settings[data_management][data_sanitization_method]"]'
 		)
 		.selectOption(dataSanitizationMethod);
+
+	// Set custom field anonymize (if provided)
+	if (dataSanitizationCustomFieldAnonymize) {
+		await page
+			.locator(
+				'input[name="wpgraphql_logging_settings[data_management][data_sanitization_custom_field_anonymize]"]'
+			)
+			.fill(dataSanitizationCustomFieldAnonymize);
+	}
+
+	// Set custom field remove (if provided)
+	if (dataSanitizationCustomFieldRemove) {
+		await page
+			.locator(
+				'input[name="wpgraphql_logging_settings[data_management][data_sanitization_custom_field_remove]"]'
+			)
+			.fill(dataSanitizationCustomFieldRemove);
+	}
+
+	// Set custom field truncate (if provided)
+	if (dataSanitizationCustomFieldTruncate) {
+		await page
+			.locator(
+				'input[name="wpgraphql_logging_settings[data_management][data_sanitization_custom_field_truncate]"]'
+			)
+			.fill(dataSanitizationCustomFieldTruncate);
+	}
 
 	await page.getByRole("button", { name: "Save Changes" }).click();
 	await page.waitForSelector(".notice.notice-success");

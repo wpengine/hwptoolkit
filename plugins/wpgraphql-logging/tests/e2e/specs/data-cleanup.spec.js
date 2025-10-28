@@ -3,6 +3,7 @@ import {
 	configureDataManagement,
 	goToLoggingSettingsPage,
 	resetPluginSettings,
+	switchToSettingsTab,
 } from "../utils";
 
 test.describe("Data Management - Configure Automatic Cleanup", () => {
@@ -29,10 +30,7 @@ test.describe("Data Management - Configure Automatic Cleanup", () => {
 		// Reload the page to verify settings persisted
 		await page.reload({ waitUntil: "networkidle" });
 
-		await page
-			.locator("#wpbody-content")
-			.getByRole("link", { name: "Data Management" })
-			.click();
+		await switchToSettingsTab(page, "Data Management");
 
 		const deletionCheckbox = page.locator(
 			'input[name="wpgraphql_logging_settings[data_management][data_deletion_enabled]"]'

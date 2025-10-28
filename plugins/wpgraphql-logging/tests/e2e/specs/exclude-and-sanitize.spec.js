@@ -3,6 +3,7 @@ import {
 	goToLoggingSettingsPage,
 	goToLogsListPage,
 	configureLogging,
+	configureDataManagement,
 	executeGraphQLQuery,
 	resetPluginSettings,
 } from "../utils";
@@ -44,36 +45,58 @@ test.describe("Exclude Sensitive Queries from Logging", () => {
 		).toBeVisible();
 	});
 
-	test("should log queries when not excluded", async ({
+	test("should sanitize sensitive data in logs when sanitization is enabled", async ({
 		page,
 		admin,
 		request,
 	}) => {
-		// Set up logging without excluded queries
+		// Set up logging settings and execute a GraphQL query
 		await goToLoggingSettingsPage(admin);
+		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
 
 		await configureLogging(page, {
 			enabled: true,
 			dataSampling: "100",
 			eventLogSelection: ["graphql_request_results"],
-			excludeQueries: "",
 		});
 
-		await expect(page.locator(".notice.notice-success")).toBeVisible();
+		await goToLoggingSettingsPage(admin);
+		await configureDataManagement(page, {
+			dataSanitizationEnabled: true,
+			dataSanitizationMethod: "custom",
+			dataSanitizationCustomFieldAnonymize: "request.app_context.viewer",
+		});
 
-		// Execute query
+		// Navigate to log details page
 		await executeGraphQLQuery(request, GET_POSTS_QUERY);
 
-		// Navigate to logs and verify query is logged
 		await goToLogsListPage(admin);
 		await expect(page.locator("h1")).toContainText("WPGraphQL Logs");
 
-		// Verify GetPosts query is logged
-		const getPostsLog = page
+		const logRow = page
 			.locator("#the-list tr")
-			.filter({ hasText: "GetPosts" });
-		await expect(getPostsLog).toBeVisible({ timeout: 10000 });
-	});
+			.filter({ hasText: "GetPosts" })
+			.first();
+		await expect(logRow).toBeVisible({ timeout: 10000 });
 
-	// TODO add sanitization tests here
+		const viewLink = logRow.locator(".row-actions .view a");
+		await expect(viewLink).toBeVisible();
+		await viewLink.focus();
+		await viewLink.click();
+
+		await expect(page.locator("h1")).toContainText("Log Entry");
+
+		const logTable = page.locator(".widefat.striped");
+		const contextRow = logTable
+			.locator("tr")
+			.filter({ has: page.locator("th", { hasText: "Context" }) });
+
+		await expect(contextRow).toBeVisible();
+
+		// Verify sanitization in the content
+		const contextContent = await contextRow.locator("td pre").textContent();
+
+		expect(contextContent).toBeTruthy();
+		expect(contextContent).toContain('"viewer": "***"');
+	});
 });
