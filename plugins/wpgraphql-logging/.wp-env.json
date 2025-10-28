@@ -7,6 +7,7 @@
 		"tests": {
 			"plugins": [
 				"https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+				"https://github.com/johnbillion/wp-crontrol/archive/refs/tags/1.19.3.zip",
 				".",
 				"./tests/e2e/plugins/reset-wpgraphql-logging-settings/"
 			]

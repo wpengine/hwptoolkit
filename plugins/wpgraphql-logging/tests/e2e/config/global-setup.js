@@ -17,11 +17,7 @@ async function globalSetup(config) {
 	// Authenticate and save the storageState to disk.
 	await requestUtils.setupRest();
 
-	await Promise.all([
-		requestUtils.deleteAllPosts(),
-		requestUtils.deleteAllPages(),
-		requestUtils.resetPreferences(),
-	]);
+	await Promise.all([requestUtils.resetPreferences()]);
 
 	await requestContext.dispose();
 }
