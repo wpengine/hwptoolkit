@@ -1,0 +1,57 @@
+import { expect, test } from "@wordpress/e2e-test-utils-playwright";
+import {
+	configureDataManagement,
+	goToLoggingSettingsPage,
+	resetPluginSettings,
+} from "../utils";
+
+test.describe("Data Management - Configure Automatic Cleanup", () => {
+	test.beforeEach(async ({ admin }) => {
+		await resetPluginSettings(admin);
+	});
+
+	test("should configure data deletion settings and verify they are saved", async ({
+		page,
+		admin,
+	}) => {
+		// Set up logging settings
+		await goToLoggingSettingsPage(admin);
+		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
+
+		await configureDataManagement(page, {
+			dataDeletionEnabled: true,
+			dataRetentionDays: "7",
+			dataSanitizationEnabled: false,
+		});
+
+		await expect(page.locator(".notice.notice-success")).toBeVisible();
+
+		// Reload the page to verify settings persisted
+		await page.reload({ waitUntil: "networkidle" });
+
+		await page
+			.locator("#wpbody-content")
+			.getByRole("link", { name: "Data Management" })
+			.click();
+
+		const deletionCheckbox = page.locator(
+			'input[name="wpgraphql_logging_settings[data_management][data_deletion_enabled]"]'
+		);
+		await expect(deletionCheckbox).toBeChecked();
+
+		const retentionInput = page.locator(
+			'input[name="wpgraphql_logging_settings[data_management][data_retention_days]"]'
+		);
+		await expect(retentionInput).toHaveValue("7");
+
+		// Verify cron job is scheduled with wp-crontrol plugin
+		await admin.visitAdminPage("/tools.php?page=wp-crontrol");
+		await expect(page.locator("h1")).toContainText("Cron Events");
+
+		const cleanupHook = page
+			.locator(".crontrol_hook")
+			.filter({ hasText: "wpgraphql_logging_deletion_cleanup" });
+
+		await expect(cleanupHook).toBeVisible();
+	});
+});

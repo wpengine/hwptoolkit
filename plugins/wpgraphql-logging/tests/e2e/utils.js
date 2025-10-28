@@ -129,3 +129,55 @@ export async function getLogDetails(page, logId) {
 
 	return details;
 }
+
+/**
+ * Configure data management settings
+ */
+export async function configureDataManagement(page, settings = {}) {
+	const {
+		dataDeletionEnabled = false,
+		dataRetentionDays = "30",
+		dataSanitizationEnabled = false,
+		dataSanitizationMethod = "recommended",
+	} = settings;
+
+	// Switch to Data Management tab
+	await switchToSettingsTab(page, "Data Management");
+
+	// Enable/disable data deletion
+	const deletionCheckbox = page.locator(
+		'input[name="wpgraphql_logging_settings[data_management][data_deletion_enabled]"]'
+	);
+	if (dataDeletionEnabled) {
+		await deletionCheckbox.check();
+	} else {
+		await deletionCheckbox.uncheck();
+	}
+
+	// Set data retention days
+	await page
+		.locator(
+			'input[name="wpgraphql_logging_settings[data_management][data_retention_days]"]'
+		)
+		.fill(dataRetentionDays);
+
+	// Enable/disable data sanitization
+	const sanitizationCheckbox = page.locator(
+		'input[name="wpgraphql_logging_settings[data_management][data_sanitization_enabled]"]'
+	);
+	if (dataSanitizationEnabled) {
+		await sanitizationCheckbox.check();
+	} else {
+		await sanitizationCheckbox.uncheck();
+	}
+
+	// Set sanitization method
+	await page
+		.locator(
+			'select[name="wpgraphql_logging_settings[data_management][data_sanitization_method]"]'
+		)
+		.selectOption(dataSanitizationMethod);
+
+	await page.getByRole("button", { name: "Save Changes" }).click();
+	await page.waitForSelector(".notice.notice-success");
+}
