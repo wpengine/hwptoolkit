@@ -71,11 +71,46 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 	protected string $datetime = '';
 
 	/**
-	 * The constructor is protected to encourage creation via static methods.
+	 * Creates a new, unsaved log entry instance.
+	 *
+	 * @param string       $channel The channel for the log entry.
+	 * @param int          $level The logging level.
+	 * @param string       $level_name The name of the logging level.
+	 * @param string       $message The log message.
+	 * @param array<mixed> $context Additional context for the log entry.
+	 * @param array<mixed> $extra Extra data for the log entry.
 	 */
-	public function __construct() {
+	public function __construct(string $channel, int $level, string $level_name, string $message, array $context = [], array $extra = []) {
+		$this->channel    = $this->sanitize_text_field( $channel );
+		$this->level      = $level;
+		$this->level_name = $this->sanitize_text_field( $level_name );
+		$this->message    = $this->sanitize_text_field( $message );
+		$this->context    = $this->sanitize_array_field( $context );
+		$this->extra      = $this->sanitize_array_field( $extra );
+
 		// Set a default datetime for new, unsaved entries.
 		$this->datetime = current_time( 'mysql', 1 );
+	}
+
+	/**
+	 * Creates a new log entry instance from an array.
+	 *
+	 * @param array<string, mixed> $data The array to create the log entry from.
+	 *
+	 * @return \WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity The created log entry instance.
+	 */
+	public static function from_array(array $data): self {
+		$entity           = new self(
+			(string) $data['channel'],
+			(int) $data['level'],
+			(string) $data['level_name'],
+			(string) $data['message'],
+			( isset( $data['context'] ) && '' !== $data['context'] ) ? json_decode( $data['context'], true ) : [],
+			( isset( $data['extra'] ) && '' !== $data['extra'] ) ? json_decode( $data['extra'], true ) : [],
+		);
+		$entity->id       = (int) $data['id'];
+		$entity->datetime = (string) $data['datetime'];
+		return $entity;
 	}
 
 	/**
@@ -149,11 +184,9 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 	 */
 	public function get_schema(): string {
 		global $wpdb;
-		$table_name      = $this->get_table_name();
+		$table_name      = self::get_table_name();
 		$charset_collate = $wpdb->get_charset_collate();
 
-		// **IMPORTANT**: This schema format with PRIMARY KEY on its own line is the
-		// correct and stable way to work with dbDelta.
 		return "
 	   CREATE TABLE {$table_name} (
 		  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -174,54 +207,24 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 	}
 
 	/**
-	 * Gets the name of the table for the log entry.
+	 * Saves the log entry to the database.
 	 *
-	 * @return string The name of the table for the log entry.
+	 * @return int The ID of the saved log entry, or 0 on failure.
 	 */
-	public function get_table_name(): string {
+	public function save(): int {
 		global $wpdb;
-		return apply_filters( 'wpgraphql_logging_database_name', $wpdb->prefix . 'wpgraphql_logging' );
-	}
+		$table_name = $this->get_table_name();
 
-	/**
-	 * Creates a new, unsaved log entry instance.
-	 *
-	 * @param string       $channel The channel for the log entry.
-	 * @param int          $level The logging level.
-	 * @param string       $level_name The name of the logging level.
-	 * @param string       $message The log message.
-	 * @param array<mixed> $context Additional context for the log entry.
-	 * @param array<mixed> $extra Extra data for the log entry.
-	 */
-	public function create(string $channel, int $level, string $level_name, string $message, array $context = [], array $extra = []): self {
-		$entity             = new self();
-		$entity->channel    = $this->sanitize_text_field( $channel );
-		$entity->level      = $level;
-		$entity->level_name = $this->sanitize_text_field( $level_name );
-		$entity->message    = $this->sanitize_text_field( $message );
-		$entity->context    = $this->sanitize_array_field( $context );
-		$entity->extra      = $this->sanitize_array_field( $extra );
 
-		return $entity;
-	}
-
-	/**
-	 * Saves a new logging entity to the database. This is an insert-only operation.
-	 *
-	 * @return int|null The ID of the newly created log entry, or 0 on failure.
-	 */
-	public function save(): ?int {
-		global $wpdb;
-		$table_name = self::get_table_name();
-
+		// Note: Data sanitization is handled in the constructor..
 		$data = [
-			'channel'    => $this->get_channel(),
-			'level'      => $this->get_level(),
-			'level_name' => $this->get_level_name(),
-			'message'    => $this->get_message(),
-			'context'    => wp_json_encode( $this->get_context() ),
-			'extra'      => wp_json_encode( $this->get_extra() ),
-			'datetime'   => $this->get_datetime(),
+			'channel'    => $this->channel,
+			'level'      => $this->level,
+			'level_name' => $this->level_name,
+			'message'    => $this->message,
+			'context'    => wp_json_encode( $this->context ),
+			'extra'      => wp_json_encode( $this->extra ),
+			'datetime'   => $this->datetime,
 		];
 
 		$formats = [ '%s', '%d', '%s', '%s', '%s', '%s', '%s' ];
@@ -230,10 +233,21 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 
 		if ( $result ) {
 			$this->id = (int) $wpdb->insert_id;
-			return $this->get_id();
+			return $this->id;
 		}
 
-		return null;
+		return 0;
+	}
+
+	/**
+	 * Gets the name of the table for the log entry.
+	 *
+	 * @return string The name of the table for the log entry.
+	 */
+	public static function get_table_name(): string {
+		global $wpdb;
+		// @TODO - Check for multisite
+		return apply_filters( 'wpgraphql_logging_database_name', $wpdb->prefix . 'wpgraphql_logging' );
 	}
 
 	/**
