@@ -6,7 +6,8 @@ namespace WPGraphQL\Logging\Logger\Scheduler;
 
 use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
  * Data Deletion Scheduler class.
@@ -40,9 +41,11 @@ class DataDeletionScheduler {
 	protected static ?DataDeletionScheduler $instance = null;
 
 	/**
-	 * Private constructor to prevent direct instantiation.
+	 * Constructor.
+	 *
+	 * @param \WPGraphQL\Logging\Logger\Api\LogServiceInterface $log_service The log service.
 	 */
-	protected function __construct(readonly LogsRepository $repository) {
+	protected function __construct(protected LogServiceInterface $log_service) {
 		$config_helper = ConfigurationHelper::get_instance();
 		$this->config  = $config_helper->get_data_management_config();
 	}
@@ -53,7 +56,8 @@ class DataDeletionScheduler {
 	public static function init(): self {
 
 		if ( null === self::$instance ) {
-			self::$instance = new self( new LogsRepository() );
+			$log_service    = LogStoreService::get_log_service();
+			self::$instance = new self( $log_service );
 			self::$instance->setup();
 		}
 
@@ -131,6 +135,6 @@ class DataDeletionScheduler {
 	protected function delete_old_logs(int $retention_days): void {
 		$date_time = new \DateTime();
 		$date_time->modify( "-{$retention_days} days" );
-		$this->repository->delete_log_older_than( $date_time );
+		$this->log_service->delete_entities_older_than( $date_time );
 	}
 }
