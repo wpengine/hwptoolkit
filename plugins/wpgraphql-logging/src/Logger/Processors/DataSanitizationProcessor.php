@@ -145,7 +145,8 @@ class DataSanitizationProcessor implements ProcessorInterface {
 		$current = &$data;
 		foreach ( $keys as $segment ) {
 			if ( ! is_array( $current ) || ! isset( $current[ $segment ] ) ) {
-				return null;
+				$null = null;
+				return $null;
 			}
 			$current = &$current[ $segment ];
 		}
