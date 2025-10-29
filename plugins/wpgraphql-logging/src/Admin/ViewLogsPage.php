@@ -245,10 +245,7 @@ class ViewLogsPage {
 	 */
 	protected function render_list_page(): void {
 		$list_table    = new ListTable( $this->get_log_service() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
-		$list_template = apply_filters(
-			'wpgraphql_logging_list_template',
-			__DIR__ . '/View/Templates/WPGraphQLLoggerList.php'
-		);
+		$list_template = __DIR__ . '/View/Templates/WPGraphQLLoggerList.php';
 		require_once $list_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 

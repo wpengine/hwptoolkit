@@ -232,21 +232,6 @@ add_filter( 'wpgraphql_logging_filter_redirect_url', function( $redirect_url, $f
 }, 10, 2 );
 ```
 
-#### Filter: `wpgraphql_logging_list_template`
-Filters the template path for the logs list.
-
-Parameters:
-- `$template_path` (string)
-
-Returns: string
-
-Example:
-```php
-add_filter( 'wpgraphql_logging_list_template', function( $template_path ) {
-	return plugin_dir_path( __FILE__ ) . 'templates/custom-list.php';
-});
-```
-
 #### Filter: `wpgraphql_logging_view_template`
 Filters the template path for the single log view.
 
@@ -338,22 +323,6 @@ add_filter( 'wpgraphql_logging_logs_table_where_clauses', function( $where, $req
 	return $where;
 }, 10, 2 );
 ```
-
-#### Filter: `wpgraphql_logging_filters_template`
-Filters the template path for the filters UI.
-
-Parameters:
-- `$template_path` (string)
-
-Returns: string
-
-Example:
-```php
-add_filter( 'wpgraphql_logging_filters_template', function( $template_path ) {
-	return plugin_dir_path( __FILE__ ) . 'templates/custom-filters.php';
-});
-```
-
 ---
 
 ### Class: `View\Download\DownloadLogService`
