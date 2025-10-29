@@ -245,7 +245,6 @@ class ViewLogsPage {
 	 * Renders the list page for log entries.
 	 */
 	protected function render_list_page(): void {
-		// Variable required for list template.
 		$list_table    = new ListTable( new LogsRepository() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
 		$list_template = apply_filters(
 			'wpgraphql_logging_list_template',
@@ -263,7 +262,7 @@ class ViewLogsPage {
 		}
 
 		$log_id     = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$downloader = new DownloadLogService();
+		$downloader = new DownloadLogService( $this->get_log_service() );
 		$downloader->generate_csv( $log_id );
 	}
 

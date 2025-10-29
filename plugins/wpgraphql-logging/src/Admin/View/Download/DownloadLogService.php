@@ -6,7 +6,7 @@ namespace WPGraphQL\Logging\Admin\View\Download;
 
 use League\Csv\Writer;
 use WPGraphQL\Logging\Logger\Api\LogEntityInterface;
-use WPGraphQL\Logging\Logger\Store\LogStoreService;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 
 /**
  * Service for handling log downloads.
@@ -16,6 +16,14 @@ use WPGraphQL\Logging\Logger\Store\LogStoreService;
  * @since 0.0.1
  */
 class DownloadLogService {
+	/**
+	 * Constructor.
+	 *
+	 * @param \WPGraphQL\Logging\Logger\Api\LogServiceInterface $log_service The log service.
+	 */
+	public function __construct(protected readonly LogServiceInterface $log_service) {
+	}
+
 	/**
 	 * Generates and serves a CSV file for a single log entry.
 	 *
@@ -30,9 +38,7 @@ class DownloadLogService {
 			wp_die( esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) );
 		}
 
-
-		$log_service = LogStoreService::get_log_service();
-		$log         = $log_service->find_entity_by_id( $log_id );
+		$log = $this->log_service->find_entity_by_id( $log_id );
 
 		if ( is_null( $log ) ) {
 			wp_die( esc_html__( 'Log not found.', 'wpgraphql-logging' ) );

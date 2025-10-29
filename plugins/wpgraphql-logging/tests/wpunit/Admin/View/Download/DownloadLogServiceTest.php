@@ -21,7 +21,7 @@ use Mockery;
 class DownloadLogServiceTest extends WPTestCase {
 
 	private DownloadLogService $service;
-	private WordPressDatabaseLogService $repository;
+	private WordPressDatabaseLogService $log_service;
 
 	protected array $fixture =  [
 		'channel'    => 'wpgraphql_logging',
@@ -54,8 +54,8 @@ class DownloadLogServiceTest extends WPTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
-		$this->service = new DownloadLogService();
-		$this->repository = new WordPressDatabaseLogService();
+		$this->log_service = new WordPressDatabaseLogService();
+		$this->service = new DownloadLogService($this->log_service);
 	}
 
 	public function set_as_admin(): void {
@@ -107,11 +107,11 @@ class DownloadLogServiceTest extends WPTestCase {
 		$entity->shouldReceive('get_extra')->andReturn($this->fixture['extra']);
 
 		// Mock the repository to return our mocked entity
-		$this->repository = \Mockery::mock(WordPressDatabaseLogService::class);
-		$this->repository->shouldReceive('find_entity_by_id')->with(123)->andReturn($entity);
+		$this->log_service = \Mockery::mock(WordPressDatabaseLogService::class);
+		$this->log_service->shouldReceive('find_entity_by_id')->with(123)->andReturn($entity);
 
 		// Inject the mocked repository into the service
-		$this->service = new DownloadLogService($this->repository);
+		$this->service = new DownloadLogService($this->log_service);
 
 		$log_id = 123;
 
