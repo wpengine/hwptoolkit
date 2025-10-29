@@ -10,9 +10,7 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Events\QueryActionLogger;
 use WPGraphQL\Logging\Events\Events;
 use GraphQL\Executor\ExecutionResult;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
 use WPGraphQL\Logging\Logger\LoggerService;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use Monolog\Level;
 use WPGraphQL;
@@ -20,6 +18,9 @@ use GraphQL\Error\Error;
 use GraphQL\Type\SchemaConfig;
 use WPGraphQL\WPSchema;
 use WPGraphQL\Request;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
+use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 
 /**
  * Tests for the QueryActionLogger class.
@@ -30,19 +31,19 @@ use WPGraphQL\Request;
  */
 class QueryActionLoggerTest extends WPTestCase {
 
-	protected LogsRepository $repository;
-
 	protected LoggerService $logger;
+
+	protected LogServiceInterface $log_service;
 
 	public function setUp(): void {
 		parent::setUp();
-		$this->repository = new LogsRepository();
+		$this->log_service = LogStoreService::get_log_service();
 		$this->logger = LoggerService::get_instance();
 	}
 
 	public function tearDown(): void {
 		parent::tearDown();
-		$this->repository->delete_all();
+		$this->log_service->delete_all_entities();
 	}
 
 	public function create_instance(array $config) : QueryActionLogger {
@@ -50,7 +51,7 @@ class QueryActionLoggerTest extends WPTestCase {
 	}
 
 	public function get_log_count(): int {
-		return $this->repository->get_log_count([]);
+		return $this->log_service->count_entities_by_where([]);
 	}
 
 	public function assert_log_count(int $expected_count): void {
@@ -148,12 +149,9 @@ class QueryActionLoggerTest extends WPTestCase {
 		$this->assert_log_count(1);
 
 		// Check that the additional context is present in the log
-		$logs = $this->repository->get_logs([]);
+		$logs = $this->log_service->find_entities_by_where([]);
 		$this->assertCount(1, $logs);
 		$log = $logs[0];
-		$this->assertInstanceOf(DatabaseEntity::class, $log);
-
-
 		$this->assertEquals(Level::Debug->value, $log->get_level());
 		$this->assertArrayHasKey('custom_key', $log->get_context());
 		$this->assertEquals('custom_value', $log->get_context()['custom_key']);
@@ -293,10 +291,10 @@ class QueryActionLoggerTest extends WPTestCase {
 		$this->assert_log_count(1);
 
 		// Check that the additional context is present in the log
-		$logs = $this->repository->get_logs([]);
+		$logs = $this->log_service->find_entities_by_where([]);
 		$this->assertCount(1, $logs);
 		$log = $logs[0];
-		$this->assertInstanceOf(DatabaseEntity::class, $log);
+		$this->assertInstanceOf(WordPressDatabaseEntity::class, $log);
 
 
 		$this->assertEquals(Level::Error->value, $log->get_level());
@@ -382,10 +380,10 @@ class QueryActionLoggerTest extends WPTestCase {
 
 
 		// Check for error level and context
-		$logs = $this->repository->get_logs([]);
+		$logs = $this->log_service->find_entities_by_where([]);
 		$this->assertCount(1, $logs);
 		$log = $logs[0];
-		$this->assertInstanceOf(DatabaseEntity::class, $log);
+		$this->assertInstanceOf(WordPressDatabaseEntity::class, $log);
 
 
 		$this->assertEquals(Level::Error->value, $log->get_level());
@@ -421,10 +419,10 @@ class QueryActionLoggerTest extends WPTestCase {
 
 
 		// Check for error level and context
-		$logs = $this->repository->get_logs([]);
+		$logs = $this->log_service->find_entities_by_where([]);
 		$this->assertCount(1, $logs);
 		$log = $logs[0];
-		$this->assertInstanceOf(DatabaseEntity::class, $log);
+		$this->assertInstanceOf(WordPressDatabaseEntity::class, $log);
 
 
 		$this->assertEquals(Level::Error->value, $log->get_level());
@@ -461,16 +459,14 @@ class QueryActionLoggerTest extends WPTestCase {
 
 
 		// Check for error level and context
-		$logs = $this->repository->get_logs([]);
+		$logs = $this->log_service->find_entities_by_where([]);
 		$this->assertCount(1, $logs);
 		$log = $logs[0];
-		$this->assertInstanceOf(DatabaseEntity::class, $log);
+		$this->assertInstanceOf(WordPressDatabaseEntity::class, $log);
 
 
 		$this->assertNotEquals(Level::Error->value, $log->get_level());
 		$this->assertArrayNotHasKey('errors', $log->get_context());
 	}
-
-
 
 }
