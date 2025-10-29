@@ -21,7 +21,7 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 	/**
 	 * The values for the where clause.
 	 *
-	 * @var array<string>
+	 * @var array<string|int|float>
 	 */
 	protected array $where_values = [];
 
@@ -52,10 +52,10 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 	 */
 	public function find_entity_by_id(int $id): ?LogEntityInterface {
 		global $wpdb;
-		$table_name = $this->get_table_name();
 
-		$query = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $id ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$row   = $wpdb->get_row( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$table_name = $this->get_table_name();
+		$query      = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $id ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row        = $wpdb->get_row( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( ! $row ) {
 			return null;
@@ -69,28 +69,53 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 	 *
 	 * @param array<string, mixed> $args The arguments for the where clause.
 	 *
+	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh, Generic.Metrics.CyclomaticComplexity.MaxExceeded
+	 *
 	 * @return array<\WPGraphQL\Logging\Logger\Api\LogEntityInterface> The found log entities.
 	 */
 	public function find_entities_by_where(array $args = []): array {
 		global $wpdb;
 
-		$this->where_values   = [];
+		// Reset the where values.
+		$this->where_values = [];
+
 		$sql                  = 'SELECT * FROM %i';
-		$this->where_values[] = sanitize_text_field( $this->get_table_name() );
+		$this->where_values[] = $this->get_table_name();
 		if ( isset( $args['where'] ) && is_array( $args['where'] ) ) {
-			$sql = $this->prepare_sql( $sql, $args['where'] );
+			$sql = $this->prepare_sql( $sql, $args['where'] ?? [] );
 		}
 
+		$allowed_columns = $this->get_allowed_columns();
+
+		// Validate the orderby column.
 		$orderby = $args['orderby'] ?? 'id';
-		$order   = $args['order'] ?? 'DESC';
-		$limit   = $args['number'] ?? 100;
-		$offset  = $args['offset'] ?? 0;
+		if ( ! in_array( $orderby, $allowed_columns, true ) ) {
+			$orderby = 'id';
+		}
+
+		$order = $args['order'] ?? 'DESC';
+		if ( ! in_array( $order, [ 'ASC', 'DESC' ], true ) ) {
+			$order = 'DESC';
+		}
+
+		$limit = $args['number'] ?? 100;
+		if ( ! is_numeric( $limit ) ) {
+			$limit = 100;
+		}
+		$limit = (int) $limit;
+
+		$offset = $args['offset'] ?? 0;
+		if ( ! is_numeric( $offset ) ) {
+			$offset = 0;
+		}
 
 		$sql                 .= " ORDER BY $orderby $order LIMIT %d, %d";
-		$this->where_values[] = (string) $offset;
-		$this->where_values[] = (string) $limit;
+		$this->where_values[] = $offset;
+		$this->where_values[] = $limit;
 
-		$results = $wpdb->get_results( $wpdb->prepare( $sql, $this->where_values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// We validate the parameters above, so we can use them directly.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $wpdb->prepare( $sql, $this->where_values ), ARRAY_A );
 
 		if ( empty( $results ) || ! is_array( $results ) ) {
 			return [];
@@ -167,8 +192,9 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 		$sql                = 'SELECT COUNT(*) FROM %i';
 		$this->where_values = [ $this->get_table_name() ];
 		$sql                = $this->prepare_sql( $sql, $args );
-		// @TODO - Fix this.
-		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $this->where_values ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// Values are validated above, so we can use them directly.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $this->where_values ) );
 	}
 
 	/**
@@ -211,8 +237,9 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 	 * @return string The prepared SQL query.
 	 */
 	protected function prepare_sql(string $sql, array $where_conditions): string {
-		$where_clauses  = [];
-		$safe_operators = $this->get_safe_operators();
+		$where_clauses   = [];
+		$safe_operators  = $this->get_safe_operators();
+		$allowed_columns = $this->get_allowed_columns();
 		foreach ( $where_conditions as $column => $condition ) {
 			if ( ! is_array( $condition ) || ! isset( $condition['column'] ) || ! isset( $condition['value'] ) || ! isset( $condition['operator'] ) ) {
 				continue;
@@ -222,6 +249,9 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 			if ( '' === $column ) {
 				continue;
 			}
+			if ( ! in_array( $column, $allowed_columns, true ) ) {
+				continue;
+			}
 			$value    = $condition['value'];
 			$operator = $condition['operator'];
 			if ( ! in_array( $operator, $safe_operators, true ) ) {
@@ -229,8 +259,8 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 			}
 
 			$where_clauses[]      = "%i $operator %s";
-			$this->where_values[] = sanitize_text_field( (string) $column );
-			$this->where_values[] = sanitize_text_field( (string) $value );
+			$this->where_values[] = $column;
+			$this->where_values[] = $value;
 		}
 
 		if ( ! empty( $where_clauses ) ) {
@@ -246,6 +276,15 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 	 * @return array<string> The safe operators.
 	 */
 	protected function get_safe_operators(): array {
-		return [ '=', '!=', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN' ];
+		return [ '=', '!=', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE' ];
+	}
+
+	/**
+	 * Gets the allowed columns for the database table.
+	 *
+	 * @return array<string>
+	 */
+	protected function get_allowed_columns(): array {
+		return [ 'id', 'datetime', 'level', 'level_name', 'channel', 'message' ];
 	}
 }
