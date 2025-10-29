@@ -9,12 +9,12 @@ import {
 } from "../utils";
 import { GET_POSTS_QUERY } from "../constants";
 
-test.describe("Exclude Sensitive Queries from Logging", () => {
+test.describe("Query Filtering & Data Privacy", () => {
 	test.beforeEach(async ({ admin }) => {
 		await resetPluginSettings(admin);
 	});
 
-	test("should exclude queries from logs when configured", async ({
+	test("excludes configured queries from logs", async ({
 		page,
 		admin,
 		request,
@@ -45,11 +45,7 @@ test.describe("Exclude Sensitive Queries from Logging", () => {
 		).toBeVisible();
 	});
 
-	test("should sanitize sensitive data in logs when sanitization is enabled", async ({
-		page,
-		admin,
-		request,
-	}) => {
+	test("sanitizes sensitive data in logs", async ({ page, admin, request }) => {
 		// Set up logging settings and execute a GraphQL query
 		await goToLoggingSettingsPage(admin);
 		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");

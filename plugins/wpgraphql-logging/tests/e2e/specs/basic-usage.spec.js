@@ -8,12 +8,12 @@ import {
 } from "../utils";
 import { GET_POSTS_QUERY } from "../constants";
 
-test.describe("Configure WPGraphQL Logging Plugin and Verify Logging Works", () => {
+test.describe("Basic Logging Usage", () => {
 	test.beforeEach(async ({ admin }) => {
 		await resetPluginSettings(admin);
 	});
 
-	test("should enable logging and verify GraphQL queries are being logged", async ({
+	test("enables logging and logs GraphQL queries", async ({
 		page,
 		admin,
 		request,
@@ -70,11 +70,7 @@ test.describe("Configure WPGraphQL Logging Plugin and Verify Logging Works", () 
 		await expect(page.locator("h1")).toContainText("WPGraphQL Logs");
 	});
 
-	test("should not log queries when logging is disabled", async ({
-		page,
-		admin,
-		request,
-	}) => {
+	test("does not log when disabled", async ({ page, admin, request }) => {
 		// Make sure there are no logs
 		await goToLogsListPage(admin);
 		await expect(
@@ -97,7 +93,7 @@ test.describe("Configure WPGraphQL Logging Plugin and Verify Logging Works", () 
 		).toBeVisible();
 	});
 
-	test("should download the log as CSV and verify the content", async ({
+	test("downloads log as CSV with correct content", async ({
 		page,
 		admin,
 		request,

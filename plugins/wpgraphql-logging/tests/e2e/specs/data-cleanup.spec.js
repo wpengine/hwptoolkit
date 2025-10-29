@@ -6,12 +6,12 @@ import {
 	switchToSettingsTab,
 } from "../utils";
 
-test.describe("Data Management - Configure Automatic Cleanup", () => {
+test.describe("Data Management", () => {
 	test.beforeEach(async ({ admin }) => {
 		await resetPluginSettings(admin);
 	});
 
-	test("should configure data deletion settings and verify they are saved", async ({
+	test("configures data deletion and verifies cron job", async ({
 		page,
 		admin,
 	}) => {
