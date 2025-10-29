@@ -7,7 +7,7 @@ namespace WPGraphQL\Logging\Logger\Handlers;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
 use Throwable;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
  * WordPress Database Handler for Monolog
@@ -27,7 +27,8 @@ class WordPressDatabaseHandler extends AbstractProcessingHandler {
 	 */
 	protected function write( LogRecord $record ): void {
 		try {
-			$entity = DatabaseEntity::create(
+			$log_service = LogStoreService::get_log_service();
+			$log_service->create_log_entity( // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 				$record->channel,
 				$record->level->value,
 				$this->get_record_name( $record ),
@@ -35,8 +36,6 @@ class WordPressDatabaseHandler extends AbstractProcessingHandler {
 				$record->context ?? [],
 				$record->extra ?? []
 			);
-
-			$entity->save();
 		} catch ( Throwable $e ) {
 			do_action( 'wpgraphql_logging_write_database_error', $e, $record );
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
