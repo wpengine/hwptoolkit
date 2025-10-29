@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\View\List;
 
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
+use DateTime;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
+use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 use WP_List_Table;
 
 // Include the WP_List_Table class if not already loaded.
@@ -33,11 +34,11 @@ class ListTable extends WP_List_Table {
 	/**
 	 * Constructor.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\LogsRepository $repository The logs repository.
+	 * @param \WPGraphQL\Logging\Logger\Api\LogServiceInterface $log_service The log service.
 	 * @param array<mixed>                                      $args Optional. An array of arguments.
 	 */
 	public function __construct(
-		public readonly LogsRepository $repository,
+		public readonly LogServiceInterface $log_service,
 		$args = []
 	) {
 		$args = wp_parse_args(
@@ -75,7 +76,7 @@ class ListTable extends WP_List_Table {
 		$current_page = $this->get_pagenum();
 		/** @psalm-suppress InvalidArgument */
 		$where       = $this->process_where( $_REQUEST );
-		$total_items = $this->repository->get_log_count( $where );
+		$total_items = $this->log_service->count_entities_by_where( $where );
 
 		$this->set_pagination_args(
 			[
@@ -97,8 +98,7 @@ class ListTable extends WP_List_Table {
 			$args['order'] = sanitize_text_field( wp_unslash( (string) $_REQUEST['order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 		$args['where'] = $where;
-
-		$this->items = $this->repository->get_logs( apply_filters( 'wpgraphql_logging_logs_table_query_args', $args ) );
+		$this->items   = $this->log_service->find_entities_by_where( apply_filters( 'wpgraphql_logging_logs_table_query_args', $args ) );
 	}
 
 	/**
@@ -148,15 +148,15 @@ class ListTable extends WP_List_Table {
 			// Remove redundant empty check since array_map always returns array.
 			foreach ( $ids as $id ) {
 				if ( $id > 0 ) { // Only process valid IDs.
-					$this->repository->delete( $id );
+					$this->log_service->delete_entity_by_id( $id );
 				}
 			}
 			$deleted_count = count( array_filter( $ids, static fn( $id ) => $id > 0 ) );
 		}
 
 		if ( 'delete_all' === $action ) {
-			$count_before_delete = $this->repository->get_log_count( [] );
-			$this->repository->delete_all();
+			$count_before_delete = $this->log_service->count_entities_by_where( [] );
+			$this->log_service->delete_all_entities();
 			$deleted_count = $count_before_delete;
 		}
 
@@ -224,15 +224,15 @@ class ListTable extends WP_List_Table {
 	/**
 	 * Get the default column value for a log entry.
 	 *
-	 * @param mixed|\WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
-	 * @param string                                                  $column_name The column name.
+	 * @param mixed|\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity $item The log entry item.
+	 * @param string                                                           $column_name The column name.
 	 *
 	 * @phpcs:disable Generic.Metrics.CyclomaticComplexity.MaxExceeded
 	 *
 	 * @return mixed The default column value or null.
 	 */
 	public function column_default( $item, $column_name ): mixed {
-		if ( ! $item instanceof DatabaseEntity ) {
+		if ( ! $item instanceof WordPressDatabaseEntity ) {
 			return null;
 		}
 
@@ -277,12 +277,12 @@ class ListTable extends WP_List_Table {
 	/**
 	 * Renders the checkbox column for a log entry.
 	 *
-	 * @param mixed|\WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
+	 * @param mixed|\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity $item The log entry item.
 	 *
 	 * @return string The rendered checkbox column or null.
 	 */
 	public function column_cb( $item ): string {
-		if ( ! $item instanceof DatabaseEntity ) {
+		if ( ! $item instanceof WordPressDatabaseEntity ) {
 			return '';
 		}
 		return sprintf(
@@ -294,11 +294,11 @@ class ListTable extends WP_List_Table {
 	/**
 	 * Renders the ID column for a log entry.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
+	 * @param \WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity $item The log entry item.
 	 *
 	 * @return string The rendered ID column or null.
 	 */
-	public function column_id( DatabaseEntity $item ): string {
+	public function column_id( WordPressDatabaseEntity $item ): string {
 		$url     = \WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG;
 		$actions = [
 			'view'     => sprintf(
@@ -327,11 +327,11 @@ class ListTable extends WP_List_Table {
 	/**
 	 * Renders the query column for a log entry.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
+	 * @param \WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity $item The log entry item.
 	 *
 	 * @return string|null The rendered query column or null.
 	 */
-	public function column_query( DatabaseEntity $item ): ?string {
+	public function column_query( WordPressDatabaseEntity $item ): ?string {
 		$extra = $item->get_extra();
 		return ! empty( $extra['wpgraphql_query'] ) ? esc_html( $extra['wpgraphql_query'] ) : '';
 	}
@@ -341,7 +341,7 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @return string The query
 	 */
-	public function get_query(DatabaseEntity $item): string {
+	public function get_query(WordPressDatabaseEntity $item): string {
 		$query = $item->get_query();
 		if ( ! is_string( $query ) || '' === $query ) {
 			return '';
@@ -354,7 +354,7 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @return string The event
 	 */
-	public function get_event(DatabaseEntity $item): string {
+	public function get_event(WordPressDatabaseEntity $item): string {
 
 		$extra = $item->get_extra();
 		return ! empty( $extra['wpgraphql_event'] ) ? esc_html( $extra['wpgraphql_event'] ) : $item->get_message();
@@ -363,11 +363,11 @@ class ListTable extends WP_List_Table {
 	/**
 	 * Gets the event from extra.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $item The log entry item.
+	 * @param \WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity $item The log entry item.
 	 *
 	 * @return int The event
 	 */
-	public function get_process_id(DatabaseEntity $item): int {
+	public function get_process_id(WordPressDatabaseEntity $item): int {
 		$extra = $item->get_extra();
 		return ! empty( $extra['process_id'] ) ? (int) $extra['process_id'] : 0;
 	}
@@ -377,7 +377,7 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @return string The event
 	 */
-	public function get_memory_usage(DatabaseEntity $item): string {
+	public function get_memory_usage(WordPressDatabaseEntity $item): string {
 		$extra = $item->get_extra();
 		return ! empty( $extra['memory_peak_usage'] ) ? esc_html( $extra['memory_peak_usage'] ) : '';
 	}
@@ -387,7 +387,7 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @return string The event
 	 */
-	public function get_request_headers(DatabaseEntity $item): string {
+	public function get_request_headers(WordPressDatabaseEntity $item): string {
 		$extra           = $item->get_extra();
 		$request_headers = $extra['request_headers'] ?? [];
 		if ( empty( $request_headers ) || ! is_array( $request_headers ) ) {
@@ -420,7 +420,7 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @param array<string, mixed> $request The request data.
 	 *
-	 * @return array<string> The where clauses.
+	 * @return array<string, string> The where clauses.
 	 */
 	protected function process_where(array $request): array {
 		$where_clauses = [];
@@ -431,19 +431,31 @@ class ListTable extends WP_List_Table {
 
 		if ( ! empty( $request['level_filter'] ) ) {
 			$level           = sanitize_text_field( wp_unslash( (string) $request['level_filter'] ) );
-			$where_clauses[] = "level_name = '" . $level . "'";
+			$where_clauses[] = [
+				'column'   => 'level_name',
+				'operator' => '=',
+				'value'    => $level,
+			];
 		}
 
 		if ( ! empty( $request['start_date'] ) ) {
 			$start_date      = sanitize_text_field( $request['start_date'] );
-			$date            = new \DateTime( $start_date );
-			$where_clauses[] = "datetime >= '" . $date->format( 'Y-m-d H:i:s' ) . "'";
+			$date            = new DateTime( $start_date );
+			$where_clauses[] = [
+				'column'   => 'datetime',
+				'operator' => '>=',
+				'value'    => $date->format( 'Y-m-d H:i:s' ),
+			];
 		}
 
 		if ( ! empty( $request['end_date'] ) ) {
 			$end_date        = sanitize_text_field( $request['end_date'] );
-			$date            = new \DateTime( $end_date );
-			$where_clauses[] = "datetime <= '" . $date->format( 'Y-m-d H:i:s' ) . "'";
+			$date            = new DateTime( $end_date );
+			$where_clauses[] = [
+				'column'   => 'datetime',
+				'operator' => '<=',
+				'value'    => $date->format( 'Y-m-d H:i:s' ),
+			];
 		}
 
 		// Allow developers to modify the where clauses.

@@ -6,8 +6,8 @@ namespace WPGraphQL\Logging\Tests\Admin\View\List;
 
 
 use WPGraphQL\Logging\Admin\View\List\ListTable;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
+use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
+use WPGraphQL\Logging\Logger\Database\WordPressDatabaseLogService;
 use Codeception\TestCase\WPTestCase;
 use Mockery;
 
@@ -21,13 +21,13 @@ use Mockery;
 class ListTableTest extends WPTestCase {
 
 	private ListTable $list_table;
-	private LogsRepository $repository;
+	private WordPressDatabaseLogService $log_service;
 
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->repository = Mockery::mock(LogsRepository::class);
-		$this->list_table = new ListTable($this->repository);
+		$this->log_service = Mockery::mock(WordPressDatabaseLogService::class);
+		$this->list_table = new ListTable($this->log_service);
 	}
 
 	public function tearDown(): void {
@@ -42,7 +42,7 @@ class ListTableTest extends WPTestCase {
 			'ajax'     => true,
 		];
 
-		$list_table = new ListTable($this->repository, $args);
+		$list_table = new ListTable($this->log_service, $args);
 
 		$this->assertInstanceOf(ListTable::class, $list_table);
 	}
@@ -91,7 +91,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_cb_returns_checkbox_for_valid_item(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_id')->andReturn(123);
 
 		$result = $this->list_table->column_cb($entity);
@@ -107,7 +107,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_id_returns_formatted_id_with_actions(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_id')->andReturn(456);
 
 		$result = $this->list_table->column_id($entity);
@@ -124,7 +124,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_date_for_date_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_datetime')->andReturn('2023-01-01 12:00:00');
 
 		$result = $this->list_table->column_default($entity, 'date');
@@ -133,7 +133,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_level_for_level_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_level')->andReturn(200);
 
 		$result = $this->list_table->column_default($entity, 'level');
@@ -142,7 +142,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_get_query_returns_formatted_query(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_query')->andReturn('{ user { id name } }');
 
 		$result = $this->list_table->get_query($entity);
@@ -152,7 +152,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_get_query_returns_empty_string_for_empty_query(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_query')->andReturn('');
 
 		$result = $this->list_table->get_query($entity);
@@ -161,7 +161,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_get_event_returns_event_from_extra(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['wpgraphql_event' => 'query_executed']);
 
 		$result = $this->list_table->get_event($entity);
@@ -170,7 +170,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_get_event_returns_message_when_no_event_in_extra(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn([]);
 		$entity->shouldReceive('get_message')->andReturn('Default message');
 
@@ -180,7 +180,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_get_process_id_returns_process_id_from_extra(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['process_id' => '12345']);
 
 		$result = $this->list_table->get_process_id($entity);
@@ -189,7 +189,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_get_process_id_returns_zero_when_not_in_extra(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn([]);
 
 		$result = $this->list_table->get_process_id($entity);
@@ -198,7 +198,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_get_memory_usage_returns_memory_from_extra(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['memory_peak_usage' => '2MB']);
 
 		$result = $this->list_table->get_memory_usage($entity);
@@ -208,7 +208,7 @@ class ListTableTest extends WPTestCase {
 
 	public function test_get_request_headers_returns_formatted_headers(): void {
 		$headers = ['Content-Type' => 'application/json', 'Authorization' => 'Bearer token'];
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['request_headers' => $headers]);
 
 		$result = $this->list_table->get_request_headers($entity);
@@ -219,7 +219,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_get_request_headers_returns_empty_string_for_empty_headers(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn([]);
 
 		$result = $this->list_table->get_request_headers($entity);
@@ -268,7 +268,13 @@ class ListTableTest extends WPTestCase {
 		$request = ['level_filter' => 'ERROR'];
 		$result = $method->invoke($this->list_table, $request);
 
-		$this->assertContains("level_name = 'ERROR'", $result);
+		$this->assertSame([
+			[
+				'column' => 'level_name',
+				'operator' => '=',
+				'value' => 'ERROR',
+			],
+		], $result);
 	}
 
 	public function test_process_where_handles_date_filters(): void {
@@ -277,19 +283,28 @@ class ListTableTest extends WPTestCase {
 		$method->setAccessible(true);
 
 		$request = [
-			'start_date' => '2023-01-01',
-			'end_date' => '2023-12-31'
+			'start_date' => '2025-01-01',
+			'end_date' => '2025-12-31'
 		];
 		$result = $method->invoke($this->list_table, $request);
 
-		$this->assertCount(2, $result);
-		$this->assertStringContainsString("datetime >= '2023-01-01", $result[0]);
-		$this->assertStringContainsString("datetime <= '2023-12-31", $result[1]);
+		$this->assertSame([
+			[
+				'column' => 'datetime',
+				'operator' => '>=',
+				'value' => '2025-01-01 00:00:00',
+			],
+			[
+				'column' => 'datetime',
+				'operator' => '<=',
+				'value' => '2025-12-31 00:00:00',
+			],
+		], $result);
 	}
 
 	public function test_prepare_items_sets_pagination_args(): void {
-		$this->repository->shouldReceive('get_log_count')->andReturn(50);
-		$this->repository->shouldReceive('get_logs')->andReturn([]);
+		$this->log_service->shouldReceive('count_entities_by_where')->andReturn(50);
+		$this->log_service->shouldReceive('find_entities_by_where')->andReturn([]);
 
 		$_REQUEST = [];
 
@@ -300,8 +315,8 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_prepare_items_handles_orderby_and_order_params(): void {
-		$this->repository->shouldReceive('get_log_count')->andReturn(10);
-		$this->repository->shouldReceive('get_logs')->andReturn([]);
+		$this->log_service->shouldReceive('count_entities_by_where')->andReturn(10);
+		$this->log_service->shouldReceive('find_entities_by_where')->andReturn([]);
 
 		$_REQUEST = [
 			'orderby' => 'date',
@@ -315,7 +330,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_query_returns_query_from_extra(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['wpgraphql_query' => '{ user { id name } }']);
 
 		$result = $this->list_table->column_query($entity);
@@ -324,7 +339,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_channel_for_channel_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_channel')->andReturn('wpgraphql');
 
 		$result = $this->list_table->column_default($entity, 'channel');
@@ -333,7 +348,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_level_name_for_level_name_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_level_name')->andReturn('ERROR');
 
 		$result = $this->list_table->column_default($entity, 'level_name');
@@ -342,7 +357,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_message_for_message_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_message')->andReturn('Test log message');
 
 		$result = $this->list_table->column_default($entity, 'message');
@@ -351,7 +366,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_event_for_event_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['wpgraphql_event' => 'query_executed']);
 
 		$result = $this->list_table->column_default($entity, 'event');
@@ -360,7 +375,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_process_id_for_process_id_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['process_id' => '98765']);
 
 		$result = $this->list_table->column_default($entity, 'process_id');
@@ -369,7 +384,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_memory_usage_for_memory_usage_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['memory_peak_usage' => '5MB']);
 
 		$result = $this->list_table->column_default($entity, 'memory_usage');
@@ -378,7 +393,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_query_for_wpgraphql_query_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_query')->andReturn('{ posts { id title } }');
 
 		$result = $this->list_table->column_default($entity, 'wpgraphql_query');
@@ -389,7 +404,7 @@ class ListTableTest extends WPTestCase {
 
 	public function test_column_default_returns_headers_for_request_headers_column(): void {
 		$headers = ['User-Agent' => 'Test Agent', 'Accept' => 'application/json'];
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 		$entity->shouldReceive('get_extra')->andReturn(['request_headers' => $headers]);
 
 		$result = $this->list_table->column_default($entity, 'request_headers');
@@ -400,7 +415,7 @@ class ListTableTest extends WPTestCase {
 	}
 
 	public function test_column_default_returns_empty_string_for_unknown_column(): void {
-		$entity = Mockery::mock(DatabaseEntity::class);
+		$entity = Mockery::mock(WordPressDatabaseEntity::class);
 
 		$result = $this->list_table->column_default($entity, 'unknown_column');
 

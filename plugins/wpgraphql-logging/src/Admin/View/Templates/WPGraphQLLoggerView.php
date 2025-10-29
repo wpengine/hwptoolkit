@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * @package WPGraphQL\Logging
  *
- * @var \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log
+ * @var \WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity $log
  *
  * @since 0.0.1
  */

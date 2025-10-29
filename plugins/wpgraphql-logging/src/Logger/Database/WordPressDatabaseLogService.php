@@ -77,15 +77,19 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 		$this->where_values   = [];
 		$sql                  = 'SELECT * FROM %i';
 		$this->where_values[] = sanitize_text_field( $this->get_table_name() );
-		$sql                  = $this->prepare_sql( $sql, $args );
+		if ( isset( $args['where'] ) && is_array( $args['where'] ) ) {
+			$sql = $this->prepare_sql( $sql, $args['where'] );
+		}
 
-		// @TODO
-		// Add the order by and limit to the SQL query.
-		// $sql     .= " ORDER BY $orderby $order LIMIT %d, %d";
-		// $values[] = $offset;
-		// $values[] = $limit;
-		// $query    = $wpdb->prepare( $sql, $values );
-		// @TODO - Fix this.
+		$orderby = $args['orderby'] ?? 'id';
+		$order   = $args['order'] ?? 'DESC';
+		$limit   = $args['number'] ?? 100;
+		$offset  = $args['offset'] ?? 0;
+
+		$sql                 .= " ORDER BY $orderby $order LIMIT %d, %d";
+		$this->where_values[] = (string) $offset;
+		$this->where_values[] = (string) $limit;
+
 		$results = $wpdb->get_results( $wpdb->prepare( $sql, $this->where_values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( empty( $results ) || ! is_array( $results ) ) {
@@ -177,10 +181,11 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 	/**
 	 * Prepares the SQL query.
 	 *
-	 * @param string               $sql The SQL query template.
-	 * @param array<string, mixed> $where_conditions The where conditions.
+	 * @param string                                                        $sql The SQL query template.
+	 * @param array<array{column: string, operator: string, value: string}> $where_conditions The where conditions.
 	 *
 	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
+	 * @phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
 	 *
 	 * @return string The prepared SQL query.
 	 */
@@ -188,12 +193,16 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 		$where_clauses  = [];
 		$safe_operators = $this->get_safe_operators();
 		foreach ( $where_conditions as $column => $condition ) {
-			if ( ! is_array( $condition ) || ! isset( $condition['value'] ) || ! isset( $condition['operator'] ) ) {
+			if ( ! is_array( $condition ) || ! isset( $condition['column'] ) || ! isset( $condition['value'] ) || ! isset( $condition['operator'] ) ) {
 				continue;
 			}
 
-			$value    = $condition['value'] ?? '';
-			$operator = $condition['operator'] ?? '';
+			$column = $condition['column'];
+			if ( '' === $column ) {
+				continue;
+			}
+			$value    = $condition['value'];
+			$operator = $condition['operator'];
 			if ( ! in_array( $operator, $safe_operators, true ) ) {
 				continue;
 			}

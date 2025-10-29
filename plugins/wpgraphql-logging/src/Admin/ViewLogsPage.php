@@ -7,7 +7,6 @@ namespace WPGraphQL\Logging\Admin;
 use WPGraphQL\Logging\Admin\View\Download\DownloadLogService;
 use WPGraphQL\Logging\Admin\View\List\ListTable;
 use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
 use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
@@ -245,7 +244,7 @@ class ViewLogsPage {
 	 * Renders the list page for log entries.
 	 */
 	protected function render_list_page(): void {
-		$list_table    = new ListTable( new LogsRepository() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
+		$list_table    = new ListTable( $this->get_log_service() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
 		$list_template = apply_filters(
 			'wpgraphql_logging_list_template',
 			__DIR__ . '/View/Templates/WPGraphQLLoggerList.php'
