@@ -9,8 +9,7 @@ The WPGraphQL Logging subsystem is built on [Monolog](https://github.com/Seldaek
 - [Logger\Handlers\WordPressDatabaseHandler](#class-loggerhandlerswordpressdatabasehandler)
 - [Logger\Processors\RequestHeadersProcessor](#class-loggerprocessorsrequestheadersprocessor)
 - [Logger\Processors\DataSanitizationProcessor](#class-loggerprocessorsdatasanitizationprocessor)
-- [Logger\Database\DatabaseEntity](#class-loggerdatabasedatabaseentity)
-- [Logger\Database\LogsRepository](#class-loggerdatabaselogsrepository)
+- [Logger\Database\WordPressDatabaseEntity](#class-loggerdatabasewordpressdatabaseentity)
 - [Logger\Scheduler\DataDeletionScheduler](#class-loggerschedulerdatadeletionscheduler)
 - [Quick Start](#quick-start)
 - [Available Log Levels](#available-log-levels)
@@ -217,7 +216,7 @@ Returns: Monolog\LogRecord
 
 ---
 
-### Class: `Logger\Database\DatabaseEntity`
+### Class: `Logger\Database\WordPressDatabaseEntity`
 Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Logger/Database/DatabaseEntity.php>
 
 Represents a single log entry and provides persistence helpers.
@@ -257,16 +256,6 @@ add_filter( 'wpgraphql_logging_allowed_orderby_columns', function( array $column
 ```
 
 **Note:** If an invalid column is requested, the query will fallback to ordering by `id` (default).
-
-
----
-
-### Class: `Logger\Database\LogsRepository`
-Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Logger/Database/LogsRepository.php>
-
-Query and mutation helpers for log entries.
-
-Hooks: None.
 
 
 ---

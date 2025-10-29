@@ -304,7 +304,7 @@ Filters the rendered value for each column.
 
 Parameters:
 - `$value` (mixed)
-- `$item` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+- `$item` (\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity)
 - `$column_name` (string)
 
 Returns: mixed
@@ -380,7 +380,7 @@ Filters the CSV column headers.
 Parameters:
 - `$headers` (array)
 - `$log_id` (int)
-- `$log` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+- `$log` (\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity)
 
 Returns: array
 
@@ -397,7 +397,7 @@ Filters the CSV row values.
 Parameters:
 - `$content` (array)
 - `$log_id` (int)
-- `$log` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+- `$log` (\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity)
 
 Returns: array
 
