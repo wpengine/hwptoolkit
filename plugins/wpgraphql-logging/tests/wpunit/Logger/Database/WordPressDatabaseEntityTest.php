@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Tests\Logger\Database;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
-use DateTimeImmutable;
 use ReflectionClass;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 use Mockery;
 
 /**
- * Test for the DatabaseEntity
+ * Test for the WordPressDatabaseEntity
  *
  * @package WPGraphQL\Logging
  * @since 0.0.1
  */
-class DatabaseEntityTest extends WPTestCase
+class WordPressDatabaseEntityTest extends WPTestCase
 {
 
     public function setUp(): void
@@ -30,16 +29,44 @@ class DatabaseEntityTest extends WPTestCase
     {
         $this->drop_table();
         parent::tearDown();
+		Mockery::close();
     }
 
     private function drop_table(): void
     {
-        DatabaseEntity::drop_table();
+        global $wpdb;
+        $table_name = WordPressDatabaseEntity::get_table_name();
+        $wpdb->query("DROP TABLE IF EXISTS {$table_name}");
     }
 
     private function create_table(): void
     {
-	    DatabaseEntity::create_table();
+		global $wpdb;
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        $schema = WordPressDatabaseEntity::get_schema();
+        dbDelta($schema);
+
+		if ($wpdb->last_error) {
+			$this->fail("dbDelta failed: " . $wpdb->last_error);
+		}
+    }
+
+    /**
+     * Helper to recursively sanitize an array using sanitize_text_field on string values.
+     *
+     * @param array<mixed> $data The array to sanitize.
+     * @return array<mixed> The sanitized array.
+     */
+    private function sanitize_array(array $data): array
+    {
+        foreach ($data as &$value) {
+            if (is_string($value)) {
+                $value = sanitize_text_field($value);
+            } elseif (is_array($value)) {
+                $value = $this->sanitize_array($value);
+            }
+        }
+        return $data;
     }
 
     public function test_save_method_inserts_log_into_database(): void
@@ -75,30 +102,43 @@ class DatabaseEntityTest extends WPTestCase
 		];
 
         // Create and save the entity
-        $entity = DatabaseEntity::create(...$log_data);
+        $entity = new WordPressDatabaseEntity(
+            $log_data['channel'],
+            $log_data['level'],
+            $log_data['level_name'],
+            $log_data['message'],
+            $log_data['context'],
+            $log_data['extra']
+        );
         $insert_id = $entity->save();
 
 		$this->assertIsInt( $insert_id );
         $this->assertGreaterThan(0, $insert_id, 'The save method should return a positive insert ID.');
 
-		$entity = DatabaseEntity::find_by_id($insert_id);
-		$this->assertInstanceOf(DatabaseEntity::class, $entity, 'The find method should return an instance of DatabaseEntity.');
-		$this->assertEquals($log_data['channel'], $entity->get_channel(), 'The channel should match the saved data.');
-		$this->assertEquals($log_data['level'], $entity->get_level(), 'The level should match the saved data.');
-		$this->assertEquals($log_data['level_name'], $entity->get_level_name(), 'The level name should match the saved data.');
-		$this->assertEquals($log_data['message'], $entity->get_message(), 'The message should match the saved data.');
-		$this->assertEquals($log_data['context'], $entity->get_context(), 'The context should match the saved data.');
-		$this->assertEquals($log_data['extra'], $entity->get_extra(), 'The extra data should match the saved data.');
+		// Retrieve the log directly from the database
+        $table_name = WordPressDatabaseEntity::get_table_name();
+        $retrieved_log = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d", $insert_id), ARRAY_A);
 
-		$this->assertNotEmpty($entity->get_datetime(), 'The datetime should not be empty.');
-		$this->assertIsInt($entity->get_id(), 'The ID should be an integer.');
-		$this->assertGreaterThan(0, $entity->get_id(), 'The ID should be greater than 0.');
-	}
+        $this->assertIsArray($retrieved_log, 'The log should be retrieved from the database.');
 
-	public function test_find_returns_null_for_nonexistent_id(): void
-	{
-		$entity = DatabaseEntity::find_by_id(999999);
-		$this->assertNull($entity, 'find_by_id() should return null for a non-existent ID.');
+        $entity_from_db = WordPressDatabaseEntity::from_array($retrieved_log);
+
+		$this->assertInstanceOf(WordPressDatabaseEntity::class, $entity_from_db, 'from_array should return an instance of WordPressDatabaseEntity.');
+		$this->assertEquals($log_data['channel'], $entity_from_db->get_channel(), 'The channel should match the saved data.');
+		$this->assertEquals($log_data['level'], $entity_from_db->get_level(), 'The level should match the saved data.');
+		$this->assertEquals($log_data['level_name'], $entity_from_db->get_level_name(), 'The level name should match the saved data.');
+		$this->assertEquals($log_data['message'], $entity_from_db->get_message(), 'The message should match the saved data.');
+
+        // For context and extra, we need to compare them after sanitization is applied on the original data.
+        $sanitized_context = $this->sanitize_array($log_data['context']);
+        $sanitized_extra = $this->sanitize_array($log_data['extra']);
+
+		$this->assertEquals($sanitized_context, $entity_from_db->get_context(), 'The context should match the saved data.');
+		$this->assertEquals($sanitized_extra, $entity_from_db->get_extra(), 'The extra data should match the saved data.');
+
+		$this->assertNotEmpty($entity_from_db->get_datetime(), 'The datetime should not be empty.');
+		$this->assertIsInt($entity_from_db->get_id(), 'The ID should be an integer.');
+		$this->assertGreaterThan(0, $entity_from_db->get_id(), 'The ID should be greater than 0.');
 	}
 
    /**
@@ -107,7 +147,7 @@ class DatabaseEntityTest extends WPTestCase
     */
    public function test_sanitize_array_field_method(): void
    {
-       $reflection = new ReflectionClass(DatabaseEntity::class);
+       $reflection = new ReflectionClass(WordPressDatabaseEntity::class);
        $method = $reflection->getMethod('sanitize_array_field');
        $method->setAccessible(true);
 
@@ -131,12 +171,13 @@ class DatabaseEntityTest extends WPTestCase
            ],
        ];
 
-       $clean_array = $method->invoke($this->entity_instance, $dirty_array);
+       $entity_instance = new WordPressDatabaseEntity('test', 100, 'DEBUG', 'test message');
+       $clean_array = $method->invoke($entity_instance, $dirty_array);
 
        $this->assertEquals($expected_clean_array, $clean_array);
    }
 
-       /**
+    /**
      * @test
      * It should return 0 when the database insert operation fails.
      *
@@ -148,7 +189,7 @@ class DatabaseEntityTest extends WPTestCase
         // 1. Define a callback that will force the DB query to fail.
         $force_fail_callback = function ($query) {
             // Check if this is the specific INSERT query we want to fail.
-            if (strpos($query, 'INSERT INTO `' . DatabaseEntity::get_table_name() . '`') !== false) {
+            if (strpos($query, 'INSERT INTO `' . WordPressDatabaseEntity::get_table_name() . '`') !== false) {
                 // Returning a non-string value like `false` will cause the
                 // $wpdb->insert() method to fail and return false.
                 return false;
@@ -161,7 +202,7 @@ class DatabaseEntityTest extends WPTestCase
         add_filter('query', $force_fail_callback);
 
         // 3. Create a valid entity that we will attempt to save.
-        $entity = DatabaseEntity::create(
+        $entity = new WordPressDatabaseEntity(
             'failure_test',
             500,
             'CRITICAL',
@@ -180,7 +221,7 @@ class DatabaseEntityTest extends WPTestCase
 
 	public function test_get_query() : void
 	{
-		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity = Mockery::mock(WordPressDatabaseEntity::class)->makePartial();
 		$mockEntity->shouldReceive('get_context')->andReturn([
 			'query' => 'query GetAllPosts { posts { nodes { title content } } }'
 		]);
@@ -193,7 +234,7 @@ class DatabaseEntityTest extends WPTestCase
 
 	public function test_get_query_in_request() : void
 	{
-		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity = Mockery::mock(WordPressDatabaseEntity::class)->makePartial();
 		$mockEntity->shouldReceive('get_context')->andReturn([
 			'request' => [
 				'params' => [
@@ -210,7 +251,7 @@ class DatabaseEntityTest extends WPTestCase
 
 	public function test_get_invalid_query() : void
 	{
-		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity = Mockery::mock(WordPressDatabaseEntity::class)->makePartial();
 		$mockEntity->shouldReceive('get_context')->andReturn([
 			'request' => 'query GetAllPosts { posts { nodes { title content } } }'
 		]);
@@ -219,7 +260,7 @@ class DatabaseEntityTest extends WPTestCase
 			$mockEntity->get_query()
 		);
 
-		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity = Mockery::mock(WordPressDatabaseEntity::class)->makePartial();
 		$mockEntity->shouldReceive('get_context')->andReturn([
 			'request' => [
 				'query GetAllPosts { posts { nodes { title content } } }'
@@ -230,7 +271,7 @@ class DatabaseEntityTest extends WPTestCase
 			$mockEntity->get_query()
 		);
 
-		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity = Mockery::mock(WordPressDatabaseEntity::class)->makePartial();
 		$mockEntity->shouldReceive('get_context')->andReturn([]);
 
 		$this->assertNull(
@@ -238,7 +279,7 @@ class DatabaseEntityTest extends WPTestCase
 		);
 
 
-		$mockEntity = Mockery::mock(DatabaseEntity::class)->makePartial();
+		$mockEntity = Mockery::mock(WordPressDatabaseEntity::class)->makePartial();
 		$mockEntity->shouldReceive('get_context')->andReturn([
 			'request' => [
 				'params' => [
@@ -250,50 +291,5 @@ class DatabaseEntityTest extends WPTestCase
 		$this->assertNull(
 			$mockEntity->get_query()
 		);
-	}
-
-	public function test_find_logs() : void {
-
-		$log_data = [
-			'channel'    => 'wpgraphql_logging',
-			'level'      => 200,
-			'level_name' => 'INFO',
-			'message'    => 'WPGraphQL Outgoing Response',
-			'context'    => [
-				'site_url'      => 'http://test.local',
-				'wp_version'    => '6.8.2',
-				'wp_debug_mode' => true,
-				'plugin_version'=> '0.0.1'
-			],
-			'extra'      => [
-				'ip' => '127.0.0.1',
-				'url' => '/index.php?graphql',
-				'server' => 'test.local',
-				'referrer' => 'http://test.local/wp-admin/admin.php?page=graphiql-ide',
-				'process_id' => 5819,
-				'http_method' => 'POST',
-				'memory_usage' => '14 MB',
-				'wpgraphql_query' => 'query GetPost($uri: ID!) { post(id: $uri, idType: URI) { title content } }',
-				'memory_peak_usage' => '14 MB',
-				'wpgraphql_variables' => [
-					'uri' => 'hello-world'
-				],
-				'wpgraphql_operation_name' => 'GetPost'
-			]
-		];
-
-        // Create and save the entity
-        $entity = DatabaseEntity::create(...$log_data);
-        $insert_id = $entity->save();
-
-		$where_clauses = [
-			'level' => 200,
-			'id' => $insert_id
-		];
-		$logs = DatabaseEntity::find_logs(10, 0, $where_clauses, 'id', 'DESC');
-		$this->assertIsArray($logs);
-		$this->assertCount(1, $logs);
-		$this->assertInstanceOf(DatabaseEntity::class, $logs[0]);
-
 	}
 }

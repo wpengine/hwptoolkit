@@ -24,6 +24,7 @@ wpgraphql-logging/
 │   	├── Settings/             # Admin settings functionality for displaying and saving data.
 │   ├── Events/                 # Event logging, pub/sub event manager for extending the logging.
 │   ├── Logger/                 # Logger service, Monolog handlers & processors
+│   	├── Api/            			# Api interfaces for fetching and writing log data
 │   	├── Database/            	# Database entity and helper
 │   	├── Handlers/            	# Monolog WordPress database handler for logging data
 │   	├── Processors/           # Monolog processors for data sanitization and request headers
