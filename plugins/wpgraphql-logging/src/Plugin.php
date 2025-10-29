@@ -9,8 +9,9 @@ use WPGraphQL\Logging\Admin\SettingsPage;
 use WPGraphQL\Logging\Admin\ViewLogsPage;
 use WPGraphQL\Logging\Events\EventManager;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Scheduler\DataDeletionScheduler;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
  * Plugin class for WPGraphQL Logging.
@@ -99,10 +100,20 @@ final class Plugin {
 	}
 
 	/**
+	 * Gets the log service instance.
+	 *
+	 * @return \WPGraphQL\Logging\Logger\Api\LogServiceInterface The log service instance.
+	 */
+	public static function get_log_service(): LogServiceInterface {
+		return LogStoreService::get_log_service();
+	}
+
+	/**
 	 * Activation callback for the plugin.
 	 */
 	public static function activate(): void {
-		DatabaseEntity::create_table();
+		$log_service = self::get_log_service();
+		$log_service->activate();
 	}
 
 	/**
@@ -113,11 +124,8 @@ final class Plugin {
 	public static function deactivate(): void {
 
 		DataDeletionScheduler::clear_scheduled_deletion();
-
-		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
-			return;
-		}
-		DatabaseEntity::drop_table();
+		$log_service = self::get_log_service();
+		$log_service->deactivate();
 	}
 
 	/**

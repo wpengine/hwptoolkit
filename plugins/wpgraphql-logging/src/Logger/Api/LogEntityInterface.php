@@ -97,16 +97,16 @@ interface LogEntityInterface {
 	public function get_query(): ?string;
 
 	/**
-	 * Gets the schema for the log entry.
-	 *
-	 * @return string The schema for the log entry.
-	 */
-	public function get_schema(): string;
-
-	/**
 	 * Saves the log entry to the database.
 	 *
 	 * @return int The ID of the saved log entry, or 0 on failure.
 	 */
 	public function save(): int;
+
+	/**
+	 * Gets the schema for the log entry.
+	 *
+	 * @return string The schema for the log entry.
+	 */
+	public static function get_schema(): string;
 }

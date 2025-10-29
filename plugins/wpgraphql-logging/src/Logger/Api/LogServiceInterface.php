@@ -15,6 +15,16 @@ use DateTime;
  */
 interface LogServiceInterface {
 	/**
+	 * Activates the log service.
+	 */
+	public function activate(): void;
+
+	/**
+	 * Deactivates the log service.
+	 */
+	public function deactivate(): void;
+
+	/**
 	 * Creates a new log entity.
 	 *
 	 * @param string               $channel The channel for the log entry.

@@ -172,6 +172,27 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 	}
 
 	/**
+	 * Activates the log service.
+	 */
+	public function activate(): void {
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		dbDelta( WordPressDatabaseEntity::get_schema() );
+	}
+
+	/**
+	 * Deactivates the log service.
+	 */
+	public function deactivate(): void {
+		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
+			return;
+		}
+
+		global $wpdb;
+		$table_name = $this->get_table_name();
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table_name ) );
+	}
+
+	/**
 	 * Gets the table name.
 	 */
 	protected function get_table_name(): string {

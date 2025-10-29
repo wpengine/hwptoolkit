@@ -178,35 +178,6 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 	}
 
 	/**
-	 * Gets the schema for the log entry.
-	 *
-	 * @return string The schema for the log entry.
-	 */
-	public function get_schema(): string {
-		global $wpdb;
-		$table_name      = self::get_table_name();
-		$charset_collate = $wpdb->get_charset_collate();
-
-		return "
-	   CREATE TABLE {$table_name} (
-		  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-		  channel VARCHAR(191) NOT NULL,
-		  level SMALLINT UNSIGNED NOT NULL,
-		  level_name VARCHAR(50) NOT NULL,
-		  message LONGTEXT NOT NULL,
-		  context JSON NULL,
-		  extra JSON NULL,
-		  datetime DATETIME NOT NULL,
-		  PRIMARY KEY  (id),
-		  INDEX channel_index (channel),
-		  INDEX level_name_index (level_name),
-		  INDEX level_index (level),
-		  INDEX datetime_index (datetime)
-	   ) {$charset_collate};
-	";
-	}
-
-	/**
 	 * Extracts and returns the GraphQL query from the context, if available.
 	 *
 	 * @phpcs:disable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh, Generic.Metrics.CyclomaticComplexity.TooHigh
@@ -273,6 +244,35 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Gets the schema for the log entry.
+	 *
+	 * @return string The schema for the log entry.
+	 */
+	public static function get_schema(): string {
+		global $wpdb;
+		$table_name      = self::get_table_name();
+		$charset_collate = $wpdb->get_charset_collate();
+
+		return "
+	   CREATE TABLE {$table_name} (
+		  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+		  channel VARCHAR(191) NOT NULL,
+		  level SMALLINT UNSIGNED NOT NULL,
+		  level_name VARCHAR(50) NOT NULL,
+		  message LONGTEXT NOT NULL,
+		  context JSON NULL,
+		  extra JSON NULL,
+		  datetime DATETIME NOT NULL,
+		  PRIMARY KEY  (id),
+		  INDEX channel_index (channel),
+		  INDEX level_name_index (level_name),
+		  INDEX level_index (level),
+		  INDEX datetime_index (datetime)
+	   ) {$charset_collate};
+	";
 	}
 
 	/**
