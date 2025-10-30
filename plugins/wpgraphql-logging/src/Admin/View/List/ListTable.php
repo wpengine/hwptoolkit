@@ -299,8 +299,9 @@ class ListTable extends WP_List_Table {
 	 * @return string The rendered ID column or null.
 	 */
 	public function column_id( WordPressDatabaseEntity $item ): string {
-		$url     = \WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG;
-		$actions = [
+		$url            = \WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG;
+		$download_nonce = wp_create_nonce( 'wpgraphql-logging-download_' . $item->get_id() );
+		$actions        = [
 			'view'     => sprintf(
 				'<a href="?page=%s&action=%s&log=%d">%s</a>',
 				esc_attr( $url ),
@@ -309,10 +310,11 @@ class ListTable extends WP_List_Table {
 				esc_html__( 'View', 'wpgraphql-logging' )
 			),
 			'download' => sprintf(
-				'<a href="?page=%s&action=%s&log=%d">%s</a>',
+				'<a href="?page=%s&action=%s&log=%d&_wpnonce=%s">%s</a>',
 				esc_attr( $url ),
 				'download',
 				$item->get_id(),
+				esc_attr( $download_nonce ),
 				esc_html__( 'Download', 'wpgraphql-logging' )
 			),
 		];

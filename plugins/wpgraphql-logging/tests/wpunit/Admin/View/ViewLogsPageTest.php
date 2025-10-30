@@ -214,4 +214,20 @@ class ViewLogsPageTest extends WPTestCase {
 			$url
 		);
 	}
+
+	public function test_process_log_download_dies_without_nonce(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+		$_GET['action'] = 'download';
+		$_GET['log'] = 'nonexistent-log-id';
+		ob_start();
+		$this->expectException(\WPDieException::class);
+		$this->expectExceptionMessage('Invalid log ID.');
+
+		// Use reflection to call the protected method
+		$reflection = new \ReflectionClass($instance);
+		$method = $reflection->getMethod('process_log_download');
+		$method->setAccessible(true);
+		$method->invoke($instance);
+	}
 }

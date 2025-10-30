@@ -128,6 +128,7 @@ class ViewLogsPage {
 
 		wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', [], '1.12.1' );
 
+		// Add inline script to initialize the datetimepicker.
 		wp_add_inline_script(
 			'jquery-ui-timepicker-addon',
 			'jQuery(document).ready(function($){ $(".wpgraphql-logging-datepicker").datetimepicker({ dateFormat: "yy-mm-dd", timeFormat: "HH:mm:ss" }); });'
@@ -351,7 +352,10 @@ class ViewLogsPage {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-logging' ) );
 		}
 
-		$log_id     = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0;
+		if ( $log_id > 0 ) {
+			check_admin_referer( 'wpgraphql-logging-download_' . $log_id );
+		}
 		$downloader = new DownloadLogService( $this->get_log_service() );
 		$downloader->generate_csv( $log_id );
 	}
