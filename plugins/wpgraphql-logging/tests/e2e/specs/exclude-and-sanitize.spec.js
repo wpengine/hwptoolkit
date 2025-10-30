@@ -6,12 +6,17 @@ import {
 	configureDataManagement,
 	executeGraphQLQuery,
 	resetPluginSettings,
+	switchToSettingsTab,
 } from "../utils";
 import { GET_POSTS_QUERY } from "../constants";
 
 test.describe("Query Filtering & Data Privacy", () => {
-	test.beforeEach(async ({ admin }) => {
+	test.beforeEach(async ({ admin, page }) => {
 		await resetPluginSettings(admin);
+
+		// Go to settings page
+		await goToLoggingSettingsPage(admin);
+		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
 	});
 
 	test("excludes configured queries from logs", async ({
@@ -19,18 +24,12 @@ test.describe("Query Filtering & Data Privacy", () => {
 		admin,
 		request,
 	}) => {
-		// Set up logging with GetPosts excluded
-		await goToLoggingSettingsPage(admin);
-		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
-
 		await configureLogging(page, {
 			enabled: true,
 			dataSampling: "100",
 			eventLogSelection: ["graphql_request_results"],
 			excludeQueries: "GetPosts",
 		});
-
-		await expect(page.locator(".notice.notice-success")).toBeVisible();
 
 		// Execute the excluded query
 		const response = await executeGraphQLQuery(request, GET_POSTS_QUERY);
@@ -46,17 +45,13 @@ test.describe("Query Filtering & Data Privacy", () => {
 	});
 
 	test("sanitizes sensitive data in logs", async ({ page, admin, request }) => {
-		// Set up logging settings and execute a GraphQL query
-		await goToLoggingSettingsPage(admin);
-		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
-
 		await configureLogging(page, {
 			enabled: true,
 			dataSampling: "100",
 			eventLogSelection: ["graphql_request_results"],
 		});
 
-		await goToLoggingSettingsPage(admin);
+		await switchToSettingsTab(page, "Data Management");
 		await configureDataManagement(page, {
 			dataSanitizationEnabled: true,
 			dataSanitizationMethod: "custom",

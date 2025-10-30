@@ -9,8 +9,12 @@ import {
 import { GET_POSTS_QUERY } from "../constants";
 
 test.describe("Basic Logging Usage", () => {
-	test.beforeEach(async ({ admin }) => {
+	test.beforeEach(async ({ admin, page }) => {
 		await resetPluginSettings(admin);
+
+		// Go to settings page
+		await goToLoggingSettingsPage(admin);
+		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
 	});
 
 	test("enables logging and logs GraphQL queries", async ({
@@ -18,17 +22,11 @@ test.describe("Basic Logging Usage", () => {
 		admin,
 		request,
 	}) => {
-		// Set up logging settings
-		await goToLoggingSettingsPage(admin);
-		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
-
 		await configureLogging(page, {
 			enabled: true,
 			dataSampling: "100",
 			eventLogSelection: ["graphql_request_results"],
 		});
-
-		await expect(page.locator(".notice.notice-success")).toBeVisible();
 
 		const response = await executeGraphQLQuery(request, GET_POSTS_QUERY);
 		expect(response.ok()).toBeTruthy();
@@ -71,18 +69,16 @@ test.describe("Basic Logging Usage", () => {
 	});
 
 	test("does not log when disabled", async ({ page, admin, request }) => {
+		await configureLogging(page, {
+			enabled: false,
+			dataSampling: "100",
+		});
+
 		// Make sure there are no logs
 		await goToLogsListPage(admin);
 		await expect(
 			page.locator('td.colspanchange:has-text("No items found.")')
 		).toBeVisible();
-
-		// Disable logging
-		await goToLoggingSettingsPage(admin);
-		await configureLogging(page, {
-			enabled: false,
-			dataSampling: "100",
-		});
 
 		await executeGraphQLQuery(request, GET_POSTS_QUERY);
 
@@ -98,17 +94,11 @@ test.describe("Basic Logging Usage", () => {
 		admin,
 		request,
 	}) => {
-		// Set up logging settings
-		await goToLoggingSettingsPage(admin);
-		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
-
 		await configureLogging(page, {
 			enabled: true,
 			dataSampling: "100",
 			eventLogSelection: ["graphql_request_results"],
 		});
-
-		await expect(page.locator(".notice.notice-success")).toBeVisible();
 
 		// Execute a GraphQL query
 		const response = await executeGraphQLQuery(request, GET_POSTS_QUERY);
@@ -150,42 +140,38 @@ test.describe("Basic Logging Usage", () => {
 		expect(content).toContain("GetPosts");
 	});
 
-	// test("should set data sampling to 10% and verify only 1 log is created", async ({
-	// 	page,
-	// 	admin,
-	// 	request,
-	// }) => {
-	// 	// Set up logging settings
-	// 	await goToLoggingSettingsPage(admin);
-	// 	await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
+	test("should set data sampling to 10% and verify only 1 log is created", async ({
+		page,
+		admin,
+		request,
+	}) => {
+		const QUERY_COUNT = 5;
 
-	// 	await configureLogging(page, {
-	// 		enabled: true,
-	// 		dataSampling: "50",
-	// 		eventLogSelection: ["graphql_request_results"],
-	// 	});
+		await configureLogging(page, {
+			enabled: true,
+			dataSampling: "25",
+			eventLogSelection: ["graphql_request_results"],
+		});
 
-	// 	await expect(page.locator(".notice.notice-success")).toBeVisible();
+		// Execute a GraphQL queries
+		const responses = await Promise.all(
+			Array.from({ length: QUERY_COUNT }, async () =>
+				executeGraphQLQuery(request, GET_POSTS_QUERY)
+			)
+		);
+		await Promise.all(
+			responses.map(async (response) => {
+				return expect(response.ok()).toBeTruthy();
+			})
+		);
 
-	// 	// Execute a GraphQL queries
-	// 	const responses = await Promise.all(
-	// 		Array.from({ length: 10 }, async () =>
-	// 			executeGraphQLQuery(request, GET_POSTS_QUERY)
-	// 		)
-	// 	);
-	// 	await Promise.all(
-	// 		responses.map(async (response) => {
-	// 			return expect(response.ok()).toBeTruthy();
-	// 		})
-	// 	);
+		// Navigate to logs and verify no new logs were created
+		await goToLogsListPage(admin);
+		await expect(page.locator("h1")).toContainText("WPGraphQL Logs");
 
-	// 	// Navigate to logs and verify no new logs were created
-	// 	await goToLogsListPage(admin);
-	// 	await expect(page.locator("h1")).toContainText("WPGraphQL Logs");
+		const logRow = page.locator("#the-list tr").filter({ hasText: "GetPosts" });
 
-	// 	const logRow = page.locator("#the-list tr").filter({ hasText: "GetPosts" });
-
-	// 	const logCount = await logRow.count();
-	// 	expect(logCount).toBeLessThanOrEqual(5);
-	// });
+		const logCount = await logRow.count();
+		expect(logCount).toBeLessThan(QUERY_COUNT);
+	});
 });

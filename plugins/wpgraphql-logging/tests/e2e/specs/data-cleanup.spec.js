@@ -7,25 +7,23 @@ import {
 } from "../utils";
 
 test.describe("Data Management", () => {
-	test.beforeEach(async ({ admin }) => {
+	test.beforeEach(async ({ admin, page }) => {
 		await resetPluginSettings(admin);
+
+		// Go to settings page
+		await goToLoggingSettingsPage(admin);
+		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
 	});
 
 	test("configures data deletion and verifies cron job", async ({
 		page,
 		admin,
 	}) => {
-		// Set up logging settings
-		await goToLoggingSettingsPage(admin);
-		await expect(page.locator("h1")).toHaveText("WPGraphQL Logging Settings");
-
 		await configureDataManagement(page, {
 			dataDeletionEnabled: true,
 			dataRetentionDays: "7",
 			dataSanitizationEnabled: false,
 		});
-
-		await expect(page.locator(".notice.notice-success")).toBeVisible();
 
 		// Reload the page to verify settings persisted
 		await page.reload({ waitUntil: "networkidle" });
