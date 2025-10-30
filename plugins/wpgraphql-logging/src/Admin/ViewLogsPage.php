@@ -392,10 +392,7 @@ class ViewLogsPage {
 			return;
 		}
 
-		$log_template = apply_filters(
-			'wpgraphql_logging_view_template',
-			__DIR__ . '/View/Templates/WPGraphQLLoggerView.php'
-		);
+		$log_template = __DIR__ . '/View/Templates/WPGraphQLLoggerView.php';
 
 		require_once $log_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}

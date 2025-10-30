@@ -320,7 +320,8 @@ class ListTableTest extends WPTestCase {
 
 		$_REQUEST = [
 			'orderby' => 'date',
-			'order' => 'DESC'
+			'order' => 'DESC',
+			'_wpnonce' => wp_create_nonce('wpgraphql-logging-sort'),
 		];
 
 		$this->list_table->prepare_items();

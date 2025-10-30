@@ -93,7 +93,7 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 			$orderby = 'id';
 		}
 
-		$order = $args['order'] ?? 'DESC';
+		$order = strtoupper( $args['order'] ?? 'DESC' );
 		if ( ! in_array( $order, [ 'ASC', 'DESC' ], true ) ) {
 			$order = 'DESC';
 		}
@@ -108,6 +108,7 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 		if ( ! is_numeric( $offset ) ) {
 			$offset = 0;
 		}
+
 
 		$sql                 .= " ORDER BY $orderby $order LIMIT %d, %d";
 		$this->where_values[] = $offset;

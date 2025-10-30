@@ -231,22 +231,6 @@ add_filter( 'wpgraphql_logging_filter_redirect_url', function( $redirect_url, $f
 	return add_query_arg( 'my_flag', '1', $redirect_url );
 }, 10, 2 );
 ```
-
-#### Filter: `wpgraphql_logging_view_template`
-Filters the template path for the single log view.
-
-Parameters:
-- `$template_path` (string)
-
-Returns: string
-
-Example:
-```php
-add_filter( 'wpgraphql_logging_view_template', function( $template_path ) {
-	return plugin_dir_path( __FILE__ ) . 'templates/custom-view.php';
-});
-```
-
 ---
 
 ### Class: `View\List\ListTable`

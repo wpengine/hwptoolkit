@@ -514,10 +514,7 @@ class ListTable extends WP_List_Table {
 	 * Render custom filter controls.
 	 */
 	protected function render_custom_filters(): void {
-		$template = apply_filters(
-			'wpgraphql_logging_filters_template',
-			__DIR__ . '/../Templates/WPGraphQLLoggerFilters.php'
-		);
+		$template = __DIR__ . '/../Templates/WPGraphQLLoggerFilters.php';
 
 		if ( ! file_exists( $template ) ) {
 			return;

@@ -221,21 +221,6 @@ Source: <https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logg
 
 Represents a single log entry and provides persistence helpers.
 
-#### Filter: `wpgraphql_logging_database_name`
-Filters the database table name used for logs.
-
-Parameters:
-- `$table_name` (string)
-
-Returns: string
-
-Example:
-```php
-add_filter( 'wpgraphql_logging_database_name', function( string $name ) {
-    return $name . '_tenant_' . get_current_blog_id();
-});
-```
-
 #### Filter: `wpgraphql_logging_allowed_orderby_columns`
 Filters the allowed columns for ORDER BY in `find_logs()` queries.
 
