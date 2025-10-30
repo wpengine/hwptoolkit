@@ -66,7 +66,6 @@ class ViewLogsPage {
 	/**
 	 * Registers the settings page for the view logs.
 	 *
-	 * @psalm-suppress HookNotFound
 	 */
 	public function register_settings_page(): void {
 
@@ -93,9 +92,7 @@ class ViewLogsPage {
 		add_action( 'load-' . $this->page_hook, [ $this, 'process_page_actions_before_rendering' ], 10, 0 );
 
 		// Enqueue scripts for the admin page.
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ], 9, 1 ); // Need to load before adding SRI attributes.
-		add_action( 'script_loader_tag', [ $this, 'add_sri_to_scripts' ], 10, 2 );
-		add_action( 'style_loader_tag', [ $this, 'add_sri_to_styles' ], 10, 2 );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ]);
 	}
 
 	/**
@@ -115,7 +112,7 @@ class ViewLogsPage {
 			'jquery-ui-timepicker-addon',
 			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js',
 			[ 'jquery-ui-datepicker', 'jquery-ui-slider' ],
-			'1.6.3',
+			'1.6.3', // Hash needs to be updated once a version is changed with the new version.
 			true,
 		);
 
@@ -149,103 +146,6 @@ class ViewLogsPage {
 
 		// Allow other plugins to enqueue their own scripts/styles.
 		do_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', $hook_suffix );
-	}
-
-	/**
-	 * Adds integrity and crossorigin attributes to scripts.
-	 *
-	 * @param string $tag The script tag.
-	 * @param string $handle The script handle.
-	 *
-	 * @link https://www.srihash.org/ to generate the integrity and crossorigin attributes.
-	 */
-	public function add_sri_to_scripts($tag, $handle): void {
-
-		$scripts = [
-			'jquery-ui-timepicker-addon' => [
-				'integrity'   => 'sha512-s5u/JBtkPg+Ff2WEr49/cJsod95UgLHbC000N/GglqdQuLnYhALncz8ZHiW/LxDRGduijLKzeYb7Aal9h3codZA==',
-				'crossorigin' => 'anonymous',
-			],
-		];
-
-		$scripts = apply_filters( 'wpgraphql_logging_view_logs_add_sri_to_scripts', $scripts );
-
-		if ( ! isset( $scripts[ $handle ] ) ) {
-			return;
-		}
-
-		$integrity   = $scripts[ $handle ]['integrity'];
-		$crossorigin = $scripts[ $handle ]['crossorigin'];
-
-		$tag = str_replace(
-			' src=',
-			' integrity="' . esc_attr( $integrity ) . '" crossorigin="' . esc_attr( $crossorigin ) . '" src=',
-			$tag
-		);
-
-		echo wp_kses( $tag, [
-			'script' => [
-				'src'         => [],
-				'integrity'   => [],
-				'crossorigin' => [],
-				'type'        => [],
-				'id'          => [],
-			],
-			'link'   => [
-				'href'        => [],
-				'integrity'   => [],
-				'crossorigin' => [],
-				'rel'         => [],
-				'type'        => [],
-				'id'          => [],
-			],
-		] );
-	}
-
-	/**
-	 * Adds integrity and crossorigin attributes to styles.
-	 *
-	 * @param string $tag The script tag.
-	 * @param string $handle The script handle.
-	 *
-	 * @link https://www.srihash.org/ to generate the integrity and crossorigin attributes.
-	 */
-	public function add_sri_to_styles($tag, $handle): void {
-
-		$styles = [
-			'jquery-ui-timepicker-addon-style' => [
-				'integrity'   => 'sha512-LT9fy1J8pE4Cy6ijbg96UkExgOjCqcxAC7xsnv+mLJxSvftGVmmc236jlPTZXPcBRQcVOWoK1IJhb1dAjtb4lQ==',
-				'crossorigin' => 'anonymous',
-			],
-			'jquery-ui-style'                  => [
-				'integrity'   => 'sha512-sOC1C3U/7L42Ao1++jwVCpnllhbxnfD525JBZE2h1+cYnLg3aIE3G1RBWKSr/9cF5LxB1CxPckAvHqzz7O4apQ==',
-				'crossorigin' => 'anonymous',
-			],
-		];
-		$styles = apply_filters( 'wpgraphql_logging_view_logs_add_sri_to_styles', $styles );
-
-		if ( ! isset( $styles[ $handle ] ) ) {
-			return;
-		}
-
-		$integrity   = $styles[ $handle ]['integrity'];
-		$crossorigin = $styles[ $handle ]['crossorigin'];
-
-		$tag = str_replace(
-			' href=',
-			' integrity="' . esc_attr( $integrity ) . '" crossorigin="' . esc_attr( $crossorigin ) . '" href=',
-			$tag
-		);
-
-		echo wp_kses( $tag, [
-			'link' => [
-				'src'         => [],
-				'integrity'   => [],
-				'crossorigin' => [],
-				'type'        => [],
-				'id'          => [],
-			],
-		] );
 	}
 
 	/**

@@ -28,6 +28,7 @@ $wpgraphql_logging_log_levels = apply_filters( 'wpgraphql_logging_log_levels', $
 			class="wpgraphql-logging-datepicker"
 			placeholder="Start Date"
 			value="<?php echo esc_attr( $wpgraphql_logging_current_start_date ); ?>"
+			autocomplete="off"
 			style="width: 120px;" />
 
 	<input type="text"
@@ -35,6 +36,7 @@ $wpgraphql_logging_log_levels = apply_filters( 'wpgraphql_logging_log_levels', $
 			class="wpgraphql-logging-datepicker"
 			placeholder="End Date"
 			value="<?php echo esc_attr( $wpgraphql_logging_current_end_date ); ?>"
+			autocomplete="off"
 			style="width: 120px;" />
 
 	<select name="level_filter" style="width: 120px;">
