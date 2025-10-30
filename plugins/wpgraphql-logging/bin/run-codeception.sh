@@ -77,8 +77,7 @@ run_tests() {
 		fi
 
 		if [[ -z "$coverage_percent" && -f "tests/_output/coverage/index.html" ]]; then
-			# macOS/BSD grep lacks -P; use -E and strip the percent sign
-			coverage_percent=$(grep -Eo '([0-9]+(\.[0-9]+)?)%' "tests/_output/coverage/index.html" | head -1 | tr -d '%')
+			coverage_percent=$(grep -Eo '[0-9]+\.[0-9]+%' "tests/_output/coverage/index.html" | head -1 | tr -d '%')
 		fi
 		if [[ -z "$coverage_percent" ]]; then
 			echo "Warning: Could not determine code coverage percentage."
