@@ -166,7 +166,7 @@ class SettingsPage {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
 		$tab = sanitize_text_field( $_GET['tab'] );
 
-		if ( ! is_string( $tab ) || '' === $tab ) {
+		if ( '' === $tab ) {
 			return $this->get_default_tab();
 		}
 

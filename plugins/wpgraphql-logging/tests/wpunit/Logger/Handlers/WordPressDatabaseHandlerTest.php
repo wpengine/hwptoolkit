@@ -102,7 +102,7 @@ class WordPressDatabaseHandlerTest extends WPTestCase
         $this->assertNotNull($saved_row, 'A log entry should have been created in the database.');
         $this->assertEquals($log_data['channel'], $saved_row['channel']);
         $this->assertEquals($log_data['level']->value, $saved_row['level']);
-        $this->assertEquals($log_data['level']->getName(), $saved_row['level_name']);
+        $this->assertEquals($log_data['level']->name, $saved_row['level_name']);
         $this->assertEquals($log_data['message'], $saved_row['message']);
 
         // Compare the JSON-decoded context and extra fields.

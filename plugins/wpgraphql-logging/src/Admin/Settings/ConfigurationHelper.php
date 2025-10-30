@@ -164,17 +164,15 @@ class ConfigurationHelper {
 	/**
 	 * Hook into WordPress to clear cache when settings are updated.
 	 * This should be called during plugin initialization.
-	 *
-	 * @psalm-suppress PossiblyInvalidArgument
 	 */
 	public static function init_cache_hooks(): void {
 		$instance   = self::get_instance();
 		$option_key = $instance->get_option_key();
 
 		// Clear cache when the option is updated.
-		add_action( "update_option_{$option_key}", [ $instance, 'clear_cache' ] );
-		add_action( "add_option_{$option_key}", [ $instance, 'clear_cache' ] );
-		add_action( "delete_option_{$option_key}", [ $instance, 'clear_cache' ] );
+		add_action( "update_option_{$option_key}", [ $instance, 'clear_cache' ], 10, 0 );
+		add_action( "add_option_{$option_key}", [ $instance, 'clear_cache' ], 10, 0 );
+		add_action( "delete_option_{$option_key}", [ $instance, 'clear_cache' ], 10, 0 );
 	}
 
 	/**

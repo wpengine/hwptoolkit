@@ -28,10 +28,11 @@ class WordPressDatabaseHandler extends AbstractProcessingHandler {
 	protected function write( LogRecord $record ): void {
 		try {
 			$log_service = LogStoreService::get_log_service();
+			$level       = $record->level;
 			$log_service->create_log_entity( // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 				$record->channel,
-				$record->level->value,
-				$this->get_record_name( $record ),
+				$level->value,
+				$level->name,
 				$record->message,
 				$record->context ?? [],
 				$record->extra ?? []
@@ -42,23 +43,5 @@ class WordPressDatabaseHandler extends AbstractProcessingHandler {
 				error_log( 'Error logging to WordPress database: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			}
 		}
-	}
-
-	/**
-	 * Gets the name of the log record.
-	 *
-	 * @param \Monolog\LogRecord $record The log record.
-	 *
-	 * @return string The name of the log record.
-	 */
-	protected function get_record_name( LogRecord $record ): string {
-
-		/**
-		* @psalm-suppress InvalidCast
-		*/
-		$name    = (string) $record->level->getName(); // @phpstan-ignore-line
-		$default = 'INFO';
-
-		return $name ?: $default; // @phpstan-ignore-line
 	}
 }

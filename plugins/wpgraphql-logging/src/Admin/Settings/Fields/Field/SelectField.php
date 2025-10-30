@@ -101,7 +101,7 @@ class SelectField extends AbstractSettingsField {
 	 * @return string The sanitized value.
 	 */
 	protected function sanitize_single_value( $value ): string {
-		$sanitized_value = sanitize_text_field( (string) $value );
+		$sanitized_value = sanitize_text_field( $value );
 		return array_key_exists( $sanitized_value, $this->options ) ? $sanitized_value : '';
 	}
 

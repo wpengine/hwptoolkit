@@ -85,7 +85,7 @@ class SettingsFormManager {
 			return $old_input;
 		}
 
-		$tab_to_sanitize = (string) $tab[0];
+		$tab_to_sanitize = $tab[0];
 		if ( ! is_array( $new_input[ $tab_to_sanitize ] ) ) {
 			return $old_input;
 		}

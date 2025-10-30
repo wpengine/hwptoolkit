@@ -59,20 +59,15 @@ abstract class AbstractSettingsField implements SettingsFieldInterface {
 	 * @param array<string, mixed> $args    The field arguments.
 	 */
 	public function add_settings_field( string $section, string $page, array $args ): void {
-		/** @psalm-suppress InvalidArgument */
 		add_settings_field(
 			$this->get_id(),
 			$this->title,
 			[ $this, 'render_field_callback' ],
 			$page,
 			$section,
-			array_merge(
-				$args,
-				[
-					'class'       => $this->css_class,
-					'description' => $this->description,
-				]
-			)
+			[
+				'class' => $this->css_class,
+			]
 		);
 	}
 

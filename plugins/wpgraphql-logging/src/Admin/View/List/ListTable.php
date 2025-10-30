@@ -56,8 +56,6 @@ class ListTable extends WP_List_Table {
 	 * Prepare items for display.
 	 *
 	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
-	 *
-	 * @psalm-suppress PossiblyInvalidCast
 	 */
 	public function prepare_items(): void {
 		if ( array_key_exists( 'orderby', $_REQUEST ) || array_key_exists( 'order', $_REQUEST ) ) {
@@ -78,9 +76,9 @@ class ListTable extends WP_List_Table {
 
 		$per_page     = $this->get_items_per_page( 'logs_per_page', self::DEFAULT_PER_PAGE );
 		$current_page = $this->get_pagenum();
-		/** @psalm-suppress InvalidArgument */
-		$where       = $this->process_where( $_REQUEST );
-		$total_items = $this->log_service->count_entities_by_where( $where );
+		$request      = $_REQUEST ?? [];
+		$where        = $this->process_where( $request );
+		$total_items  = $this->log_service->count_entities_by_where( $where );
 
 		$this->set_pagination_args(
 			[
@@ -94,12 +92,12 @@ class ListTable extends WP_List_Table {
 			'offset' => ( $current_page - 1 ) * $per_page,
 		];
 
-		if ( array_key_exists( 'orderby', $_REQUEST ) ) {
-			$args['orderby'] = sanitize_text_field( wp_unslash( (string) $_REQUEST['orderby'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_REQUEST['orderby'] ) && is_string( $_REQUEST['orderby'] ) ) {
+			$args['orderby'] = sanitize_text_field( wp_unslash( $_REQUEST['orderby'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 
-		if ( array_key_exists( 'order', $_REQUEST ) ) {
-			$args['order'] = sanitize_text_field( wp_unslash( (string) $_REQUEST['order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_REQUEST['order'] ) && is_string( $_REQUEST['order'] ) ) {
+			$args['order'] = sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 		$args['where'] = $where;
 		$this->items   = $this->log_service->find_entities_by_where( apply_filters( 'wpgraphql_logging_logs_table_query_args', $args ) );
@@ -424,7 +422,7 @@ class ListTable extends WP_List_Table {
 	/**
 	 * Process the where clauses for filtering.
 	 *
-	 * @param array<string, mixed> $request The request data.
+	 * @param array<int|string, mixed> $request The request data.
 	 *
 	 * @return array<string, string> The where clauses.
 	 */

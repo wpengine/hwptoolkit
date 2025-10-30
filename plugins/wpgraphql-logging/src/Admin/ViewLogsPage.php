@@ -65,7 +65,6 @@ class ViewLogsPage {
 
 	/**
 	 * Registers the settings page for the view logs.
-	 *
 	 */
 	public function register_settings_page(): void {
 
@@ -92,7 +91,7 @@ class ViewLogsPage {
 		add_action( 'load-' . $this->page_hook, [ $this, 'process_page_actions_before_rendering' ], 10, 0 );
 
 		// Enqueue scripts for the admin page.
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ]);
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 	}
 
 	/**
@@ -152,8 +151,9 @@ class ViewLogsPage {
 	 * Renders the admin page for the logs.
 	 */
 	public function render_admin_page(): void {
-		/** @psalm-suppress PossiblyInvalidArgument */
-		$action = sanitize_text_field( $_REQUEST['action'] ?? 'link' ); // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$action = isset( $_REQUEST['action'] ) && is_string( $_REQUEST['action'] )
+			? sanitize_text_field( $_REQUEST['action'] )
+			: 'link'; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		switch ( $action ) {
 			case 'view':
