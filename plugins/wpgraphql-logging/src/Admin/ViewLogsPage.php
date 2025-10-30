@@ -134,6 +134,19 @@ class ViewLogsPage {
 			'jQuery(document).ready(function($){ $(".wpgraphql-logging-datepicker").datetimepicker({ dateFormat: "yy-mm-dd", timeFormat: "HH:mm:ss" }); });'
 		);
 
+		// Add nonce to sorting links.
+		wp_add_inline_script(
+			'jquery',
+			'jQuery(document).ready(function($){
+				var nonce = $("#wpgraphql-logging-sort-nonce").val();
+				if ( nonce ) {
+					$("th.sortable a").each(function(){
+						this.href = this.href + "&_wpnonce=" + nonce;
+					});
+				}
+			});'
+		);
+
 		// Allow other plugins to enqueue their own scripts/styles.
 		do_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', $hook_suffix );
 	}

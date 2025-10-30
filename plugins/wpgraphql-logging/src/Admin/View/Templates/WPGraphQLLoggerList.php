@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<hr class="wp-header-end">
 
 	<form method="post">
+		<?php wp_nonce_field( 'wpgraphql-logging-sort', 'wpgraphql-logging-sort-nonce' ); ?>
 		<?php
 		$list_table->prepare_items();
 		$list_table->display();

@@ -60,6 +60,10 @@ class ListTable extends WP_List_Table {
 	 * @psalm-suppress PossiblyInvalidCast
 	 */
 	public function prepare_items(): void {
+		if ( array_key_exists( 'orderby', $_REQUEST ) || array_key_exists( 'order', $_REQUEST ) ) {
+			check_admin_referer( 'wpgraphql-logging-sort' );
+		}
+
 		$this->process_bulk_action();
 		$this->_column_headers =
 		apply_filters(
