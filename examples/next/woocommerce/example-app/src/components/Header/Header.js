@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useAuthAdmin } from "@/lib/auth/AuthProvider";
 import { useCart } from "@/lib/woocommerce/CartProvider";
 import NavigationItem from "./NavigationItem";
-import MiniCart from "./MiniCart";
+import MiniCart from "../Cart/MiniCart";
 import { flatListToHierarchical } from "@/lib/utils";
 import { useRouter } from "next/router";
 import CartIconSVG from "@/assets/icons/cart-shopping-light-full.svg";

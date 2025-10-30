@@ -1,84 +1,52 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useMutation } from "@apollo/client";
 import { useCart } from "@/lib/woocommerce/CartProvider";
-import { RemoveItemFromCart, ClearCart } from "@/lib/woocommerce/graphQL";
+import type { MiniCartVisualProps, MiniCartItem } from "@/interfaces/cart.interface";
 
-interface MiniCartProps {
-    isVisible?: boolean;
-    onClose?: () => void;
-}
+export default function MiniCart({ isVisible = false, onClose }: MiniCartVisualProps) {
+    const {
+        cart,
+        updateCartItemQuantity,
+        removeItem,
+        cartLoading,
+        clearingCart, // ✅ Get clearing state from provider
+        refreshCart,
+        cartItemCount,
+        clearCart,
+    } = useCart();
+    const [updatingItems, setUpdatingItems] = useState<Record<string, boolean>>({});
 
-export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) {
-    const { cart, cartItemCount, refreshCart, updateCartItemQuantity } = useCart();
-    const [updatingItems, setUpdatingItems] = useState<{ [key: string]: boolean }>({});
-
-    // Only need mutations for remove and clear since we're using AppProvider for quantity updates
-    const [removeItemMutation, { loading: removeLoading }] = useMutation(RemoveItemFromCart, {
-        onCompleted: (data) => {
-            console.log("✅ Item removed:", data);
-            refreshCart();
-        },
-        onError: (error) => {
-            console.error("❌ Remove item error:", error);
-        },
-    });
-
-    const [clearCartMutation, { loading: clearLoading }] = useMutation(ClearCart, {
-        onCompleted: (data) => {
-            console.log("✅ Cart cleared:", data);
-            refreshCart();
-        },
-        onError: (error) => {
-            console.error("❌ Clear cart error:", error);
-        },
-    });
-
-    // Handle quantity update using AppProvider function
-    const handleQuantityUpdate = async (key: string, newQuantity: number) => {
-        if (newQuantity < 1) {
-            handleRemoveItem(key);
-            return;
-        }
-
-        setUpdatingItems(prev => ({ ...prev, [key]: true }));
+    const handleQuantityUpdate = async (itemKey: string, newQuantity: number) => {
+        setUpdatingItems((prev) => ({ ...prev, [itemKey]: true }));
 
         try {
-            const result = await updateCartItemQuantity(key, newQuantity);
-            
-            if (!result.success) {
-                console.error("Failed to update quantity:", result.error);
-            }
+            await updateCartItemQuantity(itemKey, newQuantity);
         } catch (error) {
             console.error("Error updating quantity:", error);
         } finally {
-            setUpdatingItems(prev => ({ ...prev, [key]: false }));
+            setUpdatingItems((prev) => ({ ...prev, [itemKey]: false }));
         }
     };
 
-    // Handle item removal
     const handleRemoveItem = async (key: string) => {
-        setUpdatingItems(prev => ({ ...prev, [key]: true }));
-
+        setUpdatingItems((prev) => ({ ...prev, [key]: true }));
         try {
-            await removeItemMutation({
-                variables: {
-                    key,
-                },
-            });
+            await removeItem(key);
         } catch (error) {
             console.error("Error removing item:", error);
         } finally {
-            setUpdatingItems(prev => ({ ...prev, [key]: false }));
+            setUpdatingItems((prev) => ({ ...prev, [key]: false }));
         }
     };
 
-    // Handle clear cart
     const handleClearCart = async () => {
         if (confirm("Are you sure you want to clear your cart?")) {
             try {
-                await clearCartMutation();
+                const result = await clearCart();
+                if (!result.success) {
+                    console.error("Failed to clear cart:", result.error);
+                }
             } catch (error) {
                 console.error("Error clearing cart:", error);
             }
@@ -86,6 +54,9 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
     };
 
     if (!isVisible) return null;
+
+    // ✅ Combined loading state
+    const isLoading = cartLoading || clearingCart;
 
     return (
         <>
@@ -111,50 +82,50 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                             {/* Cart Items */}
                             <div className="flex-1 overflow-y-auto p-4">
                                 <ul className="space-y-4">
-                                    {cart.contents.nodes.map((item) => {
+                                    {cart.contents.nodes.map((item: MiniCartItem) => {
                                         const isUpdating = updatingItems[item.key];
-                                        
+
                                         return (
                                             <li
                                                 key={item.key}
                                                 className={`flex items-start gap-3 pb-4 border-b border-gray-100 last:border-b-0 ${
-                                                    isUpdating ? 'opacity-60 pointer-events-none' : ''
+                                                    isUpdating ? "opacity-60 pointer-events-none" : ""
                                                 }`}
                                             >
                                                 {/* Product Image */}
-                                                <Link href={`/product/${item.product?.node?.slug}`}>
-                                                    {item.product?.node?.featuredImage ? (
+                                                <Link href={`/product/${item.product?.node?.slug || "#"}`}>
+                                                    {item.product?.node?.image ? (
                                                         <Image
-                                                            src={item.product.node.featuredImage.node.sourceUrl}
-                                                            alt={item.product.node.name || "Product"}
+                                                            src={item.product.node.image.sourceUrl}
+                                                            alt={item.product.node.image.altText || item.product.node.name}
                                                             width={80}
                                                             height={80}
-                                                        className="rounded-md object-cover flex-shrink-0"
-                                                    />
-                                                ) : (
-                                                    <div className="w-15 h-15 bg-gray-200 rounded-md flex items-center justify-center flex-shrink-0">
-                                                        <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth={2}
-                                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                                            />
-                                                        </svg>
-                                                    </div>
-                                                )}
+                                                            className="rounded-md object-cover flex-shrink-0"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center flex-shrink-0">
+                                                            <svg
+                                                                className="w-6 h-6 text-gray-400"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth={2}
+                                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                                />
+                                                            </svg>
+                                                        </div>
+                                                    )}
                                                 </Link>
 
                                                 {/* Product Details */}
                                                 <div className="flex-1 min-w-0">
                                                     <h4 className="text-sm font-medium text-gray-900 truncate">
-                                                        {item.product?.node?.name || item.product?.name || "Unknown Product"}
+                                                        {item.product?.node?.name || "Unknown Product"}
                                                     </h4>
-
-                                                    {/* Variation info if available */}
-                                                    {item.variation?.node?.name && (
-                                                        <p className="text-xs text-gray-500 mt-1">{item.variation.node.name}</p>
-                                                    )}
 
                                                     {/* Price */}
                                                     <p className="text-sm font-semibold text-green-600 mt-1">Subtotal: {item.subtotal}</p>
@@ -168,6 +139,7 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                                                                 onClick={() => handleQuantityUpdate(item.key, item.quantity - 1)}
                                                                 disabled={isUpdating || item.quantity <= 1}
                                                                 className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                aria-label="Decrease quantity"
                                                             >
                                                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -180,9 +152,15 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                                                                 onClick={() => handleQuantityUpdate(item.key, item.quantity + 1)}
                                                                 disabled={isUpdating}
                                                                 className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                aria-label="Increase quantity"
                                                             >
                                                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        strokeWidth={2}
+                                                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                                                    />
                                                                 </svg>
                                                             </button>
                                                         </div>
@@ -221,9 +199,13 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
 
                                 {/* Action Buttons */}
                                 <div className="space-y-2">
-                                       <button onClick={() => {
-                                refreshCart()
-                            }}>Refresh</button>
+                                    <button
+                                        onClick={refreshCart}
+                                        disabled={isLoading}
+                                        className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors font-medium text-sm disabled:opacity-50"
+                                    >
+                                        Refresh
+                                    </button>
                                     <button
                                         onClick={() => {
                                             onClose?.();
@@ -244,10 +226,10 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                                     </button>
                                     <button
                                         onClick={handleClearCart}
-                                        disabled={clearLoading}
+                                        disabled={clearingCart} // ✅ Use clearing state
                                         className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors font-medium text-sm disabled:opacity-50"
                                     >
-                                        {clearLoading ? "Clearing..." : "Clear Cart"}
+                                        {clearingCart ? "Clearing..." : "Clear Cart"}
                                     </button>
                                 </div>
                             </div>
@@ -276,19 +258,25 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartProps) 
                             >
                                 Continue Shopping
                             </button>
-                            <button onClick={() => {
-                                refreshCart()
-                            }}>Refresh</button>
+                            <button
+                                onClick={refreshCart}
+                                disabled={isLoading}
+                                className="mt-2 bg-gray-500 text-white py-2 px-6 rounded-md hover:bg-gray-600 transition-colors font-medium disabled:opacity-50"
+                            >
+                                Refresh
+                            </button>
                         </div>
                     )}
                 </div>
 
                 {/* Loading Overlay */}
-                {(removeLoading || clearLoading) && (
+                {isLoading && (
                     <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
                         <div className="flex items-center space-x-2">
                             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                            <span className="text-sm text-gray-600">Updating cart...</span>
+                            <span className="text-sm text-gray-600">
+                                {clearingCart ? "Clearing cart..." : "Updating cart..."}
+                            </span>
                         </div>
                     </div>
                 )}

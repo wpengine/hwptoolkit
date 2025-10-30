@@ -9,7 +9,7 @@ export const ProductContentSlice = gql`
 		type
 		image {
 			id
-			sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+			sourceUrl(size: THUMBNAIL)
 			altText
 		}
 		... on SimpleProduct {
@@ -33,7 +33,7 @@ export const ProductVariationContentSlice = gql`
 		slug
 		image {
 			id
-			sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+			sourceUrl(size: THUMBNAIL)
 			altText
 		}
 		price
@@ -325,48 +325,6 @@ export const GetProductVariation = gql`
 	${VariationContent}
 `;
 
-//CART
-export const GetMiniCart = gql`
-	query GetMiniCart {
-		cart {
-			subtotal
-			totalTax
-			total
-			contents {
-				itemCount
-				nodes {
-					key
-					quantity
-					subtotal
-					subtotalTax
-					total
-					product {
-						node {
-							databaseId
-							name
-							slug
-							featuredImage {
-								node {
-									sourceUrl(size: THUMBNAIL)
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-`;
-
-// export const GetCart = gql`
-//   query GetCart {
-//     cart {
-//       ...CartContent
-//     }
-//   }
-//   ${CartContent}
-// `;
-
 // MUTATIONS
 export const AddToCart = gql`
 	mutation AddToCart($productId: Int!, $variationId: Int, $quantity: Int, $extraData: String) {
@@ -412,7 +370,163 @@ export const UpdateCartItemQuantity = gql`
 	${CartContent}
 	${CartItemContent}
 `;
-
+export const UPDATE_ITEM_QUANTITIES = gql`
+	mutation UpdateItemQuantities($input: UpdateItemQuantitiesInput!) {
+		updateItemQuantities(input: $input) {
+			updated {
+				key
+				quantity
+				total
+				subtotal
+			}
+			cart {
+				subtotal
+				totalTax
+				total
+				contents {
+					itemCount
+					nodes {
+						key
+						quantity
+						subtotal
+						subtotalTax
+						total
+						product {
+							node {
+								databaseId
+								name
+								slug
+								featuredImage {
+									node {
+										sourceUrl(size: THUMBNAIL)
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+`;
+export const REMOVE_ITEMS_FROM_CART = gql`
+  mutation RemoveItemsFromCart($input: RemoveItemsFromCartInput!) {
+    removeItemsFromCart(input: $input) {
+      cartItems {
+        key
+        quantity
+      }
+      cart {
+        contents {
+          nodes {
+            key
+            quantity
+            total
+            subtotal
+          }
+        }
+        subtotal
+        total
+        totalTax
+        contentsTotal
+        contentsTax
+      }
+    }
+  }
+`;
+//CART
+export const GET_CART = gql`
+	query GetCart {
+		cart {
+			contents {
+				itemCount
+				productCount
+				nodes {
+					key
+					quantity
+					total
+					subtotal
+					subtotalTax
+					product {
+						node {
+							id
+							databaseId
+							name
+							slug
+							type
+							image {
+								id
+								sourceUrl(size: THUMBNAIL)
+								altText
+							}
+						}
+					}
+					variation {
+						node {
+							id
+							databaseId
+							name
+							image {
+								sourceUrl
+								altText
+							}
+							attributes {
+								nodes {
+									name
+									value
+								}
+							}
+						}
+					}
+				}
+			}
+			appliedCoupons {
+				code
+				discountAmount
+				description
+			}
+			subtotal
+			subtotalTax
+			shippingTotal
+			shippingTax
+			discountTotal
+			discountTax
+			total
+			totalTax
+			feeTax
+			feeTotal
+		}
+	}
+`;
+export const GET_MINI_CART = gql`
+	query GetMiniCart {
+		cart {
+			contents {
+				itemCount
+				nodes {
+					key
+					quantity
+					subtotal
+					subtotalTax
+					total
+					product {
+						node {
+							name
+							image {
+								id
+								sourceUrl(size: THUMBNAIL)
+								altText
+							}
+						}
+					}
+				}
+			}
+			subtotal
+			totalTax
+			total
+		}
+	}
+`;
 export const RemoveItemsFromCart = gql`
 	mutation RemoveItemsFromCart($keys: [ID]!) {
 		removeItemsFromCart(input: { keys: $keys }) {
@@ -443,18 +557,19 @@ export const RemoveItemFromCart = gql`
 	${CartItemContent}
 `;
 
-export const ClearCart = gql`
-	mutation ClearCart {
-		removeItemsFromCart(input: { all: true }) {
-			cart {
-				...CartContent
-			}
-		}
-	}
-	${CartContent}
+export const EMPTY_CART = gql`
+    mutation EmptyCart {
+        emptyCart(input: { clearPersistentCart: true }) {
+            cart {
+                contents {
+                    itemCount
+                }
+            }
+        }
+    }
 `;
 
-export const ApplyCoupon = gql`
+export const APPLY_COUPON = gql`
 	mutation ApplyCoupon($code: String!) {
 		applyCoupon(input: { code: $code }) {
 			cart {
@@ -465,7 +580,7 @@ export const ApplyCoupon = gql`
 	${CartContent}
 `;
 
-export const RemoveCoupons = gql`
+export const REMOVE_COUPONS = gql`
 	mutation RemoveCoupons($codes: [String]!) {
 		removeCoupons(input: { codes: $codes }) {
 			cart {

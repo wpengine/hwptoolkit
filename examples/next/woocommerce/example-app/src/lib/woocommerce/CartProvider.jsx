@@ -2,7 +2,15 @@ import React, { createContext, useContext, useEffect, useState, useMemo, useCall
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { useAuth } from "../auth/AuthProvider";
 import useLocalStorage from "../storage";
-import { AddToCart, GetMiniCart, UpdateCartItemQuantities } from "@/lib/woocommerce/graphQL";
+import {
+	AddToCart,
+	GET_MINI_CART,
+	UPDATE_ITEM_QUANTITIES,
+	REMOVE_ITEMS_FROM_CART,
+	EMPTY_CART,
+	APPLY_COUPON,
+	REMOVE_COUPONS,
+} from "@/lib/woocommerce/graphQL";
 
 const CartContext = createContext(undefined);
 
@@ -12,6 +20,7 @@ export function CartProvider({ children }) {
 
 	const [cartData, setCartData] = useState(null);
 	const [isCartInitialized, setIsCartInitialized] = useState(false);
+	const [clearingCart, setClearingCart] = useState(false); // ✅ Add clearing state
 
 	// Cart Mutations
 	const [addToCartMutation, { loading: addToCartLoading }] = useMutation(AddToCart, {
@@ -24,7 +33,7 @@ export function CartProvider({ children }) {
 		onError: (error) => console.error("❌ Add to cart error:", error),
 	});
 
-	const [updateCartMutation, { loading: updateCartLoading }] = useMutation(UpdateCartItemQuantities, {
+	const [updateCartMutation, { loading: updateCartLoading }] = useMutation(UPDATE_ITEM_QUANTITIES, {
 		onCompleted: (data) => {
 			if (data?.updateItemQuantities?.cart) {
 				setCartData(data.updateItemQuantities.cart);
@@ -34,7 +43,7 @@ export function CartProvider({ children }) {
 		onError: (error) => console.error("❌ Update cart error:", error),
 	});
 
-	const [getCartQuery, { loading: getCartLoading }] = useLazyQuery(GetMiniCart, {
+	const [getMiniCartQuery, { loading: getCartLoading }] = useLazyQuery(GET_MINI_CART, {
 		onCompleted: (data) => {
 			if (data?.cart) {
 				setCartData(data.cart);
@@ -46,6 +55,26 @@ export function CartProvider({ children }) {
 		errorPolicy: "all",
 	});
 
+	const [removeItemsMutation, { loading: removeItemLoading }] = useMutation(REMOVE_ITEMS_FROM_CART, {
+		onCompleted: (data) => {
+			if (data?.removeItemsFromCart?.cart) {
+				setCartData(data.removeItemsFromCart.cart);
+				storage.saveCartToLocalStorage(data.removeItemsFromCart.cart);
+			}
+		},
+		onError: (error) => console.error("❌ Remove item error:", error),
+	});
+
+	const [emptyCartMutation] = useMutation(EMPTY_CART, {
+		onCompleted: (data) => {
+			console.log("✅ Cart emptied:", data);
+			setCartData(null);
+			storage.removeItem("woocommerce_cart");
+		},
+		onError: (error) => console.error("❌ Empty cart error:", error),
+	});
+	const [applyCouponMutation, { loading: applyCouponLoading }] = useMutation(APPLY_COUPON);
+	const [removeCouponsMutation, { loading: removeCouponsLoading }] = useMutation(REMOVE_COUPONS);
 	// Initialize Cart when auth changes
 	useEffect(() => {
 		let isMounted = true;
@@ -64,7 +93,7 @@ export function CartProvider({ children }) {
 			} else {
 				// Authenticated user
 				try {
-					const result = await getCartQuery();
+					const result = await getMiniCartQuery();
 					if (isMounted) {
 						setCartData(result.data?.cart || localCart || null);
 						setIsCartInitialized(true);
@@ -86,7 +115,7 @@ export function CartProvider({ children }) {
 		return () => {
 			isMounted = false;
 		};
-	}, [user, authLoading, isCartInitialized]); // Reinitialize when user logs in/out
+	}, [user, authLoading, isCartInitialized]);
 
 	// Cart functions
 	const findCartItem = useCallback(
@@ -161,7 +190,9 @@ export function CartProvider({ children }) {
 
 				const { data, errors } = await updateCartMutation({
 					variables: {
-						items: [{ key: itemKey, quantity: parseInt(newQuantity) }],
+						input: {
+							items: [{ key: itemKey, quantity: parseInt(newQuantity) }],
+						},
 					},
 				});
 
@@ -178,14 +209,37 @@ export function CartProvider({ children }) {
 		[updateCartMutation]
 	);
 
-	const clearCart = useCallback(() => {
-		storage.removeItem("woocommerce_cart");
-		setCartData(null);
-	}, [storage]);
+	// ✅ Updated clearCart function with loading state and GraphQL mutation
+	const clearCart = useCallback(async () => {
+		setClearingCart(true);
+		try {
+			// If user is authenticated, use GraphQL mutation
+			if (user) {
+				const { data, errors } = await emptyCartMutation();
+
+				if (errors?.length > 0) {
+					throw new Error(errors[0]?.message || "Failed to clear cart");
+				}
+
+				await refreshCart();
+				return { success: true };
+			} else {
+				// For guest users, just clear local storage
+				storage.removeItem("woocommerce_cart");
+				setCartData(null);
+				return { success: true };
+			}
+		} catch (error) {
+			console.error("❌ Clear cart error:", error);
+			return { success: false, error: error.message || "Failed to clear cart" };
+		} finally {
+			setClearingCart(false);
+		}
+	}, [user, emptyCartMutation, storage]);
 
 	const refreshCart = useCallback(async () => {
 		try {
-			const result = await getCartQuery();
+			const result = await getMiniCartQuery();
 			return result.data?.cart || null;
 		} catch (error) {
 			console.error("❌ Error refreshing cart:", error);
@@ -193,7 +247,72 @@ export function CartProvider({ children }) {
 			setCartData(localCart);
 			return localCart;
 		}
-	}, [getCartQuery, storage.loadCartFromLocalStorage]);
+	}, [getMiniCartQuery, storage]);
+
+	const removeItem = useCallback(
+		async (itemKey) => {
+			try {
+				const { data, errors } = await removeItemsMutation({
+					variables: {
+						input: {
+							keys: [itemKey],
+						},
+					},
+				});
+
+				if (errors?.length > 0) {
+					throw new Error(errors[0]?.message || "Failed to remove item");
+				}
+
+				await refreshCart();
+				return { success: true, cart: data?.removeItemsFromCart?.cart };
+			} catch (error) {
+				console.error("❌ Remove item error:", error);
+				return { success: false, error: error.message || "Failed to remove item" };
+			}
+		},
+		[removeItemsMutation, refreshCart]
+	);
+
+	const applyCoupon = useCallback(
+		async (code) => {
+			try {
+				const { data, errors } = await applyCouponMutation({
+					variables: { code },
+				});
+
+				if (errors?.length > 0) {
+					throw new Error(errors[0]?.message || "Failed to apply coupon");
+				}
+
+				await refreshCart();
+				return { success: true, cart: data?.applyCoupon?.cart };
+			} catch (error) {
+				return { success: false, error: error.message || "Failed to apply coupon" };
+			}
+		},
+		[applyCouponMutation, refreshCart]
+	);
+
+	const removeCoupons = useCallback(
+		async (codes) => {
+			try {
+				const { data, errors } = await removeCouponsMutation({
+					variables: { codes },
+				});
+
+				if (errors?.length > 0) {
+					throw new Error(errors[0]?.message || "Failed to remove coupons");
+				}
+
+				await refreshCart();
+				return { success: true, cart: data?.removeCoupons?.cart };
+			} catch (error) {
+				return { success: false, error: error.message || "Failed to remove coupons" };
+			}
+		},
+		[removeCouponsMutation, refreshCart]
+	);
 
 	// Computed values
 	const cartItemCount = useMemo(() => {
@@ -215,7 +334,8 @@ export function CartProvider({ children }) {
 		cartItems,
 		cartTotal,
 		isCartInitialized,
-		cartLoading: getCartLoading || addToCartLoading || updateCartLoading,
+		cartLoading: getCartLoading || addToCartLoading || updateCartLoading || removeItemLoading,
+		clearingCart,
 
 		// Functions
 		addToCart,
@@ -223,7 +343,9 @@ export function CartProvider({ children }) {
 		clearCart,
 		refreshCart,
 		findCartItem,
-        refreshCart,
+		removeItem,
+		applyCoupon,
+		removeCoupons,
 	};
 
 	return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

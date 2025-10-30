@@ -1,71 +1,66 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCartMutations, useOtherCartMutations } from "@/lib/woocommerce/cart";
+import { useLazyQuery } from "@apollo/client";
 import { useCart } from "@/lib/woocommerce/CartProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
+import { GET_CART } from "@/lib/woocommerce/graphQL";
+import type { Cart as CartType, GetCartResponse, CartItem } from "@/interfaces/cart.interface";
 
 export default function Cart() {
-	const { cart, cartItems, loading, refreshCart, isCartInitialized } = useCart();
+	const {
+		cart: providerCart,
+		updateCartItemQuantity,
+		removeItem,
+		clearCart,
+		clearingCart,
+		cartLoading: providerLoading,
+		refreshCart,
+		applyCoupon,
+		removeCoupons,
+	} = useCart();
 
-	const { updateItemQuantities, removeItemsFromCart, loading: mutationLoading } = useCartMutations();
-	const { applyCoupon, removeCoupons, loading: couponLoading } = useOtherCartMutations();
+	const [fullCart, setFullCart] = useState<CartType | null>(null);
+	const [couponCode, setCouponCode] = useState<string>("");
+	const [updatingItems, setUpdatingItems] = useState<Record<string, boolean>>({});
+	const [couponError, setCouponError] = useState<string | null>(null);
+	const [couponSuccess, setCouponSuccess] = useState<string | null>(null);
+	const [applyingCoupon, setApplyingCoupon] = useState(false);
 
-	const [couponCode, setCouponCode] = useState("");
-	const [updatingItems, setUpdatingItems] = useState({});
-
-	if (!isCartInitialized) {
-		return <LoadingSpinner />;
-	}
-
-	const handleQuantityUpdate = async (cartKey: string, newQuantity: number) => {
-		if (newQuantity < 1) {
-			handleRemoveItem(cartKey);
-			return;
-		}
-
-		setUpdatingItems((prev) => ({ ...prev, [cartKey]: true }));
-
-		try {
-			const { data } = await updateItemQuantities({
-				variables: {
-					input: {
-						items: [
-							{
-								key: cartKey,
-								quantity: newQuantity,
-							},
-						],
-					},
-				},
-			});
-
-			if (data?.updateItemQuantities) {
-				console.log("update");
-				await refreshCart();
+	const [getFullCartQuery, { loading: fullCartLoading }] = useLazyQuery<GetCartResponse>(GET_CART, {
+		onCompleted: (data) => {
+			if (data?.cart) {
+				setFullCart(data.cart);
 			}
-		} catch (error) {
-			console.error("Error updating quantity:", error);
-		} finally {
-			setUpdatingItems((prev) => ({ ...prev, [cartKey]: false }));
+		},
+		onError: (error) => console.error("❌ GetCart error:", error),
+		fetchPolicy: "network-only",
+		errorPolicy: "all",
+	});
+
+	// Fetch full cart on mount
+	useEffect(() => {
+		getFullCartQuery();
+	}, [getFullCartQuery]);
+
+	// Refresh full cart when provider cart changes
+	useEffect(() => {
+		if (providerCart) {
+			getFullCartQuery();
+		} else {
+			setFullCart(null);
 		}
-	};
+	}, [providerCart, getFullCartQuery]);
+
+	const cart = fullCart || (providerCart as CartType);
+	const isLoading = fullCartLoading || providerLoading;
 
 	const handleRemoveItem = async (cartKey: string) => {
 		setUpdatingItems((prev) => ({ ...prev, [cartKey]: true }));
 
 		try {
-			const { data } = await removeItemsFromCart({
-				variables: {
-					input: {
-						keys: [cartKey],
-					},
-				},
-			});
-
-			if (data?.removeItemsFromCart) {
-				await refreshCart();
-			}
+			await removeItem(cartKey);
+			await getFullCartQuery();
 		} catch (error) {
 			console.error("Error removing item:", error);
 		} finally {
@@ -73,55 +68,96 @@ export default function Cart() {
 		}
 	};
 
+	const handleUpdateQuantity = async (itemKey: string, newQuantity: number) => {
+		setUpdatingItems((prev) => ({ ...prev, [itemKey]: true }));
+
+		try {
+			await updateCartItemQuantity(itemKey, newQuantity);
+		} catch (error) {
+			console.error("Error updating quantity:", error);
+		} finally {
+			setUpdatingItems((prev) => ({ ...prev, [itemKey]: false }));
+		}
+	};
+
+	// ✅ Updated handleApplyCoupon with error handling
 	const handleApplyCoupon = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!couponCode.trim()) return;
 
-		try {
-			const { data } = await applyCoupon({
-				variables: {
-					input: {
-						code: couponCode,
-					},
-				},
-			});
+		setCouponError(null);
+		setCouponSuccess(null);
+		setApplyingCoupon(true);
 
-			if (data?.applyCoupon) {
+		try {
+			const result = await applyCoupon(couponCode);
+
+			if (result.success) {
+				setCouponSuccess(`Coupon "${couponCode}" applied successfully!`);
 				setCouponCode("");
 				await refreshCart();
+				await getFullCartQuery();
+
+				// Clear success message after 3 seconds
+				setTimeout(() => setCouponSuccess(null), 3000);
+			} else {
+				const error = result.error.replace(/&quot;/g, '"');
+				setCouponError(error || "Failed to apply coupon");
+				setTimeout(() => setCouponError(null), 3000);
 			}
-		} catch (error) {
-			console.error("Error applying coupon:", error);
+		} catch (error: any) {
+			setCouponError(error.message || "An error occurred while applying the coupon");
+			setTimeout(() => setCouponError(null), 3000);
+		} finally {
+			setApplyingCoupon(false);
 		}
 	};
 
-	const handleRemoveCoupon = async (couponCode: string) => {
+	// ✅ Updated handleRemoveCoupon with error handling
+	const handleRemoveCoupon = async (code: string) => {
+		setCouponError(null);
+		setCouponSuccess(null);
+
 		try {
-			const { data } = await removeCoupons({
-				variables: {
-					input: {
-						codes: [couponCode],
-					},
-				},
-			});
+			const result = await removeCoupons([code]);
 
-			if (data?.removeCoupons) {
+			if (result.success) {
+				setCouponSuccess(`Coupon "${code}" removed successfully!`);
 				await refreshCart();
+				await getFullCartQuery();
+
+				// Clear success message after 3 seconds
+				setTimeout(() => setCouponSuccess(null), 3000);
+			} else {
+				setCouponError(result.error || "Failed to remove coupon");
 			}
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Error removing coupon:", error);
+			setCouponError(error.message || "An error occurred while removing the coupon");
 		}
 	};
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center min-h-96">
-				<div className="text-lg text-gray-600">Loading cart...</div>
-			</div>
-		);
+	const handleClearCart = async () => {
+		if (confirm("Are you sure you want to clear your entire cart?")) {
+			try {
+				const result = await clearCart();
+				if (result.success) {
+					setFullCart(null);
+					await refreshCart();
+				} else {
+					console.error("Failed to clear cart:", result.error);
+				}
+			} catch (error) {
+				console.error("Error clearing cart:", error);
+			}
+		}
+	};
+
+	if (isLoading && !cart) {
+		return <LoadingSpinner />;
 	}
 
-	if (!cart || cart.isEmpty) {
+	if (!cart || !cart.contents?.nodes || cart.contents.nodes.length === 0) {
 		return (
 			<div className="text-center py-16">
 				<div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
@@ -150,17 +186,20 @@ export default function Cart() {
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 			<h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
 
-			{/* 2-Column Layout */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 				{/* Left Column - Cart Items */}
 				<div className="lg:col-span-2">
 					<div className="bg-white rounded-lg shadow-sm border border-gray-200">
 						<div className="p-6">
 							<div className="space-y-6">
-								{cartItems.map((item) => {
+								{cart.contents.nodes.map((item: CartItem) => {
 									const product = item.product.node;
 									const variation = item.variation?.node;
 									const isUpdating = updatingItems[item.key];
+
+									const imageUrl = variation?.image?.sourceUrl || product?.image?.sourceUrl || "/placeholder.jpg";
+									const imageAlt =
+										variation?.image?.altText || product?.image?.altText || product?.name || "Product image";
 
 									return (
 										<div
@@ -172,12 +211,8 @@ export default function Cart() {
 											{/* Product Image */}
 											<div className="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24">
 												<Image
-													src={
-														variation?.image?.featuredImage?.sourceUrl ||
-														product.featuredImage.node.sourceUrl ||
-														"/placeholder.jpg"
-													}
-													alt={variation?.image?.altText || product.image?.altText || product.name}
+													src={imageUrl}
+													alt={imageAlt}
 													width={96}
 													height={96}
 													className="w-full h-full object-cover rounded-lg"
@@ -192,18 +227,26 @@ export default function Cart() {
 												>
 													{product.name}
 												</Link>
-												<div>
-													{variation && <p className="text-sm text-gray-500 mt-1">{variation.name}</p>}
-													<p className="text">Subtotal:{item.subtotal}</p>
-													<p className="text-xs">Tax: {item.subtotalTax}</p>
+												<div className="mt-1">
+													{variation && (
+														<p className="text-sm text-gray-500">
+															{variation.attributes?.nodes?.map((attr) => attr.value).join(", ") || variation.name}
+														</p>
+													)}
+													<p className="text-sm text-gray-700 mt-1">Subtotal: {item.subtotal}</p>
+													{item.subtotalTax && item.subtotalTax !== "$0.00" && (
+														<p className="text-xs text-gray-500">Tax: {item.subtotalTax}</p>
+													)}
 												</div>
+
 												{/* Mobile Quantity and Remove */}
 												<div className="flex items-center justify-between mt-4 sm:hidden">
 													<div className="flex items-center border border-gray-300 rounded-md">
 														<button
-															onClick={() => handleQuantityUpdate(item.key, item.quantity - 1)}
+															onClick={() => handleUpdateQuantity(item.key, item.quantity - 1)}
 															disabled={isUpdating || item.quantity <= 1}
 															className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+															aria-label="Decrease quantity"
 														>
 															<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 																<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -213,9 +256,10 @@ export default function Cart() {
 															{item.quantity}
 														</span>
 														<button
-															onClick={() => handleQuantityUpdate(item.key, item.quantity + 1)}
+															onClick={() => handleUpdateQuantity(item.key, item.quantity + 1)}
 															disabled={isUpdating}
 															className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+															aria-label="Increase quantity"
 														>
 															<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 																<path
@@ -244,9 +288,10 @@ export default function Cart() {
 											<div className="hidden sm:flex items-center space-x-8">
 												<div className="flex items-center border border-gray-300 rounded-md">
 													<button
-														onClick={() => handleQuantityUpdate(item.key, item.quantity - 1)}
+														onClick={() => handleUpdateQuantity(item.key, item.quantity - 1)}
 														disabled={isUpdating || item.quantity <= 1}
 														className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+														aria-label="Decrease quantity"
 													>
 														<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -256,9 +301,10 @@ export default function Cart() {
 														{item.quantity}
 													</span>
 													<button
-														onClick={() => handleQuantityUpdate(item.key, item.quantity + 1)}
+														onClick={() => handleUpdateQuantity(item.key, item.quantity + 1)}
 														disabled={isUpdating}
 														className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+														aria-label="Increase quantity"
 													>
 														<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 															<path
@@ -271,7 +317,6 @@ export default function Cart() {
 													</button>
 												</div>
 
-												{/* Desktop Total and Remove */}
 												<div className="flex flex-col items-end space-y-2 min-w-[120px]">
 													<span className="text-lg font-bold text-gray-900">{item.total}</span>
 													<button
@@ -289,6 +334,15 @@ export default function Cart() {
 							</div>
 						</div>
 					</div>
+
+					{/* Clear Cart Button */}
+					<button
+						onClick={handleClearCart}
+						disabled={clearingCart}
+						className="mt-4 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors font-medium text-sm disabled:opacity-50"
+					>
+						{clearingCart ? "Clearing Cart..." : "Clear Cart"}
+					</button>
 				</div>
 
 				{/* Right Column - Order Summary */}
@@ -297,28 +351,27 @@ export default function Cart() {
 						<div className="p-6">
 							<h3 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h3>
 
-							{/* Summary Rows */}
 							<div className="space-y-3">
 								<div className="flex justify-between text-sm">
 									<span className="text-gray-600">Subtotal:</span>
 									<span className="font-medium text-gray-900">{cart.subtotal}</span>
 								</div>
 
-								{cart.discountTotal && cart.discountTotal !== "0" && (
+								{cart.discountTotal && cart.discountTotal !== "$0.00" && (
 									<div className="flex justify-between text-sm">
 										<span className="text-gray-600">Discount:</span>
 										<span className="font-medium text-red-600">-{cart.discountTotal}</span>
 									</div>
 								)}
 
-								{cart.shippingTotal && cart.shippingTotal !== "0" && (
+								{cart.shippingTotal && cart.shippingTotal !== "$0.00" && (
 									<div className="flex justify-between text-sm">
 										<span className="text-gray-600">Shipping:</span>
 										<span className="font-medium text-gray-900">{cart.shippingTotal}</span>
 									</div>
 								)}
 
-								{cart.totalTax && cart.totalTax !== "0" && (
+								{cart.totalTax && cart.totalTax !== "$0.00" && (
 									<div className="flex justify-between text-sm">
 										<span className="text-gray-600">Tax:</span>
 										<span className="font-medium text-gray-900">{cart.totalTax}</span>
@@ -345,14 +398,83 @@ export default function Cart() {
 													<span className="text-green-700">-{coupon.discountAmount}</span>
 													<button
 														onClick={() => handleRemoveCoupon(coupon.code)}
-														disabled={couponLoading}
+														disabled={isLoading}
 														className="text-red-500 hover:text-red-700 font-bold text-xs w-5 h-5 rounded-full border border-red-300 hover:border-red-500 disabled:opacity-50"
+														aria-label={`Remove coupon ${coupon.code}`}
 													>
 														×
 													</button>
 												</div>
 											</div>
 										))}
+									</div>
+								</div>
+							)}
+
+							{/* ✅ Error Message */}
+							{couponError && (
+								<div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+									<div className="flex items-start">
+										<svg
+											className="w-5 h-5 text-red-600 mr-2 mt-0.5 flex-shrink-0"
+											fill="currentColor"
+											viewBox="0 0 20 20"
+										>
+											<path
+												fillRule="evenodd"
+												d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+												clipRule="evenodd"
+											/>
+										</svg>
+										<div className="flex-1">
+											<p className="text-sm text-red-800 font-medium">{couponError}</p>
+										</div>
+										<button
+											onClick={() => setCouponError(null)}
+											className="text-red-500 hover:text-red-700 ml-2"
+											aria-label="Dismiss error"
+										>
+											<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+												<path
+													fillRule="evenodd"
+													d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+													clipRule="evenodd"
+												/>
+											</svg>
+										</button>
+									</div>
+								</div>
+							)}
+
+							{/* ✅ Success Message */}
+							{couponSuccess && (
+								<div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
+									<div className="flex items-start">
+										<svg
+											className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0"
+											fill="currentColor"
+											viewBox="0 0 20 20"
+										>
+											<path
+												fillRule="evenodd"
+												d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+												clipRule="evenodd"
+											/>
+										</svg>
+										<p className="text-sm text-green-800 font-medium flex-1">{couponSuccess}</p>
+										<button
+											onClick={() => setCouponSuccess(null)}
+											className="text-green-500 hover:text-green-700 ml-2"
+											aria-label="Dismiss success"
+										>
+											<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+												<path
+													fillRule="evenodd"
+													d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+													clipRule="evenodd"
+												/>
+											</svg>
+										</button>
 									</div>
 								</div>
 							)}
@@ -369,10 +491,10 @@ export default function Cart() {
 									/>
 									<button
 										type="submit"
-										disabled={couponLoading || !couponCode.trim()}
-										className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+										disabled={applyingCoupon || !couponCode.trim()}
+										className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
 									>
-										{couponLoading ? "Applying..." : "Apply"}
+										{applyingCoupon ? "Applying..." : "Apply"}
 									</button>
 								</div>
 							</form>
