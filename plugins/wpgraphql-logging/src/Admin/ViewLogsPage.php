@@ -217,6 +217,10 @@ class ViewLogsPage {
 				'integrity'   => 'sha512-LT9fy1J8pE4Cy6ijbg96UkExgOjCqcxAC7xsnv+mLJxSvftGVmmc236jlPTZXPcBRQcVOWoK1IJhb1dAjtb4lQ==',
 				'crossorigin' => 'anonymous',
 			],
+			'jquery-ui-style'                  => [
+				'integrity'   => 'sha512-sOC1C3U/7L42Ao1++jwVCpnllhbxnfD525JBZE2h1+cYnLg3aIE3G1RBWKSr/9cF5LxB1CxPckAvHqzz7O4apQ==',
+				'crossorigin' => 'anonymous',
+			],
 		];
 		$styles = apply_filters( 'wpgraphql_logging_view_logs_add_sri_to_styles', $styles );
 

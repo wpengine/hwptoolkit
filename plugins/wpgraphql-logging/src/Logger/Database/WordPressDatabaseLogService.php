@@ -54,7 +54,7 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 		global $wpdb;
 
 		$table_name = $this->get_table_name();
-		$query      = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $id ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$query      = $wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $table_name, $id );
 		$row        = $wpdb->get_row( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( ! $row ) {
