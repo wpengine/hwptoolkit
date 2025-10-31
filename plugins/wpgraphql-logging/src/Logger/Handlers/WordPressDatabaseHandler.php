@@ -7,7 +7,7 @@ namespace WPGraphQL\Logging\Logger\Handlers;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
 use Throwable;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
  * WordPress Database Handler for Monolog
@@ -27,36 +27,21 @@ class WordPressDatabaseHandler extends AbstractProcessingHandler {
 	 */
 	protected function write( LogRecord $record ): void {
 		try {
-			$entity = DatabaseEntity::create(
+			$log_service = LogStoreService::get_log_service();
+			$level       = $record->level;
+			$log_service->create_log_entity( // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 				$record->channel,
-				$record->level->value,
-				$this->get_record_name( $record ),
+				$level->value,
+				$level->name,
 				$record->message,
-				$record->context ?? [],
-				$record->extra ?? []
+				$record->context,
+				$record->extra
 			);
-
-			$entity->save();
 		} catch ( Throwable $e ) {
-			error_log( 'Error logging to WordPress database: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			do_action( 'wpgraphql_logging_write_database_error', $e, $record );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'Error logging to WordPress database: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			}
 		}
-	}
-
-	/**
-	 * Gets the name of the log record.
-	 *
-	 * @param \Monolog\LogRecord $record The log record.
-	 *
-	 * @return string The name of the log record.
-	 */
-	protected function get_record_name( LogRecord $record ): string {
-
-		/**
-		* @psalm-suppress InvalidCast
-		*/
-		$name    = (string) $record->level->getName(); // @phpstan-ignore-line
-		$default = 'INFO';
-
-		return $name ?: $default; // @phpstan-ignore-line
 	}
 }

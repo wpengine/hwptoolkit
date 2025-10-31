@@ -139,7 +139,7 @@ class ConfigurationHelper {
 	 * Get the option key for the settings.
 	 */
 	public function get_option_key(): string {
-		return (string) apply_filters( 'wpgraphql_logging_settings_group_option_key', WPGRAPHQL_LOGGING_SETTINGS_KEY );
+		return (string) apply_filters( 'wpgraphql_logging_settings_key', WPGRAPHQL_LOGGING_SETTINGS_KEY );
 	}
 
 	/**
@@ -164,17 +164,15 @@ class ConfigurationHelper {
 	/**
 	 * Hook into WordPress to clear cache when settings are updated.
 	 * This should be called during plugin initialization.
-	 *
-	 * @psalm-suppress PossiblyInvalidArgument
 	 */
 	public static function init_cache_hooks(): void {
 		$instance   = self::get_instance();
 		$option_key = $instance->get_option_key();
 
 		// Clear cache when the option is updated.
-		add_action( "update_option_{$option_key}", [ $instance, 'clear_cache' ] );
-		add_action( "add_option_{$option_key}", [ $instance, 'clear_cache' ] );
-		add_action( "delete_option_{$option_key}", [ $instance, 'clear_cache' ] );
+		add_action( "update_option_{$option_key}", [ $instance, 'clear_cache' ], 10, 0 );
+		add_action( "add_option_{$option_key}", [ $instance, 'clear_cache' ], 10, 0 );
+		add_action( "delete_option_{$option_key}", [ $instance, 'clear_cache' ], 10, 0 );
 	}
 
 	/**
@@ -185,7 +183,7 @@ class ConfigurationHelper {
 	protected function load_config(): void {
 		$option_key = $this->get_option_key();
 
-		$cache_duration = self::CACHE_DURATION;
+		$cache_duration = (int) apply_filters( 'wpgraphql_logging_config_cache_duration', self::CACHE_DURATION );
 
 		// Try to get from wp_cache first (in-memory cache).
 		$cached_config = wp_cache_get( $option_key, self::CACHE_GROUP );

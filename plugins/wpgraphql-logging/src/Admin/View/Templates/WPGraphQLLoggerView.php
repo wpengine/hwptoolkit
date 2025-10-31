@@ -5,7 +5,11 @@ declare(strict_types=1);
 /**
  * Log detail view template.
  *
- * @var \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log
+ * @package WPGraphQL\Logging
+ *
+ * @var \WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity $log
+ *
+ * @since 0.0.1
  */
 ?>
 <div class="wrap">

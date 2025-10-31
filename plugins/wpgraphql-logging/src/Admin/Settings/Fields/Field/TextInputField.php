@@ -41,9 +41,9 @@ class TextInputField extends AbstractSettingsField {
 	/**
 	 * Render the text input field.
 	 *
-	 * @param array<string> $option_value The option value.
-	 * @param string        $setting_key  The setting key.
-	 * @param string        $tab_key      The tab key.
+	 * @param array<string, mixed> $option_value The option value.
+	 * @param string               $setting_key  The setting key.
+	 * @param string               $tab_key      The tab key.
 	 *
 	 * @return string The rendered field HTML.
 	 */

@@ -41,9 +41,9 @@ class SelectField extends AbstractSettingsField {
 	/**
 	 * Render the select field.
 	 *
-	 * @param array<string> $option_value The option value.
-	 * @param string        $setting_key  The setting key.
-	 * @param string        $tab_key      The tab key.
+	 * @param array<string, mixed> $option_value The option value.
+	 * @param string               $setting_key  The setting key.
+	 * @param string               $tab_key      The tab key.
 	 *
 	 * @return string The rendered field HTML.
 	 */
@@ -101,7 +101,7 @@ class SelectField extends AbstractSettingsField {
 	 * @return string The sanitized value.
 	 */
 	protected function sanitize_single_value( $value ): string {
-		$sanitized_value = sanitize_text_field( (string) $value );
+		$sanitized_value = sanitize_text_field( $value );
 		return array_key_exists( $sanitized_value, $this->options ) ? $sanitized_value : '';
 	}
 

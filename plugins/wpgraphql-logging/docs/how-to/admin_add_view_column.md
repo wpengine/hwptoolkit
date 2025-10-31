@@ -33,7 +33,7 @@ add_filter( 'wpgraphql_logging_logs_table_column_headers', function( $headers ) 
 
 ### Step 2 — Provide the cell value
 
-Each row item is a `\WPGraphQL\Logging\Logger\Database\DatabaseEntity`. Memory data is stored in `$item->get_extra()['memory_peak_usage']`.
+Each row item is a `\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity`. Memory data is stored in `$item->get_extra()['memory_peak_usage']`.
 
 ```php
 add_filter( 'wpgraphql_logging_logs_table_column_value', function( $value, $item, $column_name ) {
@@ -41,7 +41,7 @@ add_filter( 'wpgraphql_logging_logs_table_column_value', function( $value, $item
         return $value;
     }
 
-    if ( ! $item instanceof \WPGraphQL\Logging\Logger\Database\DatabaseEntity ) {
+    if ( ! $item instanceof \WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity ) {
         return $value;
     }
 

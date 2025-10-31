@@ -6,24 +6,26 @@ namespace WPGraphQL\Logging\Tests\Logger\Scheduler;
 
 use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
 use WPGraphQL\Logging\Logger\Scheduler\DataDeletionScheduler;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 use Monolog\Level;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use Mockery;
-
+use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
+use WPGraphQL\Logging\Plugin;
 
 class DataDeletionSchedulerTest extends WPTestCase {
 
 
 	protected $initial_log_count = 0;
 
-	protected LogsRepository $repository;
+	private LogServiceInterface $log_service;
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->repository = new LogsRepository();
+		Plugin::activate();
+		$this->log_service = LogStoreService::get_log_service();
 		$this->generate_logs();
 		$this->initial_log_count = $this->get_total_log_count();
 	}
@@ -33,15 +35,13 @@ class DataDeletionSchedulerTest extends WPTestCase {
 		parent::tearDown();
 	}
 
-
 	public function generate_logs() : void {
 
 		global $wpdb;
-		$table_name = DatabaseEntity::get_table_name();
-		$repository = new LogsRepository();
 		$now = new \DateTime();
+		$table_name = WordPressDatabaseEntity::get_table_name();
 		for ($i = 0; $i < 10; $i++) {
-			$entity = DatabaseEntity::create(
+			$entity = $this->log_service->create_log_entity(
 				'wpgraphql_logging',
 				200,
 				'info',
@@ -50,15 +50,12 @@ class DataDeletionSchedulerTest extends WPTestCase {
 				[]
 			);
 
-
-			$id = $entity->save();
-
 			// Manually set the datetime to simulate old logs
 			$log_date = (clone $now)->modify("-" . $i . " days");
 			$wpdb->update(
 				$table_name,
 				['datetime' => $log_date->format('Y-m-d H:i:s')],
-				['id' => $id],
+				['id' => $entity->get_id()],
 				['%s'],
 				['%d']
 			);
@@ -66,24 +63,11 @@ class DataDeletionSchedulerTest extends WPTestCase {
 	}
 
 	public function delete_logs() : void {
-		$this->repository->delete_all();
+		$this->log_service->delete_all_entities();
 	}
 
 	public function get_total_log_count() : int {
-		return $this->repository->get_log_count([]);
-	}
-
-	public function test_init_creates_singleton_instance(): void {
-		$reflection = new \ReflectionClass(DataDeletionScheduler::class);
-		$instanceProperty = $reflection->getProperty('instance');
-		$instanceProperty->setAccessible(true);
-		$instanceProperty->setValue(null, null);
-
-		$instance1 = DataDeletionScheduler::init();
-		$instance2 = DataDeletionScheduler::init();
-		$this->assertSame($instance1, $instance2);
-		$this->assertInstanceOf(DataDeletionScheduler::class, $instance1);
-		$this->assertInstanceOf(DataDeletionScheduler::class, $instance2);
+		return $this->log_service->count_entities_by_where([]);
 	}
 
 
@@ -145,10 +129,20 @@ class DataDeletionSchedulerTest extends WPTestCase {
 			]
 		);
 
-		$expected_count = $this->repository->get_log_count(['datetime >= NOW() - INTERVAL 3 DAY']);
+		// datetime >= NOW() - INTERVAL 3 DAY
+		$args = [
+			[
+				'column' => 'datetime',
+				'operator' => '>=',
+				'value' => date('Y-m-d H:i:s', strtotime('-3 day')),
+			],
+		];
+		$expected_count = $this->log_service->count_entities_by_where($args);
+		$this->assertEquals(4, $expected_count);
+
 		// Delete logs
 		$scheduler->perform_deletion();
-		$total_count = $this->get_total_log_count();
+		$total_count = $this->log_service->count_entities_by_where([]);
 		$this->assertLessThan($this->initial_log_count, $total_count);
 		$this->assertGreaterThanOrEqual(0, $total_count);
 		$this->assertEquals($expected_count, $total_count);

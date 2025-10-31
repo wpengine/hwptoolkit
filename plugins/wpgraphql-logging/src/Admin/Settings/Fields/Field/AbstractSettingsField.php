@@ -57,22 +57,18 @@ abstract class AbstractSettingsField implements SettingsFieldInterface {
 	 * @param string               $section The section ID.
 	 * @param string               $page    The page URI.
 	 * @param array<string, mixed> $args    The field arguments.
+	 *
+	 * @psalm-suppress InvalidArgument
 	 */
 	public function add_settings_field( string $section, string $page, array $args ): void {
-		/** @psalm-suppress InvalidArgument */
+		$args['class'] = $this->css_class;
 		add_settings_field(
 			$this->get_id(),
 			$this->title,
 			[ $this, 'render_field_callback' ],
 			$page,
 			$section,
-			array_merge(
-				$args,
-				[
-					'class'       => $this->css_class,
-					'description' => $this->description,
-				]
-			)
+			$args
 		);
 	}
 
@@ -80,10 +76,16 @@ abstract class AbstractSettingsField implements SettingsFieldInterface {
 	 * Callback function to render the field.
 	 *
 	 * @param array<string, mixed> $args The field arguments.
+	 *
+	 * @throws \Exception If the tab key or settings key is empty.
 	 */
 	public function render_field_callback( array $args ): void {
 		$tab_key      = (string) ( $args['tab_key'] ?? '' );
 		$settings_key = (string) ( $args['settings_key'] ?? '' );
+
+		if ( '' === $tab_key || '' === $settings_key ) {
+			throw new \Exception( 'Tab key or settings key is empty' );
+		}
 
 		$config_helper = ConfigurationHelper::get_instance();
 		$option_value  = $config_helper->get_config();

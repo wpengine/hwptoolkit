@@ -173,8 +173,11 @@ final class EventManager {
 		try {
 			$listener( $payload );
 		} catch ( \Throwable $e ) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			error_log( 'WPGraphQL Logging EventManager listener error: ' . $e->getMessage() );
+			do_action( 'wpgraphql_logging_event_error_listener', $e, $listener, $payload );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- This is a development notice.
+				error_log( 'WPGraphQL Logging EventManager listener error: ' . $e->getMessage() );
+			}
 		}
 	}
 
@@ -193,8 +196,11 @@ final class EventManager {
 				return $result;
 			}
 		} catch ( \Throwable $e ) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			error_log( 'WPGraphQL Logging EventManager transform error: ' . $e->getMessage() );
+			do_action( 'wpgraphql_logging_event_error_transform', $e, $transform, $payload );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- This is a development notice.
+				error_log( 'WPGraphQL Logging EventManager transform error: ' . $e->getMessage() );
+			}
 		}
 
 		return $payload;

@@ -6,13 +6,12 @@ namespace WPGraphQL\Logging\Tests\wpunit\Events;
 
 
 use WPGraphQL\Logging\Plugin;
+use Monolog\Handler\BufferHandler;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Events\QueryFilterLogger;
 use WPGraphQL\Logging\Events\Events;
 use GraphQL\Executor\ExecutionResult;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
 use WPGraphQL\Logging\Logger\LoggerService;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use Monolog\Level;
 use WPGraphQL;
@@ -20,6 +19,9 @@ use GraphQL\Error\Error;
 use GraphQL\Type\SchemaConfig;
 use WPGraphQL\WPSchema;
 use WPGraphQL\Request;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
+use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 
 /**
  * Tests for the QueryFilterLogger class.
@@ -31,19 +33,19 @@ use WPGraphQL\Request;
 class QueryFilterLoggerTest extends WPTestCase {
 
 
-	protected LogsRepository $repository;
+	protected LogServiceInterface $log_service;
 
 	protected LoggerService $logger;
 
 	public function setUp(): void {
 		parent::setUp();
-		$this->repository = new LogsRepository();
+		$this->log_service = LogStoreService::get_log_service();
 		$this->logger = LoggerService::get_instance();
 	}
 
 	public function tearDown(): void {
 		parent::tearDown();
-		$this->repository->delete_all();
+		$this->log_service->delete_all_entities();
 	}
 
 	public function create_instance(array $config) : QueryFilterLogger {
@@ -51,10 +53,19 @@ class QueryFilterLoggerTest extends WPTestCase {
 	}
 
 	public function get_log_count(): int {
-		return $this->repository->get_log_count([]);
+		return $this->log_service->count_entities_by_where([]);
 	}
 
 	public function assert_log_count(int $expected_count): void {
+
+		// Flush the buffer handler to ensure the log count is accurate.
+		$handlers = $this->logger->get_monolog()->getHandlers();
+		foreach ($handlers as $handler) {
+			if ($handler instanceof BufferHandler) {
+				$handler->flush();
+			}
+		}
+
 		$actual_count = $this->get_log_count();
 		$this->assertEquals($expected_count, $actual_count, "Expected log count to be {$expected_count}, but got {$actual_count}.");
 	}
@@ -118,7 +129,7 @@ class QueryFilterLoggerTest extends WPTestCase {
 		$this->assert_log_count(1);
 
 		// Check for the new meta_data field in the log entry.
-		$logs = $this->repository->get_logs([], 10, 0);
+		$logs = $this->log_service->find_entities_by_where([]);
 		$this->assertNotEmpty($logs);
 		$log_entry = $logs[0];
 		$this->assertArrayHasKey('meta_data', $log_entry->get_context());
@@ -207,10 +218,10 @@ class QueryFilterLoggerTest extends WPTestCase {
 
 
 		// Check for error level and context
-		$logs = $this->repository->get_logs([]);
+		$logs = $this->log_service->find_entities_by_where([]);
 		$this->assertCount(1, $logs);
 		$log = $logs[0];
-		$this->assertInstanceOf(DatabaseEntity::class, $log);
+		$this->assertInstanceOf(WordPressDatabaseEntity::class, $log);
 
 		$this->assertEquals(Level::Error->value, $log->get_level());
 		$this->assertArrayHasKey('errors', $log->get_context());
@@ -253,7 +264,7 @@ class QueryFilterLoggerTest extends WPTestCase {
 
 
 		// Check for the new meta_data field in the log entry.
-		$logs = $this->repository->get_logs([], 10, 0);
+		$logs = $this->log_service->find_entities_by_where([]);
 		$this->assertNotEmpty($logs);
 		$log_entry = $logs[0];
 		$this->assertArrayHasKey('meta_data', $log_entry->get_context());

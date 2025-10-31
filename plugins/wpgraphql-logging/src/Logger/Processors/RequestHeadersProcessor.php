@@ -29,7 +29,7 @@ class RequestHeadersProcessor implements ProcessorInterface {
 			}
 			$header_key             = substr( $key, 5 );
 			$header_key             = str_replace( '_', '-', $header_key );
-			$header_key             = ucwords( strtolower( sanitize_text_field( (string) $header_key ) ), '-' );
+			$header_key             = ucwords( strtolower( sanitize_text_field( $header_key ) ), '-' );
 			$headers[ $header_key ] = sanitize_text_field( $value );
 		}
 

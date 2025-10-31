@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Logs list view template using WP_List_Table.
  *
- * @package WPGraphQL\Logger\Admin\View\List\Templates
+ * @package WPGraphQL\Logging
  *
  * @var \WPGraphQL\Logging\Admin\View\List\ListTable $list_table List table instance.
  *
@@ -22,9 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<hr class="wp-header-end">
 
 	<form method="post">
-		<?php
-		$list_table->prepare_items();
-		$list_table->display();
-		?>
+		<?php $list_table->prepare_items(); ?>
+		<?php $list_table->display(); ?>
 	</form>
 </div>

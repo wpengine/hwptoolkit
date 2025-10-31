@@ -6,7 +6,8 @@ namespace WPGraphQL\Logging\Admin;
 
 use WPGraphQL\Logging\Admin\View\Download\DownloadLogService;
 use WPGraphQL\Logging\Admin\View\List\ListTable;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
  * The view logs page class for WPGraphQL Logging.
@@ -22,6 +23,20 @@ class ViewLogsPage {
 	 * @var string
 	 */
 	public const ADMIN_PAGE_SLUG = 'wpgraphql-logging-view';
+
+	/**
+	 * The nonce for the view page.
+	 *
+	 * @var string
+	 */
+	public const ADMIN_PAGE_VIEW_NONCE = 'wp_graphql_logging_admin';
+
+	/**
+	 * The nonce for the download page.
+	 *
+	 * @var string
+	 */
+	public const ADMIN_PAGE_DOWNLOAD_NONCE = 'wp_graphql_logging_download';
 
 	/**
 	 * The hook suffix for the admin page.
@@ -103,18 +118,17 @@ class ViewLogsPage {
 			return;
 		}
 
-		// Enqueue WordPress's built-in datepicker and slider.
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_enqueue_script( 'jquery-ui-slider' );
 
-		// Enqueue the timepicker addon script and styles from a CDN.
 		wp_enqueue_script(
 			'jquery-ui-timepicker-addon',
 			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js',
 			[ 'jquery-ui-datepicker', 'jquery-ui-slider' ],
-			'1.6.3',
-			true
+			'1.6.3', // Hash needs to be updated once a version is changed with the new version.
+			true,
 		);
+
 		wp_enqueue_style(
 			'jquery-ui-timepicker-addon-style',
 			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css',
@@ -122,14 +136,19 @@ class ViewLogsPage {
 			'1.6.3'
 		);
 
-		// Enqueue the base jQuery UI styles.
 		wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', [], '1.12.1' );
 
-		// Add inline script to initialize the datetimepicker.
-		wp_add_inline_script(
-			'jquery-ui-timepicker-addon',
-			'jQuery(document).ready(function($){ $(".wpgraphql-logging-datepicker").datetimepicker({ dateFormat: "yy-mm-dd", timeFormat: "HH:mm:ss" }); });'
-		);
+		// Enqueue admin scripts if they exist.
+		$script_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-view.js';
+		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/settings/wp-graphql-logging-view.js' ) ) {
+			wp_enqueue_script(
+				'wpgraphql-logging-view-js',
+				$script_path,
+				[ 'jquery' ],
+				WPGRAPHQL_LOGGING_VERSION,
+				true
+			);
+		}
 
 		// Allow other plugins to enqueue their own scripts/styles.
 		do_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', $hook_suffix );
@@ -137,10 +156,15 @@ class ViewLogsPage {
 
 	/**
 	 * Renders the admin page for the logs.
+	 *
+	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
 	 */
 	public function render_admin_page(): void {
-		/** @psalm-suppress PossiblyInvalidArgument */
-		$action = sanitize_text_field( $_REQUEST['action'] ?? 'link' ); // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+
+		$action = isset( $_REQUEST['action'] ) && is_string( $_REQUEST['action'] )
+			? sanitize_text_field( $_REQUEST['action'] )
+			: 'list';
 
 		switch ( $action ) {
 			case 'view':
@@ -160,8 +184,10 @@ class ViewLogsPage {
 	 * This runs before any HTML is output.
 	 */
 	public function process_page_actions_before_rendering(): void {
-		// Check for a download request.
-		if ( isset( $_GET['action'] ) && 'download' === $_GET['action'] ) { // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		// Nonce handled in process_log_download and process_filters_redirect.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_GET['action'] ) && 'download' === $_GET['action'] ) {
 			$this->process_log_download();
 		}
 
@@ -196,7 +222,7 @@ class ViewLogsPage {
 	 * @return string The constructed redirect URL.
 	 */
 	public function get_redirect_url(): string {
-			$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
+		$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
 
 		$possible_filters = [
 			'start_date',
@@ -225,43 +251,37 @@ class ViewLogsPage {
 	 *
 	 * @param string $key The key to retrieve from $_POST.
 	 *
+	 * @phpcs:disable WordPress.Security.NonceVerification.Missing
+	 *
 	 * @return string|null The sanitized value or null if not set or invalid.
 	 */
 	protected function get_post_value(string $key): ?string {
-		$value = $_POST[ $key ] ?? null; // @phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		if ( ! is_string( $value ) || '' === $value ) {
+		if ( ! array_key_exists( $key, $_POST ) || ! is_string( $_POST[ $key ] ) ) {
 			return null;
 		}
-		$value = wp_unslash( $value );
-		if ( ! is_string( $value ) ) {
-			return null;
-		}
-		return sanitize_text_field( $value );
+		$post_value = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+		return '' !== $post_value ? $post_value : null;
 	}
 
 	/**
 	 * Renders the list page for log entries.
 	 */
 	protected function render_list_page(): void {
-		// Variable required for list template.
-		$list_table    = new ListTable( new LogsRepository() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
-		$list_template = apply_filters(
-			'wpgraphql_logging_list_template',
-			__DIR__ . '/View/Templates/wpgraphql-logger-list.php'
-		);
+		$list_table    = new ListTable( $this->get_log_service() ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
+		$list_template = __DIR__ . '/View/Templates/WPGraphQLLoggerList.php';
 		require_once $list_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 
-		/**
-		 * Renders the list page for log entries.
-		 */
+	/**
+	 * Renders the list page for log entries.
+	 */
 	protected function process_log_download(): void {
-		if ( ! current_user_can( 'manage_options' ) || ! is_admin() ) {
-			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-logging' ) );
+		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0;
+		$this->verify_admin_page_nonce( self::ADMIN_PAGE_DOWNLOAD_NONCE . '_' . $log_id );
+		if ( 0 === (int) $log_id ) {
+			wp_die( esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) );
 		}
-
-		$log_id     = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$downloader = new DownloadLogService();
+		$downloader = new DownloadLogService( $this->get_log_service() );
 		$downloader->generate_csv( $log_id );
 	}
 
@@ -269,26 +289,45 @@ class ViewLogsPage {
 	 * Renders the view page for a single log entry.
 	 */
 	protected function render_view_page(): void {
-		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0;
+		$this->verify_admin_page_nonce( self::ADMIN_PAGE_DOWNLOAD_NONCE . '_' . $log_id );
 
 		if ( 0 === (int) $log_id ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) . '</p></div>';
 			return;
 		}
 
-		$repository = new LogsRepository();
-		$log        = $repository->get_log( $log_id );
+		$log_service = $this->get_log_service();
+		$log         = $log_service->find_entity_by_id( $log_id );
 
 		if ( is_null( $log ) ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Log not found.', 'wpgraphql-logging' ) . '</p></div>';
 			return;
 		}
 
-		$log_template = apply_filters(
-			'wpgraphql_logging_view_template',
-			__DIR__ . '/View/Templates/wpgraphql-logger-view.php'
-		);
+		$log_template = __DIR__ . '/View/Templates/WPGraphQLLoggerView.php';
 
 		require_once $log_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	}
+
+	/**
+	 * Verifies the admin page nonce.
+	 *
+	 * @param string $nonce The nonce to verify.
+	 */
+	protected function verify_admin_page_nonce(string $nonce): void {
+		if ( ! current_user_can( 'manage_options' ) || ! is_admin() ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-logging' ) );
+		}
+		check_admin_referer( $nonce );
+	}
+
+	/**
+	 * Retrieves the log service instance.
+	 *
+	 * @return \WPGraphQL\Logging\Logger\Api\LogServiceInterface The log service instance.
+	 */
+	protected function get_log_service(): LogServiceInterface {
+		return LogStoreService::get_log_service();
 	}
 }

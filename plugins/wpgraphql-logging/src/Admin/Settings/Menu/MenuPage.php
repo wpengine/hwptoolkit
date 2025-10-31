@@ -103,7 +103,6 @@ class MenuPage {
 			set_query_var( $query_var, $args );
 		}
 
-        // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable -- $this->template is validated and defined within the class
-		include_once $this->template;
+		include_once $this->template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 }

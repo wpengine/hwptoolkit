@@ -89,9 +89,9 @@ class QueryActionLogger {
 	 */
 	public function log_graphql_before_execute( Request $request ): void {
 		try {
-			/** @var \GraphQL\Server\OperationParams $params */
+			/** @var \GraphQL\Server\OperationParams|null $params */
 			$params = $request->params;
-			if ( null === $params || ! \is_object( $params ) ) {
+			if ( ! is_object( $params ) ) {
 				return;
 			}
 			$query = $params->query;
