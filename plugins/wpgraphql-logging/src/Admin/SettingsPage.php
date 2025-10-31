@@ -109,7 +109,7 @@ class SettingsPage {
 
 		$page = new MenuPage(
 			__( 'WPGraphQL Logging Settings', 'wpgraphql-logging' ),
-			'WPGraphQL Logging',
+			__( 'WPGraphQL Logging', 'wpgraphql-logging' ),
 			self::PLUGIN_MENU_SLUG,
 			$this->get_admin_template(),
 			[

@@ -129,7 +129,7 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_correct_build' ) 
 				<div class="error notice">
 					<p>
 						<?php
-						echo 'Composer vendor directory must be present for WPGraphQL Logging to work.'
+						echo esc_html__( 'Composer vendor directory must be present for WPGraphQL Logging to work.', 'wpgraphql-logging' );
 						?>
 					</p>
 				</div>
@@ -157,7 +157,13 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' 
 				<div class="error notice">
 					<p>
 						<?php
-						echo 'PHP ' . PHP_VERSION . ' is not supported. Please upgrade to PHP 8.1.2 or higher in order to use WPGraphQL Logging Plugin.';
+						echo esc_html(
+							sprintf(
+							/* translators: %s: PHP version */
+								__( 'PHP %s is not supported. Please upgrade to PHP 8.1.2 or higher in order to use WPGraphQL Logging Plugin.', 'wpgraphql-logging' ),
+								PHP_VERSION
+							)
+						);
 						?>
 					</p>
 				</div>

@@ -426,7 +426,8 @@ class ListTable extends WP_List_Table {
 	protected function process_where(array $request): array {
 		$where_clauses = [];
 
-		if ( ! empty( $request['wpgraphql_logging_nonce'] ) && false === wp_verify_nonce( $request['wpgraphql_logging_nonce'], 'wpgraphql_logging_filter' ) ) {
+		$nonce = isset( $request['wpgraphql_logging_nonce'] ) && is_string( $request['wpgraphql_logging_nonce'] ) ? sanitize_text_field( $request['wpgraphql_logging_nonce'] ) : '';
+		if ( ! empty( $nonce ) && false === wp_verify_nonce( $nonce, 'wpgraphql_logging_filter' ) ) {
 			return [];
 		}
 
