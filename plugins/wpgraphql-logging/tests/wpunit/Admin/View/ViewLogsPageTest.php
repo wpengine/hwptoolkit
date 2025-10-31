@@ -116,27 +116,6 @@ class ViewLogsPageTest extends WPTestCase {
 		$instance = ViewLogsPage::init();
 		$instance->register_settings_page();
 
-		// View
-		$_REQUEST['action'] = 'view';
-		$_GET['log'] = '123';
-
-		ob_start();
-		$instance->render_admin_page();
-		$output = ob_get_clean();
-		$this->assertNotFalse($output);
-
-		// Download
-		$_REQUEST['action'] = 'download';
-		ob_start();
-		$instance->render_admin_page();
-		$output = ob_get_clean();
-
-		$this->assertEquals('', $output);
-
-		// Clean up
-		unset($_REQUEST['action'], $_GET['log']);
-
-
 		// Default
 		ob_start();
 		$instance->render_admin_page();
@@ -156,7 +135,7 @@ class ViewLogsPageTest extends WPTestCase {
 
 		ob_start();
 		$this->expectException(\WPDieException::class);
-		$this->expectExceptionMessage('Invalid log ID.');
+		$this->expectExceptionMessage('The link you followed has expired.');
 		$instance->process_page_actions_before_rendering();
 		$output = ob_get_clean();
 
@@ -222,7 +201,7 @@ class ViewLogsPageTest extends WPTestCase {
 		$_GET['log'] = 'nonexistent-log-id';
 		ob_start();
 		$this->expectException(\WPDieException::class);
-		$this->expectExceptionMessage('Invalid log ID.');
+		$this->expectExceptionMessage('The link you followed has expired.');
 
 		// Use reflection to call the protected method
 		$reflection = new \ReflectionClass($instance);

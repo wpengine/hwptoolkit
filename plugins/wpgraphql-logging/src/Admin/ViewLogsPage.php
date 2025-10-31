@@ -25,6 +25,20 @@ class ViewLogsPage {
 	public const ADMIN_PAGE_SLUG = 'wpgraphql-logging-view';
 
 	/**
+	 * The nonce for the view page.
+	 *
+	 * @var string
+	 */
+	public const ADMIN_PAGE_VIEW_NONCE = 'wp_graphql_logging_admin';
+
+	/**
+	 * The nonce for the download page.
+	 *
+	 * @var string
+	 */
+	public const ADMIN_PAGE_DOWNLOAD_NONCE = 'wp_graphql_logging_download';
+
+	/**
 	 * The hook suffix for the admin page.
 	 *
 	 * @var string
@@ -124,24 +138,17 @@ class ViewLogsPage {
 
 		wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', [], '1.12.1' );
 
-		// Add inline script to initialize the datetimepicker.
-		wp_add_inline_script(
-			'jquery-ui-timepicker-addon',
-			'jQuery(document).ready(function($){ $(".wpgraphql-logging-datepicker").datetimepicker({ dateFormat: "yy-mm-dd", timeFormat: "HH:mm:ss" }); });'
-		);
-
-		// Add nonce to sorting links.
-		wp_add_inline_script(
-			'jquery',
-			'jQuery(document).ready(function($){
-				var nonce = $("#wpgraphql-logging-sort-nonce").val();
-				if ( nonce ) {
-					$("th.sortable a").each(function(){
-						this.href = this.href + "&_wpnonce=" + nonce;
-					});
-				}
-			});'
-		);
+		// Enqueue admin scripts if they exist.
+		$script_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-view.js';
+		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/settings/wp-graphql-logging-view.js' ) ) {
+			wp_enqueue_script(
+				'wpgraphql-logging-view-js',
+				$script_path,
+				[ 'jquery' ],
+				WPGRAPHQL_LOGGING_VERSION,
+				true
+			);
+		}
 
 		// Allow other plugins to enqueue their own scripts/styles.
 		do_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', $hook_suffix );
@@ -149,11 +156,15 @@ class ViewLogsPage {
 
 	/**
 	 * Renders the admin page for the logs.
+	 *
+	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
 	 */
 	public function render_admin_page(): void {
+
+
 		$action = isset( $_REQUEST['action'] ) && is_string( $_REQUEST['action'] )
 			? sanitize_text_field( $_REQUEST['action'] )
-			: 'link'; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			: 'list';
 
 		switch ( $action ) {
 			case 'view':
@@ -173,8 +184,10 @@ class ViewLogsPage {
 	 * This runs before any HTML is output.
 	 */
 	public function process_page_actions_before_rendering(): void {
-		// Check for a download request.
-		if ( isset( $_GET['action'] ) && 'download' === $_GET['action'] ) { // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		// Nonce handled in process_log_download and process_filters_redirect.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_GET['action'] ) && 'download' === $_GET['action'] ) {
 			$this->process_log_download();
 		}
 
@@ -238,14 +251,16 @@ class ViewLogsPage {
 	 *
 	 * @param string $key The key to retrieve from $_POST.
 	 *
+	 * @phpcs:disable WordPress.Security.NonceVerification.Missing
+	 *
 	 * @return string|null The sanitized value or null if not set or invalid.
 	 */
 	protected function get_post_value(string $key): ?string {
-		$value = $_POST[ $key ] ?? null; // @phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		if ( ! is_string( $value ) || '' === $value ) {
+		if ( ! array_key_exists( $key, $_POST ) || ! is_string( $_POST[ $key ] ) ) {
 			return null;
 		}
-		return sanitize_text_field( wp_unslash( $value ) );
+		$post_value = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+		return '' !== $post_value ? $post_value : null;
 	}
 
 	/**
@@ -257,17 +272,14 @@ class ViewLogsPage {
 		require_once $list_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 
-		/**
-		 * Renders the list page for log entries.
-		 */
+	/**
+	 * Renders the list page for log entries.
+	 */
 	protected function process_log_download(): void {
-		if ( ! current_user_can( 'manage_options' ) || ! is_admin() ) {
-			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-logging' ) );
-		}
-
 		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0;
-		if ( $log_id > 0 ) {
-			check_admin_referer( 'wpgraphql-logging-download_' . $log_id );
+		$this->verify_admin_page_nonce( self::ADMIN_PAGE_DOWNLOAD_NONCE . '_' . $log_id );
+		if ( 0 === (int) $log_id ) {
+			wp_die( esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) );
 		}
 		$downloader = new DownloadLogService( $this->get_log_service() );
 		$downloader->generate_csv( $log_id );
@@ -277,7 +289,8 @@ class ViewLogsPage {
 	 * Renders the view page for a single log entry.
 	 */
 	protected function render_view_page(): void {
-		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0; // @phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0;
+		$this->verify_admin_page_nonce( self::ADMIN_PAGE_DOWNLOAD_NONCE . '_' . $log_id );
 
 		if ( 0 === (int) $log_id ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) . '</p></div>';
@@ -295,6 +308,18 @@ class ViewLogsPage {
 		$log_template = __DIR__ . '/View/Templates/WPGraphQLLoggerView.php';
 
 		require_once $log_template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	}
+
+	/**
+	 * Verifies the admin page nonce.
+	 *
+	 * @param string $nonce The nonce to verify.
+	 */
+	protected function verify_admin_page_nonce(string $nonce): void {
+		if ( ! current_user_can( 'manage_options' ) || ! is_admin() ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-logging' ) );
+		}
+		check_admin_referer( $nonce );
 	}
 
 	/**

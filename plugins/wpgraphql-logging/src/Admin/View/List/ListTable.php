@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Admin\View\List;
 
 use DateTime;
+use WPGraphQL\Logging\Admin\ViewLogsPage;
 use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 use WP_List_Table;
@@ -58,10 +59,6 @@ class ListTable extends WP_List_Table {
 	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
 	 */
 	public function prepare_items(): void {
-		if ( array_key_exists( 'orderby', $_REQUEST ) || array_key_exists( 'order', $_REQUEST ) ) {
-			check_admin_referer( 'wpgraphql-logging-sort' );
-		}
-
 		$this->process_bulk_action();
 		$this->_column_headers =
 		apply_filters(
@@ -118,8 +115,6 @@ class ListTable extends WP_List_Table {
 	/**
 	 * Handle bulk actions.
 	 *
-	 * @phpcs:disable WordPress.Security.NonceVerification.Missing
-	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
 	 * @phpcs:disable Generic.Metrics.NestingLevel.TooHigh
 	 * @phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
 	 * @phpcs:disable Generic.Metrics.CyclomaticComplexity.MaxExceeded
@@ -299,14 +294,18 @@ class ListTable extends WP_List_Table {
 	 * @return string The rendered ID column or null.
 	 */
 	public function column_id( WordPressDatabaseEntity $item ): string {
-		$url            = \WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG;
-		$download_nonce = wp_create_nonce( 'wpgraphql-logging-download_' . $item->get_id() );
+		$url    = \WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG;
+		$log_id = $item->get_id();
+
+		$view_nonce     = wp_create_nonce( ViewLogsPage::ADMIN_PAGE_VIEW_NONCE . '_' . $log_id );
+		$download_nonce = wp_create_nonce( ViewLogsPage::ADMIN_PAGE_DOWNLOAD_NONCE . '_' . $log_id );
 		$actions        = [
 			'view'     => sprintf(
-				'<a href="?page=%s&action=%s&log=%d">%s</a>',
+				'<a href="?page=%s&action=%s&log=%d&_wpnonce=%s">%s</a>',
 				esc_attr( $url ),
 				'view',
 				$item->get_id(),
+				esc_attr( $view_nonce ),
 				esc_html__( 'View', 'wpgraphql-logging' )
 			),
 			'download' => sprintf(
