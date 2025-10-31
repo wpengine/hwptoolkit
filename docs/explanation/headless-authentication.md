@@ -1,3 +1,8 @@
+---
+title: "Headless Authentication"
+description: "A guide on the process of verifying user identity and managing access control in a decoupled architecture where the WordPress and the frontend are separate systems."
+---
+
 # What is headless authentication?
 
 Headless authentication refers to the process of verifying user identity and managing access control in a decoupled architecture where the content management system (WordPress) and the user-facing frontend are separate systems. Unlike traditional WordPress sites where authentication happens within a single application, headless authentication must work across systems, that may be located accross different regions.

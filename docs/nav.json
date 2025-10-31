@@ -1,0 +1,56 @@
+[
+	{
+		"title": "Introduction",
+		"route": "/toolkit/"
+	},
+	{
+		"title": "Explanation",
+		"route": "/toolkit/explanation/",
+		"children": [
+			{
+				"title": "GET vs POST",
+				"route": "/toolkit/explanation/get-vs-post/",
+				"append": ".md"
+			},
+			{
+				"title": "GraphQL Endpoints",
+				"route": "/toolkit/explanation/graphql-endpoints/",
+				"append": ".md"
+			},
+			{
+				"title": "Headless Authentication",
+				"route": "/toolkit/explanation/headless-authentication/",
+				"append": ".md"
+			},
+			{
+				"title": "Rendering Options",
+				"route": "/toolkit/explanation/rendering-options/",
+				"append": ".md"
+			},
+			{
+				"title": "Routing",
+				"route": "/toolkit/explanation/routing/",
+				"append": ".md"
+			},
+			{
+				"title": "Sitemaps",
+				"route": "/toolkit/explanation/sitemaps/",
+				"append": ".md"
+			}
+		]
+	},
+	{
+		"title": "How-To Guides",
+		"route": "/toolkit/how-to/",
+		"children": [
+			{
+				"title": "Install Toolkit Plugins via Composer",
+				"route": "/toolkit/how-to/install-toolkit-plugins/"
+			},
+			{
+				"title": "Automatic Persisted Queries in Next.js",
+				"route": "/toolkit/how-to/nextjs-pages-router/enable-apq/"
+			}
+		]
+	}
+]
