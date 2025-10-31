@@ -45,6 +45,16 @@ tests/
 ├── _envs/                    # Environment configs
 ├── _output/                  # Test output (logs, coverage)
 ├── _support/                 # Helper classes, modules
+├── e2e/                      # End-to-end tests (Playwright)
+│   ├── specs/                # Test specifications
+│   │   ├── basic-usage.spec.js
+│   │   ├── data-cleanup.spec.js
+│   │   └── exclude-and-sanitize.spec.js
+│   ├── plugins/              # Test helper plugins
+│   ├── config/               # E2E test configuration
+│   ├── utils.js              # Helper functions
+│   ├── constants.js          # Test constants
+│   └── playwright.config.js  # Playwright configuration
 ├── wpunit/                   # WPUnit (WordPress-aware unit/integration) test cases
 ├── wpunit.suite.dist.yml
 └── wpunit/
@@ -94,6 +104,40 @@ Automated testing runs on every pull request via GitHub Actions for a modified p
 | **E2E Tests**           | Runs Playwright end-to-end acceptance tests | [View Workflow](../../actions/workflows/e2e.yml) |
 | **Codeception (WPUnit)** | Runs unit and integration tests             | [View Workflow](../../actions/workflows/codeception.yml) |
 
+
+## E2E Tests
+
+End-to-end tests use Playwright to simulate real user workflows from configuring the plugin to viewing logs and managing data.
+
+### Test Suites
+
+| Test Suite                       | Description                      | Key Scenarios                                            |
+| -------------------------------- | -------------------------------- | -------------------------------------------------------- |
+| **basic-usage.spec.js**          | Core logging functionality       | Enable logging, execute queries, view logs, download CSV |
+| **exclude-and-sanitize.spec.js** | Query filtering and data privacy | Exclude queries, sanitize sensitive data                 |
+| **data-cleanup.spec.js**         | Data management                  | Configure automatic log deletion, verify cron job        |
+
+### Test Helper Plugins
+
+Located in `tests/e2e/plugins/`:
+
+- **`reset-wpgraphql-logging-settings`** - Resets plugin settings and clears logs table for clean test state
+
+### Running E2E Tests
+
+```shell
+# Start wp-env (make sure Docker is running)
+npm run wp-env start
+
+# Run all E2E tests
+npm run test:e2e
+
+# Run specific test file
+npm run test:e2e tests/e2e/specs/basic-usage.spec.js
+
+# Run tests in headed mode (with browser UI)
+npm run test:e2e:debug
+```
 
 >[!IMPORTANT]
 > Test coverage for WP Unit Tests is **95%**. Any new code will require tests to be added in order to pass CI checks. This is set in [text](codeception.dist.yml) in the parameter `min_coverage`.
