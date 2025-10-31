@@ -1,13 +1,13 @@
 import RecentProducts from "@/components/Products/Products";
 
-export default function Shop() {
+export default function TaxonomyProductCat() {
   return (
-    <>    
+    <>
       <RecentProducts />
     </>
   );
 }
 
-Shop.queries = [
+TaxonomyProductCat.queries = [
   RecentProducts.query, // Ensure RecentProducts query is included
 ];

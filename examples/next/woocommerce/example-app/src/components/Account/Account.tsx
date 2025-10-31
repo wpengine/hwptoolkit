@@ -1,169 +1,13 @@
 import React, { useState, useEffect } from "react";
-import LoginForm from "@/components/Account/Login/LoginForm";
+import { useMutation, useQuery } from "@apollo/client";
 import Link from "next/link";
 import { useAuthAdmin } from "@/lib/auth/AuthProvider";
-import { gql, useQuery } from "@apollo/client";
-import useLocalStorage from "@/lib/storage";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
-
-const GET_USER_SETTINGS = gql`
-	query GetUserSettings {
-		customer {
-			id
-			databaseId
-			firstName
-			lastName
-			displayName
-			email
-			username
-			billing {
-				firstName
-				lastName
-				company
-				address1
-				address2
-				city
-				state
-				country
-				postcode
-				phone
-			}
-		}
-	}
-`;
-export const AddressFields = gql`
-	fragment AddressFields on CustomerAddress {
-		firstName
-		lastName
-		company
-		address1
-		address2
-		city
-		state
-		country
-		postcode
-		phone
-	}
-`;
-const CustomerFieldss = gql`
-	query GetUser {
-		viewer {
-			id
-			databaseId
-			firstName
-			lastName
-			displayName
-			billing {
-				...AddressFields
-			}
-			shipping {
-				...AddressFields
-			}
-			orders(first: 100) {
-				nodes {
-					...OrderFields
-				}
-			}
-		}
-	}
-	${AddressFields}
-`;
-
-export const ProductContentSlice = gql`
-	fragment ProductContentSlice on Product {
-		id
-		databaseId
-		name
-		slug
-		type
-		image {
-			id
-			sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
-			altText
-		}
-		... on SimpleProduct {
-			price
-			regularPrice
-			soldIndividually
-		}
-		... on VariableProduct {
-			price
-			regularPrice
-			soldIndividually
-		}
-	}
-`;
-
-const LineItemFields = gql`
-	fragment LineItemFields on LineItem {
-		databaseId
-		product {
-			node {
-				...ProductContentSlice
-			}
-		}
-		orderId
-		quantity
-		subtotal
-		total
-		totalTax
-	}
-	${ProductContentSlice}
-`;
-
-const OrderFields = gql`
-	fragment OrderFields on Order {
-		id
-		databaseId
-		orderNumber
-		orderVersion
-		status
-		needsProcessing
-		subtotal
-		paymentMethodTitle
-		total
-		totalTax
-		date
-		dateCompleted
-		datePaid
-		billing {
-			...AddressFields
-		}
-		shipping {
-			...AddressFields
-		}
-		lineItems(first: 100) {
-			nodes {
-				...LineItemFields
-			}
-		}
-	}
-	${AddressFields}
-	${LineItemFields}
-`;
-
-const CustomerFields = gql`
-	fragment CustomerFields on Customer {
-		id
-		databaseId
-		firstName
-		lastName
-		displayName
-		billing {
-			...AddressFields
-		}
-		shipping {
-			...AddressFields
-		}
-		orders(first: 100) {
-			nodes {
-				...OrderFields
-			}
-		}
-	}
-	${AddressFields}
-	${OrderFields}
-`;
+import LoginForm from "@/components/Account/Login/LoginForm";
+import useLocalStorage from "@/lib/storage";
+import { GET_USER_SETTINGS, UPDATE_CUSTOMER } from "@/lib/graphQL/userGraphQL";
+import BillingFields from "./Fields/BillingFields";
+import ShippingFields from "./Fields/ShippingFields";
 
 export default function Account() {
 	const { user, isLoading: authLoading, logout, refreshAuth } = useAuthAdmin();
@@ -178,9 +22,46 @@ export default function Account() {
 		skip: !isAuthenticated,
 		fetchPolicy: "network-only",
 	});
+	const customer = data?.customer;
 
 	const [activeTab, setActiveTab] = useState("dashboard");
 
+	const [updateAccountMutation] = useMutation(UPDATE_CUSTOMER);
+	const [billing, setBilling] = useState(customer?.billing || {});
+	const [shipping, setShipping] = useState(customer?.shipping || {});
+
+	useEffect(() => {
+		customer?.billing && setBilling(customer.billing);
+		customer?.shipping && setShipping(customer.shipping);
+	}, [customer]);
+
+	const handleBillingChange = (e) => {
+		setBilling({ ...billing, [e.target.name]: e.target.value });
+	};
+
+	const handleShippingChange = (e) => {
+		setShipping({ ...shipping, [e.target.name]: e.target.value });
+	};
+
+	const handleUpdateCustomer = async (e) => {
+		e.preventDefault();
+
+		updateCustomer({ billing, shipping });
+	};
+	const updateCustomer = async (updatedData) => {
+		try {
+			await updateAccountMutation({
+				variables: {
+					billing: updatedData.billing,
+					shipping: updatedData.shipping,
+				},
+			});
+			alert("Account updated successfully!");
+		} catch (err) {
+			console.error("Error updating account:", err);
+			alert("There was an error updating your account. Please try again.");
+		}
+	};
 	if (authLoading || userDataLoading) {
 		return <LoadingSpinner />;
 	}
@@ -284,23 +165,36 @@ export default function Account() {
 		<div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
 			<div className="max-w-4xl mx-auto">
 				<div className="mb-8">
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome, {data?.customer.displayName}</h1>
+					<h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome, {customer?.displayName}</h1>
 					<button onClick={logout} className="text-red-600 hover:underline">
 						Logout
 					</button>
 				</div>
+				<form onSubmit={handleUpdateCustomer}>
+					<BillingFields billing={customer.billing} />
+
+					<ShippingFields shipping={customer.shipping} />
+					<div className="mt-6">
+						<button
+							type="submit"
+							className="w-full flex justify-center py-3 px-4 border border-blue-600 rounded-md shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+						>
+							Update Account
+						</button>
+					</div>
+				</form>
 
 				<section className="bg-white p-6 rounded-lg shadow mb-8">
 					<h2 className="text-xl font-semibold mb-4">Your Account</h2>
 					{userDataLoading ? (
 						<p>Loading your information...</p>
-					) : data ? (
+					) : customer ? (
 						<div className="space-y-2">
 							<p>
-								<strong>Email:</strong> {data.customer.email}
+								<strong>Email:</strong> {customer.email}
 							</p>
 							<p>
-								<strong>Username:</strong> {data.customer.username}
+								<strong>Username:</strong> {customer.username}
 							</p>
 						</div>
 					) : (

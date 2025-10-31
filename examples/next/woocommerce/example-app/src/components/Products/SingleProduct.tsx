@@ -1,89 +1,56 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Product } from "@/interfaces/product.interface";
-import { useCart } from "@/lib/woocommerce/CartProvider";
+import { RELATED_PRODUCTS_QUERY } from "@/lib/graphQL/productGraphQL";
+import { useQuery } from "@apollo/client/react/hooks/useQuery";
+import ProductCard from "./ProductCard";
+import ProductPrice from "./Price";
+import AddToCart from "./AddToCart";
+import ProductQuantity from "./Quantity";
+import ProductVariations from "./Variations";
 interface SingleProductProps {
 	product: Product;
+	relatedProducts?: Product[];
 }
 
 export default function SingleProduct({ product }: SingleProductProps) {
-	const [isAdding, setIsAdding] = useState(false);
-	const [addedToCart, setAddedToCart] = useState(false);
-	const [quantity, setQuantity] = useState<number>(1);
 	const [activeTab, setActiveTab] = useState<string>("description");
-
-	const { addToCart, findCartItem, loading, cart } = useCart();
+	const [quantity, setQuantity] = useState<number>(1);
 
 	if (!product) {
 		return null;
 	}
-
-	// Check if product is already in cart
-	const existingCartItem = findCartItem(product.databaseId);
-	const isInCart = !!existingCartItem;
-	const currentCartQuantity = existingCartItem?.quantity || 0;
-	// Add this to your app for debugging
-
-	const handleAddToCart = async (e: React.MouseEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		if (quantity <= 0) {
-			alert("Please select a valid quantity");
-			return;
-		}
-
-		setIsAdding(true);
-
-		try {
-			console.log(
-				`${isInCart ? "Updating" : "Adding"} ${quantity} of product ${product.name} (ID: ${product.databaseId}) to cart`
-			);
-
-			const result = await addToCart(product.databaseId, quantity);
-
-			console.log("Cart operation result:", result);
-
-			if (result.success) {
-				setAddedToCart(true);
-				console.log(`Product ${result.action} successfully!`);
-
-				// Reset the added state after 2 seconds
-				setTimeout(() => {
-					setAddedToCart(false);
-				}, 2000);
-			} else {
-				throw new Error(result.error || "Failed to add to cart");
-			}
-		} catch (error) {
-			console.error("Add to cart error:", error);
-			alert(`Error adding to cart: ${error.message || error}`);
-		} finally {
-			setIsAdding(false);
-		}
+	const productPrices = {
+		onSale: product.onSale,
+		price: product.price,
+		regularPrice: product.regularPrice,
+		salePrice: product.salePrice,
 	};
+	//Related Products
+	const getRelatedProducts = () => {
+		const categorySlugs = product.productCategories?.nodes?.map((cat) => cat.slug) || [];
+		const { data: relatedData } = useQuery(RELATED_PRODUCTS_QUERY, {
+			variables: {
+				categoryIn: categorySlugs,
+				exclude: [product.databaseId],
+			},
+			skip: categorySlugs.length === 0,
+		});
+		return relatedData?.products?.nodes || [];
+	};
+
+	const relatedProducts = getRelatedProducts();
 
 	return (
 		<div className="container mx-auto px-4 py-8">
-			{/* Debug info */}
-
-			<div className="mb-4 p-4 bg-gray-100 rounded-lg text-sm">
-				<p>
-					<strong>Debug Info:</strong>
-				</p>
-				<p>Product ID: {product.databaseId}</p>
-				<p>Is in cart: {isInCart.toString()}</p>
-				<p>Current cart quantity: {currentCartQuantity}</p>
-				<p>
-					Will {isInCart ? "update to" : "add"}: {isInCart ? currentCartQuantity + quantity : quantity}
-				</p>
-			</div>
-
-			{/* Your existing JSX... */}
 			<div className="grid lg:grid-cols-2 gap-12 mb-12">
-				{/* Product Images */}
 				<div className="space-y-4">
 					<div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+						{product.onSale && (
+							<span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md z-10">
+								On Sale
+							</span>
+						)}
 						{product.image ? (
 							<Image
 								src={product.image.sourceUrl}
@@ -110,101 +77,106 @@ export default function SingleProduct({ product }: SingleProductProps) {
 				{/* Product Info */}
 				<div className="space-y-6">
 					<div>
-						<h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
-						{product.sku && <p className="text-gray-600">SKU: {product.sku}</p>}
+						{product.productCategories?.nodes && product.productCategories.nodes.length > 0 && (
+							<p className="text-sm text-gray-600 mb-2">
+								{product.productCategories.nodes.map((cat) => cat.name).join(", ")}
+							</p>
+						)}
+						<h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+						{product.shortDescription && (
+							<div className="text-gray-600 mb-4" dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
+						)}
+						<p className="text-sm text-gray-400">
+							{product.sku && <span className="text-gray-600">SKU: {product.sku}</span>}
+						</p>
+						<ProductVariations variations={product.variations} />
+						<ProductPrice prices={productPrices} />
 					</div>
 
-					{/* Show current cart status */}
-					{isInCart && (
-						<div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-							<p className="text-blue-800 text-sm">
-								📦 Currently in cart: <strong>{currentCartQuantity}</strong>{" "}
-								{currentCartQuantity === 1 ? "item" : "items"}
-							</p>
+					<div className="add-to-cart-container flex items-center gap-4">
+						<ProductQuantity product={product} quantity={quantity} setQuantity={setQuantity} />
+
+						<AddToCart product={product} quantity={quantity} />
+					</div>
+				</div>
+			</div>
+
+			{/* Product Tabs */}
+			<div className="product-tabs mb-12">
+				<div className="border-b mb-6">
+					<button
+						className={`py-2 px-4 mr-4 ${
+							activeTab === "description" ? "border-b-2 border-blue-600 font-semibold" : "text-gray-600"
+						}`}
+						onClick={() => setActiveTab("description")}
+					>
+						Description
+					</button>
+					<button
+						className={`py-2 px-4 mr-4 ${
+							activeTab === "additionalInfo" ? "border-b-2 border-blue-600 font-semibold" : "text-gray-600"
+						}`}
+						onClick={() => setActiveTab("additionalInfo")}
+					>
+						Additional Information
+					</button>
+					<button
+						className={`py-2 px-4 ${
+							activeTab === "reviews" ? "border-b-2 border-blue-600 font-semibold" : "text-gray-600"
+						}`}
+						onClick={() => setActiveTab("reviews")}
+					>
+						Reviews ({product.reviewCount || 0})
+					</button>
+				</div>
+				<div className="tab-content">
+					{activeTab === "description" && (
+						<div
+							className="prose max-w-none"
+							dangerouslySetInnerHTML={{ __html: product.description || "<p>No description available.</p>" }}
+						/>
+					)}
+					{activeTab === "additionalInfo" && (
+						<div>
+							{product.attributes?.nodes && product.attributes.nodes.length > 0 ? (
+								<table className="w-full table-auto border-collapse">
+									<tbody>
+										{product.attributes.nodes.map((attr) => (
+											<tr key={attr.id} className="border-b">
+												<td className="py-2 px-4 font-medium">{attr.name}</td>
+												<td className="py-2 px-4">{attr.options?.join(", ") || "N/A"}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							) : (
+								<p>No additional information available.</p>
+							)}
 						</div>
 					)}
-
-					{/* Add to Cart */}
-					{product.stockStatus === "IN_STOCK" && (
-						<div className="space-y-4">
-							<div className="flex items-center space-x-4">
-								<label htmlFor="quantity" className="text-sm font-medium text-gray-700">
-									Quantity to {isInCart ? "add" : "add"}:
-								</label>
-								<select
-									id="quantity"
-									value={quantity}
-									onChange={(e) => setQuantity(parseInt(e.target.value))}
-									className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-								>
-									{[...Array(Math.min(10, product.stockQuantity || 10))].map((_, i) => (
-										<option key={i + 1} value={i + 1}>
-											{i + 1}
-										</option>
-									))}
-								</select>
-							</div>
-
-							{isInCart && (
-								<p className="text-sm text-gray-600">
-									New total will be: <strong>{currentCartQuantity + quantity}</strong>
-								</p>
+					{activeTab === "reviews" && (
+						<div>
+							{product.reviewCount && product.reviewCount > 0 ? (
+								<p>Reviews would be displayed here.</p>
+							) : (
+								<p>No reviews yet.</p>
 							)}
-
-							<button
-								disabled={isAdding || loading}
-								onClick={handleAddToCart}
-								className={`w-full py-3 px-6 rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-									isAdding || loading
-										? "bg-gray-400 text-gray-600 cursor-not-allowed"
-										: addedToCart
-										? "bg-green-600 text-white"
-										: isInCart
-										? "bg-orange-600 text-white hover:bg-orange-700"
-										: "bg-blue-600 text-white hover:bg-blue-700"
-								}`}
-							>
-								{isAdding || loading ? (
-									<span className="flex items-center justify-center">
-										<svg
-											className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-										>
-											<circle
-												className="opacity-25"
-												cx="12"
-												cy="12"
-												r="10"
-												stroke="currentColor"
-												strokeWidth="4"
-											></circle>
-											<path
-												className="opacity-75"
-												fill="currentColor"
-												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-											></path>
-										</svg>
-										{isInCart ? "Updating Cart..." : "Adding to Cart..."}
-									</span>
-								) : addedToCart ? (
-									<span className="flex items-center justify-center">
-										<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-										</svg>
-										{isInCart ? "Updated Cart!" : "Added to Cart!"}
-									</span>
-								) : isInCart ? (
-									`Add ${quantity} More (Total: ${currentCartQuantity + quantity})`
-								) : (
-									`Add ${quantity > 1 ? `${quantity} ` : ""}to Cart`
-								)}
-							</button>
 						</div>
 					)}
 				</div>
 			</div>
+
+			{/* Related Products */}
+			{relatedProducts.length > 0 && (
+				<div className="related-products">
+					<h2 className="text-2xl font-bold mb-6">Related Products</h2>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+						{relatedProducts.map((relatedProduct: Product) => (
+							<ProductCard key={relatedProduct.databaseId} product={relatedProduct} />
+						))}
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

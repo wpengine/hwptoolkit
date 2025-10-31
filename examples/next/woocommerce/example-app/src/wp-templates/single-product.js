@@ -1,5 +1,5 @@
 import SingleProduct from "@/components/Products/SingleProduct";
-
+import { SINGLE_PRODUCT_QUERY } from "@/lib/graphQL/productGraphQL";
 export default function SingleProductPage({ graphqlData }) {
 	const { SingleProductQuery } = graphqlData;
 
@@ -17,112 +17,7 @@ export default function SingleProductPage({ graphqlData }) {
 SingleProductPage.queries = [
 	{
 		name: "SingleProductQuery",
-		query: /* GraphQL */ `
-			query SingleProductQuery($id: ID!) {
-				product(id: $id, idType: SLUG) {
-					id
-					databaseId
-					name
-					slug
-					uri
-					description
-					shortDescription
-					sku
-					date
-					onSale
-					productCategories {
-						nodes {
-							id
-							name
-							slug
-						}
-					}
-					productTags {
-						nodes {
-							id
-							name
-							slug
-						}
-					}
-					image {
-						id
-						sourceUrl
-						altText
-						mediaDetails {
-							width
-							height
-						}
-					}
-					galleryImages {
-						nodes {
-							id
-							sourceUrl
-							altText
-							mediaDetails {
-								width
-								height
-							}
-						}
-					}
-
-					... on SimpleProduct {
-						price
-						regularPrice
-						salePrice
-						stockStatus
-						stockQuantity
-						weight
-						length
-						width
-						height
-					}
-
-					... on VariableProduct {
-						price
-						regularPrice
-						salePrice
-						stockStatus
-						stockQuantity
-						weight
-						length
-						width
-						height
-						variations {
-							nodes {
-								id
-								name
-								price
-								regularPrice
-								salePrice
-								stockStatus
-								stockQuantity
-							}
-						}
-					}
-
-					... on ExternalProduct {
-						price
-						regularPrice
-						salePrice
-						externalUrl
-						buttonText
-					}
-
-					... on GroupProduct {
-						price
-						regularPrice
-						salePrice
-						products {
-							nodes {
-								id
-								name
-								slug
-							}
-						}
-					}
-				}
-			}
-		`,
+		query: SINGLE_PRODUCT_QUERY,		
 		variables: (event, { uri }) => {
 			const slug = uri
 				.replace(/^\/+|\/+$/g, "")

@@ -1,16 +1,14 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+
 import { Product } from "@/interfaces/product.interface";
-import React from "react";
-import { useCart } from "@/lib/woocommerce/CartProvider";
+import ProductQuantity from "./Quantity";
+import AddToCart from "./AddToCart";
+import ProductPrice from "./Price";
+import ProductVariations from "./Variations";
 
 export default function ProductCard({ product }: { product: Product }) {
-	//const { addToCart, loading } = useCartMutations();
-	const [isAdding, setIsAdding] = useState(false);
-	const [addedToCart, setAddedToCart] = useState(false);
-	const { addToCart, findCartItem, loading, refreshCart } = useCart();
-
 	if (!product) {
 		return null;
 	}
@@ -18,51 +16,12 @@ export default function ProductCard({ product }: { product: Product }) {
 	const productImage = product.image?.sourceUrl || "/placeholder-product.jpg";
 	const productAlt = product.image?.altText || product.name || "Product image";
 
-	const handleAddToCart = async (e) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		setIsAdding(true);
-
-		try {
-			const result = await addToCart(product.databaseId, 1);
-
-			if (result.errors) {
-				console.error("GraphQL errors:", result.errors);
-				throw new Error(result.errors[0]?.message || "Failed to add to cart");
-			}
-			console.log(result.success);
-			if (result.success) {
-				setAddedToCart(true);
-				await refreshCart();
-				setTimeout(() => {
-					setAddedToCart(false);
-				}, 500);
-			} else {
-				throw new Error("No cart item returned from mutation");
-			}
-		} catch (error) {
-			console.error("Add to cart error:", error);
-			alert(`Error adding to cart: ${error.message}`);
-		} finally {
-			setIsAdding(false);
-		}
-	};
-
-	const getButtonText = () => {
-		if (product.stockStatus === "OUT_OF_STOCK") return "Out of Stock";
-		if (isAdding) return "Adding...";
-		if (addedToCart) return "Added to Cart!";
-		return "Add to Cart";
-	};
-
-	const getButtonClass = () => {
-		let baseClass = "add-to-cart-btn";
-		if (addedToCart) baseClass += " added";
-		if (isAdding) baseClass += " loading";
-		return baseClass;
-	};
-
+	const productPrices = {
+		onSale: product.onSale,
+		price: product.price,
+		regularPrice: product.regularPrice,
+		salePrice: product.salePrice
+	}
 	return (
 		<div className="product-card">
 			<Link href={`/product/${product.slug}`} className="product-link">
@@ -87,18 +46,9 @@ export default function ProductCard({ product }: { product: Product }) {
 				{/* Product Info */}
 				<div className="product-info">
 					<h3 className="product-title">{product.name}</h3>
-
+					
 					{/* Price */}
-					<div className="product-price">
-						{product.onSale ? (
-							<>
-								<span className="sale-price">{product.salePrice}</span>
-								<span className="regular-price">{product.regularPrice}</span>
-							</>
-						) : (
-							<span className="price">{product.price}</span>
-						)}
-					</div>
+					<ProductPrice prices={productPrices} size={"small"} />
 
 					{/* Rating */}
 					{product.averageRating > 0 && (
@@ -114,15 +64,7 @@ export default function ProductCard({ product }: { product: Product }) {
 			</Link>
 
 			{/* Add to Cart Button */}
-			<div className="product-actions">
-				<button
-					className={getButtonClass()}
-					disabled={product.stockStatus === "OUT_OF_STOCK" || isAdding}
-					onClick={handleAddToCart}
-				>
-					{getButtonText()}
-				</button>
-			</div>
+			<AddToCart product={product} card={true} />
 
 			<style jsx>{`
 				.product-card {
@@ -134,6 +76,8 @@ export default function ProductCard({ product }: { product: Product }) {
 					display: flex;
 					flex-direction: column;
 					height: 100%;
+					text-align: center;
+					padding-bottom: 1.5rem;
 				}
 
 				.product-card:hover {
@@ -183,7 +127,7 @@ export default function ProductCard({ product }: { product: Product }) {
 					position: absolute;
 					top: 10px;
 					right: 10px;
-					background: #95a5a6;
+					background: red;
 					color: white;
 					padding: 4px 8px;
 					border-radius: 4px;
@@ -281,7 +225,7 @@ export default function ProductCard({ product }: { product: Product }) {
 				.add-to-cart-btn.added {
 					background: #27ae60;
 				}
-
+			
 				@media (max-width: 768px) {
 					.product-title {
 						font-size: 14px;

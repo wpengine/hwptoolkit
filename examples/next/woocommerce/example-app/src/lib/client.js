@@ -1,15 +1,11 @@
 import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from "@apollo/client";
 import { createFragmentRegistry } from "@apollo/client/cache";
 import { relayStylePagination } from "@apollo/client/utilities";
-import { createPersistedQueryLink } from "@apollo/client/link/persisted-queries";
-import { sha256 } from "crypto-hash";
-import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 
 export async function fetchGraphQL(query, variables) {
   try {
     //console.log('🚀 fetchGraphQL called with:');
     //console.log('  URL:', `${process.env.NEXT_PUBLIC_WORDPRESS_URL}/graphql`);
-    // console.log('  Query:', query);
     // console.log('  Variables:', variables);
 
     const body = JSON.stringify({
@@ -63,54 +59,6 @@ export async function fetchGraphQL(query, variables) {
     throw error;
   }
 }
-
-// Define GraphQL fragments for reuse in queries and mutations
-// More info: https://www.apollographql.com/docs/react/data/fragments/
-const fragments = gql`
-  fragment Page on Page {
-    title
-    content
-  }
-
-  fragment Post on Post {
-    __typename
-    id
-    databaseId
-    date
-    uri
-    content
-    title
-    comments {
-      edges {
-        node {
-          ...Comment
-        }
-      }
-    }
-    author {
-      node {
-        name
-      }
-    }
-    featuredImage {
-      node {
-        sourceUrl(size: LARGE)
-        caption
-      }
-    }
-  }
-
-  fragment Comment on Comment {
-    id
-    content
-    date
-    author {
-      node {
-        name
-      }
-    }
-  }
-`;
 
 // Get the WordPress URL from environment variables
 // More info: https://nextjs.org/docs/basic-features/environment-variables

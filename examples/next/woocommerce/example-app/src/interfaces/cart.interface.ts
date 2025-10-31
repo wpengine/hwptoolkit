@@ -94,7 +94,18 @@ export interface Cart {
 	feeTax: string;
 	feeTotal: string;
 }
-
+export interface MiniCart {
+	contents: CartContents;
+	appliedCoupons: AppliedCoupon[];
+	subtotal: string;
+	subtotalTax: string;
+	shippingTotal: string;
+	shippingTax: string;
+	discountTotal: string;
+	discountTax: string;
+	total: string;
+	totalTax: string;
+}
 export interface MiniCartProps {
 	contents: MiniCartContents;
 	subtotal: string;
