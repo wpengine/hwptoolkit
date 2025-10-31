@@ -90,7 +90,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 		];
 
 		foreach ( $fields as $action => $field_string ) {
-			if ( empty( $field_string ) || ! is_string( $field_string ) ) {
+			if ( ! is_string( $field_string ) || '' === trim( $field_string ) ) {
 				continue;
 			}
 
@@ -124,7 +124,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 
 		$keys     = explode( '.', $key );
 		$last_key = array_pop( $keys );
-		$current  = &$this->navigate_to_parent( $data, $keys );
+		$current  = $this->navigate_to_parent( $data, $keys );
 
 		if ( null === $current || ! array_key_exists( $last_key, $current ) ) {
 			return;

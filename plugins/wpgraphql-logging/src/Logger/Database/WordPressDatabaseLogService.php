@@ -242,7 +242,7 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 		$safe_operators  = $this->get_safe_operators();
 		$allowed_columns = $this->get_allowed_columns();
 		foreach ( $where_conditions as $column => $condition ) {
-			if ( ! is_array( $condition ) || ! isset( $condition['column'] ) || ! isset( $condition['value'] ) || ! isset( $condition['operator'] ) ) {
+			if ( ! isset( $condition['column'] ) || ! isset( $condition['value'] ) || ! isset( $condition['operator'] ) ) {
 				continue;
 			}
 

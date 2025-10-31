@@ -76,7 +76,7 @@ class ListTable extends WP_List_Table {
 
 		$per_page     = $this->get_items_per_page( 'logs_per_page', self::DEFAULT_PER_PAGE );
 		$current_page = $this->get_pagenum();
-		$request      = $_REQUEST ?? [];
+		$request      = ( ! empty( $_REQUEST ) ? $_REQUEST : [] );
 		$where        = $this->process_where( $request );
 		$total_items  = $this->log_service->count_entities_by_where( $where );
 
@@ -135,9 +135,7 @@ class ListTable extends WP_List_Table {
 		$nonce_action = 'bulk-' . esc_attr( $this->_args['plural'] );
 		$nonce_value  = isset( $_REQUEST['_wpnonce'] ) && is_string( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
 
-		$nonce = is_string( $nonce_value ) ? $nonce_value : '';
-
-		$nonce_result = wp_verify_nonce( $nonce, $nonce_action );
+		$nonce_result = wp_verify_nonce( $nonce_value, $nonce_action );
 		if ( false === $nonce_result ) {
 			wp_die( esc_html__( 'Nonce verification failed!', 'wpgraphql-logging' ) );
 		}
@@ -145,7 +143,7 @@ class ListTable extends WP_List_Table {
 		$deleted_count = 0;
 
 		// WordPress sometimes sends 'delete' for selected items.
-		if ( in_array( $action, [ 'delete', 'bulk_delete' ], true ) && ! empty( $_REQUEST['log'] ) ) {
+		if ( in_array( $action, [ 'delete', 'bulk_delete' ], true ) && isset( $_REQUEST['log'] ) && '' !== $_REQUEST['log'] ) {
 			$ids = array_map( 'absint', (array) $_REQUEST['log'] );
 			// Remove redundant empty check since array_map always returns array.
 			foreach ( $ids as $id ) {
@@ -171,7 +169,7 @@ class ListTable extends WP_List_Table {
 
 		foreach ( $filter_keys as $key ) {
 			$value = isset( $_REQUEST[ $key ] ) && is_string( $_REQUEST[ $key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $key ] ) ) : null;
-			if ( ! empty( $value ) ) {
+			if ( null !== $value && '' !== $value ) {
 				$preserved_filters[ $key ] = $value;
 			}
 		}
@@ -394,7 +392,7 @@ class ListTable extends WP_List_Table {
 	public function get_request_headers(WordPressDatabaseEntity $item): string {
 		$extra           = $item->get_extra();
 		$request_headers = $extra['request_headers'] ?? [];
-		if ( empty( $request_headers ) || ! is_array( $request_headers ) ) {
+		if ( ! is_array( $request_headers ) ) {
 			return '';
 		}
 

@@ -245,11 +245,7 @@ class ViewLogsPage {
 		if ( ! is_string( $value ) || '' === $value ) {
 			return null;
 		}
-		$value = wp_unslash( $value );
-		if ( ! is_string( $value ) ) {
-			return null;
-		}
-		return sanitize_text_field( $value );
+		return sanitize_text_field( wp_unslash( $value ) );
 	}
 
 	/**

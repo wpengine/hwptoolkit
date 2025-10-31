@@ -56,7 +56,7 @@ class DownloadLogService {
 		if ( ! is_resource( $output ) ) {
 			wp_die( esc_html__( 'Failed to create CSV output.', 'wpgraphql-logging' ) );
 		}
-		$writer = Writer::createFromStream( $output );
+		$writer = Writer::from( $output );
 
 		$headers = $this->get_headers( $log );
 		$content = $this->get_content( $log );

@@ -34,8 +34,8 @@ class WordPressDatabaseHandler extends AbstractProcessingHandler {
 				$level->value,
 				$level->name,
 				$record->message,
-				$record->context ?? [],
-				$record->extra ?? []
+				$record->context,
+				$record->extra
 			);
 		} catch ( Throwable $e ) {
 			do_action( 'wpgraphql_logging_write_database_error', $e, $record );

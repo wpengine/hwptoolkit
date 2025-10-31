@@ -197,12 +197,12 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 		}
 
 		$request = $context['request'] ?? null;
-		if ( empty( $request ) || ! is_array( $request ) ) {
+		if ( ! is_array( $request ) ) {
 			return $query;
 		}
 
 		$params = $request['params'] ?? null;
-		if ( empty( $params ) || ! is_array( $params ) ) {
+		if ( ! is_array( $params ) ) {
 			return $query;
 		}
 
