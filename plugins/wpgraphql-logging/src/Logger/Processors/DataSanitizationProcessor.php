@@ -124,33 +124,20 @@ class DataSanitizationProcessor implements ProcessorInterface {
 
 		$keys     = explode( '.', $key );
 		$last_key = array_pop( $keys );
-		$current  = $this->navigate_to_parent( $data, $keys );
 
-		if ( null === $current || ! array_key_exists( $last_key, $current ) ) {
+		$current = &$data;
+		foreach ( $keys as $segment ) {
+			if ( ! is_array( $current ) || ! isset( $current[ $segment ] ) ) {
+				return;
+			}
+			$current = &$current[ $segment ];
+		}
+
+		if ( ! is_array( $current ) || ! array_key_exists( $last_key, $current ) ) {
 			return;
 		}
 
 		$this->apply_sanitization_rule( $current, $last_key, $rule );
-	}
-
-	/**
-	 * Navigate to the parent array of the target key.
-	 *
-	 * @param array<string, mixed> $data The data array to navigate.
-	 * @param array<string>        $keys The keys to navigate through.
-	 *
-	 * @return array<string, mixed>|null The parent array or null if not found.
-	 */
-	protected function &navigate_to_parent(array &$data, array $keys): ?array {
-		$current = &$data;
-		foreach ( $keys as $segment ) {
-			if ( ! is_array( $current ) || ! isset( $current[ $segment ] ) ) {
-				$null = null;
-				return $null;
-			}
-			$current = &$current[ $segment ];
-		}
-		return $current;
 	}
 
 	/**
@@ -199,8 +186,8 @@ class DataSanitizationProcessor implements ProcessorInterface {
 			return $record;
 		}
 
-		$context = $record['context'] ?? [];
-		$extra   = $record['extra'] ?? [];
+		$context = $record->context;
+		$extra   = $record->extra;
 		foreach ( $rules as $key => $rule ) {
 			$this->apply_rule( $context, $key, $rule );
 			$this->apply_rule( $extra, $key, $rule );

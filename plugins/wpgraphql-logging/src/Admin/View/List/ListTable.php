@@ -392,7 +392,7 @@ class ListTable extends WP_List_Table {
 	public function get_request_headers(WordPressDatabaseEntity $item): string {
 		$extra           = $item->get_extra();
 		$request_headers = $extra['request_headers'] ?? [];
-		if ( ! is_array( $request_headers ) ) {
+		if ( ! is_array( $request_headers ) || empty( $request_headers ) ) {
 			return '';
 		}
 
