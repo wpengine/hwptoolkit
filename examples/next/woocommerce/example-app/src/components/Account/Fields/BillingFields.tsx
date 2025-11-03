@@ -1,93 +1,74 @@
-import React from "react";
-
+import React, { useState } from "react";
 import { Customer } from "@/interfaces/customer.interface";
+import UserField from "../../ui/Field";
 
-export default function BillingFields({ billing }: { billing: Customer["billing"] }) {
+interface BillingFieldsProps {
+	billing: Customer["billing"];
+	onChange?: (billing: Customer["billing"]) => void;
+	readOnly?: boolean;
+}
+
+interface FieldConfig {
+	name: keyof Customer["billing"];
+	label: string;
+	type?: string;
+	colSpan?: string;
+}
+
+const billingFieldsConfig: FieldConfig[] = [
+	{ name: "firstName", label: "First Name", type: "text" },
+	{ name: "lastName", label: "Last Name", type: "text" },
+	{ name: "company", label: "Company", type: "text" },
+	{ name: "phone", label: "Phone", type: "tel" },
+	{ name: "address1", label: "Address 1", type: "text" },
+	{ name: "address2", label: "Address 2", type: "text" },
+	{ name: "city", label: "City", type: "text" },
+	{ name: "state", label: "State", type: "text" },
+	{ name: "postcode", label: "Postcode", type: "text" },
+	{ name: "country", label: "Country", type: "text" },
+];
+
+export default function BillingFields({ billing, onChange, readOnly = false }: BillingFieldsProps) {
+	const [formData, setFormData] = useState(
+		billing || {
+			firstName: "",
+			lastName: "",
+			company: "",
+			address1: "",
+			address2: "",
+			city: "",
+			state: "",
+			country: "",
+			postcode: "",
+			phone: "",
+			email: "",
+		}
+	);
+
+	const handleChange = (field: string, value: string) => {
+		const updatedData = { ...formData, [field]: value };
+		setFormData(updatedData);
+		onChange?.(updatedData);
+	};
+
 	if (!billing) return null;
+
 	return (
 		<div>
 			<h2 className="text-lg font-semibold mb-4">Billing Information</h2>
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-				<div>
-					<label className="block text-sm font-medium text-gray-700">First Name</label>
-					<input
-						type="text"
-						value={billing?.firstName || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				{billingFieldsConfig.map((field) => (
+					<UserField
+						key={field.name}
+						name={field.name}
+						label={field.label}
+						type={field.type}
+						value={formData?.[field.name] || ""}
+						onChange={(value) => handleChange(field.name, value)}
+						readOnly={readOnly}
+						colSpan={field.colSpan}
 					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Last Name</label>
-					<input
-						type="text"
-						value={billing?.lastName || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Company</label>
-					<input
-						type="text"
-						value={billing?.company || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Address 1</label>
-					<input
-						type="text"
-						value={billing?.address1 || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Address 2</label>
-					<input
-						type="text"
-						value={billing?.address2 || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">City</label>
-					<input
-						type="text"
-						value={billing?.city || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">State</label>
-					<input
-						type="text"
-						value={billing?.state || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Country</label>
-					<input
-						type="text"
-						value={billing?.country || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Postcode</label>
-					<input
-						type="text"
-						value={billing?.postcode || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Phone</label>
-					<input
-						type="text"
-						value={billing?.phone || ""}
-						className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
+				))}
 			</div>
 		</div>
 	);

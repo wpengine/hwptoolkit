@@ -89,7 +89,6 @@ export const OrderFields = gql`
     ${LineItemFields}
 `;
 
-// ✅ Changed from query to fragment
 export const CustomerFields = gql`
     fragment CustomerFields on Customer {
         id
@@ -115,7 +114,7 @@ export const CustomerFields = gql`
     ${OrderFields}
 `;
 
-// ✅ Now mutations and queries that use fragments
+// ✅ MUTATIONS
 export const UPDATE_CUSTOMER = gql`
     mutation UpdateCustomer($input: UpdateCustomerInput!) {
         updateCustomer(input: $input) {
@@ -127,6 +126,7 @@ export const UPDATE_CUSTOMER = gql`
     ${CustomerFields}
 `;
 
+// ✅ QUERIES
 export const GET_USER_SETTINGS = gql`
     query GetUserSettings {
         customer {
