@@ -116,6 +116,7 @@ class SettingsPageTest extends WPTestCase {
 
         // Valid tab -> returns it
         $_GET['tab'] = 'advanced';
+		$_GET['wpgraphql_logging_settings_tab_nonce'] = wp_create_nonce( 'wpgraphql-logging-settings-tab-action' );
         $this->assertSame('advanced', $page->get_current_tab($tabs));
     }
 }
