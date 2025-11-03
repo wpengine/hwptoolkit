@@ -165,7 +165,7 @@ class ConfigurationHelper {
 	 * Hook into WordPress to clear cache when settings are updated.
 	 * This should be called during plugin initialization.
 	 */
-	public static function init_cache_hooks(): void {
+	public static function register_cache_hooks(): void {
 		$instance   = self::get_instance();
 		$option_key = $instance->get_option_key();
 

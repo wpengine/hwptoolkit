@@ -92,14 +92,6 @@ class ViewLogsPage {
 			'dashicons-list-view',
 			25
 		);
-		add_submenu_page(
-			'graphiql-ide',
-			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
-			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
-			'manage_options',
-			self::ADMIN_PAGE_SLUG,
-			[ $this, 'render_admin_page' ]
-		);
 
 		// Updates the list table when filters are applied.
 		add_action( 'load-' . $this->page_hook, [ $this, 'process_page_actions_before_rendering' ], 10, 0 );

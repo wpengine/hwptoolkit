@@ -54,14 +54,17 @@ final class Plugin {
 	}
 
 	/**
-	 * Initialize the plugin admin, frontend & api functionality.
+	 * Initialize various components of the plugin.
 	 */
 	public function setup(): void {
-		ConfigurationHelper::init_cache_hooks();
-		SettingsPage::init();
-		ViewLogsPage::init();
-		QueryEventLifecycle::init();
-		DataDeletionScheduler::init();
+		QueryEventLifecycle::init(); // Event lifecycle for capturing logs.
+		DataDeletionScheduler::init(); // Data deletion scheduler.
+
+		if ( is_admin() ) {
+			ConfigurationHelper::register_cache_hooks(); // Register cache hooks.
+			SettingsPage::init(); // Settings page.
+			ViewLogsPage::init(); // View logs page.
+		}
 
 		do_action( 'wpgraphql_logging_plugin_setup', self::$instance );
 	}
@@ -122,7 +125,6 @@ final class Plugin {
 	 * @since 0.0.1
 	 */
 	public static function deactivate(): void {
-
 		DataDeletionScheduler::clear_scheduled_deletion();
 		$log_service = self::get_log_service();
 		$log_service->deactivate();
