@@ -89,7 +89,7 @@ class ViewLogsPage {
 			'manage_options',
 			self::ADMIN_PAGE_SLUG,
 			[ $this, 'render_admin_page' ],
-			'dashicons-list-view',
+			'dashicons-chart-line',
 			25
 		);
 
@@ -97,7 +97,7 @@ class ViewLogsPage {
 		add_action( 'load-' . $this->page_hook, [ $this, 'process_page_actions_before_rendering' ], 10, 0 );
 
 		// Enqueue scripts for the admin page.
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts_styles' ] );
 	}
 
 	/**
@@ -105,7 +105,7 @@ class ViewLogsPage {
 	 *
 	 * @param string $hook_suffix The current admin page.
 	 */
-	public function enqueue_admin_scripts( string $hook_suffix ): void {
+	public function enqueue_admin_scripts_styles( string $hook_suffix ): void {
 		if ( $hook_suffix !== $this->page_hook ) {
 			return;
 		}
@@ -152,7 +152,6 @@ class ViewLogsPage {
 	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
 	 */
 	public function render_admin_page(): void {
-
 
 		$action = isset( $_REQUEST['action'] ) && is_string( $_REQUEST['action'] )
 			? sanitize_text_field( $_REQUEST['action'] )

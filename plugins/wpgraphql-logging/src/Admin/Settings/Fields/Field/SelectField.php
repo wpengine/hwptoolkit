@@ -52,7 +52,10 @@ class SelectField extends AbstractSettingsField {
 		$field_value = $this->get_field_value( $option_value, $tab_key, $this->multiple ? [] : '' );
 
 		// Ensure we have the correct format for comparison.
-		$selected_values = $this->multiple ? (array) $field_value : [ (string) $field_value ];
+		$selected_values = $this->multiple ? (array) $field_value : [ sanitize_text_field( (string) $field_value ) ];
+		if ( $this->multiple ) {
+			$selected_values = array_map( 'sanitize_text_field', $selected_values );
+		}
 
 		$html  = '<select ';
 		$html .= 'name="' . esc_attr( $field_name ) . ( $this->multiple ? '[]' : '' ) . '" ';

@@ -159,20 +159,16 @@ class SettingsPage {
 		if ( empty( $tabs ) ) {
 			return $this->get_default_tab();
 		}
-
-		if ( ! isset( $_GET['tab'] ) || ! is_string( $_GET['tab'] ) ) {
+		if ( ! isset( $_GET['tab'] ) || ! is_string( $_GET['tab'] ) || ! isset( $_GET['wpgraphql_logging_settings_tab_nonce'] ) || ! is_string( $_GET['wpgraphql_logging_settings_tab_nonce'] ) ) {
 			return $this->get_default_tab();
 		}
 
-		if ( ! isset( $_GET['wpgraphql_logging_settings_tab_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['wpgraphql_logging_settings_tab_nonce'] ) ), 'wpgraphql-logging-settings-tab-action' ) ) {
+		$nonce = sanitize_text_field( $_GET['wpgraphql_logging_settings_tab_nonce'] );
+		if ( false === wp_verify_nonce( $nonce, 'wpgraphql-logging-settings-tab-action' ) ) {
 			return $this->get_default_tab();
 		}
 
 		$tab = sanitize_text_field( wp_unslash( $_GET['tab'] ) );
-
-		if ( '' === $tab ) {
-			return $this->get_default_tab();
-		}
 
 		if ( array_key_exists( $tab, $tabs ) ) {
 			return $tab;

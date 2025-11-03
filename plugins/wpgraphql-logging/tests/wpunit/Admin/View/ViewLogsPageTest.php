@@ -63,12 +63,12 @@ class ViewLogsPageTest extends WPTestCase {
 		$this->assertSame($instance1, $instance2);
 	}
 
-	public function test_enqueue_admin_scripts_only_on_correct_page(): void {
+	public function test_enqueue_admin_scripts_styles_only_on_correct_page(): void {
 		$this->set_as_admin();
 		$instance = ViewLogsPage::init();
 
 		// Test with wrong hook suffix
-		$instance->enqueue_admin_scripts('different-page');
+		$instance->enqueue_admin_scripts_styles('different-page');
 		$this->assertFalse(wp_script_is('jquery-ui-datepicker', 'enqueued'));
 
 		// Test with correct hook suffix (simulate the page hook)
@@ -77,7 +77,7 @@ class ViewLogsPageTest extends WPTestCase {
 		$pageHookProperty->setAccessible(true);
 		$pageHookProperty->setValue($instance, 'test-page-hook');
 
-		$instance->enqueue_admin_scripts('test-page-hook');
+		$instance->enqueue_admin_scripts_styles('test-page-hook');
 		$this->assertTrue(wp_script_is('jquery-ui-datepicker', 'enqueued'));
 		$this->assertTrue(wp_script_is('jquery-ui-slider', 'enqueued'));
 	}
