@@ -130,12 +130,10 @@ class ViewLogsPage {
 
 		wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', [], '1.12.1' );
 
-		// Enqueue admin scripts if they exist.
-		$script_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-view.js';
 		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/settings/wp-graphql-logging-view.js' ) ) {
 			wp_enqueue_script(
 				'wpgraphql-logging-view-js',
-				$script_path,
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-view.js',
 				[ 'jquery' ],
 				WPGRAPHQL_LOGGING_VERSION,
 				true
@@ -233,8 +231,8 @@ class ViewLogsPage {
 		$redirect_url = add_query_arg( array_filter( $filters, static function ( $value ) {
 			return '' !== $value;
 		} ), $redirect_url );
-		$redirect_url = apply_filters( 'wpgraphql_logging_filter_redirect_url', $redirect_url, $filters );
-		return (string) $redirect_url;
+
+		return (string) apply_filters( 'wpgraphql_logging_filter_redirect_url', $redirect_url, $filters );
 	}
 
 	/**

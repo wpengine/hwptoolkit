@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Rules;
 
+use WPGraphQL\Logging\Logger\Api\LoggingRuleInterface;
+
 /**
  * Manages a set of logging rules and checks if all pass.
  *
@@ -12,7 +14,7 @@ namespace WPGraphQL\Logging\Logger\Rules;
  * @since 0.0.1
  */
 class RuleManager {
-	/** @var array<\WPGraphQL\Logging\Logger\Rules\LoggingRuleInterface> */
+	/** @var array<\WPGraphQL\Logging\Logger\Api\LoggingRuleInterface> */
 	private array $rules = [];
 
 	/**

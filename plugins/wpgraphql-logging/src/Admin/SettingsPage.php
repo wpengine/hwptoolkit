@@ -196,23 +196,19 @@ class SettingsPage {
 			return;
 		}
 
-		// Enqueue admin styles if they exist.
-		$style_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/css/settings/wp-graphql-logging-settings.css';
 		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/css/settings/wp-graphql-logging-settings.css' ) ) {
 			wp_enqueue_style(
 				'wpgraphql-logging-settings-css',
-				$style_path,
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/css/settings/wp-graphql-logging-settings.css',
 				[],
 				WPGRAPHQL_LOGGING_VERSION
 			);
 		}
 
-		// Enqueue admin scripts if they exist.
-		$script_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-settings.js';
 		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/settings/wp-graphql-logging-settings.js' ) ) {
 			wp_enqueue_script(
 				'wpgraphql-logging-settings-js',
-				$script_path,
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-settings.js',
 				[],
 				WPGRAPHQL_LOGGING_VERSION,
 				true

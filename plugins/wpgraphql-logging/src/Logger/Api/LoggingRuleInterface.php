@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WPGraphQL\Logging\Logger\Rules;
+namespace WPGraphQL\Logging\Logger\Api;
 
 /**
  * Interface for logging rules.
