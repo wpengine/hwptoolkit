@@ -68,7 +68,7 @@ class SettingsPage {
 	 */
 	public function setup(): void {
 		add_action( 'init', [ $this, 'init_field_collection' ], 10, 0 );
-		add_action( 'admin_menu', [ $this, 'register_settings_page' ], 10, 0 );
+		add_action( 'admin_menu', [ $this, 'register_settings_page' ], 11, 0 );
 		add_action( 'admin_init', [ $this, 'register_settings_fields' ], 10, 0 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'load_scripts_styles' ], 10, 1 );
 	}
@@ -109,7 +109,7 @@ class SettingsPage {
 
 		$page = new MenuPage(
 			__( 'WPGraphQL Logging Settings', 'wpgraphql-logging' ),
-			__( 'WPGraphQL Logging', 'wpgraphql-logging' ),
+			__( 'Settings', 'wpgraphql-logging' ),
 			self::PLUGIN_MENU_SLUG,
 			$this->get_admin_template(),
 			[

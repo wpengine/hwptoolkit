@@ -3,7 +3,7 @@
  */
 export async function resetPluginSettings(admin) {
 	await admin.visitAdminPage(
-		"/options-general.php?page=wpgraphql-logging&reset=true"
+		"/admin.php?page=wpgraphql-logging&reset=true"
 	);
 }
 
@@ -11,7 +11,7 @@ export async function resetPluginSettings(admin) {
  * Navigate to WPGraphQL Logging settings page
  */
 export async function goToLoggingSettingsPage(admin) {
-	await admin.visitAdminPage("/options-general.php?page=wpgraphql-logging");
+	await admin.visitAdminPage("/admin.php?page=wpgraphql-logging");
 }
 
 /**

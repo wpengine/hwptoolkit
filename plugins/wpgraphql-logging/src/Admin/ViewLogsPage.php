@@ -82,7 +82,7 @@ class ViewLogsPage {
 	 */
 	public function register_settings_page(): void {
 
-		// Add submenu under GraphQL menu using the correct parent slug.
+		// Add top-level menu page.
 		$this->page_hook = add_menu_page(
 			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
 			esc_html__( 'GraphQL Logs', 'wpgraphql-logging' ),
@@ -90,7 +90,16 @@ class ViewLogsPage {
 			self::ADMIN_PAGE_SLUG,
 			[ $this, 'render_admin_page' ],
 			'dashicons-chart-line',
-			25
+		);
+
+		// Add "View All Logs" as the first submenu item (replaces the duplicate top-level menu item).
+		add_submenu_page(
+			self::ADMIN_PAGE_SLUG,
+			esc_html__( 'All Logs', 'wpgraphql-logging' ),
+			esc_html__( 'All Logs', 'wpgraphql-logging' ),
+			'manage_options',
+			self::ADMIN_PAGE_SLUG,
+			[ $this, 'render_admin_page' ]
 		);
 
 		// Updates the list table when filters are applied.
