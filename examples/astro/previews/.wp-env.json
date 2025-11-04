@@ -2,7 +2,7 @@
   "phpVersion": "8.3",
   "plugins": [
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
-    "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.8/hwp-previews.zip",
+    "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.12/hwp-previews.zip",
     "https://github.com/wp-graphql/wpgraphql-ide/releases/latest/download/wpgraphql-ide.zip"
   ],
   "themes": ["https://downloads.wordpress.org/theme/nude.1.2.zip"],
