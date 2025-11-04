@@ -77,13 +77,29 @@ trait LoggingHelper {
 		if ( null !== $this->rule_manager ) {
 			return $this->rule_manager;
 		}
+
+		$default_rules = [
+			new QueryNullRule(),
+			new SamplingRateRule(),
+			new EnabledRule(),
+			new IpRestrictionsRule(),
+			new ExcludeQueryRule(),
+		];
+
+		/**
+		 * Filter the logging rules before they are added to the manager.
+		 *
+		 * @param array<\WPGraphQL\Logging\Logger\Api\LoggingRuleInterface> $rules Array of rule objects.
+		 */
+		$rules = apply_filters( 'wpgraphql_logging_rules', $default_rules );
+
 		$this->rule_manager = new RuleManager();
-		$this->rule_manager->add_rule( new QueryNullRule() );
-		$this->rule_manager->add_rule( new SamplingRateRule() );
-		$this->rule_manager->add_rule( new EnabledRule() );
-		$this->rule_manager->add_rule( new IpRestrictionsRule() );
-		$this->rule_manager->add_rule( new ExcludeQueryRule() );
-		apply_filters( 'wpgraphql_logging_rule_manager', $this->rule_manager );
+
+		/** @var \WPGraphQL\Logging\Logger\Api\LoggingRuleInterface $rule */
+		foreach ( $rules as $rule ) {
+			$this->rule_manager->add_rule( $rule );
+		}
+
 		return $this->rule_manager;
 	}
 
