@@ -281,7 +281,7 @@ class ViewLogsPage {
 	 */
 	protected function render_view_page(): void {
 		$log_id = isset( $_GET['log'] ) ? absint( $_GET['log'] ) : 0;
-		$this->verify_admin_page_nonce( self::ADMIN_PAGE_DOWNLOAD_NONCE . '_' . $log_id );
+		$this->verify_admin_page_nonce( self::ADMIN_PAGE_VIEW_NONCE . '_' . $log_id );
 
 		if ( 0 === (int) $log_id ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) . '</p></div>';
