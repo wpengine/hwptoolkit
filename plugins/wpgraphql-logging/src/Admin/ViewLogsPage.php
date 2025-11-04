@@ -110,35 +110,48 @@ class ViewLogsPage {
 			return;
 		}
 
-		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_enqueue_script( 'jquery-ui-slider' );
+		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/view/jquery-ui-timepicker-addon.js' ) ) {
+			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_script( 'jquery-ui-slider' );
+			wp_enqueue_script(
+				'wpgraphql-logging-jquery-ui-timepicker-addon-js',
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/view/jquery-ui-timepicker-addon.js',
+				[ 'jquery-ui-datepicker', 'jquery-ui-slider' ],
+				WPGRAPHQL_LOGGING_VERSION,
+				true,
+			);
+		}
 
-		wp_enqueue_script(
-			'jquery-ui-timepicker-addon',
-			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js',
-			[ 'jquery-ui-datepicker', 'jquery-ui-slider' ],
-			'1.6.3', // Hash needs to be updated once a version is changed with the new version.
-			true,
-		);
-
-		wp_enqueue_style(
-			'jquery-ui-timepicker-addon-style',
-			'https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css',
-			[],
-			'1.6.3'
-		);
-
-		wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css', [], '1.12.1' );
-
-		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/settings/wp-graphql-logging-view.js' ) ) {
+		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/view/wp-graphql-logging-view.js' ) ) {
 			wp_enqueue_script(
 				'wpgraphql-logging-view-js',
-				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-view.js',
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/view/wp-graphql-logging-view.js',
 				[ 'jquery' ],
 				WPGRAPHQL_LOGGING_VERSION,
 				true
 			);
 		}
+
+
+		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/css/view/jquery-ui-timepicker-addon.min.css' ) ) {
+			wp_enqueue_style(
+				'wpgraphql-logging-jquery-ui-timepicker-addon-css',
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/css/view/jquery-ui-timepicker-addon.min.css',
+				[],
+				WPGRAPHQL_LOGGING_VERSION
+			);
+		}
+
+
+		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/css/view/jquery-ui.css' ) ) {
+			wp_enqueue_style(
+				'wpgraphql-logging-jquery-ui-css',
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/css/view/jquery-ui.css',
+				[],
+				WPGRAPHQL_LOGGING_VERSION
+			);
+		}
+
 
 		// Allow other plugins to enqueue their own scripts/styles.
 		do_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', $hook_suffix );
