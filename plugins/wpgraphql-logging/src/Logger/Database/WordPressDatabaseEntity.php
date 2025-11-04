@@ -259,7 +259,7 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 		return "
 	   CREATE TABLE {$table_name} (
 		  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-		  channel VARCHAR(191) NOT NULL,
+		  channel VARCHAR(100) NOT NULL,
 		  level SMALLINT UNSIGNED NOT NULL,
 		  level_name VARCHAR(50) NOT NULL,
 		  message LONGTEXT NOT NULL,
@@ -270,7 +270,8 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 		  INDEX channel_index (channel),
 		  INDEX level_name_index (level_name),
 		  INDEX level_index (level),
-		  INDEX datetime_index (datetime)
+		  INDEX datetime_index (datetime),
+		  INDEX datetime_level_index (datetime, level)
 	   ) {$charset_collate};
 	";
 	}
