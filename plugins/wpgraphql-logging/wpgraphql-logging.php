@@ -17,7 +17,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: wp-graphql
  * WPGraphQL requires at least: 2.3.0
- * WPGraphQL tested up to: 2.3.3
+ * WPGraphQL tested up to: 2.5.1
  *
  * @package WPGraphQL\Logging
  *
