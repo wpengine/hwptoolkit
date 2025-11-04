@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Admin\Settings\Menu;
 
+use WPGraphQL\Logging\Admin\ViewLogsPage;
+
 /**
  * Menu class for WordPress admin settings page.
  *
@@ -78,7 +80,7 @@ class MenuPage {
 	 */
 	public function register_page(): void {
 		add_submenu_page(
-			'options-general.php',
+			ViewLogsPage::ADMIN_PAGE_SLUG,
 			$this->page_title,
 			$this->menu_title,
 			'manage_options',

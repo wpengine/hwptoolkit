@@ -22,6 +22,7 @@ $wpgraphql_logging_nonce                = (string) ( $wpgraphql_logging_tabs_con
 
 <div class="wrap">
 	<h1><?php esc_html_e( 'WPGraphQL Logging Settings', 'wpgraphql-logging' ); ?></h1>
+	<?php settings_errors(); ?>
 	<form method="post" action="options.php">
 		<nav class="nav-tab-wrapper">
 			<?php
