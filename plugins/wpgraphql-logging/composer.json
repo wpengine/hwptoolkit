@@ -106,7 +106,8 @@
 			"/screenshots",
 			"/tests",
 			"!vendor",
-			"!vendor-prefixed"
+			"!vendor-prefixed",
+			"/wp-env"
 		]
 	},
 	"autoload": {
