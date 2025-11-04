@@ -1,9 +1,30 @@
 import { gql } from "@apollo/client";
 
 export const PRODUCTS_QUERY = gql`
-	query ProductDisplayQueries {
-		# Recent Products (by date)
-		RecentProducts: products(first: 50, where: { orderby: { field: DATE, order: DESC } }) {
+	query ProductDisplayQueries(
+		$categoryIn: [String]
+		$first: Int = 50
+		$orderByField: ProductsOrderByEnum = DATE
+		$orderByOrder: OrderEnum = DESC
+		$featured: Boolean
+		$onSale: Boolean
+		$minPrice: Float
+		$maxPrice: Float
+		$rating: [Int]
+	) {
+		products(
+			first: $first
+			where: {
+				categoryIn: $categoryIn
+				orderby: { field: $orderByField, order: $orderByOrder }
+				onSale: $onSale
+				featured: $featured
+				rating: $rating
+				minPrice: $minPrice
+				maxPrice: $maxPrice
+				status: "publish"
+			}
+		) {
 			nodes {
 				id
 				databaseId
@@ -39,6 +60,7 @@ export const PRODUCTS_QUERY = gql`
 				productCategories {
 					nodes {
 						id
+						databaseId
 						name
 						slug
 					}
@@ -135,218 +157,6 @@ export const PRODUCTS_QUERY = gql`
 							options
 						}
 					}
-				}
-			}
-		}
-
-		# Best Sellers (by total sales)
-		BestSellers: products(first: 50, where: { orderby: { field: TOTAL_SALES, order: DESC } }) {
-			nodes {
-				id
-				databaseId
-				name
-				slug
-				uri
-				description
-				shortDescription
-				sku
-				reviewCount
-				averageRating
-				onSale
-				image {
-					id
-					sourceUrl
-					altText
-					mediaDetails {
-						width
-						height
-					}
-				}
-
-				... on SimpleProduct {
-					price
-					regularPrice
-					salePrice
-					stockStatus
-					stockQuantity
-					totalSales
-				}
-
-				... on VariableProduct {
-					price
-					regularPrice
-					salePrice
-					stockStatus
-					stockQuantity
-					totalSales
-				}
-
-				... on ExternalProduct {
-					price
-					regularPrice
-					salePrice
-				}
-
-				... on GroupProduct {
-					price
-					regularPrice
-					salePrice
-				}
-			}
-		}
-
-		# Most Expensive (by price)
-		MostExpensive: products(first: 50, where: { orderby: { field: PRICE, order: DESC } }) {
-			nodes {
-				id
-				databaseId
-				name
-				slug
-				uri
-				description
-				shortDescription
-				sku
-				reviewCount
-				averageRating
-				onSale
-				image {
-					id
-					sourceUrl
-					altText
-					mediaDetails {
-						width
-						height
-					}
-				}
-
-				... on SimpleProduct {
-					price
-					regularPrice
-					salePrice
-					stockStatus
-				}
-
-				... on VariableProduct {
-					price
-					regularPrice
-					salePrice
-					stockStatus
-				}
-
-				... on ExternalProduct {
-					price
-					regularPrice
-					salePrice
-				}
-
-				... on GroupProduct {
-					price
-					regularPrice
-					salePrice
-				}
-			}
-		}
-
-		# On Sale Products
-		OnSale: products(first: 50, where: { onSale: true, orderby: { field: DATE, order: DESC } }) {
-			nodes {
-				id
-				databaseId
-				name
-				slug
-				uri
-				description
-				shortDescription
-				sku
-				reviewCount
-				averageRating
-				onSale
-				image {
-					id
-					sourceUrl
-					altText
-					mediaDetails {
-						width
-						height
-					}
-				}
-
-				... on SimpleProduct {
-					price
-					regularPrice
-					salePrice
-					stockStatus
-				}
-
-				... on VariableProduct {
-					price
-					regularPrice
-					salePrice
-					stockStatus
-				}
-
-				... on ExternalProduct {
-					price
-					regularPrice
-					salePrice
-				}
-
-				... on GroupProduct {
-					price
-					regularPrice
-					salePrice
-				}
-			}
-		}
-
-		# Best Rated Products
-		BestRated: products(first: 50, where: { orderby: { field: RATING, order: DESC } }) {
-			nodes {
-				id
-				databaseId
-				name
-				slug
-				uri
-				description
-				shortDescription
-				sku
-				reviewCount
-				averageRating
-				onSale
-				image {
-					id
-					sourceUrl
-					altText
-					mediaDetails {
-						width
-						height
-					}
-				}
-
-				... on SimpleProduct {
-					price
-					regularPrice
-					salePrice
-					stockStatus
-				}
-
-				... on VariableProduct {
-					price
-					regularPrice
-					salePrice
-					stockStatus
-				}
-
-				... on ExternalProduct {
-					price
-					regularPrice
-					salePrice
-				}
-
-				... on GroupProduct {
-					price
-					regularPrice
-					salePrice
 				}
 			}
 		}

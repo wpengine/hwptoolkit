@@ -4,12 +4,7 @@ import BillingFields from "../Fields/BillingFields";
 import ShippingFields from "../Fields/ShippingFields";
 import { Customer } from "@/interfaces/customer.interface";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
-
-interface AddressesProps {
-	billing: Customer["billing"];
-	shipping: Customer["shipping"];
-	refetch?: () => Promise<any>;
-}
+import { AddressesProps } from "@/interfaces/field.interface";
 
 export default function Addresses({ billing: initialBilling, shipping: initialShipping, refetch }: AddressesProps) {
 	const [billingData, setBillingData] = useState<Customer["billing"]>(initialBilling || {});
@@ -60,8 +55,6 @@ export default function Addresses({ billing: initialBilling, shipping: initialSh
 					},
 				},
 			});
-
-			console.log("Update result:", result);
 
 			if (result.data) {
 				alert("Account updated successfully!");

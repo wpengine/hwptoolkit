@@ -627,3 +627,16 @@ export const REFRESH_TOKEN_MUTATION = gql`
 		}
 	}
 `;
+export const CHECKOUT_MUTATION = gql`
+	mutation checkout($input: CheckoutInput!) {
+		checkout(input: $input) {
+			order {
+				...OrderFields
+			}
+			redirect
+			result
+			clientMutationId
+		}
+	}
+	${OrderFields}
+`;

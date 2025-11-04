@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
+
 import { useCart } from "@/lib/woocommerce/CartProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { GET_CART } from "@/lib/woocommerce/graphQL";
 import type { Cart as CartType, GetCartResponse, CartItem } from "@/interfaces/cart.interface";
+import Addresses from "@/components/Account/Tabs/Addresses";
+import { GET_USER_SETTINGS } from "@/lib/graphQL/userGraphQL";
+import { useAuthAdmin } from "@/lib/auth/AuthProvider";
+import { Customer } from "@/interfaces/customer.interface";
+import { CHECKOUT_MUTATION } from "@/lib/woocommerce/graphQL";
+// ✅ Add proper type for GET_USER_SETTINGS response
+interface GetCustomerResponse {
+	customer: Customer;
+}
 
 export default function Checkout() {
 	const {
@@ -26,6 +36,21 @@ export default function Checkout() {
 	const [couponError, setCouponError] = useState<string | null>(null);
 	const [couponSuccess, setCouponSuccess] = useState<string | null>(null);
 	const [applyingCoupon, setApplyingCoupon] = useState(false);
+	const [customer, setCustomer] = useState<Customer | null>(null);
+	const [checkoutProcessing, setCheckoutProcessing] = useState(false);
+	const { user, isLoading: authLoading } = useAuthAdmin();
+	const isAuthenticated = !!user;
+
+	const [getCustomer, { loading: userDataLoading }] = useLazyQuery<GetCustomerResponse>(GET_USER_SETTINGS, {
+		onCompleted: (data) => {
+			if (data?.customer) {
+				setCustomer(data.customer);
+			}
+		},
+		onError: (error) => console.error("GetCustomer error:", error),
+		fetchPolicy: "network-only",
+		errorPolicy: "all",
+	});
 
 	const [getFullCartQuery, { loading: fullCartLoading }] = useLazyQuery<GetCartResponse>(GET_CART, {
 		onCompleted: (data) => {
@@ -33,10 +58,20 @@ export default function Checkout() {
 				setFullCart(data.cart);
 			}
 		},
-		onError: (error) => console.error("❌ GetCart error:", error),
+		onError: (error) => console.error("GetCart error:", error),
 		fetchPolicy: "network-only",
 		errorPolicy: "all",
 	});
+
+	// ✅ Fetch customer data only when authenticated
+	useEffect(() => {
+		if (isAuthenticated) {
+			console.log("Fetching customer data...");
+			getCustomer();
+		} else {
+			setCustomer(null);
+		}
+	}, [isAuthenticated, getCustomer]);
 
 	// Fetch full cart on mount
 	useEffect(() => {
@@ -53,7 +88,7 @@ export default function Checkout() {
 	}, [providerCart, getFullCartQuery]);
 
 	const cart = fullCart || (providerCart as CartType);
-	const isLoading = fullCartLoading || providerLoading;
+	const isLoading = fullCartLoading || providerLoading || userDataLoading;
 
 	const handleRemoveItem = async (cartKey: string) => {
 		setUpdatingItems((prev) => ({ ...prev, [cartKey]: true }));
@@ -80,7 +115,6 @@ export default function Checkout() {
 		}
 	};
 
-	// ✅ Updated handleApplyCoupon with error handling
 	const handleApplyCoupon = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!couponCode.trim()) return;
@@ -98,7 +132,6 @@ export default function Checkout() {
 				await refreshCart();
 				await getFullCartQuery();
 
-				// Clear success message after 3 seconds
 				setTimeout(() => setCouponSuccess(null), 3000);
 			} else {
 				const error = result.error.replace(/&quot;/g, '"');
@@ -113,7 +146,6 @@ export default function Checkout() {
 		}
 	};
 
-	// ✅ Updated handleRemoveCoupon with error handling
 	const handleRemoveCoupon = async (code: string) => {
 		setCouponError(null);
 		setCouponSuccess(null);
@@ -126,7 +158,6 @@ export default function Checkout() {
 				await refreshCart();
 				await getFullCartQuery();
 
-				// Clear success message after 3 seconds
 				setTimeout(() => setCouponSuccess(null), 3000);
 			} else {
 				setCouponError(result.error || "Failed to remove coupon");
@@ -136,23 +167,54 @@ export default function Checkout() {
 			setCouponError(error.message || "An error occurred while removing the coupon");
 		}
 	};
+	const [checkoutMutation, { loading: checkoutLoading }] = useMutation(CHECKOUT_MUTATION, {
+		onCompleted: (data) => {
+			console.log("Checkout completed:", data);
+		},
+		onError: (error) => console.error("❌ Update cart error:", error),
+	});
+		const removeTypename = (obj: any): any => {
+		if (!obj) return obj;
 
-	const handleClearCart = async () => {
-		if (confirm("Are you sure you want to clear your entire cart?")) {
-			try {
-				const result = await clearCart();
-				if (result.success) {
-					setFullCart(null);
-					await refreshCart();
-				} else {
-					console.error("Failed to clear cart:", result.error);
+		if (Array.isArray(obj)) {
+			return obj.map(removeTypename);
+		}
+
+		if (typeof obj === "object") {
+			const newObj: any = {};
+			Object.keys(obj).forEach((key) => {
+				if (key !== "__typename") {
+					newObj[key] = removeTypename(obj[key]);
 				}
-			} catch (error) {
-				console.error("Error clearing cart:", error);
-			}
+			});
+			return newObj;
+		}
+
+		return obj;
+	};
+	const handleCheckout = async () => {
+		// Implement checkout logic here
+		console.log("Proceeding to checkout...");
+		setCheckoutProcessing(true);
+		try {
+			const { data, errors } = await checkoutMutation({
+				variables: {
+					input: {
+						paymentMethod: "cod",
+						billing: removeTypename(customer?.billing),
+						shipping: removeTypename(customer?.shipping),
+						clientMutationId: "asdasdsa241",
+					},
+				},
+			});
+			console.log("checkoutdata", data);
+			return { success: data.success };
+		} catch (error: any) {
+			return { success: false, error: error.message || "Failed to checkout" };
+		} finally {
+			setCheckoutProcessing(false);
 		}
 	};
-
 	if (isLoading && !cart) {
 		return <LoadingSpinner />;
 	}
@@ -181,21 +243,47 @@ export default function Checkout() {
 			</div>
 		);
 	}
-
 	return (
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 			<h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-				{/* Left Column - Cart Items */}
-				<div className="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-8">
+				{/* Left Column - Customer Details */}
+				<div className="bg-white rounded-lg shadow-sm border border-gray-200">
 					<div className="p-6">
 						<h3 className="text-xl font-semibold text-gray-900 mb-6">Customer Details</h3>
-                        
+
+						{/* ✅ Show loading state */}
+						{userDataLoading && <LoadingSpinner />}
+
+						{/* ✅ Show login prompt if not authenticated */}
+						{!isAuthenticated && !userDataLoading && (
+							<div className="text-center py-8">
+								<p className="text-gray-600 mb-4">Please log in to continue with checkout</p>
+								<Link
+									href="/account"
+									className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors"
+								>
+									Log In
+								</Link>
+							</div>
+						)}
+
+						{/* ✅ Show addresses when customer data is loaded */}
+						{isAuthenticated && !userDataLoading && customer && (
+							<Addresses billing={customer.billing} shipping={customer.shipping} refetch={getCustomer} />
+						)}
+
+						{/* ✅ Show message if no customer data */}
+						{isAuthenticated && !userDataLoading && !customer && (
+							<p className="text-gray-500">Unable to load customer data</p>
+						)}
 					</div>
 				</div>
-				{/* Right Column - Order Summary */}
-				<div className="lg:col-span-1">
+
+				{/* Right Column - Order Summary & Cart Items */}
+				<div className="lg:col-span-1 space-y-6">
+					{/* Order Summary */}
 					<div className="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-8">
 						<div className="p-6">
 							<h3 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h3>
@@ -260,7 +348,6 @@ export default function Checkout() {
 								</div>
 							)}
 
-							{/* ✅ Error Message */}
 							{couponError && (
 								<div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
 									<div className="flex items-start">
@@ -295,7 +382,6 @@ export default function Checkout() {
 								</div>
 							)}
 
-							{/* ✅ Success Message */}
 							{couponSuccess && (
 								<div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
 									<div className="flex items-start">
@@ -349,13 +435,20 @@ export default function Checkout() {
 							</form>
 
 							{/* Checkout Button */}
-							<button className="mt-6 w-full bg-green-600 text-white text-center py-3 px-4 rounded-md hover:bg-green-700 transition-colors font-semibold text-lg">
+							<button
+								disabled={!isAuthenticated || !customer || checkoutProcessing}
+								onClick={handleCheckout}
+								className="mt-6 w-full bg-green-600 text-white text-center py-3 px-4 rounded-md hover:bg-green-700 transition-colors font-semibold text-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+							>
 								Place Order
 							</button>
 						</div>
 					</div>
+
+					{/* Cart Items */}
 					<div className="bg-white rounded-lg shadow-sm border border-gray-200">
 						<div className="p-6">
+							<h3 className="text-xl font-semibold text-gray-900 mb-6">Cart Items</h3>
 							<div className="space-y-6">
 								{cart.contents.nodes.map((item: CartItem) => {
 									const product = item.product.node;

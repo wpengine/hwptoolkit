@@ -3,7 +3,23 @@ import { useRouteData } from "@/lib/templates/context";
 import ProductCard from "@/components/Products/ProductCard";
 import React from "react";
 import { PRODUCTS_QUERY } from "@/lib/graphQL/productGraphQL";
-export default function RecentProducts({
+
+interface ProductsProps {
+	count?: number;
+	columns?: {
+		desktop: number;
+		tablet: number;
+		mobile: number;
+	};
+	title?: string;
+	showTitle?: boolean;
+	displayType?: "recent" | "featured" | "expensive" | "sale" | "rated";
+	categoryIn?: string[];
+	featured?: boolean;
+	queryName?: string;
+}
+
+export default function Products({
 	count = 12,
 	columns = {
 		desktop: 4,
@@ -12,67 +28,32 @@ export default function RecentProducts({
 	},
 	title = "Recent Products",
 	showTitle = true,
-	displayType = "recent", // recent, bestsellers, expensive, sale, rated
-	customQuery = null, // Allow custom query override
-}) {
+	displayType = "recent",
+	categoryIn = [],
+	queryName = "ProductDisplayQueries", // ✅ Default query name
+}: ProductsProps) {
 	const { graphqlData } = useRouteData();
 
-	const getProductData = () => {
-		switch (displayType) {
-			case "bestsellers":
-				return graphqlData?.ProductDisplayQueries.BestSellers || [];
-			case "expensive":
-				return graphqlData?.ProductDisplayQueries.MostExpensive || [];
-			case "sale":
-				return graphqlData?.ProductDisplayQueries.OnSale || [];
-			case "rated":
-				return graphqlData?.ProductDisplayQueries.BestRated || [];
-			case "recent":
-			default:
-				return graphqlData?.ProductDisplayQueries.RecentProducts || [];
-		}
-	};
-
-	const products = getProductData();
-
-	const displayProducts = products.nodes ? products.nodes.slice(0, count) : [];
-
-	const hasError = () => {
-		const errorKey = {
-			recent: "RecentProducts",
-			bestsellers: "BestSellers",
-			expensive: "MostExpensive",
-			sale: "OnSale",
-			rated: "BestRated",
-		}[displayType];
-
-		return graphqlData?.[errorKey]?.error;
-	};
-
-	if (hasError()) {
-		console.error(`Error fetching ${displayType} products:`, hasError());
-		return <div>Error loading {displayType} products.</div>;
-	}
+	const products = graphqlData?.[queryName]?.products?.nodes || [];
+	const displayProducts = products.slice(0, count);
 
 	if (!products || products.length === 0) {
-		return <div>No {displayType} products found.</div>;
+		return (
+			<div className="text-center py-12">
+				<p className="text-gray-500">No {displayType} products found.</p>
+			</div>
+		);
 	}
 
-	const getGridColumns = (cols) => `repeat(${cols}, 1fr)`;
+	const getGridColumns = (cols: number) => `repeat(${cols}, 1fr)`;
 
 	return (
 		<div className="recent-products">
 			{showTitle && <h2>{title}</h2>}
 			<div className="products-grid">
-				{" "}
-				{(() => {
-					const productCards = [];
-					for (let i = 0; i < displayProducts.length; i++) {
-						const product = displayProducts[i];
-						productCards.push(<ProductCard key={product.id} product={product} />);
-					}
-					return productCards;
-				})()}
+				{displayProducts.map((product) => (
+					<ProductCard key={product.id} product={product} />
+				))}
 			</div>
 
 			<style jsx>{`
@@ -116,6 +97,27 @@ export default function RecentProducts({
 	);
 }
 
-RecentProducts.query = {
-	query: PRODUCTS_QUERY
+Products.query = {
+	query: PRODUCTS_QUERY,
+	variables: ({ displayType = "recent", categoryIn = null, count = 50, rating = [] }) => {
+		const orderByConfig = {
+			recent: { field: "DATE", order: "DESC" },
+			featured: { order: "DESC", featured: true },
+			expensive: { field: "PRICE", order: "DESC" },
+			sale: { field: "PRICE", order: "DESC", onSale: true },
+			rated: { field: "RATING", order: "ASC", rating },
+		};
+
+		const config = orderByConfig[displayType] || orderByConfig.recent;
+
+		return {
+			categoryIn: categoryIn && categoryIn.length > 0 ? categoryIn : null,
+			first: count,
+			orderByField: config.field,
+			orderByOrder: config.order,
+			onSale: config.onSale || null,
+			featured: config.featured || null,
+			rating: config.rating || null,
+		};
+	},
 };

@@ -18,7 +18,7 @@ const userFieldsConfig: FieldConfig[] = [
 	},
 ];
 
-export default function GeneralFields({ customer, onChange, readOnly = false }: UserFieldsProps) {
+export default function AccountDetails({ customer, onChange, refetch }: UserFieldsProps) {
 	const [updateAccountMutation, { loading: updateLoading }] = useMutation(UPDATE_CUSTOMER);
 	const [formData, setFormData] = useState({
 		firstName: customer?.firstName || "",
@@ -67,14 +67,15 @@ export default function GeneralFields({ customer, onChange, readOnly = false }: 
 				input.password = formData.password;
 			}
 
-			console.log("Updating user with:", input);
-
 			const result = await updateAccountMutation({
 				variables: { input },
 			});
 
 			if (result.data) {
 				alert("Account updated successfully!");
+				if (refetch) {
+					await refetch();
+				}
 				setFormData({ ...formData, password: "", password2: "" });
 				onChange?.({ ...customer, ...result.data.updateUser.user });
 			}
@@ -99,7 +100,7 @@ export default function GeneralFields({ customer, onChange, readOnly = false }: 
 						type={field.type}
 						value={formData[field.name as keyof typeof formData] || ""}
 						onChange={(value) => handleChange(field.name, value)}
-						readOnly={readOnly}
+						readOnly={false}
 						colSpan={field.colSpan}
 						placeholder={field.placeholder ? field.placeholder : field.label}
 					/>

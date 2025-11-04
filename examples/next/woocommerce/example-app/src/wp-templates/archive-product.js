@@ -1,13 +1,13 @@
-import RecentProducts from "@/components/Products/Products";
+import Products from "@/components/Products/Products";
 
 export default function Shop() {
   return (
     <>    
-      <RecentProducts />
+      <Products />
     </>
   );
 }
 
 Shop.queries = [
-  RecentProducts.query, // Ensure RecentProducts query is included
+  Products.query,
 ];
