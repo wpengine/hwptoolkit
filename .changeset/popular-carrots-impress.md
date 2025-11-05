@@ -1,5 +1,5 @@
 ---
-"@wpengine/wpgraphql-logging-wordpress-plugin": patch
+"@wpengine/wpgraphql-logging-wordpress-plugin": minor
 ---
 
 chore: Various improvement to the logging plugin:
