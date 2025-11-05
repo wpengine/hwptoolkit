@@ -43,34 +43,6 @@ if ( ! Autoloader::autoload() ) {
 	return;
 }
 
-if ( file_exists( __DIR__ . '/activation.php' ) ) {
-	require_once __DIR__ . '/activation.php';
-	// @phpstan-ignore-next-line
-	register_activation_hook( __FILE__, 'wpgraphql_logging_activation_callback' );
-}
-
-if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
-	require_once __DIR__ . '/deactivation.php';
-	// @phpstan-ignore-next-line
-	register_deactivation_hook( __FILE__, 'wpgraphql_logging_deactivation_callback' );
-}
-
-
-// phpcs:enable Generic.Metrics.CyclomaticComplexity.TooHigh
-// phpcs:enable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
-
-if ( ! function_exists( 'wpgraphql_logging_init' ) ) {
-	/**
-	 * Initializes plugin.
-	 */
-	function wpgraphql_logging_init(): void {
-		wpgraphql_logging_constants();
-		wpgraphql_logging_plugin_init();
-		wpgraphql_logging_plugin_admin_notice_correct_build();
-		wpgraphql_logging_plugin_admin_notice_min_php_version();
-	}
-}
-
 if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
 	/**
 	 * Define plugin constants.
@@ -96,6 +68,36 @@ if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
 		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP' ) ) {
 			define( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP', 'wpgraphql_logging_settings_group' );
 		}
+	}
+}
+
+// Define constants early - needed for activation/deactivation hooks.
+wpgraphql_logging_constants();
+
+if ( file_exists( __DIR__ . '/activation.php' ) ) {
+	require_once __DIR__ . '/activation.php';
+	// @phpstan-ignore-next-line
+	register_activation_hook( __FILE__, 'wpgraphql_logging_activation_callback' );
+}
+
+if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
+	require_once __DIR__ . '/deactivation.php';
+	// @phpstan-ignore-next-line
+	register_deactivation_hook( __FILE__, 'wpgraphql_logging_deactivation_callback' );
+}
+
+
+// phpcs:enable Generic.Metrics.CyclomaticComplexity.TooHigh
+// phpcs:enable SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh
+
+if ( ! function_exists( 'wpgraphql_logging_init' ) ) {
+	/**
+	 * Initializes plugin.
+	 */
+	function wpgraphql_logging_init(): void {
+		wpgraphql_logging_plugin_init();
+		wpgraphql_logging_plugin_admin_notice_correct_build();
+		wpgraphql_logging_plugin_admin_notice_min_php_version();
 	}
 }
 

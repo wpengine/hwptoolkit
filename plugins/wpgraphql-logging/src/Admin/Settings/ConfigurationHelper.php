@@ -139,14 +139,14 @@ class ConfigurationHelper {
 	 * Get the option key for the settings.
 	 */
 	public function get_option_key(): string {
-		return (string) apply_filters( 'wpgraphql_logging_settings_key', WPGRAPHQL_LOGGING_SETTINGS_KEY );
+		return WPGRAPHQL_LOGGING_SETTINGS_KEY;
 	}
 
 	/**
 	 * Get the settings group for caching.
 	 */
 	public function get_settings_group(): string {
-		return (string) apply_filters( 'wpgraphql_logging_settings_group_settings_group', WPGRAPHQL_LOGGING_SETTINGS_GROUP );
+		return WPGRAPHQL_LOGGING_SETTINGS_GROUP;
 	}
 
 	/**
@@ -185,21 +185,26 @@ class ConfigurationHelper {
 
 		$cache_duration = (int) apply_filters( 'wpgraphql_logging_config_cache_duration', self::CACHE_DURATION );
 
+		// Try to get from wp_cache first (in-memory cache).
 		$cached_config = wp_cache_get( $option_key, self::CACHE_GROUP );
 		if ( is_array( $cached_config ) ) {
 			$this->config = $cached_config;
 			return;
 		}
 
+		// Try to get from the WordPress object cache (could be Redis, Memcached, etc.).
 		$cached_config = wp_cache_get( $option_key, $this->get_settings_group() );
 		if ( is_array( $cached_config ) ) {
 			$this->config = $cached_config;
+			// Store in our custom cache group for faster access next time.
 			wp_cache_set( $option_key, $cached_config, self::CACHE_GROUP, $cache_duration );
 			return;
 		}
 
+		// Load from database.
 		$this->config = $this->get_option_value( $option_key, [] );
 
+		// Cache the result in both cache groups.
 		wp_cache_set( $option_key, $this->config, self::CACHE_GROUP, $cache_duration );
 		wp_cache_set( $option_key, $this->config, $this->get_settings_group(), $cache_duration );
 	}
