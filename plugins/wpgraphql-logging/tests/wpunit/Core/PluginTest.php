@@ -60,6 +60,17 @@ class PluginTest extends WPTestCase {
 	}
 
 	public function test_plugin_activate() {
+
+		// Delet configuration option
+		$configuration = ConfigurationHelper::get_instance();
+		$option_key = $configuration->get_option_key();
+		delete_option( $option_key );
+
+		// Verify that the configuration option has been deleted
+		$option_value = get_option( $option_key );
+		$this->assertEmpty( $option_value );
+
+
 		$plugin = Plugin::init();
 		$plugin::activate();
 
@@ -71,7 +82,6 @@ class PluginTest extends WPTestCase {
 		$this->assertEquals( $table_exists, $table_name );
 
 		// Verify that the default configuration has been set
-		$configuration = ConfigurationHelper::get_instance();
 		$option_value = $configuration->get_option_value( WPGRAPHQL_LOGGING_SETTINGS_KEY );
 		$this->assertNotEmpty( $option_value );
 		$default_configuration = [
@@ -96,6 +106,26 @@ class PluginTest extends WPTestCase {
 				DataManagementTab::DATA_SANITIZATION_METHOD => 'recommended',
 			],
 		];
+		$this->assertEquals( $option_value, $default_configuration );
+	}
+
+	public function test_plugin_activate_when_configuration_already_exists() {
+		$configuration = ConfigurationHelper::get_instance();
+		$option_key = $configuration->get_option_key();
+		$default_configuration = [
+			BasicConfigurationTab::get_name() => [
+				BasicConfigurationTab::ENABLED => true,
+			],
+		];
+		update_option( $option_key, $default_configuration );
+
+
+		$plugin = Plugin::init();
+		$plugin::activate();
+
+		// Verify that the default configuration has not been set
+		$configuration = ConfigurationHelper::get_instance();
+		$option_value = $configuration->get_option_value( WPGRAPHQL_LOGGING_SETTINGS_KEY );
 		$this->assertEquals( $option_value, $default_configuration );
 	}
 
