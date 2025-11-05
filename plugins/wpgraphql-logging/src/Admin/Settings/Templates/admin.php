@@ -17,15 +17,25 @@ $wpgraphql_logging_configuration_helper = ConfigurationHelper::get_instance();
 $wpgraphql_logging_tabs_config          = (array) get_query_var( 'wpgraphql_logging_main_page_config' );
 $wpgraphql_logging_current_tab          = (string) ( $wpgraphql_logging_tabs_config['current_tab'] ?? '' );
 $wpgraphql_logging_tabs                 = (array) ( $wpgraphql_logging_tabs_config['tabs'] ?? [] );
+$wpgraphql_logging_nonce                = (string) ( $wpgraphql_logging_tabs_config['nonce'] ?? '' );
 ?>
 
 <div class="wrap">
 	<h1><?php esc_html_e( 'WPGraphQL Logging Settings', 'wpgraphql-logging' ); ?></h1>
+	<?php settings_errors(); ?>
 	<form method="post" action="options.php">
 		<nav class="nav-tab-wrapper">
 			<?php
 			foreach ( $wpgraphql_logging_tabs as $wpgraphql_logging_tab_key => $wpgraphql_logging_tab_label ) {
-				$wpgraphql_logging_tab_url   = admin_url( 'admin.php?page=wpgraphql-logging&tab=' . $wpgraphql_logging_tab_key );
+				// Add security nonce.
+				$wpgraphql_logging_tab_url   = add_query_arg(
+					[
+						'page' => 'wpgraphql-logging',
+						'tab'  => $wpgraphql_logging_tab_key,
+						'wpgraphql_logging_settings_tab_nonce' => $wpgraphql_logging_nonce,
+					],
+					admin_url( 'admin.php' )
+				);
 				$wpgraphql_logging_tab_class = add_cssclass( $wpgraphql_logging_current_tab === $wpgraphql_logging_tab_key ? 'nav-tab-active' : '', 'nav-tab' );
 				echo '<a href="' . esc_url( $wpgraphql_logging_tab_url ) . '" class="' . esc_attr( $wpgraphql_logging_tab_class ) . '">' . esc_html( $wpgraphql_logging_tab_label ) . '</a>';
 			}

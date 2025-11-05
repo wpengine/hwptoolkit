@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Logger\Rules;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use WPGraphQL\Logging\Logger\Api\LoggingRuleInterface;
 
 /**
  * Rule to check if the query is excluded from logging.

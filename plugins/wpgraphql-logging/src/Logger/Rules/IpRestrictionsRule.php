@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Logger\Rules;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use WPGraphQL\Logging\Logger\Api\LoggingRuleInterface;
 
 /**
  * Rule to check if logging should occur based on IP restrictions.
@@ -25,9 +26,10 @@ class IpRestrictionsRule implements LoggingRuleInterface {
 	public function passes(array $config, ?string $query_string = null): bool {
 
 		$ip_restrictions = $config[ BasicConfigurationTab::IP_RESTRICTIONS ] ?? '';
-		if ( empty( $ip_restrictions ) ) {
+		if ( ! is_string( $ip_restrictions ) || '' === trim( $ip_restrictions ) ) {
 			return true;
 		}
+
 		$allowed_ips = array_map( 'trim', explode( ',', $ip_restrictions ) );
 		if ( ! isset( $_SERVER['REMOTE_ADDR'] ) ) { // @phpcs:ignore WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders
 			return false;

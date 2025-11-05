@@ -6,9 +6,9 @@ namespace WPGraphQL\Logging\Tests\Admin\View;
 
 
 use WPGraphQL\Logging\Admin\ViewLogsPage;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
 use Codeception\TestCase\WPTestCase;
 use Brain\Monkey;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 
 /**
  * Test for the ViewLogsPage
@@ -63,12 +63,12 @@ class ViewLogsPageTest extends WPTestCase {
 		$this->assertSame($instance1, $instance2);
 	}
 
-	public function test_enqueue_admin_scripts_only_on_correct_page(): void {
+	public function test_enqueue_admin_scripts_styles_only_on_correct_page(): void {
 		$this->set_as_admin();
 		$instance = ViewLogsPage::init();
 
 		// Test with wrong hook suffix
-		$instance->enqueue_admin_scripts('different-page');
+		$instance->enqueue_admin_scripts_styles('different-page');
 		$this->assertFalse(wp_script_is('jquery-ui-datepicker', 'enqueued'));
 
 		// Test with correct hook suffix (simulate the page hook)
@@ -77,7 +77,7 @@ class ViewLogsPageTest extends WPTestCase {
 		$pageHookProperty->setAccessible(true);
 		$pageHookProperty->setValue($instance, 'test-page-hook');
 
-		$instance->enqueue_admin_scripts('test-page-hook');
+		$instance->enqueue_admin_scripts_styles('test-page-hook');
 		$this->assertTrue(wp_script_is('jquery-ui-datepicker', 'enqueued'));
 		$this->assertTrue(wp_script_is('jquery-ui-slider', 'enqueued'));
 	}
@@ -116,27 +116,6 @@ class ViewLogsPageTest extends WPTestCase {
 		$instance = ViewLogsPage::init();
 		$instance->register_settings_page();
 
-		// View
-		$_REQUEST['action'] = 'view';
-		$_GET['log'] = '123';
-
-		ob_start();
-		$instance->render_admin_page();
-		$output = ob_get_clean();
-		$this->assertNotFalse($output);
-
-		// Download
-		$_REQUEST['action'] = 'download';
-		ob_start();
-		$instance->render_admin_page();
-		$output = ob_get_clean();
-
-		$this->assertEquals('', $output);
-
-		// Clean up
-		unset($_REQUEST['action'], $_GET['log']);
-
-
 		// Default
 		ob_start();
 		$instance->render_admin_page();
@@ -156,7 +135,7 @@ class ViewLogsPageTest extends WPTestCase {
 
 		ob_start();
 		$this->expectException(\WPDieException::class);
-		$this->expectExceptionMessage('Invalid log ID.');
+		$this->expectExceptionMessage('The link you followed has expired.');
 		$instance->process_page_actions_before_rendering();
 		$output = ob_get_clean();
 
@@ -213,5 +192,21 @@ class ViewLogsPageTest extends WPTestCase {
 			'&start_date=2025-01-01 00:00:00&end_date=2025-12-31 23:59:59&orderby=id&order=ASC',
 			$url
 		);
+	}
+
+	public function test_process_log_download_dies_without_nonce(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+		$_GET['action'] = 'download';
+		$_GET['log'] = 'nonexistent-log-id';
+		ob_start();
+		$this->expectException(\WPDieException::class);
+		$this->expectExceptionMessage('The link you followed has expired.');
+
+		// Use reflection to call the protected method
+		$reflection = new \ReflectionClass($instance);
+		$method = $reflection->getMethod('process_log_download');
+		$method->setAccessible(true);
+		$method->invoke($instance);
 	}
 }

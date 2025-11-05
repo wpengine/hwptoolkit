@@ -6,8 +6,7 @@ namespace WPGraphQL\Logging\Tests\Core;
 
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
-
+use WPGraphQL\Logging\Plugin;
 
 /**
  * Test for the activation callback
@@ -18,15 +17,20 @@ use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 class ActivationTest extends WPTestCase {
 
 	protected function setUp(): void {
+		// Sets the uninstall constant to true to ensure the log service is deactivated.
+		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
+			define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
+		}
 		parent::setUp();
 		if ( ! function_exists( 'wpgraphql_logging_activation_callback' ) ) {
 			require_once dirname( __DIR__ ) . '/activation.php';
 		}
-		$this->drop_table();
+		$this->deactivate();
 	}
 
-	public function drop_table(): void {
-		DatabaseEntity::drop_table();
+	public function deactivate(): void {
+		$log_service = Plugin::get_log_service();
+		$log_service->deactivate();
 	}
 
 	public function test_activation_callback_function_exists(): void {

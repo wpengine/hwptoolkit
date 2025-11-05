@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Tests\Logging\Rules;
 
 use WPGraphQL\Logging\Logger\Rules\RuleManager;
-use WPGraphQL\Logging\Logger\Rules\LoggingRuleInterface;
+use WPGraphQL\Logging\Logger\Api\LoggingRuleInterface;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**

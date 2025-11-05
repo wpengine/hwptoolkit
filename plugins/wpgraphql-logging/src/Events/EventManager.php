@@ -5,25 +5,27 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Events;
 
 /**
- * Simple pub/sub Event Manager for WPGraphQL Logging
+ * Pub/sub Event Manager for WPGraphQL Logging.
  *
- * Provides a lightweight event bus with optional WordPress bridge.
+ * This class provides a lightweight event bus with a WordPress bridge.
  *
- * Users can:
- * - subscribe to events using subscribe()
- * - publish events using publish()
- * - also listen via WordPress hooks: `wpgraphql_logging_event_{event_name}`
+ * Users can subscribe to events using subscribe() and publish events using publish().
+ * They can also listen via WordPress hooks: `wpgraphql_logging_event_{event_name}`.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
  */
 final class EventManager {
 	/**
-	 * In-memory map of event name to priority to listeners.
+	 * Events that can be subscribed to.
 	 *
 	 * @var array<string, array<int, array<int, callable>>>
 	 */
-	private static array $events = [];
+	protected static array $events = [];
 
 	/**
-	 * Transform listeners that can modify a payload.
+	 * Transformers that can modify an event's payload.
 	 *
 	 * @var array<string, array<int, array<int, callable>>>
 	 */
@@ -52,13 +54,14 @@ final class EventManager {
 	 *
 	 * @param string               $event_name Event name (see Events constants).
 	 * @param array<string, mixed> $payload   Arbitrary payload for listeners.
+	 *
+	 * @psalm-suppress HookNotFound
 	 */
 	public static function publish(string $event_name, array $payload = []): void {
 
 		$ordered_listeners = self::get_ordered_listeners( $event_name );
 
 		if ( [] === $ordered_listeners ) {
-			/** @psalm-suppress HookNotFound */
 			do_action( 'wpgraphql_logging_event_' . $event_name, $payload );
 			return;
 		}
@@ -67,7 +70,6 @@ final class EventManager {
 			self::invoke_listener( $listener, $payload );
 		}
 
-		/** @psalm-suppress HookNotFound */
 		do_action( 'wpgraphql_logging_event_' . $event_name, $payload );
 	}
 
@@ -95,13 +97,14 @@ final class EventManager {
 	 * @param string               $event_name Event name.
 	 * @param array<string, mixed> $payload   Initial payload.
 	 *
+	 * @psalm-suppress HookNotFound
+	 *
 	 * @return array<string, mixed> Modified payload.
 	 */
 	public static function transform(string $event_name, array $payload): array {
 
 		$ordered_transforms = self::get_ordered_transforms( $event_name );
 		if ( [] === $ordered_transforms ) {
-			/** @psalm-suppress HookNotFound */
 			return apply_filters( 'wpgraphql_logging_filter_' . $event_name, $payload );
 		}
 
@@ -109,7 +112,6 @@ final class EventManager {
 			$payload = self::invoke_transform( $transform, $payload );
 		}
 
-		/** @psalm-suppress HookNotFound */
 		return apply_filters( 'wpgraphql_logging_filter_' . $event_name, $payload );
 	}
 
@@ -173,8 +175,11 @@ final class EventManager {
 		try {
 			$listener( $payload );
 		} catch ( \Throwable $e ) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			error_log( 'WPGraphQL Logging EventManager listener error: ' . $e->getMessage() );
+			do_action( 'wpgraphql_logging_event_error_listener', $e, $listener, $payload );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- This is a development notice.
+				error_log( 'WPGraphQL Logging EventManager listener error: ' . $e->getMessage() );
+			}
 		}
 	}
 
@@ -193,8 +198,11 @@ final class EventManager {
 				return $result;
 			}
 		} catch ( \Throwable $e ) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			error_log( 'WPGraphQL Logging EventManager transform error: ' . $e->getMessage() );
+			do_action( 'wpgraphql_logging_event_error_transform', $e, $transform, $payload );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- This is a development notice.
+				error_log( 'WPGraphQL Logging EventManager transform error: ' . $e->getMessage() );
+			}
 		}
 
 		return $payload;

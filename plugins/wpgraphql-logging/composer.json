@@ -2,7 +2,7 @@
 	"name": "wpengine/wpgraphql-logging",
 	"type": "wordpress-plugin",
   	"description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
-	"license": "GPL-2.0",
+	"license": "GPLv2 or later",
 	"version": "0.1.0",
 	"authors": [
 		{
@@ -106,7 +106,8 @@
 			"/screenshots",
 			"/tests",
 			"!vendor",
-			"!vendor-prefixed"
+			"!vendor-prefixed",
+			"/wp-env"
 		]
 	},
 	"autoload": {

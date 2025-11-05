@@ -53,7 +53,7 @@ class SettingsPageTest extends WPTestCase {
         $page->setup();
 
         $this->assertEquals(10, has_action('init', [$page, 'init_field_collection']));
-        $this->assertEquals(10, has_action('admin_menu', [$page, 'register_settings_page']));
+        $this->assertEquals(11, has_action('admin_menu', [$page, 'register_settings_page']));
         $this->assertEquals(10, has_action('admin_init', [$page, 'register_settings_fields']));
         $this->assertEquals(10, has_action('admin_enqueue_scripts', [$page, 'load_scripts_styles']));
 
@@ -116,6 +116,7 @@ class SettingsPageTest extends WPTestCase {
 
         // Valid tab -> returns it
         $_GET['tab'] = 'advanced';
+		$_GET['wpgraphql_logging_settings_tab_nonce'] = wp_create_nonce( 'wpgraphql-logging-settings-tab-action' );
         $this->assertSame('advanced', $page->get_current_tab($tabs));
     }
 }

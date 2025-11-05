@@ -3,7 +3,7 @@
  * Plugin Name: WPGraphQL Logging
  * Plugin URI: https://github.com/wpengine/hwptoolkit
  * GitHub Plugin URI: https://github.com/wpengine/hwptoolkit
- * Description: A WPGraphQL logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
+ * Description: A WPGraphQL logging plugin that provides visibility into the request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application.
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
@@ -17,11 +17,13 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: wp-graphql
  * WPGraphQL requires at least: 2.3.0
- * WPGraphQL tested up to: 2.3.3
+ * WPGraphQL tested up to: 2.5.1
  *
  * @package WPGraphQL\Logging
  *
  * @author WPEngine Headless OSS Team
+ *
+ * @since 0.0.1
  *
  * @license GPL-2
  */
@@ -35,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load the autoloader.
+// Composer autoloader.
 require_once __DIR__ . '/src/Autoloader.php';
 if ( ! Autoloader::autoload() ) {
 	return;
@@ -127,7 +129,7 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_correct_build' ) 
 				<div class="error notice">
 					<p>
 						<?php
-						echo 'Composer vendor directory must be present for WPGraphQL Logging to work.'
+						echo esc_html__( 'Composer vendor directory must be present for WPGraphQL Logging to work.', 'wpgraphql-logging' );
 						?>
 					</p>
 				</div>
@@ -155,7 +157,13 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' 
 				<div class="error notice">
 					<p>
 						<?php
-						echo 'PHP ' . PHP_VERSION . ' is not supported. Please upgrade to PHP 8.1.2 or higher in order to use WPGraphQL Logging Plugin.';
+						echo esc_html(
+							sprintf(
+							/* translators: %s: PHP version */
+								__( 'PHP %s is not supported. Please upgrade to PHP 8.1.2 or higher in order to use WPGraphQL Logging Plugin.', 'wpgraphql-logging' ),
+								PHP_VERSION
+							)
+						);
 						?>
 					</p>
 				</div>

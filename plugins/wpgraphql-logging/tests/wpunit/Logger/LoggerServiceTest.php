@@ -9,7 +9,6 @@ use Monolog\Handler\TestHandler;
 use Monolog\Processor\ProcessorInterface;
 use ReflectionClass;
 use WPGraphQL\Logging\Logger\LoggerService;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
 use Monolog\LogRecord;
 
 

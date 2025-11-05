@@ -27,14 +27,14 @@ class SettingsPage {
 	public const PLUGIN_MENU_SLUG = 'wpgraphql-logging';
 
 	/**
-	 * The field collection.
+	 * The settings field collection.
 	 *
 	 * @var \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldCollection|null
 	 */
 	protected ?SettingsFieldCollection $field_collection = null;
 
 	/**
-	 * The instance of the plugin.
+	 * The instance of the settings page.
 	 *
 	 * @var \WPGraphQL\Logging\Admin\SettingsPage|null
 	 */
@@ -68,7 +68,7 @@ class SettingsPage {
 	 */
 	public function setup(): void {
 		add_action( 'init', [ $this, 'init_field_collection' ], 10, 0 );
-		add_action( 'admin_menu', [ $this, 'register_settings_page' ], 10, 0 );
+		add_action( 'admin_menu', [ $this, 'register_settings_page' ], 11, 0 );
 		add_action( 'admin_init', [ $this, 'register_settings_fields' ], 10, 0 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'load_scripts_styles' ], 10, 1 );
 	}
@@ -109,13 +109,14 @@ class SettingsPage {
 
 		$page = new MenuPage(
 			__( 'WPGraphQL Logging Settings', 'wpgraphql-logging' ),
-			'WPGraphQL Logging',
+			__( 'Settings', 'wpgraphql-logging' ),
 			self::PLUGIN_MENU_SLUG,
 			$this->get_admin_template(),
 			[
 				'wpgraphql_logging_main_page_config' => [
 					'tabs'        => $tab_labels,
 					'current_tab' => $this->get_current_tab(),
+					'nonce'       => wp_create_nonce( 'wpgraphql-logging-settings-tab-action' ),
 				],
 			],
 		);
@@ -158,17 +159,16 @@ class SettingsPage {
 		if ( empty( $tabs ) ) {
 			return $this->get_default_tab();
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
-		if ( ! isset( $_GET['tab'] ) || ! is_string( $_GET['tab'] ) ) {
+		if ( ! isset( $_GET['tab'] ) || ! is_string( $_GET['tab'] ) || ! isset( $_GET['wpgraphql_logging_settings_tab_nonce'] ) || ! is_string( $_GET['wpgraphql_logging_settings_tab_nonce'] ) ) {
 			return $this->get_default_tab();
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading GET parameter for tab navigation only, no form processing
-		$tab = sanitize_text_field( $_GET['tab'] );
-
-		if ( ! is_string( $tab ) || '' === $tab ) {
+		$nonce = sanitize_text_field( $_GET['wpgraphql_logging_settings_tab_nonce'] );
+		if ( false === wp_verify_nonce( $nonce, 'wpgraphql-logging-settings-tab-action' ) ) {
 			return $this->get_default_tab();
 		}
+
+		$tab = sanitize_text_field( wp_unslash( $_GET['tab'] ) );
 
 		if ( array_key_exists( $tab, $tabs ) ) {
 			return $tab;
@@ -192,36 +192,32 @@ class SettingsPage {
 	 * @param string $hook_suffix The current admin page hook suffix.
 	 */
 	public function load_scripts_styles( string $hook_suffix ): void {
-		// Only load on our settings page.
 		if ( ! str_contains( $hook_suffix, self::PLUGIN_MENU_SLUG ) ) {
 			return;
 		}
 
-		// Enqueue admin styles if they exist.
-		$style_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/css/settings/wp-graphql-logging-settings.css';
 		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/css/settings/wp-graphql-logging-settings.css' ) ) {
 			wp_enqueue_style(
 				'wpgraphql-logging-settings-css',
-				$style_path,
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/css/settings/wp-graphql-logging-settings.css',
 				[],
 				WPGRAPHQL_LOGGING_VERSION
 			);
 		}
 
-		// Enqueue admin scripts if they exist.
-		$script_path = trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-settings.js';
-		if ( ! file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/settings/wp-graphql-logging-settings.js' ) ) {
-			return;
+		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/js/settings/wp-graphql-logging-settings.js' ) ) {
+			wp_enqueue_script(
+				'wpgraphql-logging-settings-js',
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/js/settings/wp-graphql-logging-settings.js',
+				[],
+				WPGRAPHQL_LOGGING_VERSION,
+				true
+			);
 		}
 
-		wp_enqueue_script(
-			'wpgraphql-logging-settings-js',
-			$script_path,
-			[],
-			WPGRAPHQL_LOGGING_VERSION,
-			true
-		);
-
+		/**
+		 * Fire off action to enqueue scripts and styles.
+		 */
 		do_action( 'wpgraphql_logging_admin_enqueue_scripts', $hook_suffix );
 	}
 

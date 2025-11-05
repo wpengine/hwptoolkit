@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Admin\View\Download;
 
 use League\Csv\Writer;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
-use WPGraphQL\Logging\Logger\Database\LogsRepository;
+use WPGraphQL\Logging\Logger\Api\LogEntityInterface;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 
 /**
  * Service for handling log downloads.
@@ -16,6 +16,14 @@ use WPGraphQL\Logging\Logger\Database\LogsRepository;
  * @since 0.0.1
  */
 class DownloadLogService {
+	/**
+	 * Constructor.
+	 *
+	 * @param \WPGraphQL\Logging\Logger\Api\LogServiceInterface $log_service The log service.
+	 */
+	public function __construct(protected readonly LogServiceInterface $log_service) {
+	}
+
 	/**
 	 * Generates and serves a CSV file for a single log entry.
 	 *
@@ -30,8 +38,8 @@ class DownloadLogService {
 			wp_die( esc_html__( 'Invalid log ID.', 'wpgraphql-logging' ) );
 		}
 
-		$repository = new LogsRepository();
-		$log        = $repository->get_log( $log_id );
+		$log = $this->log_service->find_entity_by_id( $log_id );
+
 		if ( is_null( $log ) ) {
 			wp_die( esc_html__( 'Log not found.', 'wpgraphql-logging' ) );
 		}
@@ -48,7 +56,7 @@ class DownloadLogService {
 		if ( ! is_resource( $output ) ) {
 			wp_die( esc_html__( 'Failed to create CSV output.', 'wpgraphql-logging' ) );
 		}
-		$writer = Writer::createFromStream( $output );
+		$writer = Writer::from( $output );
 
 		$headers = $this->get_headers( $log );
 		$content = $this->get_content( $log );
@@ -61,11 +69,11 @@ class DownloadLogService {
 	/**
 	 * Get default CSV headers.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log The log entry.
+	 * @param \WPGraphQL\Logging\Logger\Api\LogEntityInterface $log The log entry.
 	 *
 	 * @return array<string> The default CSV headers.
 	 */
-	public function get_headers(DatabaseEntity $log): array {
+	public function get_headers(LogEntityInterface $log): array {
 		$headers = [
 			'ID',
 			'Date',
@@ -83,11 +91,11 @@ class DownloadLogService {
 	/**
 	 * Get CSV content for a log entry.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\Database\DatabaseEntity $log The log entry.
+	 * @param \WPGraphQL\Logging\Logger\Api\LogEntityInterface $log The log entry.
 	 *
 	 * @return array<string> The CSV content for the log entry.
 	 */
-	public function get_content(DatabaseEntity $log): array {
+	public function get_content(LogEntityInterface $log): array {
 		$content = [
 			$log->get_id(),
 			$log->get_datetime(),

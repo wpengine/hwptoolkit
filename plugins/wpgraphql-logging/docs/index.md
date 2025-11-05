@@ -24,6 +24,7 @@ wpgraphql-logging/
 │   	├── Settings/             # Admin settings functionality for displaying and saving data.
 │   ├── Events/                 # Event logging, pub/sub event manager for extending the logging.
 │   ├── Logger/                 # Logger service, Monolog handlers & processors
+│   	├── Api/            			# Api interfaces for fetching and writing log data
 │   	├── Database/            	# Database entity and helper
 │   	├── Handlers/            	# Monolog WordPress database handler for logging data
 │   	├── Processors/           # Monolog processors for data sanitization and request headers
@@ -180,6 +181,7 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 ## How to Guides
 
 ### Admin
+- [How to replace the database log service](how-to/logger_replace_log_store_service.md)
 - [How to add a new Settings tab to WPGraphQL Logging](how-to/admin_add_new_tab.md)
 - [How to add a new field to an existing tab and query it](how-to/admin_add_fields.md)
 - [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)

@@ -6,6 +6,10 @@ namespace WPGraphQL\Logging\Events;
 
 /**
  * List of available events that users can subscribe to with the EventManager.
+ *
+ * @package WPGraphQL\Logging
+ *
+ * @since 0.0.1
  */
 final class Events {
 	/**

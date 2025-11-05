@@ -5,7 +5,7 @@
  */
 
 add_action('init', function () {
-  if ($_SERVER['REQUEST_URI'] === '/wp-admin/options-general.php?page=wpgraphql-logging&reset=true') {
+  if ($_SERVER['REQUEST_URI'] === '/wp-admin/admin.php?page=wpgraphql-logging&reset=true') {
     global $wpdb;
 
     // Reset settings

@@ -41,15 +41,15 @@ class TextInputField extends AbstractSettingsField {
 	/**
 	 * Render the text input field.
 	 *
-	 * @param array<string> $option_value The option value.
-	 * @param string        $setting_key  The setting key.
-	 * @param string        $tab_key      The tab key.
+	 * @param array<string, mixed> $option_value The option value.
+	 * @param string               $setting_key  The setting key.
+	 * @param string               $tab_key      The tab key.
 	 *
 	 * @return string The rendered field HTML.
 	 */
 	public function render_field( array $option_value, string $setting_key, string $tab_key ): string {
 		$field_name  = $this->get_field_name( $setting_key, $tab_key, $this->get_id() );
-		$field_value = $this->get_field_value( $option_value, $tab_key, $this->default_value );
+		$field_value = sanitize_text_field( $this->get_field_value( $option_value, $tab_key, $this->default_value ) );
 
 
 		return sprintf(

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger\Rules;
 
+use WPGraphQL\Logging\Logger\Api\LoggingRuleInterface;
+
 /**
  * Rule to check if logging should occur based on query null setting.
  *

@@ -231,37 +231,6 @@ add_filter( 'wpgraphql_logging_filter_redirect_url', function( $redirect_url, $f
 	return add_query_arg( 'my_flag', '1', $redirect_url );
 }, 10, 2 );
 ```
-
-#### Filter: `wpgraphql_logging_list_template`
-Filters the template path for the logs list.
-
-Parameters:
-- `$template_path` (string)
-
-Returns: string
-
-Example:
-```php
-add_filter( 'wpgraphql_logging_list_template', function( $template_path ) {
-	return plugin_dir_path( __FILE__ ) . 'templates/custom-list.php';
-});
-```
-
-#### Filter: `wpgraphql_logging_view_template`
-Filters the template path for the single log view.
-
-Parameters:
-- `$template_path` (string)
-
-Returns: string
-
-Example:
-```php
-add_filter( 'wpgraphql_logging_view_template', function( $template_path ) {
-	return plugin_dir_path( __FILE__ ) . 'templates/custom-view.php';
-});
-```
-
 ---
 
 ### Class: `View\List\ListTable`
@@ -304,7 +273,7 @@ Filters the rendered value for each column.
 
 Parameters:
 - `$value` (mixed)
-- `$item` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+- `$item` (\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity)
 - `$column_name` (string)
 
 Returns: mixed
@@ -338,22 +307,6 @@ add_filter( 'wpgraphql_logging_logs_table_where_clauses', function( $where, $req
 	return $where;
 }, 10, 2 );
 ```
-
-#### Filter: `wpgraphql_logging_filters_template`
-Filters the template path for the filters UI.
-
-Parameters:
-- `$template_path` (string)
-
-Returns: string
-
-Example:
-```php
-add_filter( 'wpgraphql_logging_filters_template', function( $template_path ) {
-	return plugin_dir_path( __FILE__ ) . 'templates/custom-filters.php';
-});
-```
-
 ---
 
 ### Class: `View\Download\DownloadLogService`
@@ -380,7 +333,7 @@ Filters the CSV column headers.
 Parameters:
 - `$headers` (array)
 - `$log_id` (int)
-- `$log` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+- `$log` (\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity)
 
 Returns: array
 
@@ -397,7 +350,7 @@ Filters the CSV row values.
 Parameters:
 - `$content` (array)
 - `$log_id` (int)
-- `$log` (\WPGraphQL\Logging\Logger\Database\DatabaseEntity)
+- `$log` (\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity)
 
 Returns: array
 
@@ -415,6 +368,11 @@ add_filter( 'wpgraphql_logging_csv_content', function( $content, $log_id, $log )
 ---
 
 ### Class: `Settings\Templates\admin.php` and View Templates
-Source: `src/Admin/Settings/Templates/admin.php`, `src/Admin/View/Templates/*.php`
+Source: `src/Admin/Settings/Templates/admin.php`, `src/Admin/View/Templates/WPGraphQLLogger*.php`
 
 These templates are referenced by the template path filters above and do not define hooks themselves.
+
+**Template Files:**
+- `WPGraphQLLoggerFilters.php` - Filter controls template
+- `WPGraphQLLoggerList.php` - Logs list table template  
+- `WPGraphQLLoggerView.php` - Single log detail view template

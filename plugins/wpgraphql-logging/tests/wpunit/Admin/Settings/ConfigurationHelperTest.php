@@ -117,4 +117,23 @@ class ConfigurationHelperTest extends WPTestCase {
 		$this->assertFalse($instance->is_enabled('data_management', 'enabled'));
 	}
 
+	public function test_register_cache_hooks(): void {
+		$instance = ConfigurationHelper::get_instance();
+
+
+		// Set initial configuration
+		$configuration = ['enabled' => true];
+		update_option($instance->get_option_key(), $configuration);
+
+		// Register cache hooks.
+		ConfigurationHelper::register_cache_hooks();
+
+		$this->assertEquals(10, has_action("update_option_{$instance->get_option_key()}", [$instance, 'clear_cache']));
+		$this->assertEquals(10, has_action("add_option_{$instance->get_option_key()}", [$instance, 'clear_cache']));
+		$this->assertEquals(10, has_action("delete_option_{$instance->get_option_key()}", [$instance, 'clear_cache']));
+
+		// Test that the cache is cleared when the option is updated.
+		update_option($instance->get_option_key(), ['enabled' => false]);
+		$this->assertEquals(['enabled' => false], $instance->get_config());
+	}
 }
