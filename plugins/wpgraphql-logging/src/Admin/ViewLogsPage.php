@@ -55,7 +55,7 @@ class ViewLogsPage {
 	/**
 	 * Initializes the view logs page.
 	 */
-	public static function init(): ?ViewLogsPage {
+	public static function init(): ?self {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return null;
 		}

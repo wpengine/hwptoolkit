@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
+use WPGraphQL\Logging\Admin\AdminNotice;
 use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
@@ -67,6 +68,7 @@ final class Plugin {
 			ConfigurationHelper::register_cache_hooks(); // Register cache hooks.
 			SettingsPage::init(); // Settings page.
 			ViewLogsPage::init(); // View logs page.
+			AdminNotice::init(); // Admin notices.
 		}
 
 		do_action( 'wpgraphql_logging_plugin_setup', self::$instance );

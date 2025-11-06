@@ -43,7 +43,7 @@ class SettingsPage {
 	/**
 	 * Initializes the settings page.
 	 */
-	public static function init(): ?SettingsPage {
+	public static function init(): ?self {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return null;
 		}

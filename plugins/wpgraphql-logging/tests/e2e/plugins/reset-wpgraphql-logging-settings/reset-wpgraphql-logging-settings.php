@@ -14,5 +14,9 @@ add_action('init', function () {
     // Clear logs table
     $table_name = $wpdb->prefix . 'wpgraphql_logging';
     $wpdb->query("TRUNCATE TABLE {$table_name}");
+
+
+		// Remove admin notice dismissed meta data
+		delete_user_meta(get_current_user_id(), 'wpgraphql-logging-admin-notice');
   }
 });
