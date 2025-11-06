@@ -9,7 +9,7 @@ This guide shows how to log to a file using a Monolog handler, either in additio
 - [Example 1: Add a file handler globally (in addition to the default)](#example-1-add-a-file-handler-globally-in-addition-to-the-default)
 - [Example 2: Replace the default handler globally (file only)](#example-2-replace-the-default-handler-globally-file-only)
 - [Tips](#tips)
-- [Related](#related)
+- [Related Content](#related-content)
 
 ## Introduction
 
