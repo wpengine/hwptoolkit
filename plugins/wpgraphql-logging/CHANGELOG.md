@@ -1,5 +1,11 @@
 # WPGraphQL Logging
 
+## 0.2.1
+
+### Patch Changes
+
+- [#476](https://github.com/wpengine/hwptoolkit/pull/476) [`8156902`](https://github.com/wpengine/hwptoolkit/commit/8156902a1f4cc9dae655129abb788056bf9f76cc) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Add default configuration on plugin activation if no configuration already exists.
+
 ## 0.2.0
 
 ### Minor Changes
