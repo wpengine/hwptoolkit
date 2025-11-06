@@ -1,5 +1,7 @@
 # WPGraphQL Logging
 
+WPGraphQL Logging is a comprehensive logging utility for WPGraphQL. It provides detailed insights into the GraphQL lifecycle, from initial request to final response, helping developers debug queries, monitor performance, and secure their applications. This plugin is built to be extensible, allowing you to customize everything from data storage to logging rules.
+
 ## Table of Contents
 
 - [Project Structure](#project-structure)
@@ -18,27 +20,30 @@
 
 ```text
 wpgraphql-logging/
+├── assets/                     # Main plugin assets for CSS and JS
 ├── src/                        # Main plugin source code
 │   ├── Admin/                  # Admin settings, menu, and settings page logic
-│   	├── Settings/             # Admin settings functionality for displaying and saving data.
+│   │   └── Settings/           # Admin settings functionality for displaying and saving data.
 │   ├── Events/                 # Event logging, pub/sub event manager for extending the logging.
 │   ├── Logger/                 # Logger service, Monolog handlers & processors
-│   	├── Api/            			# Api interfaces for fetching and writing log data
-│   	├── Database/            	# Database entity and helper
-│   	├── Handlers/            	# Monolog WordPress database handler for logging data
-│   	├── Processors/           # Monolog processors for data sanitization and request headers
-│   	├── Rules/            		# Rules and RuleManager to decide whether to log a query
-│   	├── Scheduler/            # Automated data cleanup and maintenance tasks
+│   │   ├── Api/                # Api interfaces for fetching and writing log data
+│   │   ├── Database/           # Database entity and helper
+│   │   ├── Handlers/           # Monolog WordPress database handler for logging data
+│   │   ├── Processors/         # Monolog processors for data sanitization and request headers
+│   │   ├── Rules/              # Rules and RuleManager to decide whether to log a query
+│   │   ├── Scheduler/          # Automated data cleanup and maintenance tasks
+│   │   └── Store/              # Log storage service
 │   ├── Plugin.php              # Main plugin class (entry point)
 │   └── Autoloader.php          # PSR-4 autoloader
 ├── tests/                      # All test suites
-│   ├── wpunit/                 # WPBrowser/Codeception unit tests
+│   ├── e2e/                    # End-to-end tests
+│   └── wpunit/                 # WPBrowser/Codeception unit tests
 ├── [wpgraphql-logging.php]
 ├── [activation.php]
 ├── [composer.json]
 ├── [deactivation.php]
-├── [TESTING.md]
-├── [README.md]
+├── [CHANGELOG.md]
+└── [README.md]
 ```
 
 ---
@@ -49,6 +54,9 @@ wpgraphql-logging/
   - **Pre Request** (`do_graphql_request`): captures `query`, `variables`, `operation_name`.
   - **Before Execution** (`graphql_before_execute`): snapshots request `params`.
   - **Before Response Returned** (`graphql_return_response`): inspects `response`; auto-elevates level to Error when GraphQL `errors` are present (adds `errors` to context).
+  - **Request Data** (`graphql_request_data`): filters and logs the raw `query`, `variables`, and `operationName` from the request body.
+  - **Response Headers** (`graphql_response_headers_to_send`): filters response headers, adds `X-WPGraphQL-Logging-ID` for traceability.
+  - **Request Results** (`graphql_request_results`): filters and logs the final `response`; auto-elevates level to Error when GraphQL `errors` are present.
 
 - **Developer-friendly pub/sub and transform system**
   - Programmatic API: `Plugin::on($event, $listener)`, `Plugin::transform($event, $callable)`, `Plugin::emit($event, $payload)`.
@@ -71,7 +79,7 @@ wpgraphql-logging/
 
 - **Automated data management**
   - **Daily cleanup scheduler**: removes old logs based on retention.
-  - **Configurable retention period**: choose days to keep (default 30).
+  - **Configurable retention period**: choose days to keep (default 7).
   - **Manual cleanup**: trigger from the admin UI.
   - **Data sanitization**: built-in `DataSanitizationProcessor` removes/anonymizes/truncates sensitive fields with recommended or custom rules.
 
@@ -87,7 +95,26 @@ wpgraphql-logging/
 
 ## Setup
 
-Once the plugin is activated, you can activate and configure the plugin under Settings -> WPGraphQL Logging
+Once the plugin is installed and activated, you can configure the plugin under GraphQL Logs -> Settings.
+
+>[!IMPORTANT]
+> Once activated, the plugin will install default configuration and activate logging with data sampling set at 10%.
+
+When you install for the first time it sets the following default configuration:
+
+**Basic Configuration**
+- Enabled = true
+- Exclude Queries = `__schema,GetSeedNode` - To exclude introspection and Faust Seed Node queries.
+- Data Sampling = 10% - Log only 10% of the queries.
+- Log Points - Selects all
+
+**Data Management**
+
+- Data Deletion Enabled = true
+- Number of Days to Retain Logs = 7
+- Data Sanitization Enabled = true
+- Data Sanitization Method = Recommended
+
 
 ### Basic Configuration
 
@@ -113,28 +140,26 @@ Once the plugin is activated, you can activate and configure the plugin under Se
 - **Log Retention Period**: Specify the number of days to keep log data before it is automatically deleted.
 - **Enable Data Sanitization**: The master switch to turn data sanitization on or off. When enabled, sensitive data is cleaned from logs before being stored.
 - **Data Sanitization Method**: Choose between two sanitization methods:
-	- **Recommended Rules (Default)**: Uses pre-configured rules to automatically sanitize common sensitive fields in WordPress and WPGraphQL. The following fields are sanitized:
+	- **Recommended Rules (Default)**: Uses pre-configured rules to automatically sanitize common sensitive fields in WordPress and WPGraphQL. The following fields are sanitized by either removing them or anonymizing their values:
 		- `request.app_context.viewer.data` (User data object)
 		- `request.app_context.viewer.allcaps` (User capabilities)
 		- `request.app_context.viewer.cap_key` (Capability keys)
 		- `request.app_context.viewer.caps` (User capability array)
-	- **Custom Rules**: Provides granular control over sanitization with the following options:
-		- **Fields to Remove**: A comma-separated list of field paths (e.g., `request.app_context.viewer.data`) to completely remove from the log.
-		- **Fields to Anonymize**: A comma-separated list of field paths whose values will be replaced with `***`.
-		- **Fields to Truncate**: A comma-separated list of field paths whose string values will be truncated to 50 characters.
+		- `variables.username` (WP `user_login`)
+		- `variables.password` (User password)
+		- `variables.email` (User email)
+	- **Custom Rules**: Define your own sanitization rules by specifying fields to anonymize, remove, or truncate.
 
 
 ## Viewing Logs
 
-Once configured to log data you can find logs under "GraphQL Logs" in the WordPress Menu.
+Once setup, you can view logs under GraphQL Logs -> All Logs. The admin screen is a custom implementation of the WordPress `WP_List_Table` class and provides several powerful features for managing your logs.
 
 ![Admin View](screenshots/admin_view.png)
 
-This extends the WordPress `WP_List_Table` class but you can do the following.
+### Downloading Logs
 
-### Download the log
-
-You can download the log as CSV format e.g.
+You can download the logs in CSV format.
 
 ```csv
 ID,Date,Level,"Level Name",Message,Channel,Query,Context,Extra
@@ -144,21 +169,16 @@ ID,Date,Level,"Level Name",Message,Channel,Query,Context,Extra
 
 ### Filtering Logs
 
-You can filter the log by
-
+You can filter logs by:
 1. Level
 2. Start Date
 3. End Date
 
 ![Admin View with Filters](screenshots/admin_view_filters.png)
 
->[!NOTE]
-> The default UI highlights Info and Error levels. To customize visible columns and sorting, filter `wpgraphql_logging_logs_table_column_headers` (see Admin reference).
-
-
 ### Bulk Actions
 
-Currently you can delete selected or all logs.
+You can delete selected logs or all logs using the bulk action controls.
 
 
 ## Uninstallation and Data Cleanup
@@ -195,9 +215,16 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 - [How to Add a New Processor](how-to/logger_add_new_processor.md)
 - [How to Add a New Rule (Query must contain string)](how-to/logger_add_new_rule.md)
 
+### Testing
+- [How to run the test suites](how-to/run_tests.md)
+
 
 ## Reference
 
 - Admin: [Actions/Filters](reference/admin.md)
 - Events: [Actions/Filters](reference/events.md)
 - Logging: [Actions/Filters](reference/logging.md)
+
+## Contributing
+
+If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.
