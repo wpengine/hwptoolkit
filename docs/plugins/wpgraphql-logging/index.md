@@ -199,21 +199,23 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 
 ## How to Guides
 
-### Admin
-- [How to replace the database log service](how-to/logger_replace_log_store_service.md)
-- [How to add a new Settings tab to WPGraphQL Logging](how-to/admin_add_new_tab.md)
-- [How to add a new field to an existing tab and query it](how-to/admin_add_fields.md)
-- [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
-
-### Events
-- [How to add context data to a logged WPGraphQL event](how-to/events_add_context.md)
-- [How to use the WPGraphQL Logging events pub/sub system](how-to/events_pub_sub.md)
-
 ### Logging
 
 - [How to Add a New Handler (File Logging)](how-to/logger_add_new_handler.md)
 - [How to Add a New Processor](how-to/logger_add_new_processor.md)
 - [How to Add a New Rule (Query must contain string)](how-to/logger_add_new_rule.md)
+- [How to replace the database log service](how-to/logger_replace_log_store_service.md)
+
+### Events
+- [How to use the Events pub/sub system](how-to/events_pub_sub.md)
+- [How to add context data to a logged WPGraphQL event](how-to/events_add_context.md)
+
+
+### Admin
+- [How to add a new Settings tab to WPGraphQL Logging](how-to/admin_add_new_tab.md)
+- [How to add a new field to an existing tab and query it](how-to/admin_add_fields.md)
+- [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
+
 
 ### Testing
 - [How to run the test suites](how-to/run_tests.md)
