@@ -18,7 +18,6 @@
 
 ```text
 wpgraphql-logging/
-├── docs/                       # Docs for extending the plugin. Contains developer docs.
 ├── src/                        # Main plugin source code
 │   ├── Admin/                  # Admin settings, menu, and settings page logic
 │   	├── Settings/             # Admin settings functionality for displaying and saving data.

@@ -31,7 +31,7 @@ WPGraphQL Logging is a plugin that integrates directly with the WPGraphQL Query 
 *   **Flexible Log Handling**: Leverages the powerful Monolog logging library, enabling developers to add custom processors and handlers to route logs to various destinations like Slack, files, or external services.
 
 >[!IMPORTANT]
->For detailed developer guides and examples, see our [How-To Guides](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/docs/index.md#how-to-guides).
+>For detailed developer guides and examples, see our [How-To Guides](https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/wpgraphql-logging/index.md#how-to-guides).
 
 ---
 
@@ -60,7 +60,7 @@ Once installed and configured, the plugin should begin to log uncached WPGraphQL
 
 ## Documentation
 
-For detailed usage instructions, developer references, and examples, please visit the [Documentation](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/docs/index.md) folder included with this plugin.
+For detailed usage instructions, developer references, and examples, please visit the [Documentation](https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/wpgraphql-logging/index.md) folder included with this plugin.
 
 
 ## License
