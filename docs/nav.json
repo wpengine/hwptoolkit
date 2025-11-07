@@ -9,33 +9,27 @@
 		"children": [
 			{
 				"title": "GET vs POST",
-				"route": "/toolkit/explanation/get-vs-post/",
-				"append": ".md"
+				"route": "/toolkit/explanation/get-vs-post/"
 			},
 			{
 				"title": "GraphQL Endpoints",
-				"route": "/toolkit/explanation/graphql-endpoints/",
-				"append": ".md"
+				"route": "/toolkit/explanation/graphql-endpoints/"
 			},
 			{
 				"title": "Headless Authentication",
-				"route": "/toolkit/explanation/headless-authentication/",
-				"append": ".md"
+				"route": "/toolkit/explanation/headless-authentication/"
 			},
 			{
 				"title": "Rendering Options",
-				"route": "/toolkit/explanation/rendering-options/",
-				"append": ".md"
+				"route": "/toolkit/explanation/rendering-options/"
 			},
 			{
 				"title": "Routing",
-				"route": "/toolkit/explanation/routing/",
-				"append": ".md"
+				"route": "/toolkit/explanation/routing/"
 			},
 			{
 				"title": "Sitemaps",
-				"route": "/toolkit/explanation/sitemaps/",
-				"append": ".md"
+				"route": "/toolkit/explanation/sitemaps/"
 			}
 		]
 	},
@@ -54,13 +48,12 @@
 		]
 	},
 	{
-		"title": "WPGraphQL Logging",
+		"title": "WPGraphQL Logging Plugin",
 		"route": "/toolkit/plugins/wpgraphql-logging/",
 		"children": [
 			{
 				"title": "How to Guides - Add a new Monolog Handler",
-				"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/",
-				"append": ".md"
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/"
 			}
 		]
 	}
