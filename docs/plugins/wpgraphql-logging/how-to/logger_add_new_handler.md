@@ -1,4 +1,9 @@
-# How to Add a New Handler (File Logging)
+---
+title: "How to Guide - Add a new Monolog Handler"
+description: "This guide shows how to log to a file using a Monolog handler, either in addition to the default WordPress database handler or as a replacement. It also covers per-instance overrides."
+---
+
+# HHow to Guide - Add a new Monolog Handler
 
 This guide shows how to log to a file using a Monolog handler, either in addition to the default WordPress database handler or as a replacement. It also covers per-instance overrides.
 

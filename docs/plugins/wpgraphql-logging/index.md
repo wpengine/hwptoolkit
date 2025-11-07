@@ -1,4 +1,8 @@
-# WPGraphQL Logging
+---
+title: "WPGraphQL Logging Plugin"
+description: "WPGraphQL Logging is a comprehensive logging utility for WPGraphQL. It provides detailed insights into the GraphQL lifecycle, from initial request to final response, helping developers debug queries, monitor performance, and secure their applications. This plugin is built to be extensible, allowing you to customize everything from data storage to logging rules."
+---
+# WPGraphQL Logging Plugin
 
 WPGraphQL Logging is a comprehensive logging utility for WPGraphQL. It provides detailed insights into the GraphQL lifecycle, from initial request to final response, helping developers debug queries, monitor performance, and secure their applications. This plugin is built to be extensible, allowing you to customize everything from data storage to logging rules.
 
