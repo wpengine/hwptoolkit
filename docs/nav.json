@@ -52,5 +52,15 @@
 				"route": "/toolkit/how-to/nextjs-pages-router/enable-apq/"
 			}
 		]
+	},
+	{
+		"title": "Plugins",
+		"route": "/plugins/",
+		"children": [
+			{
+				"title": "WPGraphQL Logging",
+				"route": "/plugins/wpgraphql-logging/"
+			}
+		]
 	}
 ]
