@@ -1,0 +1,17 @@
+.wpgraphql-logging-view-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.wpgraphql-logging-view-table pre.wpgraphql-logging-query,
+.wpgraphql-logging-view-table pre.wpgraphql-logging-context,
+.wpgraphql-logging-view-table pre.wpgraphql-logging-extra {
+	white-space: pre-wrap;
+	max-height: 540px;
+	overflow-y: scroll;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}

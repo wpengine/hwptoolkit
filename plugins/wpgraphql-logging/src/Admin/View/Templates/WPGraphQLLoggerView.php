@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 ?>
 <div class="wrap">
-	<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+	<div class="wpgraphql-logging-view-header">
 		<h1><?php esc_html_e( 'Log Entry', 'wpgraphql-logging' ); ?></h1>
 		<a href="
 		<?php
@@ -33,7 +33,7 @@ declare(strict_types=1);
 		</a>
 	</div>
 
-	<table class="widefat striped">
+	<table class="widefat striped wpgraphql-logging-view-table">
 		<tbody>
 			<tr>
 				<th><?php esc_html_e( 'ID', 'wpgraphql-logging' ); ?></th>
@@ -61,15 +61,15 @@ declare(strict_types=1);
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Query', 'wpgraphql-logging' ); ?></th>
-				<td><pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px;"><?php echo esc_html( (string) $log->get_query() ); ?></pre></td>
+				<td><pre class="wpgraphql-logging-query"><?php echo esc_html( (string) $log->get_query() ); ?></pre></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Context', 'wpgraphql-logging' ); ?></th>
-				<td><pre><?php echo esc_html( (string) wp_json_encode( $log->get_context(), JSON_PRETTY_PRINT ) ); ?></pre></td>
+				<td><pre class="wpgraphql-logging-context"><?php echo esc_html( (string) wp_json_encode( $log->get_context(), JSON_PRETTY_PRINT ) ); ?></pre></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Extra', 'wpgraphql-logging' ); ?></th>
-				<td><pre><?php echo esc_html( (string) wp_json_encode( $log->get_extra(), JSON_PRETTY_PRINT ) ); ?></pre></td>
+				<td><pre class="wpgraphql-logging-extra"><?php echo esc_html( (string) wp_json_encode( $log->get_extra(), JSON_PRETTY_PRINT ) ); ?></pre></td>
 			</tr>
 		</tbody>
 	</table>

@@ -161,6 +161,14 @@ class ViewLogsPage {
 			);
 		}
 
+		if ( file_exists( trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_DIR ) . 'assets/css/view/wp-graphql-logging-view.css' ) ) {
+			wp_enqueue_style(
+				'wpgraphql-graphql-logging-view',
+				trailingslashit( WPGRAPHQL_LOGGING_PLUGIN_URL ) . 'assets/css/view/wp-graphql-logging-view.css',
+				[],
+				WPGRAPHQL_LOGGING_VERSION
+			);
+		}
 
 		// Allow other plugins to enqueue their own scripts/styles.
 		do_action( 'wpgraphql_logging_view_logs_admin_enqueue_scripts', $hook_suffix );
