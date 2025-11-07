@@ -33,7 +33,7 @@ declare(strict_types=1);
 		</a>
 	</div>
 
-	<table class="widefat striped wpgraphql-logging-view-table">
+	<table class="widefat striped wpgraphql-logging-details">
 		<tbody>
 			<tr>
 				<th><?php esc_html_e( 'ID', 'wpgraphql-logging' ); ?></th>

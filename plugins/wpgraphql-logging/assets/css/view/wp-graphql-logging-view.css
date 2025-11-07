@@ -5,13 +5,24 @@
 	margin-bottom: 20px;
 }
 
-.wpgraphql-logging-view-table pre.wpgraphql-logging-query,
-.wpgraphql-logging-view-table pre.wpgraphql-logging-context,
-.wpgraphql-logging-view-table pre.wpgraphql-logging-extra {
+.wpgraphql-logging-details pre.wpgraphql-logging-query,
+.wpgraphql-logging-details pre.wpgraphql-logging-context,
+.wpgraphql-logging-details pre.wpgraphql-logging-extra {
 	white-space: pre-wrap;
 	max-height: 540px;
 	overflow-y: scroll;
 	padding: 15px;
 	border: 1px solid #ddd;
 	border-radius: 4px;
+}
+
+pre.wpgraphql-logging-list-table-query {
+	overflow-x: auto;
+	background: #f4f4f4;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	max-height: 20px;
 }
