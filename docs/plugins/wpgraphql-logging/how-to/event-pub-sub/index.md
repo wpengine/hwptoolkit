@@ -2,9 +2,7 @@
 title: How To Guide: Event Pub/Sub System
 description: Learn how to use the WPGraphQL Logging plugin's event pub/sub system to subscribe, transform, and emit events.
 ---
-
-
-## How to use the WPGraphQL Logging events pub/sub system
+ ## How to use the WPGraphQL Logging events pub/sub system
 
 The plugin exposes a lightweight pub/sub bus around key WPGraphQL lifecycle events and bridges them to standard WordPress actions/filters. You can:
 
@@ -14,8 +12,7 @@ The plugin exposes a lightweight pub/sub bus around key WPGraphQL lifecycle even
 
 See the [Events Reference](../reference/events.md) for available built-in events and their mappings.
 
-
-### Core concepts
+ ## Core concepts
 
 - Subscribe (read-only): `Plugin::on( $event, callable $listener, $priority )`
 - Transform (mutate): `Plugin::transform( $event, callable $transform, $priority )`
@@ -24,7 +21,7 @@ See the [Events Reference](../reference/events.md) for available built-in events
 Priorities run ascending (lower numbers first). Transforms must return the updated payload array; subscribers receive the payload and do not return.
 
 
-### Programmatic API (recommended)
+ ## Programmatic API (recommended)
 
 ```php
 <?php
@@ -69,7 +66,7 @@ Notes:
   - If you want the “transform then publish” pattern for your custom event, call `EventManager::transform( $event, $payload )` yourself before publishing.
 
 
-### WordPress bridge (actions and filters)
+ ## WordPress bridge (actions and filters)
 
 For each event, the system also fires a WordPress action and applies a WordPress filter so you can interact without the PHP helpers.
 
@@ -94,7 +91,7 @@ add_filter( 'wpgraphql_logging_filter_graphql_return_response', function( array 
 ```
 
 
-### Practical example - Send data to external service
+ ## Practical example - Send data to external service
 
 ```php
 <?php
@@ -129,7 +126,7 @@ Plugin::on(Events::BEFORE_RESPONSE_RETURNED, function(array $payload): void {
 
 
 
-### Troubleshooting
+ ## Troubleshooting
 
 - If your transform isn’t taking effect, ensure you’re targeting the correct event and that your callable returns the modified array.
 - If you only call `emit()`, transforms won’t run automatically; they only run where core calls `transform()`.
