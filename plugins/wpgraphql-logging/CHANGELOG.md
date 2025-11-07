@@ -1,5 +1,11 @@
 # WPGraphQL Logging
 
+## 0.2.2
+
+### Patch Changes
+
+- [#482](https://github.com/wpengine/hwptoolkit/pull/482) [`99c82ad`](https://github.com/wpengine/hwptoolkit/commit/99c82adc56041d7dca358a7d62849e08eb37c1e8) Thanks [@ahuseyn](https://github.com/ahuseyn)! - UI improvements for WPGraphQL Logging plugin: refactored styles, added GraphQL query formatting, and implemented unsaved changes warning
+
 ## 0.2.1
 
 ### Patch Changes
