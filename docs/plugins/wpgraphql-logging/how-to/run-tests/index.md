@@ -1,22 +1,8 @@
-# Testing WPGraphQL Logging
-
-## Table of Contents
-
-- [Overview](#overview)
-  - [Directory Structure](#directory-structure)
-  - [Technologies](#technologies)
-- [Usage](#usage)
-  - [Running Tests](#running-tests)
-  - [GitHub Actions](#github-actions)
-- [Setup Tests Locally](#setup-tests-locally)
-  - [Prerequisites](#prerequisites)
-  - [Docker Setup](#docker-setup)
-  - [What the Setup Script Does](#what-the-setup-script-does)
-  - [Running Tests Locally](#running-tests-locally)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-
 ---
+title: How To Guide: Run Tests
+description: Learn how to run the automated tests for the WPGraphQL Logging plugin.
+---
+
 
 ## Overview
 

@@ -1,3 +1,9 @@
+---
+title: How To Guide: Event Pub/Sub System
+description: Learn how to use the WPGraphQL Logging plugin's event pub/sub system to subscribe, transform, and emit events.
+---
+
+
 ## How to use the WPGraphQL Logging events pub/sub system
 
 The plugin exposes a lightweight pub/sub bus around key WPGraphQL lifecycle events and bridges them to standard WordPress actions/filters. You can:

@@ -1,4 +1,9 @@
-## How to Add a New Rule (Query must contain string)
+---
+title: How To Guide: Add a new Logging Rule
+description: Learn how to create and register custom logging rules with the WPGraphQL Logging plugin.
+---
+
+## Overview
 
 This guide shows how to create a custom logging rule that only passes when the GraphQL query contains a specific substring, and how to register it with the RuleManager.
 

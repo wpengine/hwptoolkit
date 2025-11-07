@@ -52,12 +52,44 @@
 		"route": "/toolkit/plugins/wpgraphql-logging/",
 		"children": [
 			{
+				"title": "How to Guides - Add a new Event",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
+			},
+			{
+				"title": "How to Guides - Add context an event",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
+			},
+			{
 				"title": "How to Guides - Add a new Monolog Handler",
 				"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/"
 			},
 			{
+				"title": "How to Guides - Add a new Monolog Processor",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-new-processor/"
+			},
+			{
+				"title": "How to Guides - Add a new Logging Rule",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-new-rule/"
+			},
+			{
+				"title": "How to Guides - Update Log Store Service",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/update-log-store-service/"
+			},
+			{
 				"title": "How to Guides - Add new settings field",
 				"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-fields/"
+			},
+			{
+				"title": "How to Guides - Add new settings tab",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-new-tab/"
+			},
+			{
+				"title": "How to Guides - Add new column to the admin grid",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-view-column/"
+			},
+			{
+				"title": "How to Guides - Run Tests",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/run-tests/"
 			}
 		]
 	}

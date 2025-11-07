@@ -1,4 +1,10 @@
-## How to add context data to a logged WPGraphQL event
+---
+title: How To Guide: Add context an event
+description: Learn how to add custom context data to WPGraphQL Logging event.
+---
+
+
+## Overview
 
 This guide shows two supported ways to inject custom context data into events that WPGraphQL Logging records:
 

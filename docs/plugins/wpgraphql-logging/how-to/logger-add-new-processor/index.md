@@ -1,4 +1,10 @@
-## How to Add a New Processor
+---
+title: How To Guide: Add a new Monolog Processor
+description: Learn how to add custom Monolog processors to the WPGraphQL Logging plugin to transform log records.
+---
+
+
+## Overview
 
 This guide shows how to create and register a custom processor that logs the current WordPress environment (e.g. `production`, `staging`, `development`).
 

@@ -1,7 +1,7 @@
 
 ---
-title: "How To Guide: Add new settings field"
-description: "Learn how to add custom settings fields to the WPGraphQL Logging plugin admin interface and retrieve their values programmatically."
+title: How To Guide: Add new settings field
+description: Learn how to add custom settings fields to the WPGraphQL Logging plugin admin interface and retrieve their values programmatically.
 ---
 
 ## Overview
