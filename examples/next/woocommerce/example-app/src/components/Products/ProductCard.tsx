@@ -7,6 +7,7 @@ import ProductQuantity from "./Quantity";
 import AddToCart from "./AddToCart";
 import ProductPrice from "./Price";
 import ProductVariations from "./Variations";
+import ProductRating from "./Rating";
 
 export default function ProductCard({ product }: { product: Product }) {
 	if (!product) {
@@ -51,15 +52,7 @@ export default function ProductCard({ product }: { product: Product }) {
 					<ProductPrice prices={productPrices} size={"small"} />
 
 					{/* Rating */}
-					{product.averageRating > 0 && (
-						<div className="product-rating">
-							<span className="stars">
-								{"★".repeat(Math.floor(product.averageRating))}
-								{"☆".repeat(5 - Math.floor(product.averageRating))}
-							</span>
-							<span className="rating-count">({product.reviewCount})</span>
-						</div>
-					)}
+					<ProductRating product={{ averageRating: product.averageRating, reviewCount: product.reviewCount }} />
 				</div>
 			</Link>
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import Link from "next/link";
-import { useAuthAdmin } from "@/lib/auth/AuthProvider";
+import { useAuthAdmin } from "@/lib/providers/AuthProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import LoginForm from "@/components/Account/Login/LoginForm";
 import useLocalStorage from "@/lib/storage";

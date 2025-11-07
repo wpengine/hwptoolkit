@@ -37,6 +37,8 @@ export const PRODUCTS_QUERY = gql`
 				reviewCount
 				averageRating
 				onSale
+				type
+				purchasable
 				image {
 					id
 					sourceUrl
@@ -104,13 +106,6 @@ export const PRODUCTS_QUERY = gql`
 					width
 					height
 					totalSales
-					attributes {
-						nodes {
-							id
-							name
-							options
-						}
-					}
 					variations {
 						nodes {
 							id
@@ -176,6 +171,8 @@ export const SINGLE_PRODUCT_QUERY = gql`
 			sku
 			date
 			onSale
+			type
+			purchasable
 			productCategories {
 				nodes {
 					id
@@ -222,7 +219,15 @@ export const SINGLE_PRODUCT_QUERY = gql`
 				width
 				height
 			}
-
+            globalAttributes {
+              nodes {
+                name
+                label
+                options
+                variation
+                visible
+              }
+            }
 			... on VariableProduct {
 				price
 				regularPrice
@@ -236,12 +241,28 @@ export const SINGLE_PRODUCT_QUERY = gql`
 				variations {
 					nodes {
 						id
+						databaseId
 						name
+						image {
+							id
+							sourceUrl
+							altText
+						}
 						price
 						regularPrice
 						salePrice
 						stockStatus
 						stockQuantity
+						hasAttributes
+						attributes {
+							nodes {
+								id
+								attributeId
+								name
+								value
+								label
+							}
+						}
 					}
 				}
 			}

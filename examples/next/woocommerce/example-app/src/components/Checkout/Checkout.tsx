@@ -3,15 +3,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLazyQuery, useMutation } from "@apollo/client";
 
-import { useCart } from "@/lib/woocommerce/CartProvider";
+import { useCart } from "@/lib/providers/CartProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
-import { GET_CART } from "@/lib/woocommerce/graphQL";
+import { GET_CART } from "@/lib/graphQL/cartGraphQL";
 import type { Cart as CartType, GetCartResponse, CartItem } from "@/interfaces/cart.interface";
 import Addresses from "@/components/Account/Tabs/Addresses";
 import { GET_USER_SETTINGS } from "@/lib/graphQL/userGraphQL";
-import { useAuthAdmin } from "@/lib/auth/AuthProvider";
+import { useAuthAdmin } from "@/lib/providers/AuthProvider";
 import { Customer } from "@/interfaces/customer.interface";
-import { CHECKOUT_MUTATION } from "@/lib/woocommerce/graphQL";
+import { CHECKOUT_MUTATION } from "@/lib/graphQL/cartGraphQL";
 // ✅ Add proper type for GET_USER_SETTINGS response
 interface GetCustomerResponse {
 	customer: Customer;

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import useLocalStorage from "../storage";
-import { LOGIN_MUTATION, REFRESH_TOKEN_MUTATION } from "@/lib/woocommerce/graphQL";
+import { LOGIN_MUTATION, REFRESH_TOKEN_MUTATION } from "@/lib/graphQL/cartGraphQL";
 
 const AuthContext = createContext(undefined);
 

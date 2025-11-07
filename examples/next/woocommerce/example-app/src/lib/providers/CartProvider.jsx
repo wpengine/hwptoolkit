@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { useMutation, useLazyQuery } from "@apollo/client";
-import { useAuth } from "../auth/AuthProvider";
+import { useAuth } from "./AuthProvider";
 import useLocalStorage from "../storage";
 import {
 	AddToCart,
@@ -10,7 +10,7 @@ import {
 	EMPTY_CART,
 	APPLY_COUPON,
 	REMOVE_COUPONS,
-} from "@/lib/woocommerce/graphQL";
+} from "@/lib/graphQL/cartGraphQL";
 
 const CartContext = createContext(undefined);
 
@@ -75,6 +75,7 @@ export function CartProvider({ children }) {
 	});
 	const [applyCouponMutation, { loading: applyCouponLoading }] = useMutation(APPLY_COUPON);
 	const [removeCouponsMutation, { loading: removeCouponsLoading }] = useMutation(REMOVE_COUPONS);
+
 	// Initialize Cart when auth changes
 	useEffect(() => {
 		let isMounted = true;
@@ -138,7 +139,7 @@ export function CartProvider({ children }) {
 	);
 
 	const addToCart = useCallback(
-		async (productId, quantity = 1, variationId = null) => {
+		async (productId, quantity = 1, variation = null, variationId = null) => {
 			try {
 				const existingItem = findCartItem(productId, variationId);
 
@@ -160,11 +161,13 @@ export function CartProvider({ children }) {
 						productId: parseInt(productId),
 						quantity: parseInt(quantity),
 					};
-
 					if (variationId) {
 						variables.variationId = parseInt(variationId);
 					}
-
+					if (variation) {
+						variables.variation = variation;
+					}
+					console.log(variables);
 					const { data, errors } = await addToCartMutation({ variables });
 
 					if (errors?.length > 0) {
@@ -209,7 +212,6 @@ export function CartProvider({ children }) {
 		[updateCartMutation]
 	);
 
-	// ✅ Updated clearCart function with loading state and GraphQL mutation
 	const clearCart = useCallback(async () => {
 		setClearingCart(true);
 		try {
@@ -224,7 +226,6 @@ export function CartProvider({ children }) {
 				await refreshCart();
 				return { success: true };
 			} else {
-				// For guest users, just clear local storage
 				storage.removeItem("woocommerce_cart");
 				setCartData(null);
 				return { success: true };
@@ -239,6 +240,11 @@ export function CartProvider({ children }) {
 
 	const refreshCart = useCallback(async () => {
 		try {
+			if (!user) {
+				const localCart = storage.loadCartFromLocalStorage();
+				setCartData(localCart);
+				return localCart;
+			}
 			const result = await getMiniCartQuery();
 			return result.data?.cart || null;
 		} catch (error) {

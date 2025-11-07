@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useCart } from "@/lib/woocommerce/CartProvider";
+import { useCart } from "@/lib/providers/CartProvider";
 import type { MiniCartVisualProps, MiniCartItem } from "@/interfaces/cart.interface";
 
 export default function MiniCart({ isVisible = false, onClose }: MiniCartVisualProps) {

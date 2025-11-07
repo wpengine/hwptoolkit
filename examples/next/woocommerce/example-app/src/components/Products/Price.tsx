@@ -23,7 +23,7 @@ export default function ProductPrice({ prices, size }: ProductPriceProps) {
 					<span className="regular-price">{prices.regularPrice}</span>
 				</>
 			) : (
-				<span className="price">Price: {prices.price}</span>
+				<span className="price">{prices.price}</span>
 			)}
 			<style jsx>{`
 				.product-price {

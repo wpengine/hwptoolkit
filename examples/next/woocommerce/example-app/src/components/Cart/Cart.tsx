@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLazyQuery } from "@apollo/client";
-import { useCart } from "@/lib/woocommerce/CartProvider";
+import { useCart } from "@/lib/providers/CartProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
-import { GET_CART } from "@/lib/woocommerce/graphQL";
+import { GET_CART } from "@/lib/graphQL/cartGraphQL";
 import type { Cart as CartType, GetCartResponse, CartItem } from "@/interfaces/cart.interface";
 
 export default function Cart() {

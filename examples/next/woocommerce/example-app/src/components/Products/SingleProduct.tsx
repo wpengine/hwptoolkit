@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Product } from "@/interfaces/product.interface";
 import { RELATED_PRODUCTS_QUERY } from "@/lib/graphQL/productGraphQL";
@@ -8,6 +8,7 @@ import ProductPrice from "./Price";
 import AddToCart from "./AddToCart";
 import ProductQuantity from "./Quantity";
 import ProductVariations from "./Variations";
+
 interface SingleProductProps {
 	product: Product;
 	relatedProducts?: Product[];
@@ -16,17 +17,78 @@ interface SingleProductProps {
 export default function SingleProduct({ product }: SingleProductProps) {
 	const [activeTab, setActiveTab] = useState<string>("description");
 	const [quantity, setQuantity] = useState<number>(1);
+	const [selectedVariation, setSelectedVariation] = useState<Product["variations"]["nodes"][0] | null>(null);
+	// ✅ Store selected attributes as array of objects
+	const [selectedAttributes, setSelectedAttributes] = useState<{ attributeName: string; attributeValue: string }[]>([]);
 
 	if (!product) {
 		return null;
 	}
+
 	const productPrices = {
 		onSale: product.onSale,
 		price: product.price,
 		regularPrice: product.regularPrice,
 		salePrice: product.salePrice,
 	};
-	//Related Products
+
+	const displayImage = selectedVariation?.image || product.image;
+
+	// ✅ Handle attribute selection
+	const handleAttributeSelect = (attributeName: string, attributeValue: string) => {
+		setSelectedAttributes((prev) => {
+			// Remove any existing selection for this attribute
+			const filtered = prev.filter((attr) => attr.attributeName !== attributeName);
+			// Add the new selection
+			return [...filtered, { attributeName, attributeValue }];
+		});
+	};
+
+	useEffect(() => {
+		if (!product.variations?.nodes || selectedAttributes.length === 0) {
+			setSelectedVariation(null);
+			return;
+		}
+
+		if (selectedVariation?.attributes?.nodes) {
+			const currentStillMatches = selectedAttributes.every((selectedAttr) => {
+				const varAttr = selectedVariation.attributes.nodes.find((attr) => attr.name === selectedAttr.attributeName);
+
+				// ✅ If variation has empty value for this attribute, keep the current variation
+				if (!varAttr || !varAttr.value || varAttr.value.trim() === "") {
+					return true; // Keep current variation
+				}
+
+				// Check if value matches
+				return varAttr.value.toLowerCase() === selectedAttr.attributeValue.toLowerCase();
+			});
+
+			if (currentStillMatches) {
+				console.log("Current variation still matches, keeping it:", selectedVariation);
+				return; // ✅ Keep the current variation
+			}
+		}
+		const matchingVariation = product.variations.nodes.find((variation) => {
+			if (!variation.attributes?.nodes) return false;
+
+			// Check if all selected attributes match this variation
+			return selectedAttributes.every((selectedAttr) => {
+				const varAttr = variation.attributes.nodes.find((attr) => attr.name === selectedAttr.attributeName);
+
+				// ✅ If variation has empty value for this attribute, it's a match (wildcard)
+				if (!varAttr || !varAttr.value || varAttr.value.trim() === "") {
+					return true;
+				}
+
+				// Compare values (case-insensitive)
+				return varAttr.value.toLowerCase() === selectedAttr.attributeValue.toLowerCase();
+			});
+		});
+
+		setSelectedVariation(matchingVariation || null);
+	}, [selectedAttributes, product.variations, selectedVariation]);
+
+	// Related Products
 	const getRelatedProducts = () => {
 		const categorySlugs = product.productCategories?.nodes?.map((cat) => cat.slug) || [];
 		const { data: relatedData } = useQuery(RELATED_PRODUCTS_QUERY, {
@@ -41,6 +103,9 @@ export default function SingleProduct({ product }: SingleProductProps) {
 
 	const relatedProducts = getRelatedProducts();
 
+	console.log("Selected attributes:", selectedAttributes);
+	console.log("Selected variation:", selectedVariation);
+
 	return (
 		<div className="container mx-auto px-4 py-8">
 			<div className="grid lg:grid-cols-2 gap-12 mb-12">
@@ -51,10 +116,10 @@ export default function SingleProduct({ product }: SingleProductProps) {
 								On Sale
 							</span>
 						)}
-						{product.image ? (
+						{displayImage ? (
 							<Image
-								src={product.image.sourceUrl}
-								alt={product.image.altText || product.name}
+								src={displayImage.sourceUrl}
+								alt={displayImage.altText || product.name}
 								fill
 								className="object-cover"
 								priority
@@ -89,14 +154,30 @@ export default function SingleProduct({ product }: SingleProductProps) {
 						<p className="text-sm text-gray-400">
 							{product.sku && <span className="text-gray-600">SKU: {product.sku}</span>}
 						</p>
-						<ProductVariations variations={product.variations} />
+
+						{/* ✅ Pass attribute selection handler */}
+						<ProductVariations
+							variations={product.variations}
+							globalAttributes={product.globalAttributes}
+							selectedVariation={selectedVariation}
+							onVariationSelect={setSelectedVariation}
+							onAttributeSelect={handleAttributeSelect}
+							selectedAttributes={selectedAttributes}
+						/>
+
 						<ProductPrice prices={productPrices} />
 					</div>
 
 					<div className="add-to-cart-container flex items-center gap-4">
 						<ProductQuantity product={product} quantity={quantity} setQuantity={setQuantity} />
 
-						<AddToCart product={product} quantity={quantity} />
+						{/* ✅ Pass selectedAttributes array */}
+						<AddToCart
+							product={product}
+							quantity={quantity}
+							variation={selectedAttributes}
+							variationId={selectedVariation?.databaseId}
+						/>
 					</div>
 				</div>
 			</div>

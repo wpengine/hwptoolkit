@@ -2,8 +2,8 @@ import { ApolloProvider } from "@apollo/client";
 import { useRouter } from "next/router";
 import getApolloClient from "@/lib/getApolloClient";
 import Layout from "@/components/Layout";
-import { AuthProvider, useAuth } from "@/lib/auth/AuthProvider";
-import { CartProvider } from "@/lib/woocommerce/CartProvider";
+import { AuthProvider, useAuth } from "@/lib/providers/AuthProvider";
+import { CartProvider } from "@/lib/providers/CartProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import "@/styles/globals.scss";
 

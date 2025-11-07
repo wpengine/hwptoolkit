@@ -1,119 +1,112 @@
 import React, { useState } from "react";
-import Image from "next/image";
-import CartIconSVG from "@/assets/icons/cart-shopping-light-full.svg";
-import { useCart } from "@/lib/woocommerce/CartProvider";
+import { useCart } from "@/lib/providers/CartProvider";
 import { Product } from "@/interfaces/product.interface";
 
-const CartIcon = ({ className = "w-6 h-6" }) => (
-	<span className={`inline-block ${className}`} style={{ filter: "brightness(0) invert(1)" }}>
-		<Image src={CartIconSVG} className="cart-icon" alt="Shopping Cart" width={24} height={24} />
-	</span>
-);
-
 interface AddToCartProps {
-	product: Product;
-	card?: boolean;
-	quantity?: number;
+    product: Product;
+    quantity?: number;
+    variation?: { attributeName: string; attributeValue: string }[] | null;
+    variationId?: number | null;
 }
 
-export default function AddToCart({ product, card, quantity = 1 }: AddToCartProps) {
-	const [isAdding, setIsAdding] = useState(false);
-	const [addedToCart, setAddedToCart] = useState(false);
+export default function AddToCart({ product, quantity = 1, variation = null, variationId = null }: AddToCartProps) {
+    const { addToCart, cartLoading } = useCart();
+    const [isAdding, setIsAdding] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
 
-	const { addToCart, refreshCart } = useCart();
+    const handleAddToCart = async () => {
+        setIsAdding(true);
+        setError(null);
+        setSuccess(false);
 
-	const handleAddToCart = async (e: React.MouseEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-		if (product.stockStatus === "OUT_OF_STOCK") alert("OUT_OF_STOCK");
-		// ✅ Validate quantity
-		if (quantity <= 0) {
-			alert("Please select a valid quantity");
-			return;
-		}
+        try {
+            console.log("Adding to cart with:", {
+                productId: product.databaseId,
+                quantity,
+                variation,
+                variationId,
+            });
 
-		setIsAdding(true);
+            const result = await addToCart(
+                product.databaseId,
+                quantity,
+                variation, // ✅ Pass the array directly - WooCommerce will handle it
+                variationId
+            );
 
-		try {
-			const result = await addToCart(product.databaseId, quantity);
+            if (result.success) {
+                setSuccess(true);
+                setTimeout(() => setSuccess(false), 3000);
+            } else {
+                setError(result.error || "Failed to add to cart");
+            }
+        } catch (err: any) {
+            console.error("Error adding to cart:", err);
+            setError(err.message || "An error occurred");
+        } finally {
+            setIsAdding(false);
+        }
+    };
 
-			if (result.errors) {
-				console.error("GraphQL errors:", result.errors);
-				throw new Error(result.errors[0]?.message || "Failed to add to cart");
-			}
+    // ✅ Remove variation selection requirement - allow adding to cart anytime
+    const hasVariations = product.variations?.nodes && product.variations.nodes.length > 0;
+    const isDisabled = isAdding || cartLoading;
 
-			console.log(result.success);
+    return (
+        <div className="add-to-cart w-full">
+            <button
+                onClick={handleAddToCart}
+                disabled={isDisabled}
+                className={`w-full px-6 py-3 rounded-lg font-semibold transition-all ${
+                    success
+                        ? "bg-green-600 text-white"
+                        : isDisabled
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-blue-600 text-white hover:bg-blue-700 active:scale-95"
+                }`}
+            >
+                {isAdding ? (
+                    <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                        </svg>
+                        Adding...
+                    </span>
+                ) : success ? (
+                    <span className="flex items-center justify-center">
+                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                        Added to Cart!
+                    </span>
+                ) : (
+                    "Add to Cart"
+                )}
+            </button>
 
-			if (result.success) {
-				setAddedToCart(true);
-				await refreshCart();
-				setTimeout(() => {
-					setAddedToCart(false);
-				}, 500);
-			} else {
-				throw new Error("No cart item returned from mutation");
-			}
-		} catch (error: any) {
-			console.error("Add to cart error:", error);
-			alert(`Error adding to cart: ${error.message}`);
-		} finally {
-			setIsAdding(false);
-		}
-	};
+            {/* ✅ Error message */}
+            {error && (
+                <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p className="text-sm text-red-800">{error}</p>
+                </div>
+            )}
 
-	const getButtonText = () => {
-		const icon = <CartIcon className="w-4 h-4 mr-1" />;
-		let html = <>{icon} Add to Cart</>;
-		if (product.stockStatus === "OUT_OF_STOCK") return (
-			<>
-				<span className="inline-flex items-center justify-center w-4 h-4 mr-1 bg-red-600 rounded-full">
-					<svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-					</svg>
-				</span>
-				Out of Stock
-			</>
-		);
-		if (isAdding) return "Adding...";
-		if (addedToCart) return "Added to Cart!";
-		return html;
-	};
-
-	const getButtonClass = () => {
-		if (product.stockStatus === "OUT_OF_STOCK") return "text-red-400 font-semibold";
-		let baseClass =
-			"add-to-cart-btn flex items-center justify-center cursor-pointer py-2 px-6 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-600 text-white hover:bg-blue-700";
-		if (!card) baseClass += " w-full";
-		if (card) baseClass += " text-sm";
-		if (addedToCart) baseClass += " added";
-		if (isAdding) baseClass += " loading";
-		return baseClass;
-	};
-
-	return (
-		<div className="flex items-center justify-center w-full">
-			{product.externalUrl ? (
-				<a href={product.externalUrl} target="_blank" rel="noopener noreferrer" className={getButtonClass()}>
-					External Link
-				</a>
-			) : product.type === "VARIABLE" ? (
-				<button className={getButtonClass()} disabled={true}>
-					Select Options
-				</button>
-			) : (
-				<button
-					className={getButtonClass()}
-					disabled={product.stockStatus === "OUT_OF_STOCK" || isAdding}
-					onClick={handleAddToCart}
-				>
-					{getButtonText()}
-				</button>
-			)}
-			<style jsx>{`
-				.cart-icon {
-					fill: white;
-				}
-			`}</style>
-		</div>
-	);
+            {/* ✅ Optional hint for variable products */}
+            {hasVariations && (!variation || variation.length === 0) && (
+                <p className="mt-2 text-sm text-gray-500 text-center">
+                    Tip: Select options above for specific variations
+                </p>
+            )}
+        </div>
+    );
 }

@@ -2,8 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useAuthAdmin } from "@/lib/auth/AuthProvider";
-import { useCart } from "@/lib/woocommerce/CartProvider";
+import { useAuthAdmin } from "@/lib/providers/AuthProvider";
+import { useCart } from "@/lib/providers/CartProvider";
 import NavigationItem from "./NavigationItem";
 import MiniCart from "../Cart/MiniCart";
 import { flatListToHierarchical } from "@/lib/utils";

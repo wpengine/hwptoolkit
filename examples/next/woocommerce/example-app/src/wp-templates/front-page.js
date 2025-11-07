@@ -1,8 +1,6 @@
 import Products from "@/components/Products/Products";
 
-export default function FrontPage({ graphqlData }) {
-	console.log("FrontPage graphqlData:", graphqlData);
-
+export default function FrontPage({}) {
 	return (
 		<div>
 			<Products
@@ -26,15 +24,10 @@ export default function FrontPage({ graphqlData }) {
 				columns={{ desktop: 3, tablet: 2, mobile: 1 }}
 				title="Special Offers"
 				displayType="sale"
-				queryName="SaleQuery" 
+				queryName="SaleQuery"
 			/>
 
-			<Products
-				count={4}
-				title="New Arrivals"
-				displayType="recent"
-				queryName="RecentQuery"
-			/>
+			<Products count={4} title="New Arrivals" displayType="recent" queryName="RecentQuery" />
 		</div>
 	);
 }

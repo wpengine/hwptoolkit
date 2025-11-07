@@ -7,7 +7,7 @@ export interface Product {
 	uri: string;
 	sku?: string;
 	type: string;
-
+	purchasable: boolean;
 	// Content
 	description?: string;
 	shortDescription?: string;
@@ -49,6 +49,24 @@ export interface Product {
 				id: string;
 				sourceUrl: string;
 				altText: string;
+			};
+			globalAttributes: {
+				nodes: Array<{
+					name: string;
+					label: string;
+					options: Array<string>;
+					variation: boolean;
+					visible: boolean;
+				}>;
+			};
+			attributes: {
+				nodes: Array<{
+					id: string;
+					attributeId: number;
+					label: string;
+					name: string;
+					value: string;
+				}>;
 			};
 		}>;
 	};
