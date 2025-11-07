@@ -3,7 +3,7 @@ title: "Installing HWP Toolkit Plugins with Composer"
 description: "A guide on how to install any HWP Toolkit plugin using Composer, which is the recommended way for modern WordPress development workflows."
 ---
 
-# Installing HWP Toolkit Plugins with Composer
+## Overview
 
 You can install any HWP Toolkit plugin using Composer, which is the recommended way for modern WordPress development workflows.
 
@@ -14,6 +14,9 @@ You can also install them manually from our [Releases](https://github.com/wpengi
 - Composer 1.x or 2.x
 - WordPress 6.0+
 - PHP 7.4+
+
+>[!NOTE]
+> WPGraphQL Logging Plugin requires PHP 8.1.2 in order to work.
 
 ### Available Plugins
 
