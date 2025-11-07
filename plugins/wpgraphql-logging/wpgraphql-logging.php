@@ -7,7 +7,7 @@
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
- * Version: 0.1.0
+ * Version: 0.2.1
  * Text Domain: wpgraphql-logging
  * Domain Path: /languages
  * Requires at least: 6.5
@@ -43,6 +43,37 @@ if ( ! Autoloader::autoload() ) {
 	return;
 }
 
+if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
+	/**
+	 * Define plugin constants.
+	 */
+	function wpgraphql_logging_constants(): void {
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_VERSION' ) ) {
+			define( 'WPGRAPHQL_LOGGING_VERSION', '0.2.1' );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
+			define( 'WPGRAPHQL_LOGGING_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_URL' ) ) {
+			define( 'WPGRAPHQL_LOGGING_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_KEY' ) ) {
+			define( 'WPGRAPHQL_LOGGING_SETTINGS_KEY', 'wpgraphql_logging_settings' );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP' ) ) {
+			define( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP', 'wpgraphql_logging_settings_group' );
+		}
+	}
+}
+
+// Define constants early - needed for activation/deactivation hooks.
+wpgraphql_logging_constants();
+
 if ( file_exists( __DIR__ . '/activation.php' ) ) {
 	require_once __DIR__ . '/activation.php';
 	// @phpstan-ignore-next-line
@@ -64,38 +95,9 @@ if ( ! function_exists( 'wpgraphql_logging_init' ) ) {
 	 * Initializes plugin.
 	 */
 	function wpgraphql_logging_init(): void {
-		wpgraphql_logging_constants();
 		wpgraphql_logging_plugin_init();
 		wpgraphql_logging_plugin_admin_notice_correct_build();
 		wpgraphql_logging_plugin_admin_notice_min_php_version();
-	}
-}
-
-if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
-	/**
-	 * Define plugin constants.
-	 */
-	function wpgraphql_logging_constants(): void {
-
-		if ( ! defined( 'WPGRAPHQL_LOGGING_VERSION' ) ) {
-			define( 'WPGRAPHQL_LOGGING_VERSION', '0.1.0' );
-		}
-
-		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
-			define( 'WPGRAPHQL_LOGGING_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-		}
-
-		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_URL' ) ) {
-			define( 'WPGRAPHQL_LOGGING_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-		}
-
-		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_KEY' ) ) {
-			define( 'WPGRAPHQL_LOGGING_SETTINGS_KEY', 'wpgraphql_logging_settings' );
-		}
-
-		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP' ) ) {
-			define( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP', 'wpgraphql_logging_settings_group' );
-		}
 	}
 }
 

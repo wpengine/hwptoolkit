@@ -3,7 +3,7 @@
 	"type": "wordpress-plugin",
   	"description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
 	"license": "GPLv2 or later",
-	"version": "0.1.0",
+	"version": "0.2.1",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",

@@ -1,5 +1,25 @@
 # WPGraphQL Logging
 
+## 0.2.1
+
+### Patch Changes
+
+- [#476](https://github.com/wpengine/hwptoolkit/pull/476) [`8156902`](https://github.com/wpengine/hwptoolkit/commit/8156902a1f4cc9dae655129abb788056bf9f76cc) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Add default configuration on plugin activation if no configuration already exists.
+
+## 0.2.0
+
+### Minor Changes
+
+- [#456](https://github.com/wpengine/hwptoolkit/pull/456) [`389a324`](https://github.com/wpengine/hwptoolkit/commit/389a32440d21a9dbfee18dac39e695af6aa0816e) Thanks [@theodesp](https://github.com/theodesp)! - chore: Various improvement to the logging plugin:
+
+  - Implemented BufferHandler to batch write database entries for performance
+  - Implemented LogStoreService to remove hard dependencies of the Database services in the admin and various classes
+  - Refactored Database and CRUD log services to use interfaces to make it easy to be exctended for other data storage solutions.
+  - Added missing indexes for performance
+  - Added filters for caching configuration
+  - Better error handling
+  - Added missing nonce for admin pages
+
 ## 0.1.0
 
 ### Minor Changes

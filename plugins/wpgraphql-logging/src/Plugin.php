@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging;
 
+use WPGraphQL\Logging\Admin\AdminNotice;
 use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
 use WPGraphQL\Logging\Admin\SettingsPage;
 use WPGraphQL\Logging\Admin\ViewLogsPage;
 use WPGraphQL\Logging\Events\EventManager;
+use WPGraphQL\Logging\Events\Events;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
 use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Scheduler\DataDeletionScheduler;
@@ -64,6 +68,7 @@ final class Plugin {
 			ConfigurationHelper::register_cache_hooks(); // Register cache hooks.
 			SettingsPage::init(); // Settings page.
 			ViewLogsPage::init(); // View logs page.
+			AdminNotice::init(); // Admin notices.
 		}
 
 		do_action( 'wpgraphql_logging_plugin_setup', self::$instance );
@@ -117,6 +122,44 @@ final class Plugin {
 	public static function activate(): void {
 		$log_service = self::get_log_service();
 		$log_service->activate();
+		self::set_default_configuration();
+	}
+
+	/**
+	 * Set the default configuration for the plugin on activation.
+	 */
+	public static function set_default_configuration(): void {
+		$configuration = ConfigurationHelper::get_instance();
+		$option_key    = $configuration->get_option_key();
+		$option_value  = get_option( $option_key, [] );
+		if ( ! empty( $option_value ) ) {
+			return;
+		}
+
+		$option_value = [
+			BasicConfigurationTab::get_name() => [
+				BasicConfigurationTab::ENABLED             => true,
+				BasicConfigurationTab::EXCLUDE_QUERY       => '__schema,GetSeedNode', // Exclude introspection and GetSeedNode queries.
+				BasicConfigurationTab::DATA_SAMPLING       => '10',
+				BasicConfigurationTab::EVENT_LOG_SELECTION => [
+					Events::PRE_REQUEST,
+					Events::BEFORE_GRAPHQL_EXECUTION,
+					Events::BEFORE_RESPONSE_RETURNED,
+					Events::REQUEST_DATA,
+					Events::REQUEST_RESULTS,
+					Events::RESPONSE_HEADERS_TO_SEND,
+				],
+				BasicConfigurationTab::LOG_RESPONSE        => false,
+			],
+			DataManagementTab::get_name()     => [
+				DataManagementTab::DATA_DELETION_ENABLED => true,
+				DataManagementTab::DATA_RETENTION_DAYS   => 7,
+				DataManagementTab::DATA_SANITIZATION_ENABLED => true,
+				DataManagementTab::DATA_SANITIZATION_METHOD => 'recommended',
+			],
+		];
+
+		update_option( $option_key, $option_value );
 	}
 
 	/**
