@@ -21,7 +21,8 @@
     "dev": "bash ./scripts/dev.sh",
     "stop": "pnpm --filter '*' stop",
     "release": "npm run build && changeset publish",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "reformat:md": "remark --rc-path .remarkrc.json --output --"
   },
   "engines": {
     "node": ">=18",
@@ -41,5 +42,10 @@
     "@wordpress/scripts": "30.24.0",
     "rimraf": "^5.0.5"
   },
-  "packageManager": "pnpm@10.20.0"
+  "packageManager": "pnpm@10.20.0",
+  "dependencies": {
+    "remark-cli": "^12.0.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-preset-lint-recommended": "^7.0.1"
+  }
 }
