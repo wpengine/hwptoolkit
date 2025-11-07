@@ -3,32 +3,19 @@ title: "How to Guide - Add a new Monolog Handler"
 description: "This guide shows how to log to a file using a Monolog handler, either in addition to the default WordPress database handler or as a replacement. It also covers per-instance overrides."
 ---
 
-# How to Guide - Add a new Monolog Handler
-
-This guide shows how to log to a file using a Monolog handler, either in addition to the default WordPress database handler or as a replacement. It also covers per-instance overrides.
-
-## Table of Contents
-
-- [Introduction](#introduction)
-- [What is a Handler?](#what-is-a-handler)
-- [Example 1: Add a file handler globally (in addition to the default)](#example-1-add-a-file-handler-globally-in-addition-to-the-default)
-- [Example 2: Replace the default handler globally (file only)](#example-2-replace-the-default-handler-globally-file-only)
-- [Tips](#tips)
-- [Related Content](#related-content)
-
-## Introduction
+# Introduction
 
 In this guide, you will learn how to extend the logging capabilities of WPGraphQL Logging by adding a new [Monolog](https://github.com/Seldaek/monolog) handler. Specifically, we will demonstrate how to send logs to a file, which can be useful for long-term storage, offline analysis, or integration with external log management systems.
 
 
-## What is a Handler?
+## What is a Monolog Handler?
 
 Handlers decide where logs are written. By default, WPGraphQL Logging uses a custom `WordPressDatabaseHandler` to store logs in the database. You can add more destinations (files, streams, third-party services) or replace the defaults.
 
 >[!NOTE]
 > See <https://seldaek.github.io/monolog/doc/02-handlers-formatters-processors.html> for a list of handlers and processors
 
-## Example 1: Add a file handler globally (in addition to the default)
+## Example 1: Add a new handler
 
 Use the `wpgraphql_logging_default_handlers` filter to push a `StreamHandler` that writes to a file. The default database handler will remain enabled.
 
@@ -50,7 +37,7 @@ add_filter( 'wpgraphql_logging_default_handlers', function( array $handlers ) {
 });
 ```
 
-## Example 2: Replace the default handler globally (file only)
+## Example 2: Replace the default handler
 
 Return your own array of handlers from the same filter to replace the default handler entirely.
 

@@ -59,7 +59,7 @@
 		"children": [
 			{
 				"title": "How to Guides - Add a new Monolog Handler",
-				"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger_add_new_handler/"
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/add-new-handler/"
 			}
 		]
 	}
