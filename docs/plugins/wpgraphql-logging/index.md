@@ -1,8 +1,8 @@
 ---
 title: "WPGraphQL Logging Plugin"
-description: "WPGraphQL Logging is a comprehensive logging utility for WPGraphQL. It provides detailed insights into the GraphQL lifecycle, from initial request to final response, helping developers debug queries, monitor performance, and secure their applications. This plugin is built to be extensible, allowing you to customize everything from data storage to logging rules."
+description: "A comprehensive logging utility for WPGraphQL that provides insights into the GraphQL lifecycle, helping developers debug queries, monitor performance, and secure applications."
 ---
-# WPGraphQL Logging Plugin
+# Introduction
 
 WPGraphQL Logging is a comprehensive logging utility for WPGraphQL. It provides detailed insights into the GraphQL lifecycle, from initial request to final response, helping developers debug queries, monitor performance, and secure their applications. This plugin is built to be extensible, allowing you to customize everything from data storage to logging rules.
 
@@ -205,7 +205,7 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 
 ### Logging
 
-- [How to Add a New Handler (File Logging)](how-to/add-new-handler.md)
+- [How to Add a New Handler (File Logging)](how-to/add-new-handler/index.md)
 - [How to Add a New Processor](how-to/logger_add_new_processor.md)
 - [How to Add a New Rule (Query must contain string)](how-to/logger_add_new_rule.md)
 - [How to replace the database log service](how-to/logger_replace_log_store_service.md)
@@ -217,7 +217,7 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 
 ### Admin
 - [How to add a new Settings tab to WPGraphQL Logging](how-to/admin_add_new_tab.md)
-- [How to add a new field to an existing tab and query it](how-to/admin_add_fields.md)
+- [How to add a new field to an existing tab and query it](how-to/admin-add-fields/index.md)
 - [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
 
 

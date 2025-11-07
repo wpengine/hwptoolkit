@@ -1,4 +1,10 @@
-## How to add a new field to an existing tab and query it
+
+---
+title: "How To Guide: Add new settings field"
+description: "Learn how to add custom settings fields to the WPGraphQL Logging plugin admin interface and retrieve their values programmatically."
+---
+
+## Overview
 
 This guide shows how to add custom fields to the WPGraphQL Logging settings and how to read or query those values.
 

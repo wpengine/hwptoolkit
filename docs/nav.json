@@ -54,6 +54,10 @@
 			{
 				"title": "How to Guides - Add a new Monolog Handler",
 				"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/"
+			},
+			{
+				"title": "How to Guides - Add new settings field",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-fields/"
 			}
 		]
 	}
