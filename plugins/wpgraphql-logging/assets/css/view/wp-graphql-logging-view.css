@@ -1,0 +1,46 @@
+.wpgraphql-logging-view-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.wpgraphql-logging-details pre.wpgraphql-logging-query,
+.wpgraphql-logging-details pre.wpgraphql-logging-context,
+.wpgraphql-logging-details pre.wpgraphql-logging-extra {
+	white-space: pre-wrap;
+	max-height: 540px;
+	overflow-y: scroll;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+pre.wpgraphql-logging-list-table-query {
+	overflow-x: auto;
+	background: #f4f4f4;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	max-height: 20px;
+}
+
+.wpgraphql-logging-filters input.wpgraphql-logging-datepicker,
+.wpgraphql-logging-filters select[name="level_filter"] {
+	width: 120px;
+}
+
+.wpgraphql-logging-filters {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-right: 10px;
+}
+
+.wpgraphql-logging-filters .clear-all-button {
+	margin: 0;
+	margin-left: 5px;
+	text-decoration: none;
+}

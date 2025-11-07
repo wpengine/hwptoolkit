@@ -236,7 +236,6 @@ class ListTableTest extends WPTestCase {
 
 		$this->assertStringContainsString('<pre', $result);
 		$this->assertStringContainsString('test code', $result);
-		$this->assertStringContainsString('overflow-x: auto', $result);
 	}
 
 	public function test_format_code_returns_empty_string_for_empty_input(): void {
