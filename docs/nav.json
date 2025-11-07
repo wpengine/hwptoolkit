@@ -54,12 +54,13 @@
 		]
 	},
 	{
-		"title": "Plugins",
-		"route": "/plugins/",
+		"title": "WPGraphQL Logging",
+		"route": "/toolkit/plugins/wpgraphql-logging/",
 		"children": [
 			{
-				"title": "WPGraphQL Logging",
-				"route": "/plugins/wpgraphql-logging/"
+				"title": "How to Guides - Add a new Monolog Handler",
+				"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger_add_new_handler/",
+				"append": ".md"
 			}
 		]
 	}
