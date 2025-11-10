@@ -1,6 +1,6 @@
 ---
-title: How To Guide: Update Log Store Service
-description: Learn how to replace the default database logging with a custom log storage implementation in the WPGraphQL Logging plugin.
+title: "How To Guide: Update Log Store Service"
+description: "Learn how to replace the default database logging with a custom log storage implementation in the WPGraphQL Logging plugin."
 ---
 
 
@@ -24,7 +24,6 @@ First, create a class that implements `LogServiceInterface`. This is a simplifie
 
 ```php
 <?php
-// In your theme's functions.php or a custom plugin
 
 use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Api\LogEntityInterface;
@@ -101,14 +100,14 @@ Next, use the `wpgraphql_logging_log_store_service` filter to return an instance
 
 add_action( 'plugins_loaded', function() {
     add_filter( 'wpgraphql_logging_log_store_service', function( $log_service ) {
-        // If another plugin hasn't already replaced the service,
-        // replace it with our custom file logger.
-        if ( null === $log_service ) {
-            $log_service = new MyFileLogService();
-        }
-        return $log_service;
+        return new MyFileLogService();
     } );
 }, 10, 0 );
 ```
 
 With this in place, all logs from WPGraphQL Logging will be routed through your `MyFileLogService` and saved to a file instead of the database.
+
+
+## Contributing
+
+We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.

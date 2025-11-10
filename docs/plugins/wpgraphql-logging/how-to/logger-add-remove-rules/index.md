@@ -97,6 +97,7 @@ In this example, we will disable the plugin but remove the rule for checking whe
 
 
 ```php
+<?php
 use WPGraphQL\Logging\Logger\Rules\EnabledRule;
 
 add_filter( 'wpgraphql_logging_rules', function( array $rules ) {
@@ -125,3 +126,8 @@ The result should be if you have unchecked "Enabled" under Basic Configuration, 
 
 
 The query was logged even with the enabled checkbox unchecked as we removed the default rule.
+
+
+## Contributing
+
+We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.
