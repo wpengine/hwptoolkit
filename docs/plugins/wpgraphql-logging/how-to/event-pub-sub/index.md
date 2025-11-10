@@ -3,7 +3,7 @@ title: "How To Guide: Event Pub/Sub System"
 description: "Learn how to use the WPGraphQL Logging plugin's event pub/sub system to subscribe, transform, and emit events."
 ---
 
-## How to use the WPGraphQL Logging events pub/sub system
+## Overview
 
 The plugin exposes a lightweight pub/sub bus around key WPGraphQL lifecycle events and bridges them to standard WordPress actions/filters. You can:
 
@@ -11,7 +11,8 @@ The plugin exposes a lightweight pub/sub bus around key WPGraphQL lifecycle even
 * Transform payloads before core code logs and emits them
 * Publish your own custom events for your app/plugins
 
-See the [Events Reference](../reference/events.md) for available built-in events and their mappings.
+> \[!NOTE]
+> See the [Events Reference](../../reference/events/index.md) for available built-in events and their mappings.
 
 ## Core concepts
 
@@ -21,108 +22,103 @@ See the [Events Reference](../reference/events.md) for available built-in events
 
 Priorities run ascending (lower numbers first). Transforms must return the updated payload array; subscribers receive the payload and do not return.
 
-## Programmatic API (recommended)
+## Example 1: Subscribe to an event
 
 ```php
 <?php
+
 use WPGraphQL\Logging\Plugin;
 use WPGraphQL\Logging\Events\Events;
-use Monolog\Level;
 
-// 1) Subscribe (read-only) to inspect context for the pre-request event
+
 add_action( 'init', function() {
     Plugin::on( Events::PRE_REQUEST, function( array $payload ): void {
         $context = $payload['context'] ?? [];
-        // e.g., inspect or trigger side effects
-        // error_log( 'Incoming operation: ' . ( $context['operation_name'] ?? '' ) );
+        $path = WP_CONTENT_DIR;
+		error_log(json_encode($context, JSON_PRETTY_PRINT),3, $path . '/debug.json');
     }, 10 );
 } );
+```
+
+This will save the pre-request context data into your wp-content directory in a `debug.json` file.
+
+e.g.
+
+```json
+{
+    "query": "query GetPost($uri: ID!) {\n  post(id: $uri, idType: URI) {\n    title\n    content\n  }\n}",
+    "variables": {
+        "uri": "hello-world"
+    },
+    "operation_name": "GetPost"
+}
+```
+
+
+## Example 2: Transform an event payload
+
+The example below adds the WordPress environment variable to the context payload before the response is returned.
+
+```php
+<?php
+
+use WPGraphQL\Logging\Plugin;
+use WPGraphQL\Logging\Events\Events;
 
 // 2) Transform the payload before it is logged/emitted by core code
 add_action( 'init', function() {
     Plugin::transform( Events::BEFORE_RESPONSE_RETURNED, function( array $payload ): array {
+        // Note you can change either the context or level
         $payload['context']['env']       = wp_get_environment_type();
 
-        // Optionally change severity for this event instance
-        if ( ! empty( $payload['context']['errors'] ) ) {
-            $payload['level'] = Level::Error;
-        }
         return $payload;
-    }, 5 ); // lower priority runs earlier
-} );
-
-// 3) Emit your own custom event anywhere in your code
-add_action( 'user_register', function( $user_id ) {
-    Plugin::emit( 'my_plugin/user_registered', [
-        'context' => [ 'user_id' => (int) $user_id ],
-    ] );
+    }, 5 );
 } );
 ```
 
-Notes:
+![Example output from hook](screenshot.png)
 
-* Built-in events are transformed internally before they are logged and then published.
-* `emit()` publishes to subscribers and the WordPress action bridge; it does not apply transforms by itself.
-  * If you want the “transform then publish” pattern for your custom event, call `EventManager::transform( $event, $payload )` yourself before publishing.
 
-## WordPress bridge (actions and filters)
+### Example 3: Emit your own event
 
-For each event, the system also fires a WordPress action and applies a WordPress filter so you can interact without the PHP helpers.
+You can emit custom events from anywhere in your codebase, but a common use case is to emit an event from within a WPGraphQL resolver. This allows you to create specific log entries or trigger actions based on the execution of your GraphQL operations.
 
-* Action: `wpgraphql_logging_event_{event_name}` (fires after subscribers run)
-* Filter: `wpgraphql_logging_filter_{event_name}` (used when core transforms a payload)
-
-Examples:
-
-```php
-<?php
-// Observe the raw pre-request payload via WordPress action
-add_action( 'wpgraphql_logging_event_do_graphql_request', function( array $payload ) {
-    // e.g., send metrics to an external system
-}, 10, 1 );
-
-// Inject extra context before the response is logged
-add_filter( 'wpgraphql_logging_filter_graphql_return_response', function( array $payload ) {
-    $payload['context']['trace_id']  = uniqid( 'trace_', true );
-    $payload['context']['app_name']  = 'headless-site';
-    return $payload;
-}, 10, 1 );
-```
-
-## Practical example - Send data to external service
+For example, you could emit an event after a specific mutation has been resolved:
 
 ```php
 <?php
 use WPGraphQL\Logging\Plugin;
-use WPGraphQL\Logging\Events\Events;
 
-Plugin::on(Events::BEFORE_RESPONSE_RETURNED, function(array $payload): void {
-	$context = $payload['context'];
-	if (array_key_exists('errors', $context)) {
-		$level = 400;
-		$level_name = 'ERROR';
-	} else {
-		$level = 200;
-		$level_name = 'INFO';
-	}
+register_graphql_mutation( 'myCustomMutation', [
+    'inputFields'         => [
+		'myField' => [
+			'type'        => 'String',
+			'description' => __( 'A field for my mutation.', 'my-textdomain' ),
+		],
+	],
+	'outputFields'        => [
+		'success' => [
+			'type'        => 'Boolean',
+			'description' => __( 'Whether or not the mutation was successful.', 'my-textdomain' ),
+		],
+	],
+    'resolve' => function( $root, $args, $context, $info ) {
+        // Do mutation logic...
+        $result = ['success' => true];
 
+        // Emit a custom event
+        Plugin::emit( 'my_plugin/my_custom_mutation_resolved', [
+            'context' => [
+                'input' => $args['input'],
+                'result' => $result
+            ],
+        ] );
 
-	// Example call (replace values as needed)
-	$result = send_log_to_external_api_endpoint( [
-		'level'    => $level,
-		'level_name' => $level_name,
-		'query'    => $context['query'] ?? '',
-		'context'  => $context,
-		'message'  => 'Test'
-	] );
-}, 10);
-
+        return $result;
+    }
+] );
 ```
 
-> [!NOTE] > You can also add a custom handler if you want to log data to that service via the LoggerService.
+## Contributing
 
-## Troubleshooting
-
-* If your transform isn’t taking effect, ensure you’re targeting the correct event and that your callable returns the modified array.
-* If you only call `emit()`, transforms won’t run automatically; they only run where core calls `transform()`.
-* Use priorities to control ordering with other plugins (`5` runs before `10`).
+We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.

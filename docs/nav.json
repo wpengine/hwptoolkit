@@ -72,11 +72,11 @@
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/update-log-store-service/"
 					},
 					{
-						"title": "Add a new Event",
+						"title": "Use the Events pub/sub system",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
 					},
 					{
-						"title": "Add context an event",
+						"title": "Add context to an event",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
 					},
 					{

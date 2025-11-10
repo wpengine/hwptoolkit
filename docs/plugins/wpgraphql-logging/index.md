@@ -192,8 +192,8 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 
 ### ♻️ Events
 
-* [How to use the Events pub/sub system](how-to/events_pub_sub.md)
-* [How to add context data to a logged WPGraphQL event](how-to/events_add_context.md)
+* [How to use the Events pub/sub system](how-to/event-pub-sub/index.md)
+* [How to add context data to a an event](how-to/event-add-context/index.md)
 
 ### 📈 Admin
 

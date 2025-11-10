@@ -3,20 +3,17 @@ title: How To Guide: Add context an event
 description: Learn how to add custom context data to WPGraphQL Logging event.
 ---
 
-
 ## Overview
 
 This guide shows two supported ways to inject custom context data into events that WPGraphQL Logging records:
 
-- Programmatic transform API (recommended for plugins/themes using PHP namespaces)
-- WordPress filter API (easy to drop into any project)
+* Programmatic transform API (recommended for plugins/themes using PHP namespaces)
+* WordPress filter API (easy to drop into any project)
 
 Refer to the [Events Reference](../reference/events.md) for the list of available event names.
 
-
 ![Adding custom context data to WPGraphQL events](../screenshots/event_add_context_data.png)
 *Example of custom context data being added to a WPGraphQL event log entry*
-
 
 ### Option A — Programmatic transform API
 
@@ -45,19 +42,18 @@ add_action( 'init', function() {
 
 You can target any event constant from `WPGraphQL\Logging\Events\Events`, for example:
 
-- `Events::PRE_REQUEST` (maps to `do_graphql_request`)
-- `Events::BEFORE_GRAPHQL_EXECUTION` (maps to `graphql_before_execute`)
-- `Events::BEFORE_RESPONSE_RETURNED` (maps to `graphql_return_response`)
-- `Events::REQUEST_DATA` (filter `graphql_request_data`)
-- `Events::REQUEST_RESULTS` (filter `graphql_request_results`)
-- `Events::RESPONSE_HEADERS_TO_SEND` (filter `graphql_response_headers_to_send`)
-
+* `Events::PRE_REQUEST` (maps to `do_graphql_request`)
+* `Events::BEFORE_GRAPHQL_EXECUTION` (maps to `graphql_before_execute`)
+* `Events::BEFORE_RESPONSE_RETURNED` (maps to `graphql_return_response`)
+* `Events::REQUEST_DATA` (filter `graphql_request_data`)
+* `Events::REQUEST_RESULTS` (filter `graphql_request_results`)
+* `Events::RESPONSE_HEADERS_TO_SEND` (filter `graphql_response_headers_to_send`)
 
 ### Option B — WordPress filter API
 
 Every event also exposes a WordPress filter bridge you can hook into to modify the payload. The filter name pattern is:
 
-- `wpgraphql_logging_filter_{event_name}`
+* `wpgraphql_logging_filter_{event_name}`
 
 Where `{event_name}` is the raw WPGraphQL hook name (the constant value). For example, to inject context before the response is returned:
 

@@ -7,11 +7,8 @@ description: Learn how to add custom settings tabs to the WPGraphQL Logging plug
 
 This guide shows how to add your own settings tab and fields to the WPGraphQL Logging Admin using the `wpgraphql_logging_settings_field_collection_init` action.
 
-
 ![Add New Settings Tab](../screenshots/admin_how_to_add_tab.png)
 *Example of a custom settings tab added to WPGraphQL Logging admin interface*
-
-
 
 ### Step 1 — Create a Tab class implementing `SettingsTabInterface`
 
@@ -65,9 +62,9 @@ class MyCustomTab implements SettingsTabInterface {
 
 Notes:
 
-- `get_name()` is the tab identifier (slug).
-- `get_label()` is the tab title shown in the UI.
-- `get_fields()` returns an array of field objects keyed by a unique field ID. Available field types include `CheckboxField`, `TextInputField`, `SelectField`, and `TextIntegerField`.
+* `get_name()` is the tab identifier (slug).
+* `get_label()` is the tab title shown in the UI.
+* `get_fields()` returns an array of field objects keyed by a unique field ID. Available field types include `CheckboxField`, `TextInputField`, `SelectField`, and `TextIntegerField`.
 
 ### Step 2 — Register the tab via the action
 

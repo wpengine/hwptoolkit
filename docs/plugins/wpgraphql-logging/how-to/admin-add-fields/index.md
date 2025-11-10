@@ -1,8 +1,8 @@
+***
 
----
 title: How To Guide: Add new settings field
 description: Learn how to add custom settings fields to the WPGraphQL Logging plugin admin interface and retrieve their values programmatically.
----
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Overview
 
@@ -10,7 +10,6 @@ This guide shows how to add custom fields to the WPGraphQL Logging settings and 
 
 ![WPGraphQL Logging Settings Page](../screenshots/admin_how_to_add_field.png)
 *The WPGraphQL Logging settings page with Basic Configuration and Data Management tabs where custom fields can be added*
-
 
 ### Step 1 — Add a field via filter
 
@@ -47,8 +46,8 @@ add_filter( 'wpgraphql_logging_data_management_fields', function( $fields ) {
 
 Notes:
 
-- Field classes available: `CheckboxField`, `TextInputField`, `SelectField`, `TextIntegerField`.
-- The second argument is the tab key (use the tab’s `get_name()`), not the option key.
+* Field classes available: `CheckboxField`, `TextInputField`, `SelectField`, `TextIntegerField`.
+* The second argument is the tab key (use the tab’s `get_name()`), not the option key.
 
 ### Step 2 — Where the value is stored
 

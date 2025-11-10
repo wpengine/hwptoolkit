@@ -3,7 +3,6 @@ title: How To Guide: Run Tests
 description: Learn how to run the automated tests for the WPGraphQL Logging plugin.
 ---
 
-
 ## Overview
 
 HWP Previews comes with automated tests for unit, integration, and acceptance (E2E) scenarios to ensure code quality and functionality.
@@ -54,15 +53,15 @@ codeception.dist.yml          # Main Codeception config
 
 We use the following technologies to run our tests:
 
-- [Codeception](https://codeception.com/) - PHP testing framework
-- [WPBrowser](https://wpbrowser.wptestkit.dev/) - WordPress-specific testing tools
-- [WPUnit](https://github.com/lipemat/wp-unit) - WordPress unit testing
-- [Docker](https://www.docker.com/) - Containerized testing environment
-- [Composer](https://getcomposer.org/) - PHP dependency management
-- [Playwright](https://playwright.dev/) - End-to-end testing framework
-- [npm](https://www.npmjs.com/) - JavaScript package manager
+* [Codeception](https://codeception.com/) - PHP testing framework
+* [WPBrowser](https://wpbrowser.wptestkit.dev/) - WordPress-specific testing tools
+* [WPUnit](https://github.com/lipemat/wp-unit) - WordPress unit testing
+* [Docker](https://www.docker.com/) - Containerized testing environment
+* [Composer](https://getcomposer.org/) - PHP dependency management
+* [Playwright](https://playwright.dev/) - End-to-end testing framework
+* [npm](https://www.npmjs.com/) - JavaScript package manager
 
----
+***
 
 ## Usage
 
@@ -73,23 +72,22 @@ The plugin includes the following test suites:
 
 ### Running Tests
 
-| Command                                 | Description                                              |
-|------------------------------------------|----------------------------------------------------------|
-| `composer run test:unit:coverage`        | Run WPUnit (unit/integration) tests with coverage report |
-| `composer run test:unit:coverage-html`   | Generate an HTML code coverage report                    |
-| `composer run test:e2e`                  | Run end-to-end (E2E) acceptance tests                    |
-| `composer run test`                      | Run all available test suites                            |
+| Command                                | Description                                              |
+| -------------------------------------- | -------------------------------------------------------- |
+| `composer run test:unit:coverage`      | Run WPUnit (unit/integration) tests with coverage report |
+| `composer run test:unit:coverage-html` | Generate an HTML code coverage report                    |
+| `composer run test:e2e`                | Run end-to-end (E2E) acceptance tests                    |
+| `composer run test`                    | Run all available test suites                            |
 
 ### GitHub Actions
 
 Automated testing runs on every pull request via GitHub Actions for a modified plugin:
 
-| Workflow                | Description                                 | Status |
-|-------------------------|---------------------------------------------|--------|
-| **Code Quality**        | Runs static analysis and linting checks     | [View Workflow](../../actions/workflows/code-quality.yml) |
-| **E2E Tests**           | Runs Playwright end-to-end acceptance tests | [View Workflow](../../actions/workflows/e2e.yml) |
-| **Codeception (WPUnit)** | Runs unit and integration tests             | [View Workflow](../../actions/workflows/codeception.yml) |
-
+| Workflow                 | Description                                 | Status                                                    |
+| ------------------------ | ------------------------------------------- | --------------------------------------------------------- |
+| **Code Quality**         | Runs static analysis and linting checks     | [View Workflow](../../actions/workflows/code-quality.yml) |
+| **E2E Tests**            | Runs Playwright end-to-end acceptance tests | [View Workflow](../../actions/workflows/e2e.yml)          |
+| **Codeception (WPUnit)** | Runs unit and integration tests             | [View Workflow](../../actions/workflows/codeception.yml)  |
 
 ## E2E Tests
 
@@ -107,7 +105,7 @@ End-to-end tests use Playwright to simulate real user workflows from configuring
 
 Located in `tests/e2e/plugins/`:
 
-- **`reset-wpgraphql-logging-settings`** - Resets plugin settings and clears logs table for clean test state
+* **`reset-wpgraphql-logging-settings`** - Resets plugin settings and clears logs table for clean test state
 
 ### Running E2E Tests
 
@@ -125,23 +123,23 @@ npm run test:e2e tests/e2e/specs/basic-usage.spec.js
 npm run test:e2e:debug
 ```
 
->[!IMPORTANT]
+> \[!IMPORTANT]
 > Test coverage for WP Unit Tests is **95%**. Any new code will require tests to be added in order to pass CI checks. This is set in [text](codeception.dist.yml) in the parameter `min_coverage`.
 
----
+***
 
 ## Setup Tests Locally
 
 ### Prerequisites
 
-- Docker and Docker Compose installed and running
-- Composer installed
-- Node.js and npm installed (for E2E tests)
-- Terminal/command line access
+* Docker and Docker Compose installed and running
+* Composer installed
+* Node.js and npm installed (for E2E tests)
+* Terminal/command line access
 
 ### Docker Setup
 
->[!NOTE]
+> \[!NOTE]
 > You need Docker running locally before setting up tests. Alternatively, you can copy `.env.dist` to `.env` and update the database details to point to your local database. However, this will make database changes, so we recommend using the Docker setup instead.
 
 To set up your local Docker environment, run:
@@ -157,38 +155,43 @@ This script will automatically handle the complete Docker environment setup proc
 The setup script performs the following operations:
 
 #### 1. Environment Verification
-- ✅ Checks that Docker is running
-- ✅ Verifies required files exist
+
+* ✅ Checks that Docker is running
+* ✅ Verifies required files exist
 
 #### 2. Configuration Setup
-- 📁 Copies `bin/local/.env.local` to `.env` 
-  - Uses local development configuration (different from `.env.dist`)
-  - Sets appropriate database credentials and WordPress settings
+
+* 📁 Copies `bin/local/.env.local` to `.env`
+  * Uses local development configuration (different from `.env.dist`)
+  * Sets appropriate database credentials and WordPress settings
 
 #### 3. Docker Container Management
-- 🐳 Runs `composer run docker:build` 
-  - Executes `sh bin/build-docker.sh` to create the Docker container
-  - Builds WordPress environment with PHP 8.2
-- 🚀 Runs `docker compose up -d` to start the container in detached mode
-  - Creates container named `wpgraphql-logging-wordpress-1`
-  - Sets up WordPress with test database
+
+* 🐳 Runs `composer run docker:build`
+  * Executes `sh bin/build-docker.sh` to create the Docker container
+  * Builds WordPress environment with PHP 8.2
+* 🚀 Runs `docker compose up -d` to start the container in detached mode
+  * Creates container named `wpgraphql-logging-wordpress-1`
+  * Sets up WordPress with test database
 
 #### 4. Code Coverage Setup
-- 🔧 Installs and configures PCOV extension (preferred for performance)
-- 🔄 Falls back to XDebug if PCOV installation fails
-- ⚙️ Configures coverage settings automatically
-- 🔄 Restarts container to ensure extensions are loaded
+
+* 🔧 Installs and configures PCOV extension (preferred for performance)
+* 🔄 Falls back to XDebug if PCOV installation fails
+* ⚙️ Configures coverage settings automatically
+* 🔄 Restarts container to ensure extensions are loaded
 
 #### 5. WordPress Installation
-- 📝 Installs WordPress if not already present
-- 🔌 Activates the plugin automatically
-- ✅ Verifies the installation is working correctly
+
+* 📝 Installs WordPress if not already present
+* 🔌 Activates the plugin automatically
+* ✅ Verifies the installation is working correctly
 
 ### Running Tests Locally
 
 Once setup is complete, you can run tests using Composer:
 
-<[!NOTE]
+<\[!NOTE]
 < Ensure the docker container is running before executing tests. You can run `composer run docker:start` to start it.
 
 ```shell
@@ -204,7 +207,7 @@ composer run test:e2e
 
 For a full list of available test commands, see the [Usage](#usage) section above.
 
----
+***
 
 ## Troubleshooting
 
@@ -261,7 +264,7 @@ docker compose down
 docker compose down -v
 ```
 
----
+***
 
 ## Contributing
 
