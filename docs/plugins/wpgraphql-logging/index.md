@@ -1,7 +1,6 @@
 ---
 title: "WPGraphQL Logging Plugin"
-description: "A logging plugin that provides visibility into the GraphQL request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application.
-."
+description: "A logging plugin that provides visibility into the GraphQL request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application."
 ---
 
 # Introduction
