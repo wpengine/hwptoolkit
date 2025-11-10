@@ -56,20 +56,12 @@
 				"route": "/toolkit/plugins/wpgraphql-logging/how-to/",
 				"children": [
 					{
-						"title": "Add a new Event",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
-					},
-					{
-						"title": "Add context an event",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
-					},
-					{
-						"title": "Add a new Monolog Handler",
+						"title": "Add a new Handler",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/"
 					},
 					{
-						"title": "Add a new Monolog Processor",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-new-processor/"
+						"title": "Add a new Processor",
+						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-processor/"
 					},
 					{
 						"title": "Add a new Logging Rule",
@@ -78,6 +70,14 @@
 					{
 						"title": "Update Log Store Service",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/update-log-store-service/"
+					},
+					{
+						"title": "Add a new Event",
+						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
+					},
+					{
+						"title": "Add context an event",
+						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
 					},
 					{
 						"title": "Add new settings field",
