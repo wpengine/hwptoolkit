@@ -1,6 +1,6 @@
 # WPGraphQL Logging
 
-A WPGraphQL logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
+A logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
 
 -----
 
