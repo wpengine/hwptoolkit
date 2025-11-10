@@ -1,6 +1,8 @@
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
-export default function Layout(pageProps) {
+import { PageProps } from "@/interfaces/pageProps.interface";
+
+export default function Layout(pageProps: PageProps) {
     return (
         <>
             <Header headerData={pageProps.pageProps.headerData} />

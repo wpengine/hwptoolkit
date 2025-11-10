@@ -1,5 +1,5 @@
 import React from "react";
-import { useRouteData } from "@/lib/templates/context";
+import { useRouteData } from "@/lib/providers/RouterProvider";
 import PostCard from "@/components/Posts/PostCard";
 import POSTS_QUERY from "@/components/Posts/postQuery";
 

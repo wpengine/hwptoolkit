@@ -219,15 +219,15 @@ export const SINGLE_PRODUCT_QUERY = gql`
 				width
 				height
 			}
-            globalAttributes {
-              nodes {
-                name
-                label
-                options
-                variation
-                visible
-              }
-            }
+			globalAttributes {
+				nodes {
+					name
+					label
+					options
+					variation
+					visible
+				}
+			}
 			... on VariableProduct {
 				price
 				regularPrice

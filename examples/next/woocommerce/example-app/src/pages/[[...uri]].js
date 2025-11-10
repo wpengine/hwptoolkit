@@ -1,8 +1,7 @@
 import { uriToTemplate } from "@/lib/templates/templateHierarchy";
-import { RouteDataProvider } from "@/lib/templates/context";
+import { RouteDataProvider } from "@/lib/providers/RouterProvider";
 import availableTemplates from "@/wp-templates";
 import { fetchQueries } from "@/lib/templates/queryHandler";
-import { useQuery, gql } from "@apollo/client";
 import { navData } from "@/lib/navigation";
 
 export default function Page(props) {
@@ -30,7 +29,6 @@ export async function getServerSideProps(context) {
 	}
 
 	const PageTemplate = availableTemplates[templateData.template?.id];
-	console.log("pagetemplate", PageTemplate);
 	const component = await PageTemplate.render.preload();
 	const headerData = await navData();
 	const graphqlData = await fetchQueries({

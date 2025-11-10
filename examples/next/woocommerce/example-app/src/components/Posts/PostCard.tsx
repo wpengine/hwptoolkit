@@ -104,7 +104,7 @@ export default function PostCard({ post, cols = 3 }: PostCardProps) {
       {/* Featured image */}
       {post.featuredImage?.node && (
         <div className="relative overflow-hidden">
-          <Link href={`/blog/${post.slug || post.uri}`}>
+          <Link href={`/${post.slug || post.uri}`}>
             <Image
               src={post.featuredImage.node.sourceUrl}
               alt={post.featuredImage.node.altText || post.title}

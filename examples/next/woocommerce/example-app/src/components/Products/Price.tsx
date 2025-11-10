@@ -1,9 +1,5 @@
-import type { ProductPrices } from "@/interfaces/product.interface";
+import type { ProductPrices, ProductPriceProps } from "@/interfaces/product.interface";
 
-interface ProductPriceProps {
-	prices: ProductPrices;
-	size?: "small" | "medium" | "large";
-}
 export default function ProductPrice({ prices, size }: ProductPriceProps) {
 	const getFontSize = () => {
 		switch (size) {

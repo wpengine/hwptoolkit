@@ -11,7 +11,7 @@ import Addresses from "@/components/Account/Tabs/Addresses";
 import { GET_USER_SETTINGS } from "@/lib/graphQL/userGraphQL";
 import { useAuthAdmin } from "@/lib/providers/AuthProvider";
 import { Customer } from "@/interfaces/customer.interface";
-import { CHECKOUT_MUTATION } from "@/lib/graphQL/cartGraphQL";
+import { CHECKOUT_MUTATION } from "@/lib/graphQL/checkoutGraphQL";
 // ✅ Add proper type for GET_USER_SETTINGS response
 interface GetCustomerResponse {
 	customer: Customer;

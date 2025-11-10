@@ -114,6 +114,17 @@ export interface ProductPrices {
 	salePrice: string;
 	onSale: boolean;
 }
+export interface ProductPriceProps {
+	prices: ProductPrices;
+	size?: "small" | "medium" | "large";
+}
+export interface AddToCartProps {
+	product: Product;
+	card?: boolean | null;
+	quantity?: number;
+	variation?: { attributeName: string; attributeValue: string }[] | null;
+	variationId?: number | null;
+}
 // Simple cart item interface
 export interface CartItem {
 	key: string;

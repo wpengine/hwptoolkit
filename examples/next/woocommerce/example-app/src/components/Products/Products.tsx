@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { useRouteData } from "@/lib/templates/context";
+import { useRouteData } from "@/lib/providers/RouterProvider";
 import ProductCard from "@/components/Products/ProductCard";
 import React from "react";
 import { PRODUCTS_QUERY } from "@/lib/graphQL/productGraphQL";
