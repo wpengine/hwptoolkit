@@ -64,8 +64,8 @@
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-processor/"
 					},
 					{
-						"title": "Add a new Logging Rule",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-new-rule/"
+						"title": "Add or remove Logging Rule",
+						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-remove-rules/"
 					},
 					{
 						"title": "Update Log Store Service",

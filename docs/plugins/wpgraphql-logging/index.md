@@ -187,7 +187,7 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 
 * [How to Add a New Handler](how-to/logger-add-handler/index.md)
 * [How to Add a New Processor](how-to/logger-add-processor/index.md)
-* [How to Add a New Rule](how-to/logger-add-new-rule/index.md)
+* [How to Add or Remove a Rule](how-to/logger-add-remove-rules/index.md)
 * [How to update the Log Store Service](how-to/update-log-store-service/index.md)
 
 ### ♻️ Events

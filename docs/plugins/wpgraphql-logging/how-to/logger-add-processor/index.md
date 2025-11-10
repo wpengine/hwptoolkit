@@ -42,18 +42,6 @@ add_filter( 'wpgraphql_logging_default_processors', function( array $processors 
 });
 ```
 
-### (Optional) Per-instance registration
-
-Register the processor for a specific logger channel by passing it to `LoggerService::get_instance()`.
-
-```php
-<?php
-use WPGraphQL\Logging\Logger\LoggerService;
-
-$logger = LoggerService::get_instance( 'env_channel', null, [ new \MyPlugin\Logging\EnvironmentProcessor() ] );
-$logger->info( 'Environment test' );
-```
-
 You should see `environment` in the log record's `extra` data (e.g. in the Logs admin UI or your chosen handler output).
 
 ![Processor Example](screenshot.png)
