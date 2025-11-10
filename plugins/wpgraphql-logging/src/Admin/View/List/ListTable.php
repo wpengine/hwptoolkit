@@ -413,7 +413,7 @@ class ListTable extends WP_List_Table {
 		if ( empty( $code ) ) {
 			return '';
 		}
-		return '<pre style="overflow-x: auto; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; border-radius: 4px; max-height: 300px;">' . esc_html( $code ) . '</pre>';
+		return '<pre class="wpgraphql-logging-list-table-query">' . esc_html( $code ) . '</pre>';
 	}
 
 	/**
