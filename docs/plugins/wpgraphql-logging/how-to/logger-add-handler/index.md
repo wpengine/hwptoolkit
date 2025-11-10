@@ -7,12 +7,11 @@ description: "This guide shows how to log to a file using a Monolog handler, eit
 
 In this guide, you will learn how to extend the logging capabilities of WPGraphQL Logging by adding a new [Monolog](https://github.com/Seldaek/monolog) handler. Specifically, we will demonstrate how to send logs to a file, which can be useful for long-term storage, offline analysis, or integration with external log management systems.
 
-
 ## What is a Monolog Handler?
 
 Handlers decide where logs are written. By default, WPGraphQL Logging uses a custom `WordPressDatabaseHandler` to store logs in the database. You can add more destinations (files, streams, third-party services) or replace the defaults.
 
->[!NOTE]
+> \[!NOTE]
 > See <https://seldaek.github.io/monolog/doc/02-handlers-formatters-processors.html> for a list of handlers and processors
 
 ## Example 1: Add a new handler
@@ -37,6 +36,9 @@ add_filter( 'wpgraphql_logging_default_handlers', function( array $handlers ) {
 });
 ```
 
+> \[!NOTE]
+> You could also use the [RotatingFileHandler](https://github.com/Seldaek/monolog/blob/main/src/Monolog/Handler/RotatingFileHandler.php) and implement `$maxFiles` to delete older files.
+
 ## Example 2: Replace the default handler
 
 Return your own array of handlers from the same filter to replace the default handler entirely.
@@ -59,18 +61,18 @@ add_filter( 'wpgraphql_logging_default_handlers', function( array $handlers ) {
 
 ## Tips
 
->[!IMPORTANT]
+> \[!IMPORTANT]
 > You should restrict public access to the log file if being written in a public directory
 
-- Ensure the logs directory is writable by the web server user.
-- Consider `Monolog\\Handler\\RotatingFileHandler` to rotate files by day and limit disk usage.
-- You can combine multiple handlers (e.g., database + file + Slack) either globally (filter) or per instance.
+* Ensure the logs directory is writable by the web server user.
+* Consider `Monolog\\Handler\\RotatingFileHandler` to rotate files by day and limit disk usage.
+* You can combine multiple handlers (e.g., database + file + Slack) either globally (filter) or per instance.
 
 ## Related Content
 
-- See the [Logger reference](../reference/logging.md#filter-wpgraphql_logging_default_handlers) for `wpgraphql_logging_default_handlers` and other hooks.
+* See the [How to replace the database log service](../update-log-store-service/index.md) guide on how to replace the default database handler for the admin.
 
----
+***
 
 ## Contributing
 
