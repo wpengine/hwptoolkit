@@ -103,8 +103,8 @@ export default function SingleProduct({ product }: SingleProductProps) {
 
 	const relatedProducts = getRelatedProducts();
 
-	console.log("Selected attributes:", selectedAttributes);
-	console.log("Selected variation:", selectedVariation);
+	// console.log("Selected attributes:", selectedAttributes);
+	// console.log("Selected variation:", selectedVariation);
 
 	return (
 		<div className="container mx-auto px-4 py-8">

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import useLocalStorage from "../storage";
-import { LOGIN_MUTATION, REFRESH_TOKEN_MUTATION } from "@/lib/graphQL/cartGraphQL";
+import { LOGIN_MUTATION, REFRESH_TOKEN_MUTATION } from "@/lib/graphQL/userGraphQL";
 
 const AuthContext = createContext(undefined);
 
@@ -22,36 +22,33 @@ export function AuthProvider({ children }) {
 	const [refreshTokenMutation] = useMutation(REFRESH_TOKEN_MUTATION);
 
 	// Login Function
-	const login = useCallback(
-		async (username, password) => {
-			try {
-				const { data } = await loginMutation({
-					variables: { username, password },
-				});
+	const login = useCallback(async (username, password) => {
+		try {
+			const { data } = await loginMutation({
+				variables: { username, password },
+			});
 
-				if (!data?.login) {
-					throw new Error("Login failed - no data returned");
-				}
-
-				const { user, ...tokens } = data.login;
-
-				storage.saveToLocalStorage("authTokens", tokens);
-				storage.saveToLocalStorage("user", user);
-
-				setAuthState({
-					user,
-					tokens,
-					isLoading: false,
-				});
-
-				router.push("/my-account");
-			} catch (error) {
-				console.error("❌ Login error:", error);
-				throw error;
+			if (!data?.login) {
+				throw new Error("Login failed - no data returned");
 			}
-		},
-		[loginMutation, router]
-	);
+
+			const { user, customer, ...tokens } = data.login;
+
+			storage.saveToLocalStorage("authTokens", tokens);
+			storage.saveToLocalStorage("user", user);
+			storage.saveToLocalStorage("sessionToken", customer.sessionToken);
+			setAuthState({
+				user,
+				tokens,
+				isLoading: false,
+			});
+
+			//router.push("/my-account");
+		} catch (error) {
+			console.error("❌ Login error:", error);
+			throw error;
+		}
+	}, []);
 
 	// Logout function
 	const logout = useCallback(() => {
@@ -181,7 +178,6 @@ export function AuthProvider({ children }) {
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
 
 export const useAuth = () => {
 	const context = useContext(AuthContext);

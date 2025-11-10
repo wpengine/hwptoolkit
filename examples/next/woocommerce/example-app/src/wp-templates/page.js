@@ -1,7 +1,6 @@
 import SinglePage from "@/components/Pages/SinglePage";
 export default function Page({ graphqlData }) {
 	const { SinglePageQuery } = graphqlData;
-	console.log(SinglePageQuery.page);
 	return (
 		<>
 			<SinglePage page={SinglePageQuery.page} />

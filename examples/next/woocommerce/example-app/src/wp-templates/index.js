@@ -14,7 +14,7 @@ const singleProduct = dynamic(() => import("./single-product.js"));
 const pageMyAccount = dynamic(() => import("./page-my-account.js"));
 const pageCart = dynamic(() => import("./page-cart.js"));
 const pageCheckout = dynamic(() => import("./page-checkout.js"));
-
+const pageOrderReceived = dynamic(() => import("./page-order-received.js"));
 export default {
     home,
     index,
@@ -27,4 +27,5 @@ export default {
     pageCart,
     pageMyAccount,
     pageCheckout,
+    pageOrderReceived,
 };

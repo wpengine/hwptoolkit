@@ -1,3 +1,4 @@
+import { UserOrders } from "./order.interface";
 export interface Customer {
 	id: string;
 	databaseId: number;
@@ -12,38 +13,7 @@ export interface Customer {
 	shipping: Address;
 	orders: UserOrders;
 }
-export interface UserOrders {
-	nodes: Order[];
-}
 
-export interface Order {
-	id: string;
-	databaseId: number;
-	date: string;
-	dateCompleted: string | null;
-	datePaid: string | null;
-	orderNumber: string;
-	orderVersion: string;
-	paymentMethodTitle: string | null;
-	needsProcessing: boolean;
-	status: string;
-	subtotal: string;
-	total: string;
-	totalTax: string;
-	billing: Address;
-	shipping: Address;
-	lineItems: {
-		__typename: string;
-		nodes: LineItem[];
-	};
-}
-
-export interface LineItem {
-	id: string;
-	productId: number;
-	quantity: number;
-	total: string;
-}
 export interface Address {
 	firstName: string;
 	lastName: string;

@@ -126,7 +126,7 @@ export const UPDATE_CUSTOMER = gql`
 `;
 
 // QUERIES
-export const GET_USER_SETTINGS = gql`
+export const GET_CUSTOMER_SETTINGS = gql`
 	query GetUserSettings {
 		customer {
 			...CustomerFields
@@ -142,4 +142,39 @@ export const GET_USER = gql`
 		}
 	}
 	${CustomerFields}
+`;
+export const LOGIN_MUTATION = gql`
+	mutation loginWithPassword($username: String!, $password: String!) {
+		login(input: { provider: PASSWORD, credentials: { username: $username, password: $password } }) {
+			authToken
+			authTokenExpiration
+			refreshToken
+			refreshTokenExpiration
+			user {
+				id
+				email
+				databaseId
+				name
+			}
+			customer {
+				sessionToken
+			}
+		}
+	}
+`;
+export const REFRESH_TOKEN_MUTATION = gql`
+	mutation refreshToken($token: String!) {
+		refreshToken(input: { refreshToken: $token }) {
+			authToken
+			authTokenExpiration
+			success
+		}
+	}
+`;
+export const GetCartDocument = gql`
+	query {
+		customer {
+			sessionToken
+		}
+	}
 `;

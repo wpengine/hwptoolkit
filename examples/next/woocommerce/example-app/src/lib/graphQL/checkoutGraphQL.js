@@ -6,6 +6,7 @@ export const CHECKOUT_MUTATION = gql`
 		checkout(input: $input) {
 			order {
 				...OrderFields
+				orderKey
 			}
 			redirect
 			result

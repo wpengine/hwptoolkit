@@ -5,7 +5,7 @@ import { useAuthAdmin } from "@/lib/providers/AuthProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import LoginForm from "@/components/Account/Login/LoginForm";
 import useLocalStorage from "@/lib/storage";
-import { GET_USER_SETTINGS } from "@/lib/graphQL/userGraphQL";
+import { GET_CUSTOMER_SETTINGS } from "@/lib/graphQL/userGraphQL";
 import Addresses from "./Tabs/Addresses";
 import AccountDetails from "./Tabs/AccountDetails";
 import Dashboard from "./Tabs/Dashboard";
@@ -21,7 +21,7 @@ export default function Account() {
 		loading: userDataLoading,
 		error,
 		refetch,
-	} = useQuery(GET_USER_SETTINGS, {
+	} = useQuery(GET_CUSTOMER_SETTINGS, {
 		skip: !isAuthenticated,
 		fetchPolicy: "network-only",
 	});

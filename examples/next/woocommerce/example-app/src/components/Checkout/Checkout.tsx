@@ -2,28 +2,29 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLazyQuery, useMutation } from "@apollo/client";
-
 import { useCart } from "@/lib/providers/CartProvider";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { GET_CART } from "@/lib/graphQL/cartGraphQL";
 import type { Cart as CartType, GetCartResponse, CartItem } from "@/interfaces/cart.interface";
 import Addresses from "@/components/Account/Tabs/Addresses";
-import { GET_USER_SETTINGS } from "@/lib/graphQL/userGraphQL";
+import { GET_CUSTOMER_SETTINGS } from "@/lib/graphQL/userGraphQL";
 import { useAuthAdmin } from "@/lib/providers/AuthProvider";
 import { Customer } from "@/interfaces/customer.interface";
 import { CHECKOUT_MUTATION } from "@/lib/graphQL/checkoutGraphQL";
-// ✅ Add proper type for GET_USER_SETTINGS response
+import CheckoutFields, { CheckoutFormData } from "./CheckoutFields";
+import { useRouter } from "next/router";
+import useLocalStorage from "@/lib/storage";
 interface GetCustomerResponse {
 	customer: Customer;
 }
 
 export default function Checkout() {
+	const router = useRouter();
+	const storage = useLocalStorage;
 	const {
 		cart: providerCart,
 		updateCartItemQuantity,
 		removeItem,
-		clearCart,
-		clearingCart,
 		cartLoading: providerLoading,
 		refreshCart,
 		applyCoupon,
@@ -38,10 +39,14 @@ export default function Checkout() {
 	const [applyingCoupon, setApplyingCoupon] = useState(false);
 	const [customer, setCustomer] = useState<Customer | null>(null);
 	const [checkoutProcessing, setCheckoutProcessing] = useState(false);
+	const [checkoutError, setCheckoutError] = useState<string | null>(null);
+	// ✅ Add state for guest checkout data
+	const [guestCheckoutData, setGuestCheckoutData] = useState<CheckoutFormData | null>(null);
+
 	const { user, isLoading: authLoading } = useAuthAdmin();
 	const isAuthenticated = !!user;
 
-	const [getCustomer, { loading: userDataLoading }] = useLazyQuery<GetCustomerResponse>(GET_USER_SETTINGS, {
+	const [getCustomer, { loading: userDataLoading }] = useLazyQuery<GetCustomerResponse>(GET_CUSTOMER_SETTINGS, {
 		onCompleted: (data) => {
 			if (data?.customer) {
 				setCustomer(data.customer);
@@ -63,29 +68,29 @@ export default function Checkout() {
 		errorPolicy: "all",
 	});
 
-	// ✅ Fetch customer data only when authenticated
 	useEffect(() => {
 		if (isAuthenticated) {
-			console.log("Fetching customer data...");
 			getCustomer();
 		} else {
 			setCustomer(null);
 		}
 	}, [isAuthenticated, getCustomer]);
 
-	// Fetch full cart on mount
 	useEffect(() => {
-		getFullCartQuery();
-	}, [getFullCartQuery]);
-
-	// Refresh full cart when provider cart changes
-	useEffect(() => {
-		if (providerCart) {
+		if (isAuthenticated) {
 			getFullCartQuery();
 		} else {
 			setFullCart(null);
 		}
-	}, [providerCart, getFullCartQuery]);
+	}, [isAuthenticated, getFullCartQuery]);
+
+	useEffect(() => {
+		if (isAuthenticated && providerCart) {
+			getFullCartQuery();
+		} else if (!isAuthenticated) {
+			setFullCart(null);
+		}
+	}, [isAuthenticated, providerCart, getFullCartQuery]);
 
 	const cart = fullCart || (providerCart as CartType);
 	const isLoading = fullCartLoading || providerLoading || userDataLoading;
@@ -115,65 +120,14 @@ export default function Checkout() {
 		}
 	};
 
-	const handleApplyCoupon = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!couponCode.trim()) return;
-
-		setCouponError(null);
-		setCouponSuccess(null);
-		setApplyingCoupon(true);
-
-		try {
-			const result = await applyCoupon(couponCode);
-
-			if (result.success) {
-				setCouponSuccess(`Coupon "${couponCode}" applied successfully!`);
-				setCouponCode("");
-				await refreshCart();
-				await getFullCartQuery();
-
-				setTimeout(() => setCouponSuccess(null), 3000);
-			} else {
-				const error = result.error.replace(/&quot;/g, '"');
-				setCouponError(error || "Failed to apply coupon");
-				setTimeout(() => setCouponError(null), 3000);
-			}
-		} catch (error: any) {
-			setCouponError(error.message || "An error occurred while applying the coupon");
-			setTimeout(() => setCouponError(null), 3000);
-		} finally {
-			setApplyingCoupon(false);
-		}
-	};
-
-	const handleRemoveCoupon = async (code: string) => {
-		setCouponError(null);
-		setCouponSuccess(null);
-
-		try {
-			const result = await removeCoupons([code]);
-
-			if (result.success) {
-				setCouponSuccess(`Coupon "${code}" removed successfully!`);
-				await refreshCart();
-				await getFullCartQuery();
-
-				setTimeout(() => setCouponSuccess(null), 3000);
-			} else {
-				setCouponError(result.error || "Failed to remove coupon");
-			}
-		} catch (error: any) {
-			console.error("Error removing coupon:", error);
-			setCouponError(error.message || "An error occurred while removing the coupon");
-		}
-	};
 	const [checkoutMutation, { loading: checkoutLoading }] = useMutation(CHECKOUT_MUTATION, {
 		onCompleted: (data) => {
 			console.log("Checkout completed:", data);
 		},
-		onError: (error) => console.error("❌ Update cart error:", error),
+		onError: (error) => console.error("❌ Checkout error:", error),
 	});
-		const removeTypename = (obj: any): any => {
+
+	const removeTypename = (obj: any): any => {
 		if (!obj) return obj;
 
 		if (Array.isArray(obj)) {
@@ -192,29 +146,145 @@ export default function Checkout() {
 
 		return obj;
 	};
+
+	// ✅ Validate guest checkout data
+	const validateGuestCheckout = (): boolean => {
+		if (!guestCheckoutData) {
+			setCheckoutError("Please fill in all required fields");
+			return false;
+		}
+
+		const { billing, shipping, shipToDifferentAddress } = guestCheckoutData;
+
+		// Validate required billing fields
+		const requiredBillingFields = ["firstName", "lastName", "email", "city", "postcode"];
+		for (const field of requiredBillingFields) {
+			if (!billing[field as keyof typeof billing]) {
+				setCheckoutError(`Please fill in billing ${field.replace(/([A-Z])/g, " $1").toLowerCase()}`);
+				return false;
+			}
+		}
+
+		// Validate email format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(billing.email)) {
+			setCheckoutError("Please enter a valid email address");
+			return false;
+		}
+
+		// Validate required shipping fields if different address
+		if (shipToDifferentAddress) {
+			const requiredShippingFields = ["firstName", "lastName", "address1", "city", "postcode", "country", "state"];
+			for (const field of requiredShippingFields) {
+				if (!shipping[field as keyof typeof shipping]) {
+					setCheckoutError(`Please fill in shipping ${field.replace(/([A-Z])/g, " $1").toLowerCase()}`);
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
+
 	const handleCheckout = async () => {
-		// Implement checkout logic here
-		console.log("Proceeding to checkout...");
+		setCheckoutError(null);
 		setCheckoutProcessing(true);
+
 		try {
+			let billingData, shippingData;
+
+			// ✅ Use customer data if authenticated, otherwise use guest data
+			if (isAuthenticated && customer) {
+				billingData = removeTypename(customer.billing);
+				shippingData = removeTypename(customer.shipping);
+			} else {
+				// ✅ Validate guest checkout data
+				if (!validateGuestCheckout()) {
+					setCheckoutProcessing(false);
+					return { success: false, error: checkoutError };
+				}
+
+				// ✅ Transform guest data to match WooCommerce format
+				const { billing, shipping, shipToDifferentAddress } = guestCheckoutData!;
+
+				billingData = {
+					firstName: billing.firstName,
+					lastName: billing.lastName,
+					email: billing.email,
+					phone: billing.phone || "",
+					address1: billing.address1,
+					address2: billing.address2 || "",
+					city: billing.city,
+					postcode: billing.postcode,
+					country: billing.country,
+					state: billing.state,
+				};
+
+				// ✅ Use billing address for shipping if not different
+				shippingData = shipToDifferentAddress
+					? {
+							firstName: shipping.firstName,
+							lastName: shipping.lastName,
+							address1: shipping.address1,
+							address2: shipping.address2 || "",
+							city: shipping.city,
+							postcode: shipping.postcode,
+							country: shipping.country || "",
+							state: shipping.state,
+					  }
+					: {
+							firstName: billing.firstName,
+							lastName: billing.lastName,
+							address1: billing.address1,
+							address2: billing.address2 || "",
+							city: billing.city,
+							postcode: billing.postcode,
+							country: billing.country || "",
+							state: billing.state,
+					  };
+			}
+
+			console.log("Checkout data:", { billingData, shippingData });
+
 			const { data, errors } = await checkoutMutation({
 				variables: {
 					input: {
 						paymentMethod: "cod",
-						billing: removeTypename(customer?.billing),
-						shipping: removeTypename(customer?.shipping),
-						clientMutationId: "asdasdsa241",
+						billing: billingData,
+						shipping: shippingData,
+						clientMutationId: `checkout_${Date.now()}`,
+						shippingMethod: "free_shipping",
 					},
 				},
 			});
-			console.log("checkoutdata", data);
-			return { success: data.success };
+
+			if (errors && errors.length > 0) {
+				setCheckoutError(errors[0].message);
+				return { success: false, error: errors[0].message };
+			}
+
+			console.log("Checkout:", data);
+			await refreshCart();
+			if (!isAuthenticated) {
+				const orderData = data.checkout.order;
+				storage.setItem(`order_${orderData.orderKey}`, JSON.stringify({ order: orderData }));
+			}
+			router.push(`/order-received/${data.checkout.order.orderNumber}?key=${data.checkout.order.orderKey}`);
+			return { success: true, data };
 		} catch (error: any) {
+			console.error("Checkout error:", error);
+			setCheckoutError(error.message || "Failed to process checkout");
 			return { success: false, error: error.message || "Failed to checkout" };
 		} finally {
 			setCheckoutProcessing(false);
 		}
 	};
+
+	// ✅ Check if checkout button should be enabled
+	const isCheckoutDisabled = isAuthenticated
+		? !customer || checkoutProcessing
+		: !guestCheckoutData || checkoutProcessing;
+
 	if (isLoading && !cart) {
 		return <LoadingSpinner />;
 	}
@@ -243,6 +313,7 @@ export default function Checkout() {
 			</div>
 		);
 	}
+
 	return (
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 			<h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
@@ -251,33 +322,14 @@ export default function Checkout() {
 				{/* Left Column - Customer Details */}
 				<div className="bg-white rounded-lg shadow-sm border border-gray-200">
 					<div className="p-6">
-						<h3 className="text-xl font-semibold text-gray-900 mb-6">Customer Details</h3>
-
-						{/* ✅ Show loading state */}
 						{userDataLoading && <LoadingSpinner />}
 
-						{/* ✅ Show login prompt if not authenticated */}
-						{!isAuthenticated && !userDataLoading && (
-							<div className="text-center py-8">
-								<p className="text-gray-600 mb-4">Please log in to continue with checkout</p>
-								<Link
-									href="/account"
-									className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors"
-								>
-									Log In
-								</Link>
-							</div>
-						)}
-
-						{/* ✅ Show addresses when customer data is loaded */}
 						{isAuthenticated && !userDataLoading && customer && (
 							<Addresses billing={customer.billing} shipping={customer.shipping} refetch={getCustomer} />
 						)}
 
-						{/* ✅ Show message if no customer data */}
-						{isAuthenticated && !userDataLoading && !customer && (
-							<p className="text-gray-500">Unable to load customer data</p>
-						)}
+						{/* ✅ Pass callback to get guest data */}
+						{!isAuthenticated && <CheckoutFields onDataChange={setGuestCheckoutData} />}
 					</div>
 				</div>
 
@@ -334,7 +386,7 @@ export default function Checkout() {
 												<div className="flex items-center space-x-2">
 													<span className="text-green-700">-{coupon.discountAmount}</span>
 													<button
-														onClick={() => handleRemoveCoupon(coupon.code)}
+														onClick={() => removeCoupons(coupon.code)}
 														disabled={isLoading}
 														className="text-red-500 hover:text-red-700 font-bold text-xs w-5 h-5 rounded-full border border-red-300 hover:border-red-500 disabled:opacity-50"
 														aria-label={`Remove coupon ${coupon.code}`}
@@ -348,7 +400,8 @@ export default function Checkout() {
 								</div>
 							)}
 
-							{couponError && (
+							{/* Error Messages */}
+							{(couponError || checkoutError) && (
 								<div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
 									<div className="flex items-start">
 										<svg
@@ -363,10 +416,13 @@ export default function Checkout() {
 											/>
 										</svg>
 										<div className="flex-1">
-											<p className="text-sm text-red-800 font-medium">{couponError}</p>
+											<p className="text-sm text-red-800 font-medium">{couponError || checkoutError}</p>
 										</div>
 										<button
-											onClick={() => setCouponError(null)}
+											onClick={() => {
+												setCouponError(null);
+												setCheckoutError(null);
+											}}
 											className="text-red-500 hover:text-red-700 ml-2"
 											aria-label="Dismiss error"
 										>
@@ -415,7 +471,7 @@ export default function Checkout() {
 							)}
 
 							{/* Coupon Form */}
-							<form onSubmit={handleApplyCoupon} className="mt-6">
+							<form onSubmit={applyCoupon} className="mt-6">
 								<div className="flex space-x-2">
 									<input
 										type="text"
@@ -436,12 +492,17 @@ export default function Checkout() {
 
 							{/* Checkout Button */}
 							<button
-								disabled={!isAuthenticated || !customer || checkoutProcessing}
+								disabled={isCheckoutDisabled}
 								onClick={handleCheckout}
 								className="mt-6 w-full bg-green-600 text-white text-center py-3 px-4 rounded-md hover:bg-green-700 transition-colors font-semibold text-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
 							>
-								Place Order
+								{checkoutProcessing ? "Processing..." : "Place Order"}
 							</button>
+
+							{/* ✅ Helper text for guests */}
+							{!isAuthenticated && !guestCheckoutData && (
+								<p className="mt-2 text-sm text-gray-500 text-center">Please fill in all required fields to proceed</p>
+							)}
 						</div>
 					</div>
 

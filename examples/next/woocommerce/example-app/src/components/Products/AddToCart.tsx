@@ -32,6 +32,7 @@ export default function AddToCart({ product, card = null, quantity = 1, variatio
 
 			if (result.success) {
 				setSuccess(true);
+				
 				setTimeout(() => setSuccess(false), 3000);
 			} else {
 				setError(result.error || "Failed to add to cart");

@@ -601,29 +601,3 @@ export const UpdateCustomer = gql`
 	}
 	${CustomerFields}
 `;
-export const LOGIN_MUTATION = gql`
-	mutation loginWithPassword($username: String!, $password: String!) {
-		login(input: { provider: PASSWORD, credentials: { username: $username, password: $password } }) {
-			authToken
-			authTokenExpiration
-			refreshToken
-			refreshTokenExpiration
-			user {
-				id
-				email
-				databaseId
-				name
-			}
-		}
-	}
-`;
-
-export const REFRESH_TOKEN_MUTATION = gql`
-	mutation refreshToken($token: String!) {
-		refreshToken(input: { refreshToken: $token }) {
-			authToken
-			authTokenExpiration
-			success
-		}
-	}
-`;

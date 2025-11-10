@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Customer } from "@/interfaces/customer.interface";
-import UserField from "../../ui/Field";
+import UserField from "@/components/ui/Field";
 
 interface BillingFieldsProps {
 	billing: Customer["billing"];
@@ -56,7 +56,7 @@ export default function BillingFields({ billing, onChange, readOnly = false }: B
 	return (
 		<div>
 			<h2 className="text-lg font-semibold mb-4">Billing Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				{billingFieldsConfig.map((field) => (
 					<UserField
 						key={field.name}

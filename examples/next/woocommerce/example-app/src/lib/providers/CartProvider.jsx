@@ -239,12 +239,7 @@ export function CartProvider({ children }) {
 	}, [user, emptyCartMutation, storage]);
 
 	const refreshCart = useCallback(async () => {
-		try {
-			if (!user) {
-				const localCart = storage.loadCartFromLocalStorage();
-				setCartData(localCart);
-				return localCart;
-			}
+		try {		
 			const result = await getMiniCartQuery();
 			return result.data?.cart || null;
 		} catch (error) {

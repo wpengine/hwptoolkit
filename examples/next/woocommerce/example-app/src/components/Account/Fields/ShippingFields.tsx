@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Customer } from "@/interfaces/customer.interface";
-import UserField from "../../ui/Field";
+import UserField from "@/components/ui/Field";
 
 interface ShippingFieldsProps {
     shipping: Customer["shipping"];
