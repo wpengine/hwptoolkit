@@ -68,11 +68,6 @@ add_filter( 'wpgraphql_logging_default_handlers', function( array $handlers ) {
 * Consider `Monolog\\Handler\\RotatingFileHandler` to rotate files by day and limit disk usage.
 * You can combine multiple handlers (e.g., database + file + Slack) either globally (filter) or per instance.
 
-## Related Content
-
-* See the [How to replace the database log service](../update-log-store-service/index.md) guide on how to replace the default database handler for the admin.
-
-***
 
 ## Contributing
 
