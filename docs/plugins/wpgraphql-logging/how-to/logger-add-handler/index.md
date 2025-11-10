@@ -11,8 +11,8 @@ In this guide, you will learn how to extend the logging capabilities of WPGraphQ
 
 Handlers decide where logs are written. By default, WPGraphQL Logging uses a custom `WordPressDatabaseHandler` to store logs in the database. You can add more destinations (files, streams, third-party services) or replace the defaults.
 
-> \[!NOTE]
-> See <https://seldaek.github.io/monolog/doc/02-handlers-formatters-processors.html> for a list of handlers and processors
+> [!NOTE]
+> See [Monolog documentation](https://seldaek.github.io/monolog/doc/02-handlers-formatters-processors.html) for a list of handlers and processors
 
 ## Example 1: Add a new handler
 
@@ -36,7 +36,7 @@ add_filter( 'wpgraphql_logging_default_handlers', function( array $handlers ) {
 });
 ```
 
-> \[!NOTE]
+> [!NOTE]
 > You could also use the [RotatingFileHandler](https://github.com/Seldaek/monolog/blob/main/src/Monolog/Handler/RotatingFileHandler.php) and implement `$maxFiles` to delete older files.
 
 ## Example 2: Replace the default handler
@@ -61,7 +61,7 @@ add_filter( 'wpgraphql_logging_default_handlers', function( array $handlers ) {
 
 ## Tips
 
-> \[!IMPORTANT]
+> [!IMPORTANT]
 > You should restrict public access to the log file if being written in a public directory
 
 * Ensure the logs directory is writable by the web server user.
