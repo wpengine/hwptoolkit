@@ -54,7 +54,6 @@ e.g.
 }
 ```
 
-
 ## Example 2: Transform an event payload
 
 The example below adds the WordPress environment variable to the context payload before the response is returned.
@@ -77,7 +76,6 @@ add_action( 'init', function() {
 ```
 
 ![Example output from hook](screenshot.png)
-
 
 ### Example 3: Emit your own event
 

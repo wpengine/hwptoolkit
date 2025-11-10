@@ -1,71 +1,116 @@
-***
-
-title: How To Guide: Add new settings field
-description: Learn how to add custom settings fields to the WPGraphQL Logging plugin admin interface and retrieve their values programmatically.
-------------------------------------------------------------------------------------------------------------------------------------------------
+---
+title: "How To Guide: Add a New Settings Field"
+description: "Learn how to add custom settings fields to the WPGraphQL Logging plugin admin interface and retrieve their values programmatically."
+---
 
 ## Overview
 
-This guide shows how to add custom fields to the WPGraphQL Logging settings and how to read or query those values.
+This guide demonstrates how to add a custom settings field to the WPGraphQL Logging plugin and integrate it with the rule manager system.
 
-![WPGraphQL Logging Settings Page](../screenshots/admin_how_to_add_field.png)
-*The WPGraphQL Logging settings page with Basic Configuration and Data Management tabs where custom fields can be added*
-
-### Step 1 — Add a field via filter
+## Step 1 - Add Settings Field
 
 Add a field to an existing tab using the provided filters. Common tabs are `basic_configuration` and `data_management`.
 
-Example: add a checkbox to Basic Configuration
 
 ```php
+<?php
+
+use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use \WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
+
 add_filter( 'wpgraphql_logging_basic_configuration_fields', function( $fields ) {
-    $fields['my_feature_enabled'] = new \WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField(
-        'my_feature_enabled',
-        'basic_configuration',
-        __( 'Enable My Feature', 'my-plugin' )
+    $fields['log_only_get_pages_query'] = new CheckboxField(
+        'log_only_get_pages_query',
+        BasicConfigurationTab::get_name(),
+        __( 'Log only GetPages Queries', 'my-plugin' )
     );
     return $fields;
 });
 ```
 
-Example: add a text input to Data Management
+![Adding a custom checkbox field to Basic Configuration](screenshot.png)
+*Example of a custom checkbox field added to the Basic Configuration tab*
 
-```php
-add_filter( 'wpgraphql_logging_data_management_fields', function( $fields ) {
-    $fields['my_data_region'] = new \WPGraphQL\Logging\Admin\Settings\Fields\Field\TextInputField(
-        'my_data_region',
-        'data_management',
-        __( 'Data Region', 'my-plugin' ),
-        '',
-        __( 'e.g., us-east-1', 'my-plugin' ),
-        __( 'us-east-1', 'my-plugin' )
-    );
-    return $fields;
-});
-```
 
 Notes:
 
+* DataManagementTab available too
 * Field classes available: `CheckboxField`, `TextInputField`, `SelectField`, `TextIntegerField`.
-* The second argument is the tab key (use the tab’s `get_name()`), not the option key.
+* Data stored in the wp_option `wpgraphql_logging_settings`
 
-### Step 2 — Where the value is stored
-
-Values are saved to the option key `wpgraphql_logging_settings` under the tab key and field id, for example:
-
+e.g.
 ```php
-$options = get_option( 'wpgraphql_logging_settings', [] );
-// Example structure
-// [
-//   'basic_configuration' => [ 'my_feature_enabled' => true ],
-//   'data_management'     => [ 'my_data_region' => 'us-east-1' ],
-// ]
+<?php
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
+
+$configuration = ConfigurationHelper::get_instance();
+$option_key = $configuration->get_option_key();
+$option_values = $configuration->get_option_value('log_only_get_pages_query');
+
 ```
 
-### Step 3 — Read the value in PHP
+## Step 2: Implement Custom Rule
+
+Using the Rule Manager, we will add a custom rule to see if this is checked, and if so make sure the query contains `GetPages`.
+
+First, let's create the rule. This class will implement the `LoggingRuleInterface` and contain the logic to check our custom setting.
 
 ```php
-$options          = get_option( 'wpgraphql_logging_settings', [] );
-$is_enabled       = ! empty( $options['basic_configuration']['my_feature_enabled'] );
-$my_data_region   = $options['data_management']['my_data_region'] ?? '';
+<?php
+
+namespace MyPlugin\Logging;
+
+use WPGraphQL\Logging\Logger\Api\LoggingRuleInterface;
+
+class PageQueryRule implements LoggingRuleInterface {
+
+    public function passes( array $config, ?string $query_string = null ): bool {
+
+		// Check if enabled.
+		$enabled = $config['log_only_get_pages_query'] ? (bool)$config['log_only_get_pages_query'] : false;
+		if ( ! $enabled ) {
+			return true;
+		}
+
+        return stripos( $query_string, 'GetPages' ) !== false;
+    }
+
+	public function get_name(): string {
+        // Ensure this is unique
+        return 'log_only_page_queries';
+    }
+}
 ```
+
+### Step 3: Add Rule to the Rule Manager
+
+Next, we need to add this rule to the `RuleManager` using the `wpgraphql_logging_rules` filter in your plugin's main file or functions.php.
+
+```php
+<?php
+
+use MyPlugin\Logging\PageQueryRule;
+
+add_filter( 'wpgraphql_logging_rules', function( $default_rules ) {
+	$default_rules[] = new PageQueryRule();
+    return $default_rules;
+}, 10, 1);
+```
+
+
+We should now log queries with `GetPages` in the query e.g.
+
+```gql
+query GetPages($first: Int) {
+  pages(first: $first) {
+    nodes {
+      title
+      uri
+    }
+  }
+}
+```
+
+## Contributing
+
+We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.

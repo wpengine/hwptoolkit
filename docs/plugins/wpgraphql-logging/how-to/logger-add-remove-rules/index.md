@@ -50,11 +50,10 @@ We then need to register the rule with the RuleManager. Use the `wpgraphql_loggi
 
 ```php
 <?php
-add_filter( 'wpgraphql_logging_rule_manager', function( $rule_manager ) {
-    // Only pass when the query contains the word "GetPost"
-    $rule_manager->add_rule( new \MyPlugin\Logging\Rules\ContainsStringRule( 'GetPost' ) );
-    return $rule_manager;
-});
+add_filter( 'wpgraphql_logging_rules', function( $default_rules ) {
+	$default_rules[] = new ContainsStringRule( 'GetPost' );
+    return $default_rules;
+}, 10, 1);
 ```
 
 Assuming all other rules are passing, If you query

@@ -76,11 +76,11 @@
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
 					},
 					{
-						"title": "Add context to an event",
+						"title": "Modify the context data for an event",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
 					},
 					{
-						"title": "Add new settings field",
+						"title": "Add a new settings field",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-fields/"
 					},
 					{
