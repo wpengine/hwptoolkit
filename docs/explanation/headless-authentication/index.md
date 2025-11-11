@@ -105,3 +105,7 @@ Our approach to authentication in headless WordPress emphasizes **modularity**, 
 
 ## Example use case
 For example, if you're building a headless WordPress application with a React frontend, you can use our code snippets to implement Credentials authentication. You can integrate our boilerplate code for handling access tokens securely, including token storage and refresh logic, without needing to install additional dependencies.
+
+## Contributing
+
+If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.

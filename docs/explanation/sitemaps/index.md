@@ -108,7 +108,7 @@ This route will serve the WordPress `sitemap.xml` in your Next.js application dy
 - **Cons**
     * Limited flexibility for custom frontend routes not defined in WordPress
     * Requires proper URL transformation to replace backend URLs with frontend URLs
-    * May require additional handling for caching and performance 
+    * May require additional handling for caching and performance
     * May propagate any errors experienced in WordPress when proxying the `sitemap.xml`
 
 2. **Generating a Sitemap from GraphQL Content**
@@ -133,13 +133,13 @@ export async function generateSitemap() {
     fetchAllPages(),
   ]);
   const allContent = [
-    ...data.posts.nodes.map(post => ({ 
-      slug: `posts/${post.slug}`, 
-      modified: post.modified 
+    ...data.posts.nodes.map(post => ({
+      slug: `posts/${post.slug}`,
+      modified: post.modified
     })),
-    ...data.pages.nodes.map(page => ({ 
-      slug: page.slug, 
-      modified: page.modified 
+    ...data.pages.nodes.map(page => ({
+      slug: page.slug,
+      modified: page.modified
     })),
     // Add custom frontend routes here
     { slug: '', modified: new Date().toISOString() }, // Homepage
@@ -159,17 +159,17 @@ export async function generateSitemap() {
 }
 export async function getServerSideProps({ res }) {
   const sitemap = await generateSitemap();
-  
+
   res.setHeader('Content-Type', 'application/xml');
   res.write(sitemap);
   res.end();
-  
+
   return { props: {} };
 }
 
 export async function GET() {
   const sitemap = await generateSitemap();
-  
+
   return new Response(sitemap, {
     headers: {
       'Content-Type': 'application/xml',
@@ -182,7 +182,7 @@ export async function GET() {
     * Ability to include custom frontend routes not defined in WordPress
     * Easy integration with Next.js data fetching methods
 
-- **Cons**: 
+- **Cons**:
     * More complex implementation than proxying
     * Requires manual updates to include new content types or custom routes
     * May require pagination handling for large sites
@@ -199,25 +199,25 @@ import { DOMParser } from 'xmldom';
 export async function GET() {
   const response = await fetch(`${process.env.WORDPRESS_URL}/wp-sitemap.xml`);
   const sitemapIndex = await response.text();
-  
+
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(sitemapIndex, 'text/xml');
   const sitemapUrls = Array.from(xmlDoc.getElementsByTagName('loc')).map(
     node => node.textContent
   );
-  
+
   const processedSitemaps = await Promise.all(
     sitemapUrls.map(async (url) => {
       const sitemapResponse = await fetch(url);
       const sitemapContent = await sitemapResponse.text();
-      
+
       return sitemapContent.replace(
         new RegExp(process.env.WORDPRESS_URL, 'g'),
         process.env.FRONTEND_URL
       );
     })
   );
-  
+
   const frontendRoutesSitemap = `
     <?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -228,7 +228,7 @@ export async function GET() {
       <!-- Add more custom routes as needed -->
     </urlset>
   `;
-  
+
   const combinedSitemap = `
     <?xml version="1.0" encoding="UTF-8"?>
     <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -242,7 +242,7 @@ export async function GET() {
       </sitemap>
     </sitemapindex>
   `;
-  
+
   return new Response(combinedSitemap, {
     headers: {
       'Content-Type': 'application/xml',
@@ -261,3 +261,7 @@ export async function GET() {
     * Most complex implementation of the three approaches.
     * Requires handling multiple sitemap files
     * May have performance implications if not properly cached
+
+## Contributing
+
+If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.

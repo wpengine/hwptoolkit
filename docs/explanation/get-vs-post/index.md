@@ -52,3 +52,7 @@ curl -X POST \
 
 # Summary
 While both methods have their uses, POST requests are generally recommended for WPGraphQL due to their flexibility, security advantages, and ability to handle complex queries. However, GET requests can be useful for simple, cacheable queries and is useful when paired with caching mechanisms like the Smart Cache plugin. Consider your specific use case, security requirements, and caching needs when choosing between the two methods.
+
+## Contributing
+
+If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.

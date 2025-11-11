@@ -42,4 +42,8 @@ add_filter( 'graphql_endpoint', 'my_new_graphql_endpoint' );
 ```
 This code would change the default `/graphql` endpoint to `/my_endpoint`.
 
-Alternatively, you can configure the endpoint directly in the **WPGraphQL Settings** under **GraphQL Endpoint**, without needing to modify your code. 
+Alternatively, you can configure the endpoint directly in the **WPGraphQL Settings** under **GraphQL Endpoint**, without needing to modify your code.
+
+## Contributing
+
+If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.

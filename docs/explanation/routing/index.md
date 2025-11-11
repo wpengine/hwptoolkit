@@ -469,3 +469,7 @@ In traditional WordPress, custom post types (CPTs) are registered using `registe
 
 - `/portfolio/` → Archive page for portfolio items
 - `/portfolio/project-name/` → Single portfolio item
+
+## Contributing
+
+If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.

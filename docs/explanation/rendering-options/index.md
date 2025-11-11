@@ -141,3 +141,7 @@ Considerations
 * Styling Parity: Achieving perfect styling parity can be challenging due to the dynamic nature of WordPress styles.
 
 * Maintenance: Styles may change with theme updates, customizations or major WordPress updates, requiring periodic updates in your headless application.
+
+## Contributing
+
+If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.
