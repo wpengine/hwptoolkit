@@ -7,7 +7,7 @@ description: "WPGraphQL Logging plugin provides observability and visibility int
 
 **WPGraphQL Logging Plugin** provides **observability and visibility** into the **GraphQL request and event lifecycle**.
 
-This capability gives users the **understandability** needed to quickly identify and resolve **performance issues and bottlenecks** within their headless WordPress application.
+This allows users to **quickly identify** and **resolve performance issues** and bottlenecks within their headless WordPress application.
 
 ## Table of Contents
 
@@ -17,7 +17,6 @@ This capability gives users the **understandability** needed to quickly identify
 * [Viewing Logs](#viewing-logs)
 * [Uninstallation](#uninstallation)
 * [How to Guides](#how-to-guides)
-* [Reference](#reference)
 * [Contributing](#contributing)
 
 ## Project Structure
@@ -207,12 +206,6 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 * [Add a new Settings Tab](how-to/add-add-new-tab/index.md)
 * [Update the Admin Grid](how-to/admin_add_view_column.md)
 
-
-## Reference
-
-* Admin: [Actions/Filters](reference/admin/index.md)
-* Events: [Actions/Filters](reference/events/index.md)
-* Logging: [Actions/Filters](reference/logging/index.md)
 
 ## Contributing
 

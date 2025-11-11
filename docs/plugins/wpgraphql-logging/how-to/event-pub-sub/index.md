@@ -11,9 +11,6 @@ The plugin exposes a lightweight pub/sub bus around key WPGraphQL lifecycle even
 * Transform payloads before core code logs and emits them
 * Publish your own custom events for your app/plugins
 
-> \[!NOTE]
-> See the [Events Reference](../../reference/events/index.md) for available built-in events and their mappings.
-
 ## Core concepts
 
 * Subscribe (read-only): `Plugin::on( $event, callable $listener, $priority )`

@@ -45,10 +45,6 @@ You can target any event constant from `WPGraphQL\Logging\Events\Events`, for ex
 ![Adding custom context data to WPGraphQL events](screenshot.png)
 *Example of custom context data being added to a WPGraphQL event log entry*
 
-
-> \[!TIP]
-> See the [Events Reference](../../reference/events/index.md) for available built-in events and their mappings.
-
 ## Contributing
 
 We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.
