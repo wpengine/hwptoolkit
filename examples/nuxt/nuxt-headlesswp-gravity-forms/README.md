@@ -23,8 +23,6 @@ This example shows you how to wire up a full headless WordPress backend—comple
 
 ```
 
-```
-
 example-app/
 ├── components/ # Vue form-field components & barrel file
 ├── composables/ # useGravityForm.js & useFormFields.js
@@ -51,8 +49,8 @@ wp-env/
 ### Setup Repository and Install
 
 ```bash
-git clone https://github.com/your-org/nuxt-gravityforms-example.git
-cd nuxt-gravityforms-example
+git clone https://github.com/wpengine/hwptoolkit.git
+cd examples/nuxt/nuxt-headlesswp-gravity-forms
 npm install
 
 echo "NUXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > example-app/.env
@@ -63,7 +61,7 @@ echo "NUXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > example-app/.env
 1. Start WP, import DB, then launch Nuxt:
 
    ```bash
-   npm run example:build
+   npm run example:setup
    ```
 
 2. Or run steps separately:
@@ -89,7 +87,7 @@ By the end, you will have:
 
 | Command                   | Description                                                      |
 | ------------------------- | ---------------------------------------------------------------- |
-| `npm run example:build`   | Start WP env → import DB → launch Nuxt dev server  |
+| `npm run example:setup`   | Start WP env → import DB → launch Nuxt dev server  |
 | `npm run example:start`   | Start WP env, then Nuxt dev server                               |
 | `npm run example:stop`    | Stop the WordPress environment (wp-env stop)                     |
 | `npm run example:prune`   | Destroy & rebuild the WP environment, then restart—all in one go |
