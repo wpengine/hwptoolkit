@@ -207,9 +207,6 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 * [How to add a new Settings tab to WPGraphQL Logging](how-to/add-add-new-tab/index.md)
 * [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
 
-### 🧪 Testing
-
-* [How to run the test suites](how-to/run_tests.md)
 
 ## Reference
 

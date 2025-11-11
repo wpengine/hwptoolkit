@@ -18,7 +18,6 @@ I see you found the root of the How-to guides! How-to guides are a place where w
 | [Add new settings field](admin-add-fields/index.md)                | Add custom fields to the plugin settings page                        |
 | [Add new settings tab](admin-add-new-tab/index.md)                 | Create additional tabs in the admin interface                        |
 | [Add new column to the admin grid](admin-add-view-column/index.md) | Customize the admin log viewing interface                            |
-| [Run Tests](run-tests/index.md)                                    | Set up and execute the plugin test suite                             |
 
 > \[!note] Learn More
 > For more info on how we layout our documentation and the the role played by How-to guides, please read about the [*Diátaxis*](https://diataxis.fr/how-to-guides/) approach we use.

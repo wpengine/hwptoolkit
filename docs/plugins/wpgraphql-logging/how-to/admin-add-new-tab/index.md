@@ -1,13 +1,15 @@
 ---
-title: How To Guide: Add new settings tab
-description: Learn how to add custom settings tabs to the WPGraphQL Logging plugin admin interface.
+title: "How To Guide: Add a New Settings Tab"
+description: "Learn how to add custom settings tabs to the WPGraphQL Logging plugin admin interface."
 ---
 
 ## Overview
 
-This guide shows how to add your own settings tab and fields to the WPGraphQL Logging Admin using the `wpgraphql_logging_settings_field_collection_init` action.
+In this guide, you will learn how to extend the WPGraphQL Logging plugin's admin interface by creating custom settings tabs with their own fields and configuration options.
 
-![Add New Settings Tab](../screenshots/admin_how_to_add_tab.png)
+We will demonstrate how to create a new settings tab, add custom fields to it, and integrate it with the plugin's settings system. This approach is useful for organizing related configuration options, creating plugin-specific settings sections, or providing users with dedicated interfaces for managing complex logging behaviors and integrations with external services.
+
+![Add New Settings Tab](screenshot.png)
 *Example of a custom settings tab added to WPGraphQL Logging admin interface*
 
 ### Step 1 — Create a Tab class implementing `SettingsTabInterface`
@@ -22,6 +24,7 @@ namespace MyPlugin\Admin\Settings\Fields\Tab;
 use WPGraphQL\Logging\Admin\Settings\Fields\Field\CheckboxField;
 use WPGraphQL\Logging\Admin\Settings\Fields\Field\TextInputField;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\SettingsTabInterface;
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 
 class MyCustomTab implements SettingsTabInterface {
 	public const ENABLE_FEATURE = 'my_custom_enable_feature';
@@ -112,3 +115,6 @@ add_action( 'admin_notices', function() use ( $enabled, $apiUrl ) {
 	}
 });
 ```
+## Contributing
+
+We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.

@@ -1,14 +1,11 @@
 ---
-title: How To Guide: Add new column to the admin grid
-description: Learn how to add custom columns to the WPGraphQL Logging plugin admin logs table.
+title: "How To Guide: Update the Admin Grid"
+description: "Learn how to add custom columns to the WPGraphQL Logging plugin admin logs table."
 ---
 
 ## Overview
 
 This guide shows how to add a custom column to the Logs list table using the provided filters. We’ll add a Memory Peak Usage column sourced from the log entry’s `extra.memory_peak_usage`.
-
-![Add New Column to Logs Table](../screenshots/admin_how_to_add_column_to_grid.png)
-*Example of a custom Memory Peak Usage column added to the WPGraphQL Logging admin table*
 
 ### Hooks overview
 
@@ -23,8 +20,6 @@ Source: `src/Admin/View/List/ListTable.php`
 add_filter( 'wpgraphql_logging_logs_table_column_headers', function( $headers ) {
     if ( isset( $headers[0] ) && is_array( $headers[0] ) ) {
         $headers[0]['peak_memory_usage'] = __( 'Memory Peak (MB)', 'my-plugin' );
-        // Optionally make it sortable by a DB column
-        // $headers[2]['peak_memory_usage'] = [ 'memory_peak_usage', false ];
         return $headers;
     }
 
@@ -36,7 +31,8 @@ add_filter( 'wpgraphql_logging_logs_table_column_headers', function( $headers ) 
 
 ### Step 2 — Provide the cell value
 
-Each row item is a `\WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity`. Memory data is stored in `$item->get_extra()['memory_peak_usage']`.
+Each row item should implement the interface `\WPGraphQL\Logging\Logger\Api\LogEntityInterface` which has the method `get_extra`. We will use this to fetch the memory data and parse the data.
+
 
 ```php
 add_filter( 'wpgraphql_logging_logs_table_column_value', function( $value, $item, $column_name ) {
@@ -44,7 +40,7 @@ add_filter( 'wpgraphql_logging_logs_table_column_value', function( $value, $item
         return $value;
     }
 
-    if ( ! $item instanceof \WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity ) {
+    if ( ! $item instanceof \WPGraphQL\Logging\Logger\Api\LogEntityInterface ) {
         return $value;
     }
 
@@ -64,3 +60,13 @@ add_filter( 'wpgraphql_logging_logs_table_column_value', function( $value, $item
     return esc_html( (string) $raw );
 }, 10, 3 );
 ```
+
+We should now be able to see the peak memory usage in the admin grid under GraphQL Logs -> All Logs.
+
+![Add New Column to Logs Table](screenshot.png)
+*Example of a custom Memory Peak Usage column added to the WPGraphQL Logging admin table*
+
+
+## Contributing
+
+We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.

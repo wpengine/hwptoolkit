@@ -64,36 +64,32 @@
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-processor/"
 					},
 					{
-						"title": "Add or remove Logging Rule",
+						"title": "Add or remove a Logging Rule",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-remove-rules/"
 					},
 					{
-						"title": "Update Log Store Service",
+						"title": "Update the Log Store Service",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/update-log-store-service/"
 					},
 					{
-						"title": "Use the Events pub/sub system",
+						"title": "Use the Events Pub/Sub System",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
 					},
 					{
-						"title": "Modify the context data for an event",
+						"title": "Transform data for an Event",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
 					},
 					{
-						"title": "Add a new settings field",
+						"title": "Add a new Settings Field",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-fields/"
 					},
 					{
-						"title": "Add new settings tab",
+						"title": "Add a new Settings Tab",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-new-tab/"
 					},
 					{
-						"title": "Add new column to the admin grid",
+						"title": "Update the Admin Grid",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-view-column/"
-					},
-					{
-						"title": "Run Tests",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/run-tests/"
 					}
 				]
 			}
