@@ -191,21 +191,21 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 
 ### 🛠️ Logging
 
-* [How to Add a New Handler](how-to/logger-add-handler/index.md)
-* [How to Add a New Processor](how-to/logger-add-processor/index.md)
-* [How to Add or Remove a Rule](how-to/logger-add-remove-rules/index.md)
-* [How to update the Log Store Service](how-to/update-log-store-service/index.md)
+* [Add a New Handler](how-to/logger-add-handler/index.md)
+* [Add a New Processor](how-to/logger-add-processor/index.md)
+* [Add or Remove a Rule](how-to/logger-add-remove-rules/index.md)
+* [Update the Log Store Service](how-to/update-log-store-service/index.md)
 
 ### ♻️ Events
 
-* [How to use the Events pub/sub system](how-to/event-pub-sub/index.md)
-* [How to add context data to a an event](how-to/event-add-context/index.md)
+* [Use the Events Pub/Sub system](how-to/event-pub-sub/index.md)
+* [Add Data to an Event](how-to/event-add-context/index.md)
 
 ### 📈 Admin
 
-* [How to add a new field to an existing tab and query it](how-to/admin-add-fields/index.md)
-* [How to add a new Settings tab to WPGraphQL Logging](how-to/add-add-new-tab/index.md)
-* [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
+* [Add a new Settings Field](how-to/admin-add-fields/index.md)
+* [Add a new Settings Tab](how-to/add-add-new-tab/index.md)
+* [Update the Admin Grid](how-to/admin_add_view_column.md)
 
 
 ## Reference

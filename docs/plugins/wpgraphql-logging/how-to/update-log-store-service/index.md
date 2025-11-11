@@ -1,5 +1,5 @@
 ---
-title: "How To Guide: Update Log Store Service"
+title: "How To Guide: Update the Log Store Service"
 description: "Learn how to replace the default database logging with a custom log storage implementation in the WPGraphQL Logging plugin."
 ---
 

@@ -64,7 +64,7 @@
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-processor/"
 					},
 					{
-						"title": "Add or remove a Logging Rule",
+						"title": "Add or Remove a Rule",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-remove-rules/"
 					},
 					{
@@ -76,7 +76,7 @@
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
 					},
 					{
-						"title": "Transform data for an Event",
+						"title": "Add Data to an Event",
 						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
 					},
 					{

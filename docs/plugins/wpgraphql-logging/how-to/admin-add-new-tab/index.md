@@ -1,5 +1,5 @@
 ---
-title: "How To Guide: Add a New Settings Tab"
+title: "How To Guide: Add a new Settings Tab"
 description: "Learn how to add custom settings tabs to the WPGraphQL Logging plugin admin interface."
 ---
 

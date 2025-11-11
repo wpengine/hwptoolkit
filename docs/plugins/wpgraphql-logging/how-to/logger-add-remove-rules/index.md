@@ -1,5 +1,5 @@
 ---
-title: "How To Guide: Add a new or remove Logging Rule"
+title: "How To Guide: Add or Remove a Rule"
 description: "Learn how to create and register custom logging rules with the WPGraphQL Logging plugin."
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "How to Guide - Add a new Handler"
+title: "How To Guide: Add a new Handler"
 description: "This guide shows how to log to a file using a Monolog handler, either in addition to the default WordPress database handler or as a replacement. It also covers per-instance overrides."
 ---
 

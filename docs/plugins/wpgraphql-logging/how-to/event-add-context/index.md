@@ -1,5 +1,5 @@
 ---
-title: "How To Guide: Add context an event"
+title: "How To Guide: Add Data to an Event"
 description: "Learn how to add custom context data to WPGraphQL Logging event."
 ---
 
