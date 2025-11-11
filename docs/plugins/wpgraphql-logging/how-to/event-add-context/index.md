@@ -5,15 +5,11 @@ description: "Learn how to add custom context data to WPGraphQL Logging event."
 
 ## Overview
 
-This guide shows you how to transform an event and modify context and level for an event.
+In this guide, you will learn how to extend the logging capabilities of WPGraphQL Logging by transforming events and adding custom context data.
 
-> \[!NOTE]
-> See the [Events Reference](../../reference/events/index.md) for available built-in events and their mappings.
+We will demonstrate how to modify event payloads before they are logged, which can be useful for adding application-specific metadata, changing log levels dynamically, or enriching log entries with additional debugging information that helps with monitoring and troubleshooting your GraphQL operations.
 
-![Adding custom context data to WPGraphQL events](screenshot.png)
-*Example of custom context data being added to a WPGraphQL event log entry*
-
-## Example: Add Context Data and Change the Monolog Level
+## Example: Add Context Data to an Event
 
 Use the `WPGraphQL\Logging\Plugin::transform()` helper to mutate the event payload before it is logged and emitted.
 
@@ -45,6 +41,13 @@ You can target any event constant from `WPGraphQL\Logging\Events\Events`, for ex
 * `Events::REQUEST_DATA` (filter `graphql_request_data`)
 * `Events::REQUEST_RESULTS` (filter `graphql_request_results`)
 * `Events::RESPONSE_HEADERS_TO_SEND` (filter `graphql_response_headers_to_send`)
+
+![Adding custom context data to WPGraphQL events](screenshot.png)
+*Example of custom context data being added to a WPGraphQL event log entry*
+
+
+> \[!TIP]
+> See the [Events Reference](../../reference/events/index.md) for available built-in events and their mappings.
 
 ## Contributing
 

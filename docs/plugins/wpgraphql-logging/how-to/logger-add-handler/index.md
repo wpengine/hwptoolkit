@@ -1,9 +1,9 @@
 ---
-title: "How to Guide - Add a new Monolog Handler"
+title: "How to Guide - Add a new Handler"
 description: "This guide shows how to log to a file using a Monolog handler, either in addition to the default WordPress database handler or as a replacement. It also covers per-instance overrides."
 ---
 
-# Introduction
+## Overview
 
 In this guide, you will learn how to extend the logging capabilities of WPGraphQL Logging by adding a new [Monolog](https://github.com/Seldaek/monolog) handler. Specifically, we will demonstrate how to send logs to a file, which can be useful for long-term storage, offline analysis, or integration with external log management systems.
 
@@ -14,9 +14,9 @@ Handlers decide where logs are written. By default, WPGraphQL Logging uses a cus
 > \[!NOTE]
 > See [Monolog documentation](https://seldaek.github.io/monolog/doc/02-handlers-formatters-processors.html) for a list of handlers and processors
 
-## Example 1: Add a new handler
+## Example 1: Add a new Monolog Handler
 
-Use the `wpgraphql_logging_default_handlers` filter to push a `StreamHandler` that writes to a file. The default database handler will remain enabled.
+In this example, we will add a new Monolog `StreamHandler` to write to file for any logs which are deemed as errors but keep the existing default handler.
 
 ```php
 <?php
@@ -39,9 +39,9 @@ add_filter( 'wpgraphql_logging_default_handlers', function( array $handlers ) {
 > \[!NOTE]
 > You could also use the [RotatingFileHandler](https://github.com/Seldaek/monolog/blob/main/src/Monolog/Handler/RotatingFileHandler.php) and implement `$maxFiles` to delete older files.
 
-## Example 2: Replace the default handler
+## Example 2: Replace the default database handler
 
-Return your own array of handlers from the same filter to replace the default handler entirely.
+In this example, we will replace the default database handler with the new Monolog handler.
 
 ```php
 <?php
@@ -59,9 +59,9 @@ add_filter( 'wpgraphql_logging_default_handlers', function( array $handlers ) {
 });
 ```
 
-## Tips
+## Notes
 
-> \[!IMPORTANT]
+> \[!TIP]
 > You should restrict public access to the log file if being written in a public directory
 
 * Ensure the logs directory is writable by the web server user.

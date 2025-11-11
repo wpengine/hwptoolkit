@@ -5,19 +5,22 @@ description: "Learn how to create and register custom logging rules with the WPG
 
 ## Overview
 
-This guide shows how to create a custom logging rule that only passes when the GraphQL query contains a specific substring (like "GetPost"), and how to register it with the RuleManager.
+This guide shows how to create a custom logging rule that only passes when the GraphQL query contains a specific substring (like "GetPost"), how to register it with the RuleManager, and how to remove existing rules.
 
-### What is a Rule?
+### Architecture
 
-Rules implement [`WPGraphQL\Logging\Logger\Rules\LoggingRuleInterface`](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Logger/Api/LoggingRuleInterface.php) and are evaluated by the [`RuleManager`](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Logger/Rules/RuleManager.php). All rules must pass for logging to proceed.
+When logging an event through a filter or action it will first check if an event should be logged using the [`RuleManager`](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Logger/Rules/RuleManager.php).
 
-Interface reference (methods):
+All rules must implement the interface Rules implement [`WPGraphQL\Logging\Logger\Rules\LoggingRuleInterface`](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/src/Logger/Api/LoggingRuleInterface.php)
 
-* `passes( array $config, ?string $query_string ): bool`
-* `get_name(): string`
+This contains 2 required methods
 
-> \[!NOTE]
-> The query will be only logged if all rules pass.
+- `passes( array $config, ?string $query_string ): bool`
+- `get_name(): string`
+
+>[!NOTE]
+>The name must be unique. Additionally when logging an event, the list of rules registered in the RuleManager will be checked to see if they have all passed.
+
 
 ## Option 1: Add a new rule
 

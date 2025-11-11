@@ -5,13 +5,16 @@ description: "Learn how to add custom Monolog processors to the WPGraphQL Loggin
 
 ## Overview
 
-This guide shows you how to add a custom processor and add the current WordPress environment variable to the extra data.
 
-### What is a Processor?
+In this guide, you will learn how to extend the logging capabilities of WPGraphQL Logging by adding a new [Monolog](https://github.com/Seldaek/monolog) processor.
+
+Specifically, we will demonstrate how to add the current WordPress environment variable to the extra data, which can be useful for distinguishing between development, staging, and production environments in your logs.
+
+### What is a Monolog Processor?
 
 Processors in Monolog add or transform data on each log record before handlers write it. They can modify the `context` or `extra` arrays on a record. See [Monolog documentation](https://seldaek.github.io/monolog/doc/02-handlers-formatters-processors.html).
 
-### Step 1: Create a processor class
+### Step 1: Create a new Monolog Processor class
 
 Create a PHP class that implements `Monolog\Processor\ProcessorInterface` and returns the updated `LogRecord`.
 
@@ -45,6 +48,14 @@ add_filter( 'wpgraphql_logging_default_processors', function( array $processors 
 You should see `environment` in the log record's `extra` data (e.g. in the Logs admin UI or your chosen handler output).
 
 ![Processor Example](screenshot.png)
+
+>[!NOTE]
+> The `LoggerService` allows you to specify your own list of default handlers and processors if you ever prefer to re-use it or change the list of default handlers and processors e.g.
+
+```php
+LoggerService::get_instance($channel, $handlers, $processors, $default_context);
+```
+
 
 ## Contributing
 

@@ -9,7 +9,7 @@ Stable tag: 0.2.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A logging plugin that provides visibility into the GraphQL request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application.
+WPGraphQL Logging plugin provides observability and visibility into the GraphQL request and event lifecycle. This capability gives users the understandability needed to quickly identify and resolve performance issues and bottlenecks within their headless WordPress application.
 
 == Description ==
 

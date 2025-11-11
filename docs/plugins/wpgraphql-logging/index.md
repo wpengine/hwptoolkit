@@ -1,24 +1,24 @@
 ---
 title: "WPGraphQL Logging Plugin"
-description: "A logging plugin that provides visibility into the GraphQL request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application."
+description: "WPGraphQL Logging plugin provides observability and visibility into the GraphQL request and event lifecycle. This capability gives users the understandability needed to quickly identify and resolve performance issues and bottlenecks within their headless WordPress application."
 ---
 
 # Introduction
 
-WPGraphQL Logging is a plugin that provides visibility into the GraphQL request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application.
+**WPGraphQL Logging Plugin** provides **observability and visibility** into the **GraphQL request and event lifecycle**.
+
+This capability gives users the **understandability** needed to quickly identify and resolve **performance issues and bottlenecks** within their headless WordPress application.
 
 ## Table of Contents
 
 * [Project Structure](#project-structure)
 * [Key Features](#key-features)
 * [Setup](#setup)
-* [Basic Configuration](#basic-configuration)
 * [Viewing Logs](#viewing-logs)
 * [Uninstallation](#uninstallation)
-* [How-to Guides](#how-to-guides)
+* [How to Guides](#how-to-guides)
 * [Reference](#reference)
-
-***
+* [Contributing](#contributing)
 
 ## Project Structure
 
@@ -91,24 +91,25 @@ The plugin delivers a admin UI with some filtering of logs around dates or level
 
 Once the plugin is installed and activated, you can configure the plugin under GraphQL Logs -> Settings.
 
-> \[!IMPORTANT]
-> Once activated, the plugin will install default configuration and activate logging with data sampling set at 10%.
+By default the following settings are pre-configured.
 
-When you install for the first time it sets the following default configuration:
+### Basic Configuration
 
-**Basic Configuration**
+| Setting         | Default Value          | Description                                          |
+| --------------- | ---------------------- | ---------------------------------------------------- |
+| Enabled         | true                   | Master switch to enable/disable logging              |
+| Exclude Queries | `__schema,GetSeedNode` | To exclude introspection and Faust Seed Node queries |
+| Data Sampling   | 10%                    | Log only 10% of the queries                          |
+| Log Points      | Selects all            | Which lifecycle events to log                        |
 
-* Enabled = true
-* Exclude Queries = `__schema,GetSeedNode` - To exclude introspection and Faust Seed Node queries.
-* Data Sampling = 10% - Log only 10% of the queries.
-* Log Points - Selects all
+### Data Management
 
-**Data Management**
-
-* Data Deletion Enabled = true
-* Number of Days to Retain Logs = 7
-* Data Sanitization Enabled = true
-* Data Sanitization Method = Recommended
+| Setting                       | Default Value | Description                           |
+| ----------------------------- | ------------- | ------------------------------------- |
+| Data Deletion Enabled         | true          | Enable automatic log cleanup          |
+| Number of Days to Retain Logs | 7             | How long to keep logs before deletion |
+| Data Sanitization Enabled     | true          | Enable data sanitization              |
+| Data Sanitization Method      | Recommended   | Which sanitization rules to apply     |
 
 ### Basic Configuration
 
@@ -147,7 +148,9 @@ Once setup, you can view logs under GraphQL Logs -> All Logs. The admin screen i
 
 ### Downloading Logs
 
-You can download the logs in CSV format.
+You can download individual logs in CSV format.
+
+**Example**
 
 ```csv
 ID,Date,Level,"Level Name",Message,Channel,Query,Context,Extra
@@ -156,11 +159,14 @@ ID,Date,Level,"Level Name",Message,Channel,Query,Context,Extra
 
 ### Filtering Logs
 
-You can filter logs by:
+You can also filter logs with the following filters:
 
 1. Level
 2. Start Date
 3. End Date
+
+> \[!NOTE]
+> Indexes have been added to the level and datetime column for the database handler to help improve performance.
 
 ![Admin View with Filters](screenshots/admin_view_filters.png)
 
@@ -185,21 +191,21 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 
 ### 🛠️ Logging
 
-- [How to Add a New Handler](how-to/logger-add-handler/index.md)
-- [How to Add a New Processor](how-to/logger-add-processor/index.md)
-- [How to Add or Remove a Rule](how-to/logger-add-remove-rules/index.md)
-- [How to update the Log Store Service](how-to/update-log-store-service/index.md)
+* [How to Add a New Handler](how-to/logger-add-handler/index.md)
+* [How to Add a New Processor](how-to/logger-add-processor/index.md)
+* [How to Add or Remove a Rule](how-to/logger-add-remove-rules/index.md)
+* [How to update the Log Store Service](how-to/update-log-store-service/index.md)
 
 ### ♻️ Events
 
-- [How to use the Events pub/sub system](how-to/event-pub-sub/index.md)
-- [How to add context data to a an event](how-to/event-add-context/index.md)
+* [How to use the Events pub/sub system](how-to/event-pub-sub/index.md)
+* [How to add context data to a an event](how-to/event-add-context/index.md)
 
 ### 📈 Admin
 
-- [How to add a new field to an existing tab and query it](how-to/admin-add-fields/index.md)
-- [How to add a new Settings tab to WPGraphQL Logging](how-to/admin_add_new_tab.md)
-- [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
+* [How to add a new field to an existing tab and query it](how-to/admin-add-fields/index.md)
+* [How to add a new Settings tab to WPGraphQL Logging](how-to/add-add-new-tab/index.md)
+* [How to add a new column to the Logs admin grid](how-to/admin_add_view_column.md)
 
 ### 🧪 Testing
 

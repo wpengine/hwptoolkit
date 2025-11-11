@@ -23,7 +23,7 @@ A logging plugin that provides visibility into request lifecycle to help quickly
 ## Overview
 
 
-WPGraphQL Logging is a plugin that integrates directly with the WPGraphQL Query Lifecycle, capturing detailed information about each GraphQL request.
+WPGraphQL Logging plugin provides observability and visibility into the GraphQL request and event lifecycle. This capability gives users the understandability needed to quickly identify and resolve performance issues and bottlenecks within their headless WordPress application.
 
 ### Key Features
 *   **Granular Control**: Choose which events in the request lifecycle to log, giving you precise control over the data you capture.

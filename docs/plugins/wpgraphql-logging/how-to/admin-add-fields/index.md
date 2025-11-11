@@ -5,7 +5,9 @@ description: "Learn how to add custom settings fields to the WPGraphQL Logging p
 
 ## Overview
 
-This guide demonstrates how to add a custom settings field to the WPGraphQL Logging plugin and integrate it with the rule manager system.
+In this guide, you will learn how to extend the WPGraphQL Logging plugin's admin interface by adding custom settings fields and integrating them with the logging system.
+
+We will demonstrate how to create a new checkbox field in the admin settings, retrieve its value programmatically, and use it to control logging behavior through custom rules. This approach is useful for adding application-specific configuration options, creating conditional logging scenarios, or providing users with granular control over what gets logged in their GraphQL operations.
 
 ## Step 1 - Add Settings Field
 
