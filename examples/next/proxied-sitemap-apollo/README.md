@@ -94,7 +94,7 @@ http://localhost:3000/sitemap.xml
 
 | Command                | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| `example:build`        | Prepares the environment by starting WordPress, importing the database, and starting the application. |
+| `example:setup`        | Prepares the environment by starting WordPress, importing the database, and starting the application. |
 | `example:dev`          | Runs the Next.js development server.                                       |
 | `example:dev:install`  | Installs the required Next.js packages.                                    |
 | `example:start`        | Starts WordPress and the Next.js development server.                       |

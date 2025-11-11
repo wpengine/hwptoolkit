@@ -77,7 +77,7 @@ npm install
 
 ```
 cd examples/next/graphql-proxy-debug
-npm run example:build
+npm run example:setup
 ```
 
 This will:
@@ -97,7 +97,7 @@ This will:
 
 | Command                | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| `example:build`        | Prepares the environment, starts WordPress, imports the database, and starts the application. |
+| `example:setup`        | Prepares the environment, starts WordPress, imports the database, and starts the application. |
 | `example:dev`          | Runs the Next.js development server.                                       |
 | `example:dev:install`  | Installs required Next.js packages.                                         |
 | `example:start`        | Starts WordPress and the Next.js dev server.                                |

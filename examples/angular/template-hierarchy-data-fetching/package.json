@@ -20,6 +20,6 @@
     "wp:uploads:zip": "zip -r wp-env/uploads.zip wp-env/uploads"
   },
   "devDependencies": {
-    "@wordpress/env": "^10.21.0"
+    "@wordpress/env": "^10.34.0"
   }
 }
