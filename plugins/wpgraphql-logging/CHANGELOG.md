@@ -1,5 +1,11 @@
 # WPGraphQL Logging
 
+## 0.2.3
+
+### Patch Changes
+
+- [#485](https://github.com/wpengine/hwptoolkit/pull/485) [`3741a12`](https://github.com/wpengine/hwptoolkit/commit/3741a129f7e6f6d5fc8c882a5104434d0d09c195) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Added nonce for the detail page for the download link.
+
 ## 0.2.2
 
 ### Patch Changes
