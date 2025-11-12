@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use WPGraphQL\Logging\Admin\ViewLogsPage;
+
 /**
  * Log detail view template.
  *
@@ -17,13 +19,15 @@ declare(strict_types=1);
 		<h1><?php esc_html_e( 'Log Entry', 'wpgraphql-logging' ); ?></h1>
 		<a href="
 		<?php
+		$wpgraphql_logging_download_nonce = wp_create_nonce( ViewLogsPage::ADMIN_PAGE_DOWNLOAD_NONCE . '_' . $log->get_id() );
 		echo esc_url(
 			admin_url(
 				sprintf(
-					'admin.php?page=%s&action=%s&log=%d',
+					'admin.php?page=%s&action=%s&log=%d&_wpnonce=%s',
 					\WPGraphQL\Logging\Admin\ViewLogsPage::ADMIN_PAGE_SLUG,
 					'download',
-					$log->get_id()
+					$log->get_id(),
+					$wpgraphql_logging_download_nonce
 				)
 			)
 		);
