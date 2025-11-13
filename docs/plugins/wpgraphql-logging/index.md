@@ -11,45 +11,14 @@ This allows users to **quickly identify** and **resolve performance issues** and
 
 ## Table of Contents
 
-* [Project Structure](#project-structure)
 * [Key Features](#key-features)
 * [Setup](#setup)
+* [Project Structure](#project-structure)
 * [Viewing Logs](#viewing-logs)
 * [Uninstallation](#uninstallation)
 * [How to Guides](#how-to-guides)
 * [Contributing](#contributing)
 
-## Project Structure
-
-```text
-wpgraphql-logging/
-├── assets/                     # Main plugin assets for CSS and JS
-├── src/                        # Main plugin source code
-│   ├── Admin/                  # Admin settings, menu, and settings page logic
-│   │   └── Settings/           # Admin settings functionality for displaying and saving data.
-│   ├── Events/                 # Event logging, pub/sub event manager for extending the logging.
-│   ├── Logger/                 # Logger service, Monolog handlers & processors
-│   │   ├── Api/                # Api interfaces for fetching and writing log data
-│   │   ├── Database/           # Database entity and helper
-│   │   ├── Handlers/           # Monolog WordPress database handler for logging data
-│   │   ├── Processors/         # Monolog processors for data sanitization and request headers
-│   │   ├── Rules/              # Rules and RuleManager to decide whether to log a query
-│   │   ├── Scheduler/          # Automated data cleanup and maintenance tasks
-│   │   └── Store/              # Log storage service
-│   ├── Plugin.php              # Main plugin class (entry point)
-│   └── Autoloader.php          # PSR-4 autoloader
-├── tests/                      # All test suites
-│   ├── e2e/                    # End-to-end tests
-│   └── wpunit/                 # WPBrowser/Codeception unit tests
-├── [wpgraphql-logging.php]
-├── [activation.php]
-├── [composer.json]
-├── [deactivation.php]
-├── [CHANGELOG.md]
-└── [README.md]
-```
-
-***
 
 ## Key Features
 
@@ -138,6 +107,36 @@ By default the following settings are pre-configured.
     * `variables.password`
     * `variables.email`
   * **Custom Rules**: Define your own sanitization rules by specifying fields to anonymize, remove, or truncate.
+
+## Project Structure
+
+```text
+wpgraphql-logging/
+├── assets/                     # Main plugin assets for CSS and JS
+├── src/                        # Main plugin source code
+│   ├── Admin/                  # Admin settings, menu, and settings page logic
+│   │   └── Settings/           # Admin settings functionality for displaying and saving data.
+│   ├── Events/                 # Event logging, pub/sub event manager for extending the logging.
+│   ├── Logger/                 # Logger service, Monolog handlers & processors
+│   │   ├── Api/                # Api interfaces for fetching and writing log data
+│   │   ├── Database/           # Database entity and helper
+│   │   ├── Handlers/           # Monolog WordPress database handler for logging data
+│   │   ├── Processors/         # Monolog processors for data sanitization and request headers
+│   │   ├── Rules/              # Rules and RuleManager to decide whether to log a query
+│   │   ├── Scheduler/          # Automated data cleanup and maintenance tasks
+│   │   └── Store/              # Log storage service
+│   ├── Plugin.php              # Main plugin class (entry point)
+│   └── Autoloader.php          # PSR-4 autoloader
+├── tests/                      # All test suites
+│   ├── e2e/                    # End-to-end tests
+│   └── wpunit/                 # WPBrowser/Codeception unit tests
+├── [wpgraphql-logging.php]
+├── [activation.php]
+├── [composer.json]
+├── [deactivation.php]
+├── [CHANGELOG.md]
+└── [README.md]
+```
 
 ## Viewing Logs
 
