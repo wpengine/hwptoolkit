@@ -1,12 +1,16 @@
 [
 	{
-		"title": "Introduction",
+		"title": "Overview",
 		"route": "/headless-wordpress-toolkit/"
 	},
 	{
 		"title": "WPGraphQL Logging Plugin",
 		"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/",
 		"children": [
+			{
+				"title": "Introduction",
+				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/"
+			},
 			{
 				"title": "Tutorial",
 				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/tutorial/learn-logging/"
@@ -78,20 +82,23 @@
 		"route": "/headless-wordpress-toolkit/hwp-previews/",
 		"children": [
 			{
+				"title": "Introduction",
+				"route": "/headless-wordpress-toolkit/plugins/hwp-previews/"
+			},
+			{
 				"title": "Tutorials",
 				"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/",
 				"children": [
 					{
 						"title": "WP GraphQL",
-						"route": "/headless-wordpress-toolkit/hwp-previews/tutorial/learn-previews/learn-previews/"
-					},
+						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/"					},
 					{
 						"title": "REST",
-						"route": "/headless-wordpress-toolkit/hwp-previews/tutorial/learn-previews/rest/"
+						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/rest/"
 					},
 					{
 						"title": "Astro",
-						"route": "/headless-wordpress-toolkit/hwp-previews/tutorial/learn-previews/astro/"
+						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/astro/"
 					}
 				]
 			},
@@ -101,7 +108,7 @@
 				"children": [
 					{
 						"title": "Core Concepts",
-						"route": "/headless-wordpress-toolkit/hwp-previews/explanation/core-concepts/"
+						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/explanation/core-concepts/"
 					}
 				]
 			},
