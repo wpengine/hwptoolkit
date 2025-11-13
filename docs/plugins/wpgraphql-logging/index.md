@@ -81,7 +81,7 @@ By default the following settings are pre-configured.
 
 ### Basic Configuration
 
-![Basic Configuration](screenshots/admin_configuration_basic.png)
+![Basic Configuration](screenshots/admin-basic-configuration.png)
 
 * **Enabled**: The master switch to turn logging on or off.
 * **IP Restrictions**: A comma-separated list of IPv4/IPv6 addresses. When set, only requests originating from these IPs will be logged.
@@ -92,7 +92,7 @@ By default the following settings are pre-configured.
 
 ### Data Management
 
-![Data Management](screenshots/admin_configuration_data_management.png)
+![Data Management](screenshots/admin-data-management.png)
 
 * **Data Deletion Enabled**: Enable data deletion daily via the WP-Cron schedule.
 * **Number of Days to Retain Logs**: Number of days logged should be stored.
@@ -142,7 +142,7 @@ wpgraphql-logging/
 
 Once setup, you can view logs under GraphQL Logs -> All Logs. The admin screen is a custom implementation of the WordPress `WP_List_Table` class and provides several powerful features for managing your logs.
 
-![Admin View](screenshots/admin_view.png)
+![Admin View](screenshots/admin-view.png)
 
 ### Downloading Logs
 
@@ -166,7 +166,7 @@ You can also filter logs with the following filters:
 > \[!NOTE]
 > Indexes have been added to the level and datetime column for the database handler to help improve performance.
 
-![Admin View with Filters](screenshots/admin_view_filters.png)
+![Admin View with Filters](screenshots/admin-view.png)
 
 ### Bulk Actions
 
