@@ -1,97 +1,119 @@
 [
 	{
 		"title": "Introduction",
-		"route": "/toolkit/"
+		"route": "/headless-wordpress-toolkit/"
+	},
+	{
+		"title": "WPGraphQL Logging Plugin",
+		"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/",
+		"children": [
+			{
+				"title": "Tutorial",
+				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/tutorial/learn-logging/"
+			},
+			{
+				"title": "Explanation",
+				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/explanation/",
+				"children": [
+					{
+						"title": "Event Architecture",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/explanation/event-architecture/"
+					},
+					{
+						"title": "Processors & Handlers",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/explanation/processors-handlers/"
+					},
+					{
+						"title": "Rule Manager",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/explanation/rule-manager/"
+					}
+				]
+			},
+			{
+				"title": "How to Guides",
+				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/",
+				"children": [
+					{
+						"title": "Add a new Handler",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/"
+					},
+					{
+						"title": "Add a new Processor",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/logger-add-processor/"
+					},
+					{
+						"title": "Add or Remove a Rule",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/logger-add-remove-rules/"
+					},
+					{
+						"title": "Update the Log Store Service",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/update-log-store-service/"
+					},
+					{
+						"title": "Use the Events Pub/Sub System",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
+					},
+					{
+						"title": "Add Data to an Event",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
+					},
+					{
+						"title": "Add a new Settings Field",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/admin-add-fields/"
+					},
+					{
+						"title": "Add a new Settings Tab",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/admin-add-new-tab/"
+					},
+					{
+						"title": "Update the Admin Grid",
+						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/admin-add-view-column/"
+					}
+				]
+			}
+		]
 	},
 	{
 		"title": "Explanation",
-		"route": "/toolkit/explanation/",
+		"route": "/headless-wordpress-toolkit/explanation/",
 		"children": [
 			{
 				"title": "GET vs POST",
-				"route": "/toolkit/explanation/get-vs-post/"
+				"route": "/headless-wordpress-toolkit/explanation/get-vs-post/"
 			},
 			{
 				"title": "GraphQL Endpoints",
-				"route": "/toolkit/explanation/graphql-endpoints/"
+				"route": "/headless-wordpress-toolkit/explanation/graphql-endpoints/"
 			},
 			{
 				"title": "Headless Authentication",
-				"route": "/toolkit/explanation/headless-authentication/"
+				"route": "/headless-wordpress-toolkit/explanation/headless-authentication/"
 			},
 			{
 				"title": "Rendering Options",
-				"route": "/toolkit/explanation/rendering-options/"
+				"route": "/headless-wordpress-toolkit/explanation/rendering-options/"
 			},
 			{
 				"title": "Routing",
-				"route": "/toolkit/explanation/routing/"
+				"route": "/headless-wordpress-toolkit/explanation/routing/"
 			},
 			{
 				"title": "Sitemaps",
-				"route": "/toolkit/explanation/sitemaps/"
+				"route": "/headless-wordpress-toolkit/explanation/sitemaps/"
 			}
 		]
 	},
 	{
 		"title": "How-To Guides",
-		"route": "/toolkit/how-to/",
+		"route": "/headless-wordpress-toolkit/how-to/",
 		"children": [
 			{
 				"title": "Install Toolkit Plugins via Composer",
-				"route": "/toolkit/how-to/install-toolkit-plugins/"
+				"route": "/headless-wordpress-toolkit/how-to/install-toolkit-plugins/"
 			},
 			{
 				"title": "Automatic Persisted Queries in Next.js",
-				"route": "/toolkit/how-to/nextjs-pages-router/enable-apq/"
-			}
-		]
-	},
-	{
-		"title": "WPGraphQL Logging Plugin",
-		"route": "/toolkit/plugins/wpgraphql-logging/",
-		"children": [
-			{
-				"title": "How to Guides",
-				"route": "/toolkit/plugins/wpgraphql-logging/how-to/",
-				"children": [
-					{
-						"title": "Add a new Handler",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/"
-					},
-					{
-						"title": "Add a new Processor",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-processor/"
-					},
-					{
-						"title": "Add or Remove a Rule",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-remove-rules/"
-					},
-					{
-						"title": "Update the Log Store Service",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/update-log-store-service/"
-					},
-					{
-						"title": "Use the Events Pub/Sub System",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
-					},
-					{
-						"title": "Add Data to an Event",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
-					},
-					{
-						"title": "Add a new Settings Field",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-fields/"
-					},
-					{
-						"title": "Add a new Settings Tab",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-new-tab/"
-					},
-					{
-						"title": "Update the Admin Grid",
-						"route": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-view-column/"
-					}
-				]
+				"route": "/headless-wordpress-toolkit/how-to/nextjs-pages-router/enable-apq/"
 			}
 		]
 	}
