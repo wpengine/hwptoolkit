@@ -13,23 +13,16 @@ export default function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault(); // ✅ Prevent page refresh
         
-        // ✅ Reset states
         setError("");
         setSuccess(false);
         setLoading(true);
 
-        console.log("🔐 Attempting login with:", { username });
-
         try {
             const result = await login(username, password);
-            
-            console.log("✅ Login result:", result);
-            
             if (result?.success) {
                 setSuccess(true);
                 setUsername("");
                 setPassword("");
-                console.log("✅ Login successful, user:", result.user);
             } else {
                 setError("Login failed. Please try again.");
                 console.error("❌ Login failed - no success flag");

@@ -67,7 +67,6 @@ export function CartProvider({ children }) {
 
 	const [emptyCartMutation] = useMutation(EMPTY_CART, {
 		onCompleted: (data) => {
-			console.log("✅ Cart emptied:", data);
 			setCartData(null);
 			storage.removeItem("woocommerce_cart");
 		},

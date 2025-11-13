@@ -166,24 +166,6 @@ export default function Header({ headerData }: { headerData: HeaderData | null }
 													Addresses
 												</span>
 											</Link>
-
-											<Link
-												href="/wishlist"
-												className="dropdown-item block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-150 border-b border-gray-100"
-											>
-												<span className="flex items-center gap-3">
-													<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															strokeWidth={2}
-															d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-														/>
-													</svg>
-													Wishlist
-												</span>
-											</Link>
-
 											<button
 												onClick={logout}
 												className="dropdown-item w-full text-left block px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors duration-150"

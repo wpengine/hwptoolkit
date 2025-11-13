@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import { Order } from "@/interfaces/order.interface";
+import OrderItem from "./OrderItem";
 
 export default function OrderReceived({ order }: { order: Order | null }) {
-	console.log("order", order);
 	if (!order) {
 		return (
 			<div className="max-w-4xl mx-auto px-4 py-16 text-center">
@@ -55,10 +55,6 @@ export default function OrderReceived({ order }: { order: Order | null }) {
 	const formatOrderStatus = (status: string) => {
 		return status.toLowerCase().replace(/_/g, "");
 	};
-	if (order) {
-		console.log("formatOrderStatus", order.status);
-		order.status = formatOrderStatus(order.status);
-	}
 
 	return (
 		<div className="max-w-4xl mx-auto px-4 py-8">
@@ -84,11 +80,11 @@ export default function OrderReceived({ order }: { order: Order | null }) {
 						<div>
 							<h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Order Status</h3>
 							<span
-								className={`inline-block px-4 py-2 rounded-full text-sm font-semibold border ${getStatusColor(
-									order.status
+								className={`inline-block px-4 py-2 rounded-full text-sm font-semibold uppercase border ${getStatusColor(
+									formatOrderStatus(order.status)
 								)}`}
 							>
-								{order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+								{formatOrderStatus(order.status)}
 							</span>
 						</div>
 					</div>
@@ -115,22 +111,10 @@ export default function OrderReceived({ order }: { order: Order | null }) {
 				<div className="p-6 border-b border-gray-200">
 					<h3 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h3>
 					<div className="space-y-3">
-						{order.lineItems?.nodes?.map((item) => (
-							<div
-								key={item.id}
-								className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0"
-							>
-								<div className="flex-1">
-									<p className="font-medium text-gray-900">Product ID: {item.productId}</p>
-									<p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
-								</div>
-								<div className="text-right">
-									<p className="font-semibold text-gray-900">{item.total}</p>
-								</div>
-							</div>
+						{order.lineItems?.nodes?.map((item) => (					
+							<OrderItem key={item.id} item={item} />
 						))}
 					</div>
-
 					{/* Order Totals */}
 					<div className="mt-6 pt-4 border-t border-gray-200">
 						<div className="space-y-2">
@@ -170,44 +154,46 @@ export default function OrderReceived({ order }: { order: Order | null }) {
 							</h3>
 							<div className="text-sm text-gray-700 space-y-1">
 								<p className="font-medium">
-									{order.billing.firstName} {order.billing.lastName}
+									Name: {order.billing.firstName} {order.billing.lastName}
 								</p>
-								<p>{order.billing.address1}</p>
-								{order.billing.address2 && <p>{order.billing.address2}</p>}
-								<p>
-									{order.billing.city}, {order.billing.state} {order.billing.postcode}
-								</p>
-								<p>{order.billing.country}</p>
 								{order.billing.email && <p className="pt-2">Email: {order.billing.email}</p>}
 								{order.billing.phone && <p>Phone: {order.billing.phone}</p>}
+								<p>Address: {order.billing.address1}</p>
+								{order.billing.address2 && <p>{order.billing.address2}</p>}
+								<p>
+									City: {order.billing.city}, State: {order.billing.state} Postcode: {order.billing.postcode}
+								</p>
+								<p>Country: {order.billing.country}</p>
 							</div>
 						</div>
 
 						{/* Shipping Address */}
-						<div>
-							<h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-								<svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-									/>
-								</svg>
-								Shipping Address
-							</h3>
-							<div className="text-sm text-gray-700 space-y-1">
-								<p className="font-medium">
-									{order.shipping.firstName} {order.shipping.lastName}
-								</p>
-								<p>{order.shipping.address1}</p>
-								{order.shipping.address2 && <p>{order.shipping.address2}</p>}
-								<p>
-									{order.shipping.city}, {order.shipping.state} {order.shipping.postcode}
-								</p>
-								<p>{order.shipping.country}</p>
+						{order.shipping && (
+							<div>
+								<h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+									<svg className="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+										/>
+									</svg>
+									Shipping Address
+								</h3>
+								<div className="text-sm text-gray-700 space-y-1">
+									<p className="font-medium">
+										{order.shipping.firstName} {order.shipping.lastName}
+									</p>
+									<p>{order.shipping.address1}</p>
+									{order.shipping.address2 && <p>{order.shipping.address2}</p>}
+									<p>
+										{order.shipping.city}, {order.shipping.state} {order.shipping.postcode}
+									</p>
+									<p>{order.shipping.country}</p>
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 				</div>
 			</div>
@@ -215,7 +201,7 @@ export default function OrderReceived({ order }: { order: Order | null }) {
 			{/* Action Buttons */}
 			<div className="flex flex-col sm:flex-row gap-4 justify-center">
 				<Link
-					href="/account/orders"
+					href="/my-account/orders"
 					className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
 				>
 					<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,30 +228,6 @@ export default function OrderReceived({ order }: { order: Order | null }) {
 					</svg>
 					Continue Shopping
 				</Link>
-			</div>
-
-			{/* Additional Info */}
-			<div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-				<div className="flex items-start">
-					<svg className="w-6 h-6 text-blue-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-						<path
-							fillRule="evenodd"
-							d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-							clipRule="evenodd"
-						/>
-					</svg>
-					<div>
-						<h4 className="font-semibold text-blue-900 mb-1">What's Next?</h4>
-						<p className="text-sm text-blue-800">
-							You will receive an email confirmation shortly with your order details. We'll notify you when your order
-							ships. You can track your order status in the{" "}
-							<Link href="/account/orders" className="underline font-medium hover:text-blue-900">
-								Orders section
-							</Link>{" "}
-							of your account.
-						</p>
-					</div>
-				</div>
 			</div>
 		</div>
 	);

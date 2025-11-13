@@ -122,7 +122,6 @@ export default function Checkout() {
 
 	const [checkoutMutation, { loading: checkoutLoading }] = useMutation(CHECKOUT_MUTATION, {
 		onCompleted: (data) => {
-			console.log("Checkout completed:", data);
 		},
 		onError: (error) => console.error("❌ Checkout error:", error),
 	});
@@ -244,8 +243,6 @@ export default function Checkout() {
 					  };
 			}
 
-			console.log("Checkout data:", { billingData, shippingData });
-
 			const { data, errors } = await checkoutMutation({
 				variables: {
 					input: {
@@ -262,8 +259,6 @@ export default function Checkout() {
 				setCheckoutError(errors[0].message);
 				return { success: false, error: errors[0].message };
 			}
-
-			console.log("Checkout:", data);
 			await refreshCart();
 			if (!isAuthenticated) {
 				const orderData = data.checkout.order;

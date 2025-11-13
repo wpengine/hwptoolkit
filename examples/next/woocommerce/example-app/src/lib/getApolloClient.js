@@ -27,7 +27,7 @@ async function fetchSessionToken() {
 			throw new Error("Failed to retrieve a new session token");
 		}
 
-		// ✅ Store the session token
+		// Store the session token
 		if (typeof window !== "undefined") {
 			localStorage.setItem(SESSION_TOKEN_KEY, sessionToken);
 		}
@@ -41,11 +41,9 @@ async function fetchSessionToken() {
 export async function getSessionToken(forceFetch = false) {
 	if (typeof window === "undefined") return null;
 
-	// ✅ Use constant instead of process.env
 	let sessionToken = localStorage.getItem(SESSION_TOKEN_KEY);
 
 	if (!sessionToken || forceFetch) {
-		console.log("getSessionToken called", { sessionToken, forceFetch });
 		sessionToken = await fetchSessionToken();
 	}
 
@@ -74,7 +72,7 @@ function createAuthLink() {
 			}
 		}
 
-		// ✅ Add session token for guest users (cart persistence)
+		// Add session token for guest users (cart persistence)
 		if (!headers.Authorization) {
 			const sessionToken = await getSessionToken();
 			if (sessionToken) {
@@ -146,7 +144,6 @@ function createErrorLink() {
 // Network error handling
 const networkErrorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
 	if (networkError) {
-		console.log(`❌ Network error: ${networkError.message || networkError}`);
 
 		if (networkError.statusCode === 403) {
 			console.warn("403 Forbidden - clearing auth tokens");
@@ -162,7 +159,7 @@ const networkErrorLink = onError(({ graphQLErrors, networkError, operation, forw
 
 	if (graphQLErrors) {
 		graphQLErrors.forEach(({ message, locations, path }) =>
-			console.log(`❌ GraphQL error: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`)
+			console.log(`GraphQL error: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`)
 		);
 	}
 });

@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
 				isLoading: false,
 			});
 
-			//router.push("/my-account");
+			router.push("/my-account");
 		} catch (error) {
 			console.error("❌ Login error:", error);
 			throw error;

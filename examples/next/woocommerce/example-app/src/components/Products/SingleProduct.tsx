@@ -34,7 +34,6 @@ export default function SingleProduct({ product }: SingleProductProps) {
 
 	const displayImage = selectedVariation?.image || product.image;
 
-	// ✅ Handle attribute selection
 	const handleAttributeSelect = (attributeName: string, attributeValue: string) => {
 		setSelectedAttributes((prev) => {
 			// Remove any existing selection for this attribute
@@ -54,7 +53,6 @@ export default function SingleProduct({ product }: SingleProductProps) {
 			const currentStillMatches = selectedAttributes.every((selectedAttr) => {
 				const varAttr = selectedVariation.attributes.nodes.find((attr) => attr.name === selectedAttr.attributeName);
 
-				// ✅ If variation has empty value for this attribute, keep the current variation
 				if (!varAttr || !varAttr.value || varAttr.value.trim() === "") {
 					return true; // Keep current variation
 				}
@@ -64,8 +62,8 @@ export default function SingleProduct({ product }: SingleProductProps) {
 			});
 
 			if (currentStillMatches) {
-				console.log("Current variation still matches, keeping it:", selectedVariation);
-				return; // ✅ Keep the current variation
+				
+				return;
 			}
 		}
 		const matchingVariation = product.variations.nodes.find((variation) => {
@@ -74,8 +72,6 @@ export default function SingleProduct({ product }: SingleProductProps) {
 			// Check if all selected attributes match this variation
 			return selectedAttributes.every((selectedAttr) => {
 				const varAttr = variation.attributes.nodes.find((attr) => attr.name === selectedAttr.attributeName);
-
-				// ✅ If variation has empty value for this attribute, it's a match (wildcard)
 				if (!varAttr || !varAttr.value || varAttr.value.trim() === "") {
 					return true;
 				}
@@ -102,10 +98,7 @@ export default function SingleProduct({ product }: SingleProductProps) {
 	};
 
 	const relatedProducts = getRelatedProducts();
-
-	// console.log("Selected attributes:", selectedAttributes);
-	// console.log("Selected variation:", selectedVariation);
-
+	
 	return (
 		<div className="container mx-auto px-4 py-8">
 			<div className="grid lg:grid-cols-2 gap-12 mb-12">

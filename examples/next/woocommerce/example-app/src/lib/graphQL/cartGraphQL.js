@@ -236,7 +236,6 @@ export const LineItemFields = gql`
 				...ProductContentSlice
 			}
 		}
-		orderId
 		quantity
 		subtotal
 		total

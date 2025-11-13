@@ -25,4 +25,5 @@ export interface Address {
 	country: string;
 	postcode: string;
 	phone: string;
+	email?: string;
 }
