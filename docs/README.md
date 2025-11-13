@@ -1,4 +1,15 @@
-# HWP Toolkit Documentation
+---
+title: "Documentation"
+description: "Documentation for the Headless WordPress Toolkit, a modern, framework-agnostic collection of plugins and packages for building headless WordPress applications."
+---
+
+
+## WPGraphQL Logging Plugin
+
+| Title                              | Description                  |
+|------------------------------------|------------------------------|
+| [WPGraphQL Logging Plugin](plugins/wpgraphql-logging/) | Logging for WPGraphQL requests with granular lifecycle events and Monolog integration. |
+
 
 
 ## Explanation Documentation
