@@ -8,7 +8,7 @@
 		"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/",
 		"children": [
 			{
-				"title": "Introduction",
+				"title": "Overview",
 				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/"
 			},
 			{
@@ -82,7 +82,7 @@
 		"route": "/headless-wordpress-toolkit/hwp-previews/",
 		"children": [
 			{
-				"title": "Introduction",
+				"title": "Overview",
 				"route": "/headless-wordpress-toolkit/plugins/hwp-previews/"
 			},
 			{
@@ -94,11 +94,11 @@
 						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/"					},
 					{
 						"title": "REST",
-						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/rest/"
+						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/rest/"
 					},
 					{
 						"title": "Astro",
-						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/astro/"
+						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/astro/"
 					}
 				]
 			},
@@ -118,11 +118,11 @@
 				"children": [
 					{
 						"title": "Configure Previews",
-						"route": "/headless-wordpress-toolkit/hwp-previews/how-to/configure-previews/"
+						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/how-to/configure-previews/"
 					},
 					{
 						"title": "Integrate with Faust.js",
-						"route": "/headless-wordpress-toolkit/hwp-previews/how-to/integrate-with-faust/"
+						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/how-to/integrate-with-faust/"
 					}
 				]
 			}
