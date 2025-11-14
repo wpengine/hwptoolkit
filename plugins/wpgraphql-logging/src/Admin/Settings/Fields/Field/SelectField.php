@@ -61,6 +61,7 @@ class SelectField extends AbstractSettingsField {
 		$html .= 'name="' . esc_attr( $field_name ) . ( $this->multiple ? '[]' : '' ) . '" ';
 		$html .= 'id="' . esc_attr( $this->get_id() ) . '" ';
 		$html .= 'class="' . esc_attr( $this->css_class ) . '" ';
+		$html .= 'aria-labelledby="' . esc_attr( $field_name ) . '-tooltip" ';
 
 		if ( $this->multiple ) {
 			$html .= 'multiple="multiple" ';

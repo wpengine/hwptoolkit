@@ -65,15 +65,15 @@ use WPGraphQL\Logging\Admin\ViewLogsPage;
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Query', 'wpgraphql-logging' ); ?></th>
-				<td><pre class="wpgraphql-logging-query"><?php echo esc_html( (string) $log->get_query() ); ?></pre></td>
+				<td><pre class="wpgraphql-logging-query" tabindex="0"><?php echo esc_html( (string) $log->get_query() ); ?></pre></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Context', 'wpgraphql-logging' ); ?></th>
-				<td><pre class="wpgraphql-logging-context"><?php echo esc_html( (string) wp_json_encode( $log->get_context(), JSON_PRETTY_PRINT ) ); ?></pre></td>
+				<td><pre class="wpgraphql-logging-context" tabindex="0"><?php echo esc_html( (string) wp_json_encode( $log->get_context(), JSON_PRETTY_PRINT ) ); ?></pre></td>
 			</tr>
 			<tr>
 				<th><?php esc_html_e( 'Extra', 'wpgraphql-logging' ); ?></th>
-				<td><pre class="wpgraphql-logging-extra"><?php echo esc_html( (string) wp_json_encode( $log->get_extra(), JSON_PRETTY_PRINT ) ); ?></pre></td>
+				<td><pre class="wpgraphql-logging-extra" tabindex="0"><?php echo esc_html( (string) wp_json_encode( $log->get_extra(), JSON_PRETTY_PRINT ) ); ?></pre></td>
 			</tr>
 		</tbody>
 	</table>

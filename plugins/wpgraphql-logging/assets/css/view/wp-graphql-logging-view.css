@@ -9,8 +9,12 @@
 .wpgraphql-logging-details pre.wpgraphql-logging-context,
 .wpgraphql-logging-details pre.wpgraphql-logging-extra {
 	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-word;
+	overflow-wrap: break-word;
 	max-height: 540px;
-	overflow-y: scroll;
+	overflow-y: auto;
+	overflow-x: auto;
 	padding: 15px;
 	border: 1px solid #ddd;
 	border-radius: 4px;

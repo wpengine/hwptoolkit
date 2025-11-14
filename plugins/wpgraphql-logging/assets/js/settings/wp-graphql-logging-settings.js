@@ -63,10 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		);
 
 		function checkLogPointsSelection() {
+			const descriptionId = "log-points-description";
 			const anyLogPointsSelected = logPointsInput.selectedOptions.length > 0;
 
 			const existingDescription =
-				logPointsInput.parentElement.querySelector(".description");
+				logPointsInput.parentElement.querySelector(`#${descriptionId}`);
 			if (existingDescription) {
 				existingDescription.remove();
 			}
@@ -75,8 +76,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			if (enableCheckbox?.checked && !anyLogPointsSelected) {
 				const description = document.createElement("p");
 
-				if (!logPointsInput.parentElement.querySelector(".description")) {
+				if (!logPointsInput.parentElement.querySelector(`#${descriptionId}`)) {
 					description.className = "description";
+					description.id = descriptionId;
 					description.textContent =
 						"If you don't select any log points, no data will be logged.";
 					description.style.marginLeft = "25px";
