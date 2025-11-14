@@ -96,7 +96,9 @@ class ListTableTest extends WPTestCase {
 
 		$result = $this->list_table->column_cb($entity);
 
-		$this->assertStringContainsString('<input type="checkbox"', $result);
+		$this->assertStringContainsString('<label class="screen-reader-text"', $result);
+		$this->assertStringContainsString('Select log entry 123', $result);
+		$this->assertStringContainsString('<input id="cb-select-123" type="checkbox"', $result);
 		$this->assertStringContainsString('value="123"', $result);
 	}
 

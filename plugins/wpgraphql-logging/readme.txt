@@ -15,8 +15,6 @@ WPGraphQL Logging plugin provides observability and visibility into the GraphQL 
 
 **WPGraphQL Logging** is a comprehensive logging solution for WPGraphQL that tracks and records GraphQL query execution, providing developers with detailed insights into query performance, errors, and request lifecycle events.
 
-**Note:** This plugin is currently in BETA. While it is functional and ready for testing, some features may be subject to change based on community feedback.
-
 = Key Features =
 
 **GraphQL Request Lifecycle Logging**
@@ -74,14 +72,14 @@ For detailed documentation, guides, and examples, visit the [GitHub repository](
 
 1. Upload the plugin files to `/wp-content/plugins/wpgraphql-logging/`, or install the plugin through the WordPress plugins screen directly
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Navigate to Settings > WPGraphQL Logging in the WordPress admin to configure settings
-4. View logged queries can be found in GraphQL Logs
+3. Navigate to GraphQL Logs -> Settings in the WordPress admin to configure settings
+4. View logged queries can be found in GraphQL Logs -> All Logs.
 
 == Frequently Asked Questions ==
 
 = Is this plugin production-ready? =
 
-This plugin is currently in BETA. It is functional and ready for testing in staging environments. We recommend thorough testing before deploying to production.
+Yes. We recommend thorough testing on a local or staging before deploying to production. By default the plugin will only log 10% of the initial requests.
 
 = Does this plugin affect GraphQL query performance? =
 
@@ -99,17 +97,14 @@ Yes, the plugin provides extensive hooks and filters to customize logging behavi
 
 The plugin includes configurable data retention settings. You can set automatic cleanup rules to delete logs older than a specified number of days.
 
-== Screenshots ==
+= Where can I find documentation? =
+For detailed usage instructions, developer references, and examples, please visit the [Documentation](https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/wpgraphql-logging/index.md) folder included with this plugin.
 
-1. View all GraphQL query logs with filtering and search
-2. Detailed log entry view showing query, variables, and response
-3. Configuration settings for data retention and logging behavior
-4. Export logs to CSV for analysis
 
 == Changelog ==
 
-= 0.1.0 - 2025-01-22 =
-* Initial BETA release
+= 1.0.0 - 2025-11-14 =
+* Initial release
 * Core logging functionality for WPGraphQL request lifecycle
 * Admin interface for viewing and filtering logs
 * CSV export functionality
@@ -118,6 +113,9 @@ The plugin includes configurable data retention settings. You can set automatic 
 * Monolog-based storage with custom processors
 
 == Upgrade Notice ==
+
+= 1.0.0 =
+Initial release.
 
 = 0.1.0 =
 Initial BETA release.

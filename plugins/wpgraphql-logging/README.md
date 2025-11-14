@@ -12,16 +12,7 @@ A logging plugin that provides visibility into request lifecycle to help quickly
 [![Code Coverage](https://img.shields.io/badge/coverage-%3E90%25-brightgreen?label=Code%20Coverage)](https://github.com/wpengine/hwptoolkit/actions)
 [![Code Quality](https://github.com/wpengine/hwptoolkit/actions/workflows/code-quality.yml/badge.svg)](https://github.com/wpengine/hwptoolkit/actions/workflows/code-quality.yml)
 
-
------
-
-> [!CAUTION]
-> This plugin is currently in a beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible. You can create an issue at [https://github.com/wpengine/hwptoolkit/issues](https://github.com/wpengine/hwptoolkit/issues)
-
------
-
 ## Overview
-
 
 WPGraphQL Logging plugin provides observability and visibility into the GraphQL request and event lifecycle. This capability gives users the understandability needed to quickly identify and resolve performance issues and bottlenecks within their headless WordPress application.
 
@@ -46,7 +37,9 @@ WPGraphQL Logging plugin provides observability and visibility into the GraphQL 
 
 ### Option 1: Plugin Zip
 
-You can get the latest release from <https://github.com/wpengine/hwptoolkit/releases?q=wpgraphql-logging&expanded=true>.
+You can get the latest release here - <https://github.com/wpengine/hwptoolkit/releases/latest/download/wpgraphql-logging.zip>
+
+You can also download it from our release page - <https://github.com/wpengine/hwptoolkit/releases>
 
 ### Option 2: Composer
 
