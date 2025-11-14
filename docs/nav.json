@@ -1,289 +1,298 @@
 [
 	{
-		"title": "Overview",
-		"route": "/headless-wordpress-toolkit/"
+		"label": "Overview",
+		"link": "/toolkit/"
 	},
 	{
-		"title": "WPGraphQL Logging Plugin",
-		"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/",
-		"children": [
+		"label": "WPGraphQL Logging Plugin",
+		"link": "/toolkit/plugins/wpgraphql-logging/",
+		"items": [
 			{
-				"title": "Overview",
-				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/"
+				"label": "Overview",
+				"link": "/toolkit/plugins/wpgraphql-logging/"
 			},
 			{
-				"title": "Tutorial",
-				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/tutorial/learn-logging/"
+				"label": "Tutorial",
+				"link": "/toolkit/plugins/wpgraphql-logging/tutorial/learn-logging/"
 			},
 			{
-				"title": "Explanation",
-				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/explanation/",
-				"children": [
+				"label": "Explanation",
+				"link": "/toolkit/plugins/wpgraphql-logging/explanation/",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "Event Architecture",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/explanation/event-architecture/"
+						"label": "Event Architecture",
+						"link": "/toolkit/plugins/wpgraphql-logging/explanation/event-architecture/"
 					},
 					{
-						"title": "Processors & Handlers",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/explanation/processors-handlers/"
+						"label": "Processors & Handlers",
+						"link": "/toolkit/plugins/wpgraphql-logging/explanation/processors-handlers/"
 					},
 					{
-						"title": "Rule Manager",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/explanation/rule-manager/"
+						"label": "Rule Manager",
+						"link": "/toolkit/plugins/wpgraphql-logging/explanation/rule-manager/"
 					}
 				]
 			},
 			{
-				"title": "How to Guides",
-				"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/",
-				"children": [
+				"label": "How to Guides",
+				"link": "/toolkit/plugins/wpgraphql-logging/how-to/",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "Add a new Handler",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/"
+						"label": "Add a new Handler",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-handler/"
 					},
 					{
-						"title": "Add a new Processor",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/logger-add-processor/"
+						"label": "Add a new Processor",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-processor/"
 					},
 					{
-						"title": "Add or Remove a Rule",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/logger-add-remove-rules/"
+						"label": "Add or Remove a Rule",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/logger-add-remove-rules/"
 					},
 					{
-						"title": "Update the Log Store Service",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/update-log-store-service/"
+						"label": "Update the Log Store Service",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/update-log-store-service/"
 					},
 					{
-						"title": "Use the Events Pub/Sub System",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
+						"label": "Use the Events Pub/Sub System",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/event-pub-sub/"
 					},
 					{
-						"title": "Add Data to an Event",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
+						"label": "Add Data to an Event",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/event-add-context/"
 					},
 					{
-						"title": "Add a new Settings Field",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/admin-add-fields/"
+						"label": "Add a new Settings Field",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-fields/"
 					},
 					{
-						"title": "Add a new Settings Tab",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/admin-add-new-tab/"
+						"label": "Add a new Settings Tab",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-new-tab/"
 					},
 					{
-						"title": "Update the Admin Grid",
-						"route": "/headless-wordpress-toolkit/plugins/wpgraphql-logging/how-to/admin-add-view-column/"
+						"label": "Update the Admin Grid",
+						"link": "/toolkit/plugins/wpgraphql-logging/how-to/admin-add-view-column/"
 					}
 				]
 			}
 		]
 	},
 	{
-		"title": "HWP Previews",
-		"route": "/headless-wordpress-toolkit/hwp-previews/",
-		"children": [
+		"label": "HWP Previews",
+		"link": "/toolkit/hwp-previews/",
+		"items": [
 			{
-				"title": "Overview",
-				"route": "/headless-wordpress-toolkit/plugins/hwp-previews/"
+				"label": "Overview",
+				"link": "/toolkit/plugins/hwp-previews/"
 			},
 			{
-				"title": "Tutorials",
-				"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/",
-				"children": [
+				"label": "Tutorials",
+				"link": "/toolkit/plugins/hwp-previews/tutorial/learn-previews/",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "WP GraphQL",
-						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/learn-previews/"					},
+						"label": "WP GraphQL",
+						"link": "/toolkit/plugins/hwp-previews/tutorial/learn-previews/"					},
 					{
-						"title": "REST",
-						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/rest/"
+						"label": "REST",
+						"link": "/toolkit/plugins/hwp-previews/tutorial/rest/"
 					},
 					{
-						"title": "Astro",
-						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/tutorial/astro/"
+						"label": "Astro",
+						"link": "/toolkit/plugins/hwp-previews/tutorial/astro/"
 					}
 				]
 			},
 			{
-				"title": "Explanation",
-				"route": "/headless-wordpress-toolkit/plugins/hwp-previews/explanation/",
-				"children": [
+				"label": "Explanation",
+				"link": "/toolkit/plugins/hwp-previews/explanation/",
+				"items": [
 					{
-						"title": "Core Concepts",
-						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/explanation/core-concepts/"
+						"label": "Core Concepts",
+						"link": "/toolkit/plugins/hwp-previews/explanation/core-concepts/"
 					}
 				]
 			},
 			{
-				"title": "How to Guides",
-				"route": "/headless-wordpress-toolkit/plugins/hwp-previews/how-to/",
-				"children": [
+				"label": "How to Guides",
+				"link": "/toolkit/plugins/hwp-previews/how-to/",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "Configure Previews",
-						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/how-to/configure-previews/"
+						"label": "Configure Previews",
+						"link": "/toolkit/plugins/hwp-previews/how-to/configure-previews/"
 					},
 					{
-						"title": "Integrate with Faust.js",
-						"route": "/headless-wordpress-toolkit/plugins/hwp-previews/how-to/integrate-with-faust/"
+						"label": "Integrate with Faust.js",
+						"link": "/toolkit/plugins/hwp-previews/how-to/integrate-with-faust/"
 					}
 				]
 			}
 		]
 	},
 	{
-		"title": "Examples",
-		"route": "/headless-wordpress-toolkit/examples/",
-		"children": [
+		"label": "Examples",
+		"link": "/toolkit/examples/",
+		"items": [
 			{
-				"title": "Angular",
-				"children": [
+				"label": "Angular",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "Template Hierarchy Data Fetching",
-						"route": "/headless-wordpress-toolkit/examples/angular/template-hierarchy-data-fetching/"
+						"label": "Template Hierarchy Data Fetching",
+						"link": "/toolkit/examples/angular/template-hierarchy-data-fetching/"
 					}
 				]
 			},
 			{
-				"title": "Astro",
-				"children": [
+				"label": "Astro",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "Previews",
-						"route": "/headless-wordpress-toolkit/examples/astro/previews/"
+						"label": "Previews",
+						"link": "/toolkit/examples/astro/previews/"
 					},
 					{
-						"title": "Template Hierarchy Data Fetching URQL",
-						"route": "/headless-wordpress-toolkit/examples/astro/template-hierarchy-data-fetching-urql/"
+						"label": "Template Hierarchy Data Fetching URQL",
+						"link": "/toolkit/examples/astro/template-hierarchy-data-fetching-urql/"
 					}
 				]
 			},
 			{
-				"title": "Next.js",
-				"children": [
+				"label": "Next.js",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "Apollo Authentication",
-						"route": "/headless-wordpress-toolkit/examples/next/apollo-authentication/"
+						"label": "Apollo Authentication",
+						"link": "/toolkit/examples/next/apollo-authentication/"
 					},
 					{
-						"title": "Apollo Client Data Fetch",
-						"route": "/headless-wordpress-toolkit/examples/next/apollo-client-data-fetch/"
+						"label": "Apollo Client Data Fetch",
+						"link": "/toolkit/examples/next/apollo-client-data-fetch/"
 					},
 					{
-						"title": "Apollo Client Filesystem Routing",
-						"route": "/headless-wordpress-toolkit/examples/next/apollo-client-filesystem-routing/"
+						"label": "Apollo Client Filesystem Routing",
+						"link": "/toolkit/examples/next/apollo-client-filesystem-routing/"
 					},
 					{
-						"title": "Client App Router Fetch Data",
-						"route": "/headless-wordpress-toolkit/examples/next/client-app-router-fetch-data/"
+						"label": "Client App Router Fetch Data",
+						"link": "/toolkit/examples/next/client-app-router-fetch-data/"
 					},
 					{
-						"title": "Client Multisite App Router Fetch Data",
-						"route": "/headless-wordpress-toolkit/examples/next/client-multisite-app-router-fetch-data/"
+						"label": "Client Multisite App Router Fetch Data",
+						"link": "/toolkit/examples/next/client-multisite-app-router-fetch-data/"
 					},
 					{
-						"title": "Custom Sitemap Apollo",
-						"route": "/headless-wordpress-toolkit/examples/next/custom-sitemap-apollo/"
+						"label": "Custom Sitemap Apollo",
+						"link": "/toolkit/examples/next/custom-sitemap-apollo/"
 					},
 					{
-						"title": "Custom Sitemap Vanilla WPGraphQL",
-						"route": "/headless-wordpress-toolkit/examples/next/custom-sitemap-vanilla-wpgraphql/"
+						"label": "Custom Sitemap Vanilla WPGraphQL",
+						"link": "/toolkit/examples/next/custom-sitemap-vanilla-wpgraphql/"
 					},
 					{
-						"title": "Hybrid Sitemap Apollo",
-						"route": "/headless-wordpress-toolkit/examples/next/hybrid-sitemap-apollo/"
+						"label": "Hybrid Sitemap Apollo",
+						"link": "/toolkit/examples/next/hybrid-sitemap-apollo/"
 					},
 					{
-						"title": "Proxied GraphQL Debug",
-						"route": "/headless-wordpress-toolkit/examples/next/proxied-graphql-debug/"
+						"label": "Proxied GraphQL Debug",
+						"link": "/toolkit/examples/next/proxied-graphql-debug/"
 					},
 					{
-						"title": "Proxied Sitemap Apollo",
-						"route": "/headless-wordpress-toolkit/examples/next/proxied-sitemap-apollo/"
+						"label": "Proxied Sitemap Apollo",
+						"link": "/toolkit/examples/next/proxied-sitemap-apollo/"
 					},
 					{
-						"title": "Render Blocks Pages Router",
-						"route": "/headless-wordpress-toolkit/examples/next/render-blocks-pages-router/"
+						"label": "Render Blocks Pages Router",
+						"link": "/toolkit/examples/next/render-blocks-pages-router/"
 					},
 					{
-						"title": "Template Hierarchy",
-						"route": "/headless-wordpress-toolkit/examples/next/template-hierarchy/"
+						"label": "Template Hierarchy",
+						"link": "/toolkit/examples/next/template-hierarchy/"
 					},
 					{
-						"title": "Toolbar Demo",
-						"route": "/headless-wordpress-toolkit/examples/next/toolbar-demo/"
+						"label": "Toolbar Demo",
+						"link": "/toolkit/examples/next/toolbar-demo/"
 					},
 					{
-						"title": "WP Theme Rendered Blocks",
-						"route": "/headless-wordpress-toolkit/examples/next/wp-theme-rendered-blocks/"
+						"label": "WP Theme Rendered Blocks",
+						"link": "/toolkit/examples/next/wp-theme-rendered-blocks/"
 					}
 				]
 			},
 			{
-				"title": "Nuxt",
-				"children": [
+				"label": "Nuxt",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "Nuxt Headless WP Gravity Forms",
-						"route": "/headless-wordpress-toolkit/examples/nuxt/nuxt-headlesswp-gravity-forms/"
+						"label": "Nuxt Headless WP Gravity Forms",
+						"link": "/toolkit/examples/nuxt/nuxt-headlesswp-gravity-forms/"
 					},
 					{
-						"title": "Template Hierarchy Data Fetching",
-						"route": "/headless-wordpress-toolkit/examples/nuxt/template-hierarchy-data-fetching/"
+						"label": "Template Hierarchy Data Fetching",
+						"link": "/toolkit/examples/nuxt/template-hierarchy-data-fetching/"
 					}
 				]
 			},
 			{
-				"title": "SvelteKit",
-				"children": [
+				"label": "SvelteKit",
+				"collapsed": true,
+				"items": [
 					{
-						"title": "Template Hierarchy Data Fetching URQL",
-						"route": "/headless-wordpress-toolkit/examples/sveltekit/template-hierarchy-data-fetching-urql/"
+						"label": "Template Hierarchy Data Fetching URQL",
+						"link": "/toolkit/examples/sveltekit/template-hierarchy-data-fetching-urql/"
 					}
 				]
 			}
 		]
 	},
 	{
-		"title": "Documentation",
-		"route": "/headless-wordpress-toolkit/documentation/",
-		"children": [
+		"label": "Documentation",
+		"link": "/toolkit/documentation/",
+		"items": [
 			{
-				"title": "Explanation",
-				"route": "/headless-wordpress-toolkit/explanation/",
-				"children": [
+				"label": "Explanation",
+				"link": "/toolkit/explanation/",
+				"items": [
 					{
-						"title": "GET vs POST",
-						"route": "/headless-wordpress-toolkit/explanation/get-vs-post/"
+						"label": "GET vs POST",
+						"link": "/toolkit/explanation/get-vs-post/"
 					},
 					{
-						"title": "GraphQL Endpoints",
-						"route": "/headless-wordpress-toolkit/explanation/graphql-endpoints/"
+						"label": "GraphQL Endpoints",
+						"link": "/toolkit/explanation/graphql-endpoints/"
 					},
 					{
-						"title": "Headless Authentication",
-						"route": "/headless-wordpress-toolkit/explanation/headless-authentication/"
+						"label": "Headless Authentication",
+						"link": "/toolkit/explanation/headless-authentication/"
 					},
 					{
-						"title": "Rendering Options",
-						"route": "/headless-wordpress-toolkit/explanation/rendering-options/"
+						"label": "Rendering Options",
+						"link": "/toolkit/explanation/rendering-options/"
 					},
 					{
-						"title": "Routing",
-						"route": "/headless-wordpress-toolkit/explanation/routing/"
+						"label": "Routing",
+						"link": "/toolkit/explanation/routing/"
 					},
 					{
-						"title": "Sitemaps",
-						"route": "/headless-wordpress-toolkit/explanation/sitemaps/"
+						"label": "Sitemaps",
+						"link": "/toolkit/explanation/sitemaps/"
 					}
 				]
 			},
 			{
-				"title": "How-To Guides",
-				"route": "/headless-wordpress-toolkit/how-to/",
-				"children": [
+				"label": "How-To Guides",
+				"link": "/toolkit/how-to/",
+				"items": [
 					{
-						"title": "Install Toolkit Plugins via Composer",
-						"route": "/headless-wordpress-toolkit/how-to/install-toolkit-plugins/"
+						"label": "Install Toolkit Plugins via Composer",
+						"link": "/toolkit/how-to/install-toolkit-plugins/"
 					},
 					{
-						"title": "Automatic Persisted Queries in Next.js",
-						"route": "/headless-wordpress-toolkit/how-to/nextjs-pages-router/enable-apq/"
+						"label": "Automatic Persisted Queries in Next.js",
+						"link": "/toolkit/how-to/nextjs-pages-router/enable-apq/"
 					}
 				]
 			}
