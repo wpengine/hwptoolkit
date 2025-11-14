@@ -1,6 +1,6 @@
 # WPGraphQL Logging
 
-A WPGraphQL logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
+A logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
 
 -----
 
@@ -23,7 +23,7 @@ A WPGraphQL logging plugin that provides visibility into request lifecycle to he
 ## Overview
 
 
-WPGraphQL Logging is a plugin that integrates directly with the WPGraphQL Query Lifecycle, capturing detailed information about each GraphQL request.
+WPGraphQL Logging plugin provides observability and visibility into the GraphQL request and event lifecycle. This capability gives users the understandability needed to quickly identify and resolve performance issues and bottlenecks within their headless WordPress application.
 
 ### Key Features
 *   **Granular Control**: Choose which events in the request lifecycle to log, giving you precise control over the data you capture.
@@ -31,7 +31,7 @@ WPGraphQL Logging is a plugin that integrates directly with the WPGraphQL Query 
 *   **Flexible Log Handling**: Leverages the powerful Monolog logging library, enabling developers to add custom processors and handlers to route logs to various destinations like Slack, files, or external services.
 
 >[!IMPORTANT]
->For detailed developer guides and examples, see our [How-To Guides](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/docs/index.md#how-to-guides).
+>For detailed developer guides and examples, see our [How-To Guides](https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/wpgraphql-logging/index.md#how-to-guides).
 
 ---
 
@@ -60,7 +60,7 @@ Once installed and configured, the plugin should begin to log uncached WPGraphQL
 
 ## Documentation
 
-For detailed usage instructions, developer references, and examples, please visit the [Documentation](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-logging/docs/index.md) folder included with this plugin.
+For detailed usage instructions, developer references, and examples, please visit the [Documentation](https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/wpgraphql-logging/index.md) folder included with this plugin.
 
 
 ## License

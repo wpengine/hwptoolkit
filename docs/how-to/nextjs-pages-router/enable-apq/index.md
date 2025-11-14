@@ -125,3 +125,7 @@ const client = new ApolloClient({
 On the Network tab you should see your query being sent as a GET request.
 
 ![Network tab of browser is open, showing the GraphQL query being sent as GET.](./images/gql-pq-get.png)
+
+## Contributing
+
+If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.
