@@ -283,7 +283,6 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 	 */
 	public static function get_table_name(): string {
 		global $wpdb;
-		// @TODO - Check for multisite
 		return $wpdb->prefix . 'wpgraphql_logging';
 	}
 
