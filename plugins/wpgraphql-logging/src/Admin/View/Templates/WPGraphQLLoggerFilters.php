@@ -37,7 +37,7 @@ $wpgraphql_logging_log_levels = apply_filters( 'wpgraphql_logging_log_levels', $
 			value="<?php echo esc_attr( $wpgraphql_logging_current_end_date ); ?>"
 			autocomplete="off" />
 
-	<select name="level_filter">
+	<select name="level_filter" aria-label="<?php esc_attr_e( 'Filter by level', 'wpgraphql-logging' ); ?>">
 		<option value="">All Levels</option>
 		<?php foreach ( $wpgraphql_logging_log_levels as $wpgraphql_logging_level ) : ?>
 			<option value="<?php echo esc_attr( $wpgraphql_logging_level ); ?>" <?php selected( $wpgraphql_logging_current_level, $wpgraphql_logging_level ); ?>>

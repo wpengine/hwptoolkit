@@ -280,9 +280,11 @@ class ListTable extends WP_List_Table {
 		if ( ! $item instanceof WordPressDatabaseEntity ) {
 			return '';
 		}
+		$log_id = $item->get_id();
 		return sprintf(
-			'<input type="checkbox" name="log[]" value="%d" />',
-			$item->get_id()
+			'<label class="screen-reader-text" for="cb-select-%1$d">%2$s</label><input id="cb-select-%1$d" type="checkbox" name="log[]" value="%1$d" />',
+			$item->get_id(),
+			sprintf( __( 'Select log entry %d', 'wpgraphql-logging' ), $log_id )
 		);
 	}
 
@@ -413,7 +415,7 @@ class ListTable extends WP_List_Table {
 		if ( empty( $code ) ) {
 			return '';
 		}
-		return '<pre class="wpgraphql-logging-list-table-query">' . esc_html( $code ) . '</pre>';
+		return '<pre class="wpgraphql-logging-list-table-query" tabindex="0">' . esc_html( $code ) . '</pre>';
 	}
 
 	/**
