@@ -284,6 +284,7 @@ class ListTable extends WP_List_Table {
 		return sprintf(
 			'<label class="screen-reader-text" for="cb-select-%1$d">%2$s</label><input id="cb-select-%1$d" type="checkbox" name="log[]" value="%1$d" />',
 			$item->get_id(),
+			// translators: %d is the log entry ID.
 			sprintf( __( 'Select log entry %d', 'wpgraphql-logging' ), $log_id )
 		);
 	}
