@@ -1,3 +1,8 @@
+---
+title: "Example: Rendering WordPress Blocks in Next.js"
+description: "This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes 16 block components across various categories. Example includes a utility to convert flat blocks data from GraphQL (GQL) response into the hierarchical data structure. Passing this data into BlockRenderer component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content."
+---
+
 # Example: Rendering WordPress Blocks in Next.js
 
 This example demonstrates rendering WordPress Blocks with JSX in a Next.js project. The example includes 16 block components across various categories. Example includes a utility to convert flat blocks data from GraphQL (GQL) response into the hierarchical data structure. Passing this data into BlockRenderer component generates the WordPress content by matching the appropriate blocks and using a default block when block implementation is missing. Default block is also customizable component. Example also gives an option to provide custom HTML parser to render HTML content.

@@ -1,3 +1,8 @@
+---
+title: "SvelteKit Template Hierarchy and Data fetching w/URQL Example"
+description: "In this example we show how to implement the **WordPress Template Hierarchy in SvelteKit** for use with a Headless WordPress backend using WPGraphQL. We use **URQL** for all routing and fetching page content."
+---
+
 # SvelteKit Template Hierarchy and Data fetching w/URQL Example 🚀
 
 In this example we show how to implement the **WordPress Template Hierarchy in SvelteKit** for use with a Headless WordPress backend using WPGraphQL. We use **URQL** for all routing and fetching page content.
