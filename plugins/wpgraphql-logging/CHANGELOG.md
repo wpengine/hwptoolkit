@@ -1,5 +1,11 @@
 # WPGraphQL Logging
 
+## 1.0.0
+
+### Major Changes
+
+- [#497](https://github.com/wpengine/hwptoolkit/pull/497) [`01fc6c0`](https://github.com/wpengine/hwptoolkit/commit/01fc6c0eb29f432bc346d3ec5604eaa441ceedcd) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Initial release of WPGraphQL Logging Plugin.
+
 ## 0.2.3
 
 ### Patch Changes
