@@ -1,3 +1,8 @@
+---
+title: "Example: Create a custom WordPress sitemap with vanilla WPGraphQL and Apollo Client"
+description: "This example demonstrates how to generate a custom sitemap in a headless WordPress application using the Next.js framework. The example app fetches data from WordPress using Apollo Client and WPGraphQL. This example is using only the existing WPGraphQL endpoints, without extending it."
+---
+
 # Example: Create a custom WordPress sitemap with vanilla WPGraphQL and Apollo Client
 
 ## Overview

@@ -1,3 +1,8 @@
+---
+title: "Example: Gravity Forms in Headless WordPress with Nuxt/Vue"
+description: "This example shows you how to wire up a full headless WordPress backend—complete with Gravity Forms, WPGraphQL, and a pre-built \"Questionnaire\" form—alongside a Nuxt 3 front end that dynamically renders your forms using the GraphQL interfaces feature of WPGraphQL for Gravity Forms."
+---
+
 # Example: Gravity Forms in Headless WordPress with Nuxt/Vue
 
 This example shows you how to wire up a full headless WordPress backend—complete with Gravity Forms, WPGraphQL, and a pre-built "Questionnaire" form—alongside a Nuxt 3 front end that dynamically renders your forms using the GraphQL interfaces feature of WPGraphQL for Gravity Forms.
