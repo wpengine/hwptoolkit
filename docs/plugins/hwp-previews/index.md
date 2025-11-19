@@ -139,6 +139,10 @@ HWP Previews automatically integrates with [Faust.js](https://faustjs.org/) when
 * [Configure Previews](how-to/configure-previews/index.md)
 * [Integrate with Faust.js](how-to/integrate-with-faust/index.md)
 
+### Tutorials
+* [Build Previews with Next.js and WPGraphQL](tutorial/previews-with-wpgraphql/index.md)
+* [Build Previews with Next.js and REST API](tutorial/previews-with-rest/index.md)
+
 ### Explanation
 
 * [Core Concepts](explanation/core-concepts/index.md)

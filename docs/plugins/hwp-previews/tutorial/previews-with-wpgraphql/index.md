@@ -9,6 +9,9 @@ In this tutorial, we will build a Next.js application that displays WordPress co
 
 We will use Next.js Draft Mode, WPGraphQL for data fetching, and WordPress Application Passwords for authentication.
 
+> [!NOTE]
+> This tutorial uses WPGraphQL. If you prefer the REST API, see [Build Previews with Next.js and REST API](../previews-with-rest/index.md).
+
 > [!TIP]
 > You can see the completed project in the [hwp-preview-wpgraphql example](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews/examples/hwp-preview-wpgraphql).
 
@@ -20,7 +23,6 @@ By following this tutorial, you will create:
 * An API route that enables Next.js Draft Mode for previews
 * Preview functionality that shows draft content when you click "Preview" in WordPress
 * Authentication using WordPress Application Passwords
-
 
 ## Prerequisites
 
@@ -275,7 +277,7 @@ Now we need to create an Application Password in WordPress for authentication.
 4. Enter a name like "Next.js Preview"
 5. Click "Add Application Password"
 
-![WordPress Application Passwords section showing the form to generate a new application password with a name field and "Add Application Password" button](generate-application-password.png)
+![WordPress Application Passwords section showing the form to generate a new application password with a name field and "Add Application Password" button](../screenshots/generate-application-password.png)
 
 Copy the generated password (it will look like `xxxx xxxx xxxx xxxx xxxx xxxx`). You will not be able to see it again.
 
@@ -299,7 +301,7 @@ We will now configure the preview URL in WordPress to point to your Next.js app.
 5. Replace `YOUR_SECRET_TOKEN` with a random string (like `my-secret-preview-token-123`)
 6. Click "Save Changes"
 
-![WordPress HWP Previews settings page showing the Posts tab with "Enable HWP Previews" checkbox checked and a Preview URL Template field containing the localhost preview URL](configure-hwp-previews.png)
+![WordPress HWP Previews settings page showing the Posts tab with "Enable HWP Previews" checkbox checked and a Preview URL Template field containing the localhost preview URL](../screenshots/configure-hwp-previews.png)
 
 Update your `.env.local` file with the same secret token:
 
@@ -327,7 +329,7 @@ Now we will test that previews work correctly.
 
 You should be redirected to your Next.js application showing your draft content. Notice the URL includes your post ID.
 
-![Screenshot showing a Next.js application displaying WordPress draft content in preview mode, with the post title and content visible on the page](preview-view.png)
+![Screenshot showing a Next.js application displaying WordPress draft content in preview mode, with the post title and content visible on the page](../screenshots/preview-view.png)
 
 If you see your draft content, congratulations! Your preview system is working.
 
