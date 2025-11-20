@@ -107,7 +107,6 @@ Your front-end may be blocking iframe embedding. Either:
 - Make sure your front-end can properly handle authentication to show draft content
 - Configure your front-end to allow embedding from your WordPress domain
 - Switch to new tab mode by unchecking "Load Previews in Iframe"
-- Make sure you 
 
 ### Dynamic parameters show "PARAMETER_NOT_FOUND"
 
