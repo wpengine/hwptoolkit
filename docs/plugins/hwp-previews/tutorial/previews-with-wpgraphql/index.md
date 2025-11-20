@@ -298,7 +298,7 @@ We will now configure the preview URL in WordPress to point to your Next.js app.
    ```
    http://localhost:3000/api/preview?id={ID}&secret=YOUR_SECRET_TOKEN
    ```
-5. Replace `YOUR_SECRET_TOKEN` with a random string (like `my-secret-preview-token-123`)
+5. Replace `YOUR_SECRET_TOKEN` with a random string
 6. Click "Save Changes"
 
 ![WordPress HWP Previews settings page showing the Posts tab with "Enable HWP Previews" checkbox checked and a Preview URL Template field containing the localhost preview URL](../screenshots/configure-hwp-previews.png)
@@ -306,7 +306,7 @@ We will now configure the preview URL in WordPress to point to your Next.js app.
 Update your `.env.local` file with the same secret token:
 
 ```bash
-WP_PREVIEW_SECRET=my-secret-preview-token-123
+WP_PREVIEW_SECRET=YOUR_SECRET_TOKEN
 ```
 
 ## Step 10: Start your application
