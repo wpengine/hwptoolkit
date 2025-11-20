@@ -42,12 +42,10 @@ HWP Previews is a robust and extensible WordPress plugin that centralizes all pr
 It empowers site administrators and developers to tailor preview behaviors for each public post type independently, facilitating seamless headless or decoupled workflows.
 With HWP Previews, you can define dynamic URL templates, allow posts of all statuses to be used as parents, and extend functionality through flexible hooks and filters, ensuring a consistent and conflict-free preview experience across diverse environments.
 
+## Motivation
+In traditional WordPress, previewing content is straightforward: clicking the "Preview" button shows you a draft version of your post on the same WordPress site. However, in headless WordPress architectures, where the front-end is decoupled from WordPress, this simple mechanism breaks down. The front-end application lives on a different domain, knows nothing about WordPress authentication, and cannot automatically access unpublished content.
 
-
->[!IMPORTANT]
-> For Faust users, HWP Previews integrates seamlessly, automatically configuring settings to match Faust's preview system. This allows you to maintain your existing preview workflow without additional setup.
-
----
+This fundamental architectural shift creates what we call the "preview problem" in headless WordPress. HWP Previews was created to bridge this gap, providing a centralized, framework-agnostic solution to preview management.
 
 ## Features
 
@@ -57,6 +55,9 @@ With HWP Previews, you can define dynamic URL templates, allow posts of all stat
 - **Highly Customizable**: Extend core behavior with a comprehensive set of actions and filters.
 - **Faust Compatibility**: The plugin is compatible with [Faust.js](https://faustjs.org/) and the [FaustWP plugin](https://github.com/wpengine/faustjs/tree/canary/plugins/faustwp).
 
+
+>[!IMPORTANT]
+> For Faust users, HWP Previews integrates seamlessly, automatically configuring settings to match Faust's preview system. This allows you to maintain your existing preview workflow without additional setup.
 
 ## Getting Started
 
