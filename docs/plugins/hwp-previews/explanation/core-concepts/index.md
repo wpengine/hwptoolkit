@@ -3,8 +3,6 @@ title: "Core Concepts"
 description: "Deep dive explanations of the HWP Previews plugin's core concepts, architecture, and systems."
 ---
 
-## Overview
-
 This article provides an in-depth exploration of the fundamental concepts that power the HWP Previews plugin, covering the template-based URL system that enables framework-agnostic preview generation, the parameter registry that makes URLs dynamic and context-aware, the flexible post type configuration system, solutions for WordPress hierarchical content challenges, and the different preview modes available to content creators.
 
 ## Core Architectural Concepts

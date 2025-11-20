@@ -3,8 +3,6 @@ title: "How To Guide: Add or Remove a Rule"
 description: "Learn how to create and register custom logging rules with the WPGraphQL Logging plugin."
 ---
 
-## Overview
-
 This guide shows how to create a custom logging rule that only passes when the GraphQL query contains a specific substring (like "GetPost"), how to register it with the RuleManager, and how to remove existing rules.
 
 ### Architecture

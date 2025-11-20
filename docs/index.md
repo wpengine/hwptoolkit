@@ -3,8 +3,6 @@ title: "Overview"
 description: "A modern, framework-agnostic collection of plugins and packages for building headless WordPress applications."
 ---
 
-## What is the Headless WordPress Toolkit?
-
 The Headless WordPress Toolkit is a modern, framework-agnostic toolkit for building headless WordPress applications. It provides a collection of plugins, packages, and examples to help developers make WordPress a better headless CMS.
 
 Our goal is to provide developers with the tools they need to build fast, scalable, and secure headless applications with WordPress, without being tied to a specific frontend framework.
