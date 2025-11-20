@@ -3,8 +3,6 @@ title: "Installing HWP Toolkit Plugins with Composer"
 description: "A guide on how to install any HWP Toolkit plugin using Composer, which is the recommended way for modern WordPress development workflows."
 ---
 
-## Overview
-
 You can install any HWP Toolkit plugin using Composer, which is the recommended way for modern WordPress development workflows.
 
 You can also install them manually from our [Releases](https://github.com/wpengine/hwptoolkit/releases) page.
