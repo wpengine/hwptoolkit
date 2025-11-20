@@ -90,6 +90,21 @@ jobs:
           echo "package_version=$package_version" >> $GITHUB_OUTPUT
           echo "PLUGIN_DIR=$PLUGIN_DIR" >> $GITHUB_OUTPUT
 
+      - name: Determine release type
+        id: release_type
+        run: |
+          VERSION="${{ steps.metadata.outputs.package_version }}"
+          IS_PRERELEASE=true
+          RELEASE_TITLE_PREFIX="Pre-release"
+
+          if [[ ! "$VERSION" =~ ^0\. ]]; then
+            IS_PRERELEASE=false
+            RELEASE_TITLE_PREFIX="Release"
+          fi
+
+          echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+          echo "release_title_prefix=$RELEASE_TITLE_PREFIX" >> $GITHUB_OUTPUT
+
       - name: Create Git tag
         continue-on-error: false
         run: |
@@ -141,8 +156,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG_NAME }}
-          name: "Pre-release ${{ steps.metadata.outputs.package_version }} for ${{ steps.metadata.outputs.package_name }}"
-          prerelease: true
+          name: "${{ steps.release_type.outputs.release_title_prefix }} ${{ steps.metadata.outputs.package_version }} for ${{ steps.metadata.outputs.package_name }}"
+          prerelease: ${{ steps.release_type.outputs.is_prerelease }}
           files: |
             ${{ steps.metadata.outputs.PLUGIN_DIR }}/plugin-build/${{ steps.plugin.outputs.plugin_slug }}.zip
         env:
