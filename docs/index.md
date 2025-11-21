@@ -1,5 +1,5 @@
 ---
-title: "Overview"
+title: "Headless WordPress Toolkit"
 description: "A modern, framework-agnostic collection of plugins and packages for building headless WordPress applications."
 ---
 
