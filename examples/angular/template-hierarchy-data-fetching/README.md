@@ -7,7 +7,7 @@ description: "In this example we show how to implement the **WordPress Template 
 
 In this example we show how to implement the **WordPress Template Hierarchy in Angular** for use with a Headless WordPress backend using WPGraphQL.
 
-## Getting Started 🚀
+## Getting Started
 
 > [!IMPORTANT]
 > **Docker Desktop** needs to be installed to run WordPress locally.
@@ -24,7 +24,7 @@ In this example we show how to implement the **WordPress Template Hierarchy in A
 > [!NOTE]
 > When you kill the long running process this will not shutdown the local WP instance, only Angular. You must run `npm run example:stop` to kill the local WP server.
 
-## Trouble Shooting 🛠️
+## Trouble Shooting
 
 1. I get "Page Not Found. Sorry, the page you are looking for does not exist. Please check the URL." when opening the Angular app and trying to navigate through it.
 - Run `npm run backend:start` and verify that **http://localhost:3000/api/templates** returns correct data.

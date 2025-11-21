@@ -4,7 +4,7 @@ description: "A Next.js application that fetches and transforms WordPress sitema
 ---
 
 # WordPress to Next.js Sitemap Integration
-## Overview
+
 A Next.js application that fetches and transforms WordPress sitemaps with clean URL formatting, providing a seamless integration between WordPress content and Next.js frontend.
 
 ## Features
