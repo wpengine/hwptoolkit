@@ -1,5 +1,5 @@
 ---
-title: "Next.js Template Hierarchy and Data fetching w/URQL Example"
+title: "Next.js Template Hierarchy with URQL"
 description: "In this example we show how to implement the WP Template Hierarchy in Next.js for use with a headless WordPress backend using WPGraphQL. We use URQL for all routing and fetching page content."
 ---
 

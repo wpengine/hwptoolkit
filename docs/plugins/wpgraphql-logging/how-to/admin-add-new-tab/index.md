@@ -3,8 +3,6 @@ title: "How To Guide: Add a new Settings Tab"
 description: "Learn how to add custom settings tabs to the WPGraphQL Logging plugin admin interface."
 ---
 
-## Overview
-
 In this guide, you will learn how to extend the WPGraphQL Logging plugin's admin interface by creating custom settings tabs with their own fields and configuration options.
 
 We will demonstrate how to create a new settings tab, add custom fields to it, and integrate it with the plugin's settings system. This approach is useful for organizing related configuration options, creating plugin-specific settings sections, or providing users with dedicated interfaces for managing complex logging behaviors and integrations with external services.

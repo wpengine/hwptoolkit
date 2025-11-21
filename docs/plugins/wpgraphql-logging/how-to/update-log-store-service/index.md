@@ -3,8 +3,6 @@ title: "How To Guide: Update the Log Store Service"
 description: "Learn how to replace the default database logging with a custom log storage implementation in the WPGraphQL Logging plugin."
 ---
 
-## Overview
-
 The WPGraphQL Logging plugin provides a robust database logging solution out of the box. However, for advanced use cases or integration with external logging systems, you can replace the default storage mechanism with your own custom implementation.
 
 This is made possible by the `wpgraphql_logging_log_store_service` filter.

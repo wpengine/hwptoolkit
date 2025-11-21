@@ -1,9 +1,9 @@
 ---
-title: "Astro Headless WordPress Previews Example"
+title: "Astro Headless WordPress Previews"
 description: "In this example, we show how to implement **Headless WordPress Previews in Astro** using the **`hwp-previews`** plugin and WPGraphQL. This setup allows content creators to preview draft posts directly in the Astro frontend from the WordPress admin panel. We use **URQL** for all routing and fetching page content."
 ---
 
-# Astro Headless WordPress Previews Example 🚀
+# Astro Headless WordPress Previews Example
 
 In this example, we show how to implement **Headless WordPress Previews in Astro** using the **`hwp-previews`** plugin and WPGraphQL. This setup allows content creators to preview draft posts directly in the Astro frontend from the WordPress admin panel. We use **URQL** for all routing and fetching page content.
 
@@ -25,6 +25,6 @@ In this example, we show how to implement **Headless WordPress Previews in Astro
 3.  Edit any draft post.
 4.  In the editor, click the **"Preview"** button. The post should open in the Astro frontend, displaying the draft content.
 
-## Trouble Shooting 🛠️
+## Trouble Shooting
 
 To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.

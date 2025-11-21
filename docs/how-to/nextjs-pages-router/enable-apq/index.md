@@ -3,8 +3,6 @@ title: "Enable Automatic Persisted Queries in Next.js Pages Router"
 description: "Learn how to reduce latency and network strain in GraphQL queries using Automatic Persisted Queries (APQ) by hashing and reusing query hashes."
 ---
 
-## Overview
-
 GraphQL queries can use very detailed and long queries to get the appropriate data fields. These queries can increase the latency and put strain on the network. Automatic Persisted Queries (APQ) provides an effective solution to this issue, by hashing the queries and sending the hashes for repeated queries instead of sending the full query string.
 
 To benefit APQ in your headless WordPress project both your front-end and WordPress setup should support this functionality.
@@ -16,7 +14,7 @@ This guide covers how to implement APQ with Apollo Client and WPGraphQL Smart Ca
 > [!NOTE]  
 > Automatic Persisted Queries only helps you to reduce your request size. This technique don't cache the response you get from the server.
 
-## 0. Prerequisites
+## Prerequisites
 
 1. A WordPress installation with
    - [WPGraphQL plugin](https://wordpress.org/plugins/wp-graphql/)

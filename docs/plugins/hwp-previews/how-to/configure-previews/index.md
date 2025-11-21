@@ -3,8 +3,6 @@ title: "Configure Previews"
 description: "Learn how to configure preview functionality using the HWP Previews plugin in your headless WordPress application."
 ---
 
-## Overview
-
 This guide shows you how to configure preview URLs for your headless WordPress site using HWP Previews. You'll set up preview links that redirect from WordPress to your front-end application with the necessary context data.
 
 > [!TIP]

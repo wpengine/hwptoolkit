@@ -3,26 +3,13 @@ title: "WPGraphQL Logging Plugin"
 description: "WPGraphQL Logging plugin provides observability and visibility into the GraphQL request and event lifecycle. This capability gives users the understandability needed to quickly identify and resolve performance issues and bottlenecks within their headless WordPress application."
 ---
 
-# Introduction
-
 **WPGraphQL Logging Plugin** provides **observability and visibility** into the **GraphQL request and event lifecycle**.
 
 This allows users to **quickly identify** and **resolve performance issues** and bottlenecks within their headless WordPress application.
 
-## Table of Contents
-
-* [Key Features](#key-features)
-* [Setup](#setup)
-* [Project Structure](#project-structure)
-* [Viewing Logs](#viewing-logs)
-* [Uninstallation](#uninstallation)
-* [How to Guides](#how-to-guides)
-* [Contributing](#contributing)
-
-
 ## Key Features
 
-### ♻️ WPGraphQL Event Lifecycle
+### WPGraphQL Event Lifecycle
 
 The plugin captures key events for the WPGraphQL event lifecycle (configurable)
 
@@ -33,23 +20,23 @@ The plugin captures key events for the WPGraphQL event lifecycle (configurable)
 * **Response Headers**
 * **Request Results**
 
-### 🎧 Pub/Sub Event System
+### Pub/Sub Event System
 
 Built with developers and plugins in mind, the plugin allows users to listen to individual events and transform or collect data from those events.
 
-### 🛠️ Monolog Implementation
+### Monolog Implementation
 
 The plugin is built using the PHP logging library [Monolog](https://github.com/Seldaek/monolog) with a default handler to log data to the database. The plugin can easily be extended to add, change or remove default processors and handlers.
 
-### 🔍 Rule based logging
+### Rule based logging
 
 The plugin determines whether to log an event based on a set rules defined in a rule manager. This is built to be easily extended by users to customize or add their own rules.
 
-### 📦 Data Management
+### Data Management
 
 The plugin provides comprehensive data management capabilities, allowing you to configure which fields should be removed, truncated, or anonymized to protect sensitive information.
 
-### 📈 Admin UI
+### Admin UI
 
 The plugin delivers a admin UI with some filtering of logs around dates or level and the ability to download logs in CSV format.
 
@@ -184,27 +171,6 @@ define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
 
 > \[!WARNING]
 > **Data Loss Warning**: When `WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN` is defined as `true`, deactivating the plugin will permanently delete all logged data and drop the plugin's database tables. This action is irreversible.
-
-## How to Guides
-
-### 🛠️ Logging
-
-* [Add a New Handler](how-to/logger-add-handler/index.md)
-* [Add a New Processor](how-to/logger-add-processor/index.md)
-* [Add or Remove a Rule](how-to/logger-add-remove-rules/index.md)
-* [Update the Log Store Service](how-to/update-log-store-service/index.md)
-
-### ♻️ Events
-
-* [Use the Events Pub/Sub system](how-to/event-pub-sub/index.md)
-* [Add Data to an Event](how-to/event-add-context/index.md)
-
-### 📈 Admin
-
-* [Add a new Settings Field](how-to/admin-add-fields/index.md)
-* [Add a new Settings Tab](how-to/add-add-new-tab/index.md)
-* [Update the Admin Grid](how-to/admin_add_view_column.md)
-
 
 ## Contributing
 

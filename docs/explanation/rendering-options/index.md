@@ -3,8 +3,6 @@ title: "Headless WordPress Rendering Options"
 description: "A guide that explores the various approaches to rendering content from a headless WordPress installation, their trade-offs, and best practices."
 ---
 
-## Introduction
-
 This document explores the various approaches to rendering content from a headless WordPress installation. As a front-end developer working with headless WordPress, you'll need to make important decisions about how to handle and display WordPress content in your frontend application. This guide aims to help you understand the available options, their trade-offs, and best practices.
 
 ### 1. Rendering Raw HTML Content from WordPress Classic Editor

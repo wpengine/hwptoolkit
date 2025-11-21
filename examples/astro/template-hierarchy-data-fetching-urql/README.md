@@ -1,5 +1,5 @@
 ---
-title: "Astro Template HIerarchy and Data fetching w/URQL Example"
+title: "Astro Template Hierarchy with URQL"
 description: "In this example we show how to implement the WP Template Hierarchy in Astro for use with a Headless WordPress backend using WPGraphQL. We use URQL for all routing and fetching page content."
 ---
 

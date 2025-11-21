@@ -3,8 +3,6 @@ title: "How To Guide: Add Data to an Event"
 description: "Learn how to add custom context data to WPGraphQL Logging event."
 ---
 
-## Overview
-
 In this guide, you will learn how to extend the logging capabilities of WPGraphQL Logging by transforming events and adding custom context data.
 
 We will demonstrate how to modify event payloads before they are logged, which can be useful for adding application-specific metadata, changing log levels dynamically, or enriching log entries with additional debugging information that helps with monitoring and troubleshooting your GraphQL operations.

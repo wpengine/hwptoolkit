@@ -5,7 +5,7 @@ description: "Step-by-step guides for implementing specific features and achievi
 
 I see you found the root of the How-to guides! How-to guides are a place where we walk you through implementing specific features of the Headless WordPress Toolkit. If you are looking to achieve a specific goal with the toolkit, you are in the right place.
 
-> [!note] Learn More
+> [!NOTE] Learn More
 > For more info on how we layout our documentation and the the role played by How-to guides, please read about the [_Diátaxis_](https://diataxis.fr/how-to-guides/) approach we use.
 
 ## Contributing

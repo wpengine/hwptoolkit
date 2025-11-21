@@ -3,8 +3,6 @@ title: "Sitemaps in Headless WordPress"
 description: "A guide on sitemaps in headless WordPress. It explains the challenges, and the different implementation approaches for sitemap generation."
 ---
 
-## A Comprehensive Overview
-
 ## What is a Sitemap?
 A sitemap is an XML file that provides a structured list of pages on a website by helping search engines discover and crawl content more efficiently. It acts as a roadmap of your website's structure, containing important metadata about each page.
 Since WordPress 5.5, there's a built-in XML sitemap generator that:
