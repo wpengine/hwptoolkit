@@ -72,12 +72,15 @@ $hwp_previews_faust_integration = Faust_Integration::init();
 							<div class="inside hwp-previews-docs">
 
 								<ul>
-									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#getting-started" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Getting Started', 'hwp-previews' ); ?></a></li>
-									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#front-end-integration" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Front-End Integration', 'hwp-previews' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#hwp-previews" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Getting Started', 'hwp-previews' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/hwp-previews/how-to/configure-previews/index.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Configure Previews', 'hwp-previews' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/hwp-previews/explanation/core-concepts/index.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Core Concepts', 'hwp-previews' ); ?></a></li>
 									<?php if ( $hwp_previews_faust_integration->get_faust_enabled() ) : ?>
-										<li><a href="https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews#using-with-faustjs" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Using With Faust.js', 'hwp-previews' ); ?></a></li>
+										<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/hwp-previews/how-to/integrate-with-faust/index.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Using With Faust.js', 'hwp-previews' ); ?></a></li>
 									<?php endif; ?>
-									<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/plugins/hwp-previews/ACTIONS_AND_FILTERS.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Actions and Filters', 'hwp-previews' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/hwp-previews/explanation/actions-and-filters/index.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Actions and Filters', 'hwp-previews' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/hwp-previews/tutorial/previews-with-wpgraphql/index.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Build Previews with Next.js and WPGraphQL', 'hwp-previews' ); ?></a></li>
+									<li><a href="https://github.com/wpengine/hwptoolkit/blob/main/docs/plugins/hwp-previews/tutorial/previews-with-rest/index.md" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Build Previews with Next.js and REST API', 'hwp-previews' ); ?></a></li>
 								</ul>
 								<p><?php esc_html_e( 'HWP Previews is part of the HWP Toolkit, our comprehensive suite of tools and examples for headless WordPress.', 'hwp-previews' ); ?></p>
 								<p><a class="button-secondary" href="https://github.com/wpengine/hwptoolkit" target="_blank" rel="noopener noreferrer">HWP Toolkit on GitHub</a></p>

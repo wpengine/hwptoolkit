@@ -1,19 +1,10 @@
-# Actions & Filters
-
-## Table of Contents
-
-- [PHP Actions](#php-actions)
-- [PHP Filters](#php-filters)
-- [Examples](#examples)
-  - [Actions](#actions)
-  - [Filters](#filters)
-- [Contributing](#contributing)
-
+---
+title: "Actions and Filters"
+description: "Learn about the available PHP actions and filters in HWP Previews plugin for customizing plugin behavior, settings, and integrations."
 ---
 
 This document lists the available PHP actions and filters provided by the HWP Previews plugin, along with explanations and usage examples. These hooks allow you to customize plugin behavior, settings, and integration with other plugins or your theme.
 
----
 
 ## PHP Actions
 
@@ -25,7 +16,6 @@ This document lists the available PHP actions and filters provided by the HWP Pr
 | `hwp_previews_settings_init`                  | Fired after the settings page is initialized.                                                 |
 | `hwp_previews_settings_form_manager_init`     | Fired after the settings form manager is initialized.                                         |
 
----
 
 ## PHP Filters
 
@@ -39,7 +29,6 @@ This document lists the available PHP actions and filters provided by the HWP Pr
 | `hwp_previews_filter_available_post_types`          | Filter the available post types for previews (affects settings UI and preview logic).                       |
 | `hwp_previews_filter_available_post_statuses`       | Filter the available post statuses for previews.                                                            |
 
----
 
 ## Examples
 
