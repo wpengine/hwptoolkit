@@ -1,5 +1,5 @@
 ---
-title: "Angular Template Hierarchy and Data fetching Example"
+title: "Angular Template Hierarchy and Data Fetching"
 description: "In this example we show how to implement the **WordPress Template Hierarchy in Angular** for use with a Headless WordPress backend using WPGraphQL."
 ---
 

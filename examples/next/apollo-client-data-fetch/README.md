@@ -1,5 +1,5 @@
 ---
-title: "Fetching data from WordPress with Apollo Client in Next.js"
+title: "Next.js Data Fetching with Apollo Client"
 description: "This example demonstrates various approaches to integrate WordPress as a headless CMS with a Next.js frontend using Apollo Client. It showcases different data fetching strategies, state management techniques, and modern web development patterns in a real-world application context."
 ---
 

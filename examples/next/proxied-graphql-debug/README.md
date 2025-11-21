@@ -1,5 +1,5 @@
 ---
-title: "WordPress GraphQL Proxy Debugger"
+title: "Next.js GraphQL Proxy Debugger"
 description: "A debugging utility for proxied GraphQL APIs within WordPress environments, offering enhanced query inspection, request/response logging, and real-time query complexity estimation."
 ---
 

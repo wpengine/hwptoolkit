@@ -1,5 +1,5 @@
 ---
-title: "Create a custom WordPress sitemap with WPGraphQL and Apollo Client"
+title: "Next.js Custom Sitemap with Apollo Client"
 description: "This example demonstrates how to generate a custom sitemap in a headless WordPress application using the Next.js framework. The example app fetches data from WordPress using Apollo Client and WPGraphQL. Since WPGraphQL doesn't support sitemaps natively, we are extending it with a custom plugin, which is included in this example as well. This plugin exposes new fields to fetch the sitemap index, with data identical to what's rendered on the native WordPress sitemap. Another field exposed by this plugin allows you to request sitemap subpages by specifying the types and pages. The plugin also adds featured image data, enabling you to create [Image Sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps)."
 ---
 

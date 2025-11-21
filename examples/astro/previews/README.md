@@ -1,5 +1,5 @@
 ---
-title: "Astro Headless WordPress Previews Example"
+title: "Astro Headless WordPress Previews"
 description: "In this example, we show how to implement **Headless WordPress Previews in Astro** using the **`hwp-previews`** plugin and WPGraphQL. This setup allows content creators to preview draft posts directly in the Astro frontend from the WordPress admin panel. We use **URQL** for all routing and fetching page content."
 ---
 
