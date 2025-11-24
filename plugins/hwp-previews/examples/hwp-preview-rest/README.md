@@ -1,16 +1,26 @@
-# Example: Headless WordPress Previews with Nextjs App Router and REST API
+---
+title: "Headless WordPress Previews with Next.js App Router and REST API"
+description: "This demonstrates the usage of HWP Previews with Next.js App Router and REST API. It uses JWT authentication to fetch posts in draft status and implements a login modal for front-end authentication, showcasing an alternative approach to the Draft Mode implementation."
+---
+
+# Example: Headless WordPress Previews with Next.js App Router and REST API
 
 > [!NOTE]
-> Check out [HWP Previews WPGraphQL example](../hwp-preview-wpgraphql) if you need the previews implementation with Nextjs pages router, Draft Mode or WordPress Application Passwords.
+> Check out [HWP Previews WPGraphQL example](../hwp-preview-wpgraphql) if you need the previews implementation with Next.js pages router, Draft Mode or WordPress Application Passwords.
 
 ## Overview
 
-The purpose of this example is to showcase different use cases of HWP Previews. The example demonstrates the usage of [HWP Previews](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews) with Nextjs App Router and REST API. Example uses credentials authentication to fetch the posts in draft status. Unlike [HWP Previews WPGraphQL example](../hwp-preview-wpgraphql) this example don't use [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode).
+The purpose of this example is to showcase different use cases of HWP Previews. The example demonstrates the usage of [HWP Previews](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews) with Next.js App Router and REST API. Example uses credentials authentication to fetch the posts in draft status. Unlike [HWP Previews WPGraphQL example](../hwp-preview-wpgraphql) this example doesn't use [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode).
 
 The example includes a wp-env setup, which will allow you to build and start this example quickly. With this wp-env setup, you don't need to have a separate WordPress instance or demo data to inspect the example.
 
-> [!CAUTION]
-> The HWP Previews plugin is currently in beta. While it's more stable than earlier versions, you may still encounter occasional bugs or incomplete features. Regular updates will continue as development progresses. Use with care and consider providing feedback to help improve the plugin.
+## What does this example do
+
+1. Preview posts, pages and custom post types using WordPress REST API
+2. Use JWT authentication for secure access to draft content
+3. Next.js App Router implementation without Draft Mode
+4. Login modal for front-end authentication
+5. Configured WordPress instance with demo data and required plugins, using wp-env.
 
 ## Screenshots
 
@@ -52,23 +62,20 @@ The example includes a wp-env setup, which will allow you to build and start thi
 
 **Note** Please make sure you have all prerequisites installed as mentioned above and Docker running (`docker ps`)
 
-### Setup Repository and Packages
+### 1. Setup Repository and Packages
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && npm install`
 
-### Build and start the application
+### 2. Build and start the application
 
-- `cd examples/next/hwp-preview-rest`
+- `cd plugins/hwp-previews/examples/hwp-preview-rest`
 - Then run `npm run example:build` will build and start your application.
-- This does the following:
-  - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
-  - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
-  - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
-  - Install Next.js dependencies for `example-app`
-  - Runs the Next.js dev script
 
-Congratulations, WordPress should now be fully set up.
+This starts the wp-env instance and frontend application. You can access them now, but one more installation step remains.
+
+> [!IMPORTANT]
+> After logging in to the WordPress instance, ensure that all installed plugins are activated for this example to work properly.
 
 | Frontend               | Admin                           |
 | ---------------------- | ------------------------------- |
@@ -76,23 +83,21 @@ Congratulations, WordPress should now be fully set up.
 
 > **Note:** The login details for the admin is username "admin" and password "password"
 
-### Add environment variable to the Nextjs
+### 3. Add environment variable to the Next.js application
 
-Create a .env file under `examples/next/hwp-preview-rest/example-app` and add copy-paste the environment variable below:
-
+Create a .env file under `plugins/hwp-previews/examples/hwp-preview-rest/example-app` and add the environment variable below:
 
 ```bash
 NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
 ```
 
-### Usage
-
-After completing this step, login to your [WordPress instance](http://localhost:8888) and preview the posts as usual. Since all of the settings are configured for this example, clicking the preview button should redirect you to the front-end URL. To see the draft posts and pages you will need to login your WordPress account on front-end website, using the same credentials.
-
-If you want to learn more about the preview plugin, check out [the documentation](/plugins/hwp-previews/README.md).
-
 > [!CAUTION]
-> This setup is intended for demonstration purposes only. For production use, you should consider the security implications and implement appropriate measures based on your project’s specific needs.
+> This setup is intended for demonstration purposes only. For production use, you should consider the security implications and implement appropriate measures based on your project's specific needs.
+
+
+After completing this step, clicking the preview button in wp-admin should open the preview in your front-end app. Login with your admin credentials on the frontend to enable draft preview functionality.
+
+If you want to learn more about the preview plugin, check out [the documentation](../../../../docs/plugins/hwp-previews/index.md).
 
 ### Command Reference
 
