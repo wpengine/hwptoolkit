@@ -1,12 +1,9 @@
-# This does the following:
-# 1. Detects modified plugins in the plugins/ directory
-# 2. Runs WordPress Plugin Check using the official action
-# 3. Creates a matrix job for each changed plugin
-# 4. Results appear as file annotations directly in PRs
-# Bonus: This means you can have plugin specific badges e.g.
-# [![Plugin Check](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20Plugin%20Check&label=Plugin%20Check)](https://github.com/wpengine/hwptoolkit/actions)
+# Runs WordPress Plugin Check on modified plugins to ensure compliance with
+# WordPress.org guidelines and coding standards.
+#
+# https://wordpress.org/plugins/plugin-check/
 
-name: WordPress Plugin Check
+name: Plugin Check
 
 on:
   push:
@@ -23,7 +20,7 @@ on:
 jobs:
   detect-plugins:
     runs-on: ubuntu-latest
-    name: Detect plugins for Plugin Check
+    name: Detect modified plugins
     outputs:
       plugins: ${{ steps.detect.outputs.plugins }}
       has-plugins: ${{ steps.detect.outputs.has-plugins }}
@@ -42,11 +39,10 @@ jobs:
               ${{ github.event.pull_request.head.sha }}
           fi
 
-      - name: Detect plugins
+      - name: Set output
         id: detect
         run: |
           if [ -z "${{ steps.plugin.outputs.plugins }}" ] || [ "${{ steps.plugin.outputs.plugins }}" = "[]" ]; then
-            echo "No plugins detected"
             echo "plugins=[]" >> $GITHUB_OUTPUT
             echo "has-plugins=false" >> $GITHUB_OUTPUT
             exit 0
@@ -62,7 +58,7 @@ jobs:
       matrix:
         plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
       fail-fast: false
-    name: ${{ matrix.plugin }} Plugin Check
+    name: ${{ matrix.plugin }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
