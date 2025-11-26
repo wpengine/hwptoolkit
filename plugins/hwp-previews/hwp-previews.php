@@ -141,13 +141,3 @@ add_action( 'init', 'hwp_previews_load_textdomain', 1, 0 );
 
 /** @psalm-suppress HookNotFound */
 add_action( 'plugins_loaded', 'hwp_previews_init', 15, 0 );
-
-/**
- * INTENTIONAL VIOLATION FOR TESTING PLUGIN CHECK - REMOVE AFTER TEST
- *
- * @todo Remove this function after testing Plugin Check workflow.
- */
-function hwp_previews_test_violation(): void {
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Intentional for testing
-	echo $_GET['test'];
-}
