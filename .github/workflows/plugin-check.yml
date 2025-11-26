@@ -1,0 +1,78 @@
+# This does the following:
+# 1. Detects modified plugins in the plugins/ directory
+# 2. Runs WordPress Plugin Check using the official action
+# 3. Creates a matrix job for each changed plugin
+# 4. Results appear as file annotations directly in PRs
+# Bonus: This means you can have plugin specific badges e.g.
+# [![Plugin Check](https://img.shields.io/github/check-runs/wpengine/hwptoolkit/main?checkName=hwp-previews%20Plugin%20Check&label=Plugin%20Check)](https://github.com/wpengine/hwptoolkit/actions)
+
+name: WordPress Plugin Check
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'plugins/*/**.php'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'plugins/*/**.php'
+
+jobs:
+  detect-plugins:
+    runs-on: ubuntu-latest
+    name: Detect plugins for Plugin Check
+    outputs:
+      plugins: ${{ steps.detect.outputs.plugins }}
+      has-plugins: ${{ steps.detect.outputs.has-plugins }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed plugin directories
+        id: plugin
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            bash .github/scripts/get_plugin_slug.sh main
+          else
+            bash .github/scripts/get_plugin_slug.sh \
+              ${{ github.event.pull_request.base.sha }} \
+              ${{ github.event.pull_request.head.sha }}
+          fi
+
+      - name: Detect plugins
+        id: detect
+        run: |
+          if [ -z "${{ steps.plugin.outputs.plugins }}" ] || [ "${{ steps.plugin.outputs.plugins }}" = "[]" ]; then
+            echo "No plugins detected"
+            echo "plugins=[]" >> $GITHUB_OUTPUT
+            echo "has-plugins=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "plugins=${{ steps.plugin.outputs.plugins }}" >> $GITHUB_OUTPUT
+          echo "has-plugins=${{ steps.plugin.outputs.has-plugins }}" >> $GITHUB_OUTPUT
+
+  plugin-check:
+    needs: detect-plugins
+    if: needs.detect-plugins.outputs.has-plugins == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
+      fail-fast: false
+    name: ${{ matrix.plugin }} Plugin Check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: plugins/${{ matrix.plugin }}
+          exclude-directories: |
+            .git
+            vendor
+            node_modules
+            tests
