@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.13
+
+### Patch Changes
+
+- [#519](https://github.com/wpengine/hwptoolkit/pull/519) [`0dff8ff`](https://github.com/wpengine/hwptoolkit/commit/0dff8fff953767fd33c2a864909955b28a620b75) Thanks [@ahuseyn](https://github.com/ahuseyn)! - Changed documentation links on wp-admin
+
 ## 0.0.12
 
 ### Patch Changes
