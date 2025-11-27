@@ -17,7 +17,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 // Only proceed if the uninstall constant is defined.
 if ( ! defined( 'HWP_PREVIEWS_UNINSTALL_PLUGIN' ) || ! HWP_PREVIEWS_UNINSTALL_PLUGIN ) {
-	exit;
+	return;
 }
 
 // Define constants if not already defined.
