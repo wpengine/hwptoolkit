@@ -35,6 +35,7 @@
 - [Using With Faust.js](#using-with-faustjs)
 - [Extending the Functionality](#extending-the-functionality)
 - [Testing](#testing)
+- [Uninstallation](#uninstallation)
 
 ## Overview
 
@@ -170,6 +171,18 @@ See the [Actions & Filters documentation](ACTIONS_AND_FILTERS.md) for a comprehe
 ## Testing
 
 See [Testing.md](TESTING.md) for details on how to test the plugin.
+
+## Uninstallation
+
+By default, HWP Previews preserves all settings when the plugin is deactivated to prevent accidental data loss.
+
+If you would like to remove all plugin settings and data, you must set the PHP constant before you uninstall the plugin:
+
+```php
+define( 'HWP_PREVIEWS_UNINSTALL_PLUGIN', true );
+```
+
+You can add this constant to your `wp-config.php` file if you want to enable automatic cleanup during uninstallation.
 
 ## Screenshots
 
