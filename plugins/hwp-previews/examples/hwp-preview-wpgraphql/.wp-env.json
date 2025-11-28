@@ -4,7 +4,7 @@
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
     "https://github.com/AdvancedCustomFields/acf/releases/latest/download/advanced-custom-fields.zip",
     "https://github.com/wp-graphql/wpgraphql-acf/releases/latest/download/wpgraphql-acf.zip",
-    "../../"
+    "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.12/hwp-previews.zip"
   ],
   "config": {
     "WP_DEBUG": true,

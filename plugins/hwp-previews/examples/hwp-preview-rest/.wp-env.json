@@ -2,7 +2,7 @@
   "phpVersion": "7.4",
   "plugins": [
     "https://github.com/Tmeister/wp-api-jwt-auth/archive/refs/tags/1.3.8.zip",
-    "../../../plugins/hwp-previews"
+    "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.12/hwp-previews.zip"
   ],
   "config": {
     "WP_DEBUG": true,

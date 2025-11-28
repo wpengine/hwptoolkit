@@ -119,6 +119,18 @@ To implement previews from scratch, refer to your framework's documentation:
 
 HWP Previews automatically integrates with [Faust.js](https://faustjs.org/) when both plugins are active. See the [Integrate with Faust.js](how-to/integrate-with-faust/index.md) guide for details.
 
+## Uninstallation
+
+By default, HWP Previews preserves all settings when the plugin is deactivated to prevent accidental data loss.
+
+If you would like to remove all plugin settings and data, you must set the PHP constant before you uninstall the plugin:
+
+```php
+define( 'HWP_PREVIEWS_UNINSTALL_PLUGIN', true );
+```
+
+You can add this constant to your `wp-config.php` file if you want to enable automatic cleanup during uninstallation.
+
 ## Contributing
 
 If you feel like something is missing or you want to add documentation, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.
