@@ -42,7 +42,8 @@ jobs:
       - name: Set output
         id: detect
         run: |
-          if [ -z "${{ steps.plugin.outputs.plugins }}" ] || [ "${{ steps.plugin.outputs.plugins }}" = "[]" ]; then
+          # get_plugin_slug.sh outputs: slug, plugins (JSON array), has-plugins
+          if [ -z "${{ steps.plugin.outputs.slug }}" ]; then
             echo "plugins=[]" >> $GITHUB_OUTPUT
             echo "has-plugins=false" >> $GITHUB_OUTPUT
             exit 0
