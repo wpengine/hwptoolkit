@@ -3,8 +3,6 @@ title: "Build Previews with Next.js and WPGraphQL"
 description: "Learn how to build a Next.js application with WordPress preview functionality using WPGraphQL and the HWP Previews plugin."
 ---
 
-## Overview
-
 In this tutorial, we will build a Next.js application that displays WordPress content and enables preview functionality for draft posts. By the end, you will have a working headless WordPress setup where clicking "Preview" in WordPress opens your draft content in Next.js.
 
 We will use Next.js Draft Mode, WPGraphQL for data fetching, and WordPress Application Passwords for authentication.

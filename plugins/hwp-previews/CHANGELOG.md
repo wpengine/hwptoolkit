@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 0.0.14
+
+### Patch Changes
+
+- [#525](https://github.com/wpengine/hwptoolkit/pull/525) [`a120c89`](https://github.com/wpengine/hwptoolkit/commit/a120c899d6f8fe2b11ec122e142da24d7859dbda) Thanks [@ahuseyn](https://github.com/ahuseyn)! - Add optional data cleanup on uninstall via HWP_PREVIEWS_UNINSTALL_PLUGIN constant
+
 ## 0.0.13
 
 ### Patch Changes

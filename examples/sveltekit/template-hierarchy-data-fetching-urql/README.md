@@ -1,9 +1,9 @@
 ---
-title: "SvelteKit Template Hierarchy and Data fetching w/URQL Example"
+title: "SvelteKit Template Hierarchy with URQL"
 description: "In this example we show how to implement the **WordPress Template Hierarchy in SvelteKit** for use with a Headless WordPress backend using WPGraphQL. We use **URQL** for all routing and fetching page content."
 ---
 
-# SvelteKit Template Hierarchy and Data fetching w/URQL Example 🚀
+# SvelteKit Template Hierarchy and Data fetching w/URQL Example
 
 In this example we show how to implement the **WordPress Template Hierarchy in SvelteKit** for use with a Headless WordPress backend using WPGraphQL. We use **URQL** for all routing and fetching page content.
 
@@ -18,6 +18,6 @@ In this example we show how to implement the **WordPress Template Hierarchy in S
 > [!NOTE]
 > When you kill the long running process this will not shutdown the local WP instance, only SvelteKit. You must run `npm run example:stop` to kill the local WP server.
 
-## Trouble Shooting 🛠️
+## Trouble Shooting
 
 To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.

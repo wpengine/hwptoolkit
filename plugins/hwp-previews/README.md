@@ -19,7 +19,6 @@
 -----
 
 
-
 > [!CAUTION]
 > This plugin is currently in a beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible. You can create an issue at [https://github.com/wpengine/hwptoolkit/issues](https://github.com/wpengine/hwptoolkit/issues)
 
@@ -77,6 +76,18 @@ For detailed usage instructions, developer references, and examples, visit our c
 ## Testing
 
 See [Testing.md](TESTING.md) for details on how to test the plugin.
+
+## Uninstallation
+
+By default, HWP Previews preserves all settings when the plugin is deactivated to prevent accidental data loss.
+
+If you would like to remove all plugin settings and data, you must set the PHP constant before you uninstall the plugin:
+
+```php
+define( 'HWP_PREVIEWS_UNINSTALL_PLUGIN', true );
+```
+
+You can add this constant to your `wp-config.php` file if you want to enable automatic cleanup during uninstallation.
 
 ## Screenshots
 

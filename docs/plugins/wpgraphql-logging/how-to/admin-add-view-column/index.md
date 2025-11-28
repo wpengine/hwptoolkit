@@ -3,8 +3,6 @@ title: "How To Guide: Update the Admin Grid"
 description: "Learn how to add custom columns to the WPGraphQL Logging plugin admin logs table."
 ---
 
-## Overview
-
 This guide shows how to add a custom column to the Logs list table using the provided filters. We’ll add a Memory Peak Usage column sourced from the log entry’s `extra.memory_peak_usage`.
 
 ### Hooks overview
