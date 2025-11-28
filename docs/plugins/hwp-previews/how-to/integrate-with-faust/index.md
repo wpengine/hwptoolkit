@@ -3,8 +3,6 @@ title: "Integrate with Faust.js"
 description: "Learn how to integrate the HWP Previews plugin with Faust.js in your headless WordPress application."
 ---
 
-## Overview
-
 This guide shows you how to use HWP Previews with Faust.js. The integration happens automatically when both plugins are installed.
 
 ## Prerequisites

@@ -3,23 +3,9 @@ title: "HWP Previews"
 description: "HWP Previews plugin enables seamless preview functionality for headless WordPress applications, allowing content creators to preview their changes in the frontend application before publishing."
 ---
 
-## Introduction
-
 **HWP Previews** is a headless preview solution for WordPress that provides fully configurable preview URLs via a settings interface.
 
 This plugin bridges the preview gap in headless WordPress architectures, allowing content creators to preview their changes in the front-end application before publishing.
-
-## Table of Contents
-
-* [Key Features](#key-features)
-* [Setup](#setup)
-* [Project Structure](#project-structure)
-* [Configuration](#configuration)
-* [Front-End Integration](#front-end-integration)
-* [Using With Faust.js](#using-with-faustjs)
-* [Uninstallation](#uninstallation)
-* [Documentation](#documentation)
-* [Contributing](#contributing)
 
 ## Key Features
 
@@ -144,21 +130,6 @@ define( 'HWP_PREVIEWS_UNINSTALL_PLUGIN', true );
 ```
 
 You can add this constant to your `wp-config.php` file if you want to enable automatic cleanup during uninstallation.
-
-## Documentation
-
-### How-to guides
-
-* [Configure Previews](how-to/configure-previews/index.md)
-* [Integrate with Faust.js](how-to/integrate-with-faust/index.md)
-
-### Tutorials
-* [Build Previews with Next.js and WPGraphQL](tutorial/previews-with-wpgraphql/index.md)
-* [Build Previews with Next.js and REST API](tutorial/previews-with-rest/index.md)
-
-### Explanation
-
-* [Core Concepts](explanation/core-concepts/index.md)
 
 ## Contributing
 

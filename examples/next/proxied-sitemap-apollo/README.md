@@ -1,10 +1,10 @@
 ---
-title: "WordPress to Next.js Sitemap Integration"
+title: "Next.js Proxied Sitemap with Apollo Client"
 description: "This solution provides a proxied sitemap for a WordPress site that integrates seamlessly with a Next.js frontend. The WordPress XML sitemaps are fetched, and the domain URLs within the sitemap are replaced with the frontend domain (headless site URL). These transformed sitemaps are then served via a Next.js API route, ensuring SEO-friendly URLs that point to your frontend domain."
 ---
 
 # WordPress to Next.js Sitemap Integration
-## Overview
+
 This solution provides a proxied sitemap for a WordPress site that integrates seamlessly with a Next.js frontend. The WordPress XML sitemaps are fetched, and the domain URLs within the sitemap are replaced with the frontend domain (headless site URL). These transformed sitemaps are then served via a Next.js API route, ensuring SEO-friendly URLs that point to your frontend domain.
 
 

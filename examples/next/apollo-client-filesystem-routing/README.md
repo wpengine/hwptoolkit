@@ -1,5 +1,5 @@
 ---
-title: "Next.js + WPGraphQL Headless CMS"
+title: "Next.js Filesystem Routing with Apollo Client"
 description: "This is a Next.js project integrated with **WPGraphQL** and **WPGraphQL for ACF** to build a headless WordPress-powered site."
 ---
 
