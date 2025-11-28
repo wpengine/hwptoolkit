@@ -145,7 +145,12 @@ Install and activate these plugins in your WordPress admin:
 Create a `.env` file in the `example-app` directory:
 
 ```env
-NEXT_PUBLIC_WORDPRESS_URL=https://your-wordpress-site.com
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8890
+NEXT_PUBLIC_GRAPHQL_PATH=/graphql
+SESSION_TOKEN_LS_KEY=woocommerce_session_token
+REFRESH_TOKEN_LS_KEY=my_refresh_token
+AUTH_TOKEN_LS_KEY=my_auth_token
+AUTH_KEY_TIMEOUT=30000
 ```
 
 > **Important:** Use your actual WordPress URL without a trailing slash.
