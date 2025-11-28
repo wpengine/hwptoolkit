@@ -21,8 +21,8 @@ export default function ProductCard({ product }: { product: Product }) {
 		onSale: product.onSale,
 		price: product.price,
 		regularPrice: product.regularPrice,
-		salePrice: product.salePrice
-	}
+		salePrice: product.salePrice,
+	};
 	return (
 		<div className="product-card">
 			<Link href={`/product/${product.slug}`} className="product-link">
@@ -37,26 +37,20 @@ export default function ProductCard({ product }: { product: Product }) {
 						blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
 					/>
 
-					{/* Sale Badge */}
 					{product.onSale && <span className="sale-badge">Sale</span>}
 
-					{/* Stock Status */}
 					{product.stockStatus === "OUT_OF_STOCK" && <span className="out-of-stock-badge">Out of Stock</span>}
 				</div>
 
-				{/* Product Info */}
 				<div className="product-info">
 					<h3 className="product-title">{product.name}</h3>
-					
-					{/* Price */}
+
 					<ProductPrice prices={productPrices} size={"small"} />
 
-					{/* Rating */}
 					<ProductRating product={{ averageRating: product.averageRating, reviewCount: product.reviewCount }} />
 				</div>
 			</Link>
 
-			{/* Add to Cart Button */}
 			<AddToCart product={product} card={true} />
 
 			<style jsx>{`
@@ -218,7 +212,7 @@ export default function ProductCard({ product }: { product: Product }) {
 				.add-to-cart-btn.added {
 					background: #27ae60;
 				}
-			
+
 				@media (max-width: 768px) {
 					.product-title {
 						font-size: 14px;

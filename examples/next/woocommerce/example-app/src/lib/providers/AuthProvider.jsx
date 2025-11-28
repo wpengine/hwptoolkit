@@ -45,7 +45,6 @@ export function AuthProvider({ children }) {
 
 			router.push("/my-account");
 		} catch (error) {
-			console.error("❌ Login error:", error);
 			throw error;
 		}
 	}, []);
@@ -116,7 +115,6 @@ export function AuthProvider({ children }) {
 
 			return true;
 		} catch (error) {
-			console.error("❌ Error refreshing token:", error);
 			logout();
 			return false;
 		}

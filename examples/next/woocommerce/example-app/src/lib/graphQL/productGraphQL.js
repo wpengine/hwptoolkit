@@ -159,136 +159,167 @@ export const PRODUCTS_QUERY = gql`
 `;
 
 export const SINGLE_PRODUCT_QUERY = gql`
-	query SingleProductQuery($id: ID!) {
-		product(id: $id, idType: SLUG) {
-			id
-			databaseId
-			name
-			slug
-			uri
-			description
-			shortDescription
-			sku
-			date
-			onSale
-			type
-			purchasable
-			productCategories {
-				nodes {
-					id
-					name
-					slug
-				}
-			}
-			productTags {
-				nodes {
-					id
-					name
-					slug
-				}
-			}
-			image {
-				id
-				sourceUrl
-				altText
-				mediaDetails {
-					width
-					height
-				}
-			}
-			galleryImages {
-				nodes {
-					id
-					sourceUrl
-					altText
-					mediaDetails {
-						width
-						height
-					}
-				}
-			}
+    query SingleProductQuery($id: ID!) {
+        product(id: $id, idType: SLUG) {
+            id
+            databaseId
+            name
+            slug
+            uri
+            description
+            shortDescription
+            sku
+            date
+            onSale
+            type
+            purchasable
+            productCategories {
+                nodes {
+                    id
+                    name
+                    slug
+                }
+            }
+            productTags {
+                nodes {
+                    id
+                    name
+                    slug
+                }
+            }
+            image {
+                id
+                sourceUrl
+                altText
+                mediaDetails {
+                    width
+                    height
+                }
+            }
+            galleryImages {
+                nodes {
+                    id
+                    sourceUrl
+                    altText
+                    mediaDetails {
+                        width
+                        height
+                    }
+                }
+            }
 
-			... on SimpleProduct {
-				price
-				regularPrice
-				salePrice
-				stockStatus
-				stockQuantity
-				weight
-				length
-				width
-				height
-			}
-			globalAttributes {
-				nodes {
-					name
-					label
-					options
-					variation
-					visible
-				}
-			}
-			... on VariableProduct {
-				price
-				regularPrice
-				salePrice
-				stockStatus
-				stockQuantity
-				weight
-				length
-				width
-				height
-				variations {
-					nodes {
-						id
-						databaseId
-						name
-						image {
-							id
-							sourceUrl
-							altText
-						}
-						price
-						regularPrice
-						salePrice
-						stockStatus
-						stockQuantity
-						hasAttributes
-						attributes {
-							nodes {
-								id
-								attributeId
-								name
-								value
-								label
-							}
-						}
-					}
-				}
-			}
+            ... on SimpleProduct {
+                price
+                regularPrice
+                salePrice
+                stockStatus
+                stockQuantity
+                weight
+                length
+                width
+                height
+            }
+            globalAttributes {
+                nodes {
+                    name
+                    label
+                    options
+                    variation
+                    visible
+                }
+            }
+            ... on VariableProduct {
+                price
+                regularPrice
+                salePrice
+                stockStatus
+                stockQuantity
+                weight
+                length
+                width
+                height
+                variations {
+                    nodes {
+                        id
+                        databaseId
+                        name
+                        image {
+                            id
+                            sourceUrl
+                            altText
+                        }
+                        price
+                        regularPrice
+                        salePrice
+                        stockStatus
+                        stockQuantity
+                        hasAttributes
+                        attributes {
+                            nodes {
+                                id
+                                attributeId
+                                name
+                                value
+                                label
+                            }
+                        }
+                    }
+                }
+            }
 
-			... on ExternalProduct {
-				price
-				regularPrice
-				salePrice
-				externalUrl
-				buttonText
-			}
+            ... on ExternalProduct {
+                price
+                regularPrice
+                salePrice
+                externalUrl
+                buttonText
+            }
 
-			... on GroupProduct {
-				price
-				regularPrice
-				salePrice
-				products {
-					nodes {
-						id
-						name
-						slug
-					}
-				}
-			}
-		}
-	}
+            ... on GroupProduct {
+                price
+                regularPrice
+                salePrice
+                products {
+                    nodes {
+                        id
+                        databaseId
+                        name
+                        slug
+                        image {
+                            id
+                            sourceUrl
+                            altText
+                        }
+                        # ✅ Query each specific product type instead of interface
+                        ... on SimpleProduct {
+                            price
+                            salePrice
+                            regularPrice
+                            onSale
+                            stockStatus
+                            stockQuantity
+                        }
+                        ... on VariableProduct {
+                            price
+                            salePrice
+                            regularPrice
+                            onSale
+                            stockStatus
+                            stockQuantity
+                        }
+                        ... on ExternalProduct {
+                            price
+                            salePrice
+                            regularPrice
+                            onSale
+                            externalUrl
+                            buttonText
+                        }
+                    }
+                }
+            }
+        }
+    }
 `;
 
 export const RELATED_PRODUCTS_QUERY = gql`

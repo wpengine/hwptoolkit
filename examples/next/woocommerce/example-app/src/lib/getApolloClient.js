@@ -6,7 +6,6 @@ import { GraphQLClient } from "graphql-request";
 import { setContext } from "@apollo/client/link/context";
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL || "http://localhost:8890";
 const graphqlPath = process.env.NEXT_PUBLIC_GRAPHQL_PATH || "/graphql";
-// ✅ Define session token key constant
 const SESSION_TOKEN_KEY = process.env.SESSION_TOKEN_LS_KEY || "woocommerce_session_token";
 
 const httpLink = new HttpLink({
@@ -166,10 +165,10 @@ const networkErrorLink = onError(({ graphQLErrors, networkError, operation, forw
 
 // Console logging link for debugging
 const consoleLink = new ApolloLink((operation, forward) => {
-	console.log(`🔍 GraphQL Operation: ${operation.operationName}`);
+	//console.log(`🔍 GraphQL Operation: ${operation.operationName}`);
 
 	return forward(operation).map((response) => {
-		console.log(`✅ GraphQL Response: ${operation.operationName}`, response);
+		//console.log(`GraphQL Response: ${operation.operationName}`, response);
 		return response;
 	});
 });

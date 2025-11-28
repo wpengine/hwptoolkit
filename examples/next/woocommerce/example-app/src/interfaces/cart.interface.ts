@@ -181,8 +181,6 @@ export interface RemoveCouponsResponse {
 	};
 }
 
-// Cart Provider Context Type
-// Update the CartContextType interface
 export interface CartContextType {
 	cart: Cart | MiniCart | null;
 	cartItemCount: number;
@@ -190,11 +188,11 @@ export interface CartContextType {
 	cartTotal: string;
 	isCartInitialized: boolean;
 	cartLoading: boolean;
-	clearingCart: boolean; // ✅ Add this
+	clearingCart: boolean;
 	addToCart: (productId: number, quantity?: number, variationId?: number | null) => Promise<any>;
 	updateCartItemQuantity: (itemKey: string, quantity: number) => Promise<any>;
 	removeItem: (itemKey: string) => Promise<any>;
-	clearCart: () => Promise<any>; // ✅ Update return type
+	clearCart: () => Promise<any>;
 	refreshCart: () => Promise<void>;
 	findCartItem: (productId: number, variationId?: number | null) => CartItem | MiniCartItem | undefined;
 }

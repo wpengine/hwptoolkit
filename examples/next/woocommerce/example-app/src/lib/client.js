@@ -4,7 +4,7 @@ import { relayStylePagination } from "@apollo/client/utilities";
 
 export async function fetchGraphQL(query, variables) {
 	try {
-		// console.log('  Variables:', variables);
+		// console.log('Variables:', variables);
 
 		const body = JSON.stringify({
 			query,
@@ -29,26 +29,25 @@ export async function fetchGraphQL(query, variables) {
 
 		if (!response.ok) {
 			const errorText = await response.text();
-			console.error("❌ HTTP Error Details:");
-			console.error("  Status:", response.status);
-			console.error("  Status Text:", response.statusText);
-			console.error("  Response Body:", errorText);
+			// console.error("HTTP Error Details:");
+			// console.error("  Status:", response.status);
+			// console.error("  Status Text:", response.statusText);
+			// console.error("  Response Body:", errorText);
 			throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
 		}
 
 		const data = await response.json();
 
 		if (data.errors) {
-			console.error("❌ GraphQL Errors:", data.errors);
+			console.error("GraphQL Errors:", data.errors);
 			throw new Error(`GraphQL Error: ${JSON.stringify(data.errors)}`);
 		}
-		//console.log(data);
 		return data;
 	} catch (error) {
-		console.error("❌ fetchGraphQL Error Details:");
-		console.error("  Error type:", error.constructor.name);
-		console.error("  Error message:", error.message);
-		console.error("  Error stack:", error.stack);
+		// console.error("fetchGraphQL Error Details:");
+		// console.error("  Error type:", error.constructor.name);
+		// console.error("  Error message:", error.message);
+		// console.error("  Error stack:", error.stack);
 		throw error;
 	}
 }

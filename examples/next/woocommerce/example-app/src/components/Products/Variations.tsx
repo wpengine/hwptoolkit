@@ -24,14 +24,13 @@ export default function ProductVariations({
         return null;
     }
 
-    // ✅ Check if an attribute value is selected
+    
     const isAttributeSelected = (attributeName: string, attributeValue: string) => {
         return selectedAttributes.some(
             (attr) => attr.attributeName === attributeName && attr.attributeValue === attributeValue
         );
     };
 
-    // ✅ Get available options for an attribute based on current selections (for visual indication only)
     const getAvailableOptions = (attributeName: string) => {
         // Get all options from global attributes
         const globalAttr = globalAttributes?.nodes?.find((attr) => attr.name === attributeName);
@@ -52,7 +51,6 @@ export default function ProductVariations({
             // Check if this variation matches all other selected attributes
             return otherSelectedAttributes.every((selectedAttr) => {
                 const varAttr = variation.attributes.nodes.find((attr) => attr.name === selectedAttr.attributeName);
-                // ✅ Ignore empty attribute values - if empty, it's a match
                 if (!varAttr || !varAttr.value || varAttr.value.trim() === "") return true;
                 return varAttr.value.toLowerCase() === selectedAttr.attributeValue.toLowerCase();
             });
@@ -62,7 +60,6 @@ export default function ProductVariations({
         const availableValues = new Set<string>();
         matchingVariations.forEach((variation) => {
             const attr = variation.attributes.nodes.find((a) => a.name === attributeName);
-            // ✅ Only add non-empty values
             if (attr && attr.value && attr.value.trim() !== "") {
                 availableValues.add(attr.value);
             }
@@ -74,7 +71,6 @@ export default function ProductVariations({
 
     return (
         <div className="product-variations space-y-6">
-            {/* ✅ Show attribute selectors if global attributes exist */}
             {globalAttributes?.nodes && globalAttributes.nodes.length > 0 && (
                 <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Select Options</h3>
@@ -110,7 +106,6 @@ export default function ProductVariations({
                         );
                     })}
 
-                    {/* ✅ Show selected variation info */}
                     {selectedVariation && (
                         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <div className="flex items-start justify-between">
@@ -118,7 +113,6 @@ export default function ProductVariations({
                                     <p className="text-sm font-medium text-blue-800 mb-1">
                                         Selected: {selectedVariation.name}
                                     </p>
-                                    {/* ✅ Show only non-empty attributes */}
                                     {selectedVariation.attributes?.nodes && (
                                         <p className="text-xs text-blue-600">
                                             {selectedVariation.attributes.nodes
@@ -148,7 +142,6 @@ export default function ProductVariations({
                                     {selectedVariation.stockStatus === "IN_STOCK" ? "✓ In Stock" : "✗ Out of Stock"}
                                 </p>
                             )}
-                            {/* ✅ Show variation price */}
                             <div className="mt-2">
                                 <ProductPrice
                                     prices={{
@@ -165,12 +158,10 @@ export default function ProductVariations({
                 </div>
             )}
 
-            {/* ✅ Optional: Show all variations as cards (can be toggled) */}
             <div className="hidden">
                 <h3 className="text-lg font-semibold mb-4">All Variations</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {variations.nodes.map((variation) => {
-                        // ✅ Filter out empty attribute values
                         const validAttributes = variation.attributes?.nodes?.filter(
                             (attr) => attr.value && attr.value.trim() !== ""
                         ) || [];
@@ -205,7 +196,6 @@ export default function ProductVariations({
                                     )}
                                     <div className="variation-info flex-1">
                                         <h4 className="variation-title font-semibold text-gray-900 mb-1">{variation.name}</h4>
-                                        {/* ✅ Show only non-empty attributes */}
                                         {validAttributes.length > 0 && (
                                             <p className="text-sm text-gray-600 mb-2">
                                                 {validAttributes.map((attr) => attr.value).join(", ")}

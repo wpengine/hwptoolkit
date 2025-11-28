@@ -70,6 +70,9 @@ export interface Product {
 			};
 		}>;
 	};
+	products?: {
+		nodes: GroupedProductChild[];
+	};
 	// Media
 	image?: {
 		id: string;
@@ -107,6 +110,27 @@ export interface Product {
 			slug: string;
 		}>;
 	};
+}
+export interface GroupedProductChild {
+	id: string;
+	databaseId: number;
+	name: string;
+	slug: string;
+	image?: {
+		id: string;
+		sourceUrl: string;
+		altText?: string;
+	};
+	// ✅ Add pricing fields
+	price?: string;
+	regularPrice?: string;
+	salePrice?: string;
+	onSale?: boolean;
+	stockStatus?: string;
+	stockQuantity?: number;
+	// For external products
+	externalUrl?: string;
+	buttonText?: string;
 }
 export interface ProductPrices {
 	price: string;

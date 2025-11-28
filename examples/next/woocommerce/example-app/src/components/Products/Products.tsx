@@ -30,7 +30,7 @@ export default function Products({
 	showTitle = true,
 	displayType = "recent",
 	categoryIn = [],
-	queryName = "ProductDisplayQueries", // ✅ Default query name
+	queryName = "ProductDisplayQueries",
 }: ProductsProps) {
 	const { graphqlData } = useRouteData();
 

@@ -11,7 +11,7 @@ export default function LoginForm() {
     const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // ✅ Prevent page refresh
+        e.preventDefault();
         
         setError("");
         setSuccess(false);
@@ -25,20 +25,15 @@ export default function LoginForm() {
                 setPassword("");
             } else {
                 setError("Login failed. Please try again.");
-                console.error("❌ Login failed - no success flag");
             }
-        } catch (err) {
-            console.error("❌ Login error caught:", err);
-            
-            // ✅ Extract error message from different error formats
+        } catch (err) {       
+        
             let errorMessage = "An error occurred during login";
             
             if (err.graphQLErrors && err.graphQLErrors.length > 0) {
-                errorMessage = err.graphQLErrors[0].message;
-                console.error("❌ GraphQL Error:", err.graphQLErrors[0]);
+                errorMessage = err.graphQLErrors[0].message;                
             } else if (err.networkError) {
-                errorMessage = "Network error. Please check your connection.";
-                console.error("❌ Network Error:", err.networkError);
+                errorMessage = "Network error. Please check your connection.";               
             } else if (err.message) {
                 errorMessage = err.message;
             }
@@ -109,8 +104,7 @@ export default function LoginForm() {
                         "Login"
                     )}
                 </button>
-
-                {/* ✅ Success Alert */}
+        
                 {success && (
                     <Alert className="bg-green-50 border-green-200">
                         <div className="flex items-center">
@@ -129,9 +123,7 @@ export default function LoginForm() {
                             </div>
                         </div>
                     </Alert>
-                )}
-
-                {/* ✅ Error Alert */}
+                )}     
                 {error && (
                     <Alert variant="destructive" className="bg-red-50 border-red-200">
                         <div className="flex items-start">
@@ -161,9 +153,7 @@ export default function LoginForm() {
                             </button>
                         </div>
                     </Alert>
-                )}
-
-                {/* ✅ Debug Info (remove in production) */}
+                )}               
                 <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-md text-xs">
                     <p className="font-semibold text-gray-700 mb-1">Debug Info:</p>
                     <p className="text-gray-600">Loading: {loading ? "Yes" : "No"}</p>

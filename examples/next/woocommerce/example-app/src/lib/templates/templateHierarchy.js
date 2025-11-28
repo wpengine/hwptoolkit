@@ -49,7 +49,6 @@ export async function uriToTemplate({ uri }) {
 
 		return returnData;
 	} catch (error) {
-		console.error("❌ Error in uriToTemplate:", error);
 		returnData.seedQuery = {
 			loading: false,
 			error: error,

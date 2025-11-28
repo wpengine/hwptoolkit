@@ -40,7 +40,6 @@ export default function Checkout() {
 	const [customer, setCustomer] = useState<Customer | null>(null);
 	const [checkoutProcessing, setCheckoutProcessing] = useState(false);
 	const [checkoutError, setCheckoutError] = useState<string | null>(null);
-	// ✅ Add state for guest checkout data
 	const [guestCheckoutData, setGuestCheckoutData] = useState<CheckoutFormData | null>(null);
 
 	const { user, isLoading: authLoading } = useAuthAdmin();
@@ -123,7 +122,7 @@ export default function Checkout() {
 	const [checkoutMutation, { loading: checkoutLoading }] = useMutation(CHECKOUT_MUTATION, {
 		onCompleted: (data) => {
 		},
-		onError: (error) => console.error("❌ Checkout error:", error),
+		onError: (error) => console.error("Checkout error:", error),
 	});
 
 	const removeTypename = (obj: any): any => {
@@ -146,7 +145,6 @@ export default function Checkout() {
 		return obj;
 	};
 
-	// ✅ Validate guest checkout data
 	const validateGuestCheckout = (): boolean => {
 		if (!guestCheckoutData) {
 			setCheckoutError("Please fill in all required fields");
@@ -192,18 +190,15 @@ export default function Checkout() {
 		try {
 			let billingData, shippingData;
 
-			// ✅ Use customer data if authenticated, otherwise use guest data
 			if (isAuthenticated && customer) {
 				billingData = removeTypename(customer.billing);
 				shippingData = removeTypename(customer.shipping);
 			} else {
-				// ✅ Validate guest checkout data
 				if (!validateGuestCheckout()) {
 					setCheckoutProcessing(false);
 					return { success: false, error: checkoutError };
 				}
 
-				// ✅ Transform guest data to match WooCommerce format
 				const { billing, shipping, shipToDifferentAddress } = guestCheckoutData!;
 
 				billingData = {
@@ -219,7 +214,6 @@ export default function Checkout() {
 					state: billing.state,
 				};
 
-				// ✅ Use billing address for shipping if not different
 				shippingData = shipToDifferentAddress
 					? {
 							firstName: shipping.firstName,
@@ -275,7 +269,6 @@ export default function Checkout() {
 		}
 	};
 
-	// ✅ Check if checkout button should be enabled
 	const isCheckoutDisabled = isAuthenticated
 		? !customer || checkoutProcessing
 		: !guestCheckoutData || checkoutProcessing;
@@ -323,7 +316,6 @@ export default function Checkout() {
 							<Addresses billing={customer.billing} shipping={customer.shipping} refetch={getCustomer} />
 						)}
 
-						{/* ✅ Pass callback to get guest data */}
 						{!isAuthenticated && <CheckoutFields onDataChange={setGuestCheckoutData} />}
 					</div>
 				</div>
@@ -494,7 +486,6 @@ export default function Checkout() {
 								{checkoutProcessing ? "Processing..." : "Place Order"}
 							</button>
 
-							{/* ✅ Helper text for guests */}
 							{!isAuthenticated && !guestCheckoutData && (
 								<p className="mt-2 text-sm text-gray-500 text-center">Please fill in all required fields to proceed</p>
 							)}

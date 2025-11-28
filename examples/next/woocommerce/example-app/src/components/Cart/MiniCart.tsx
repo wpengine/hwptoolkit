@@ -10,7 +10,7 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartVisualP
         updateCartItemQuantity,
         removeItem,
         cartLoading,
-        clearingCart, // ✅ Get clearing state from provider
+        clearingCart,
         refreshCart,
         cartItemCount,
         clearCart,
@@ -55,7 +55,6 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartVisualP
 
     if (!isVisible) return null;
 
-    // ✅ Combined loading state
     const isLoading = cartLoading || clearingCart;
 
     return (
@@ -226,7 +225,7 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartVisualP
                                     </button>
                                     <button
                                         onClick={handleClearCart}
-                                        disabled={clearingCart} // ✅ Use clearing state
+                                        disabled={clearingCart}
                                         className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors font-medium text-sm disabled:opacity-50"
                                     >
                                         {clearingCart ? "Clearing..." : "Clear Cart"}

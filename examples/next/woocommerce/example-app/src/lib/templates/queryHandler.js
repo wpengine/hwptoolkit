@@ -44,7 +44,6 @@ export async function fetchQueries({ queries, context, props }) {
         response: data,
       });
     } catch (error) {
-      console.error(`❌ Error fetching query ${queryName}:`, error);
       continue;
     }
   }

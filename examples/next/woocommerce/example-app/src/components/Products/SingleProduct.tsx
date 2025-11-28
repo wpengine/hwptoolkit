@@ -8,6 +8,7 @@ import ProductPrice from "./Price";
 import AddToCart from "./AddToCart";
 import ProductQuantity from "./Quantity";
 import ProductVariations from "./Variations";
+import ProductGroup from "./Grouped";
 
 interface SingleProductProps {
 	product: Product;
@@ -18,7 +19,7 @@ export default function SingleProduct({ product }: SingleProductProps) {
 	const [activeTab, setActiveTab] = useState<string>("description");
 	const [quantity, setQuantity] = useState<number>(1);
 	const [selectedVariation, setSelectedVariation] = useState<Product["variations"]["nodes"][0] | null>(null);
-	// ✅ Store selected attributes as array of objects
+
 	const [selectedAttributes, setSelectedAttributes] = useState<{ attributeName: string; attributeValue: string }[]>([]);
 
 	if (!product) {
@@ -62,7 +63,6 @@ export default function SingleProduct({ product }: SingleProductProps) {
 			});
 
 			if (currentStillMatches) {
-				
 				return;
 			}
 		}
@@ -98,7 +98,8 @@ export default function SingleProduct({ product }: SingleProductProps) {
 	};
 
 	const relatedProducts = getRelatedProducts();
-	
+
+	const hideAddToCart = product.type === 'EXTERNAL' || product.type === 'GROUPED' || product.stockStatus === 'OUT_OF_STOCK';
 	return (
 		<div className="container mx-auto px-4 py-8">
 			<div className="grid lg:grid-cols-2 gap-12 mb-12">
@@ -148,7 +149,6 @@ export default function SingleProduct({ product }: SingleProductProps) {
 							{product.sku && <span className="text-gray-600">SKU: {product.sku}</span>}
 						</p>
 
-						{/* ✅ Pass attribute selection handler */}
 						<ProductVariations
 							variations={product.variations}
 							globalAttributes={product.globalAttributes}
@@ -157,21 +157,22 @@ export default function SingleProduct({ product }: SingleProductProps) {
 							onAttributeSelect={handleAttributeSelect}
 							selectedAttributes={selectedAttributes}
 						/>
+						<ProductGroup products={product.products.nodes} />
 
 						<ProductPrice prices={productPrices} />
 					</div>
+					{!hideAddToCart && (
+						<div className="add-to-cart-container flex items-center gap-4">
+							<ProductQuantity product={product} quantity={quantity} setQuantity={setQuantity} />
 
-					<div className="add-to-cart-container flex items-center gap-4">
-						<ProductQuantity product={product} quantity={quantity} setQuantity={setQuantity} />
-
-						{/* ✅ Pass selectedAttributes array */}
-						<AddToCart
-							product={product}
-							quantity={quantity}
-							variation={selectedAttributes}
-							variationId={selectedVariation?.databaseId}
-						/>
-					</div>
+							<AddToCart
+								product={product}
+								quantity={quantity}
+								variation={selectedAttributes}
+								variationId={selectedVariation?.databaseId}
+							/>
+						</div>
+					)}
 				</div>
 			</div>
 

@@ -33,5 +33,5 @@ export interface LineItem {
 	product: CartProduct;
 	quantity: number;
 	total: string;
-	subtotal?: string; // ✅ Added for subtotal
+	subtotal?: string;
 }

@@ -128,6 +128,7 @@ Install and activate these plugins in your WordPress admin:
 1. **WPGraphQL** - Exposes WordPress data via GraphQL
 2. **WPGraphQL Headless Login** - Enables authentication for headless setups
 3. **WPGraphQL for WooCommerce (WooGraphQL)** - Adds WooCommerce GraphQL support
+4. **WooCommerce**
 
 ### Plugin Configuration
 
@@ -162,3 +163,5 @@ NEXT_PUBLIC_WORDPRESS_URL=https://your-wordpress-site.com
    npm run dev
    # or yarn dev / pnpm dev / bun dev
    ```
+### Notes
+1. Single order (thank you page) can be accessed via http://localhost:3000/order-received/193?key=wc_order_UENFOwBPGaDlx. It's based on the wc_key instead of order id.

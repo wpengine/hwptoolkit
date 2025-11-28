@@ -20,7 +20,7 @@ export function CartProvider({ children }) {
 
 	const [cartData, setCartData] = useState(null);
 	const [isCartInitialized, setIsCartInitialized] = useState(false);
-	const [clearingCart, setClearingCart] = useState(false); // ✅ Add clearing state
+	const [clearingCart, setClearingCart] = useState(false);
 
 	// Cart Mutations
 	const [addToCartMutation, { loading: addToCartLoading }] = useMutation(AddToCart, {
@@ -30,7 +30,7 @@ export function CartProvider({ children }) {
 				storage.saveCartToLocalStorage(data.addToCart.cart);
 			}
 		},
-		onError: (error) => console.error("❌ Add to cart error:", error),
+		onError: (error) => console.error("Add to cart error:", error),
 	});
 
 	const [updateCartMutation, { loading: updateCartLoading }] = useMutation(UPDATE_ITEM_QUANTITIES, {
@@ -40,7 +40,7 @@ export function CartProvider({ children }) {
 				storage.saveCartToLocalStorage(data.updateItemQuantities.cart);
 			}
 		},
-		onError: (error) => console.error("❌ Update cart error:", error),
+		onError: (error) => console.error("Update cart error:", error),
 	});
 
 	const [getMiniCartQuery, { loading: getCartLoading }] = useLazyQuery(GET_MINI_CART, {
@@ -50,7 +50,7 @@ export function CartProvider({ children }) {
 				storage.saveCartToLocalStorage(data.cart);
 			}
 		},
-		onError: (error) => console.error("❌ GetCart error:", error),
+		onError: (error) => console.error("GetCart error:", error),
 		fetchPolicy: "network-only",
 		errorPolicy: "all",
 	});
@@ -62,7 +62,7 @@ export function CartProvider({ children }) {
 				storage.saveCartToLocalStorage(data.removeItemsFromCart.cart);
 			}
 		},
-		onError: (error) => console.error("❌ Remove item error:", error),
+		onError: (error) => console.error("Remove item error:", error),
 	});
 
 	const [emptyCartMutation] = useMutation(EMPTY_CART, {
@@ -70,7 +70,7 @@ export function CartProvider({ children }) {
 			setCartData(null);
 			storage.removeItem("woocommerce_cart");
 		},
-		onError: (error) => console.error("❌ Empty cart error:", error),
+		onError: (error) => console.error("Empty cart error:", error),
 	});
 	const [applyCouponMutation, { loading: applyCouponLoading }] = useMutation(APPLY_COUPON);
 	const [removeCouponsMutation, { loading: removeCouponsLoading }] = useMutation(REMOVE_COUPONS);
@@ -80,12 +80,9 @@ export function CartProvider({ children }) {
 		let isMounted = true;
 
 		const initializeCart = async () => {
-			console.log("🛒 Initializing cart...", { user, isCartInitialized });
-
 			const localCart = storage.loadCartFromLocalStorage();
 
 			if (!user) {
-				// Guest user
 				if (isMounted) {
 					setCartData(localCart || null);
 					setIsCartInitialized(true);
@@ -99,7 +96,7 @@ export function CartProvider({ children }) {
 						setIsCartInitialized(true);
 					}
 				} catch (error) {
-					console.error("❌ Cart error:", error);
+					console.error("Cart error:", error);
 					if (isMounted) {
 						setCartData(localCart || null);
 						setIsCartInitialized(true);
@@ -176,7 +173,7 @@ export function CartProvider({ children }) {
 					return { success: true, cart: data?.addToCart?.cart, action: "added" };
 				}
 			} catch (error) {
-				console.error("❌ Add to cart error:", error);
+				console.error("Add to cart error:", error);
 				return { success: false, error: error.message || "Failed to add to cart" };
 			}
 		},
@@ -204,7 +201,7 @@ export function CartProvider({ children }) {
 
 				return { success: true, cart: data?.updateItemQuantities?.cart, action: "updated" };
 			} catch (error) {
-				console.error("❌ Update cart quantity error:", error);
+				console.error("Update cart quantity error:", error);
 				return { success: false, error: error.message || "Failed to update cart quantity" };
 			}
 		},
@@ -230,7 +227,7 @@ export function CartProvider({ children }) {
 				return { success: true };
 			}
 		} catch (error) {
-			console.error("❌ Clear cart error:", error);
+			console.error("Clear cart error:", error);
 			return { success: false, error: error.message || "Failed to clear cart" };
 		} finally {
 			setClearingCart(false);
@@ -242,7 +239,7 @@ export function CartProvider({ children }) {
 			const result = await getMiniCartQuery();
 			return result.data?.cart || null;
 		} catch (error) {
-			console.error("❌ Error refreshing cart:", error);
+			console.error("Error refreshing cart:", error);
 			const localCart = storage.loadCartFromLocalStorage();
 			setCartData(localCart);
 			return localCart;
@@ -267,7 +264,6 @@ export function CartProvider({ children }) {
 				await refreshCart();
 				return { success: true, cart: data?.removeItemsFromCart?.cart };
 			} catch (error) {
-				console.error("❌ Remove item error:", error);
 				return { success: false, error: error.message || "Failed to remove item" };
 			}
 		},

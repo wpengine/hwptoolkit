@@ -33,7 +33,7 @@ export default function Cart() {
 				setFullCart(data.cart);
 			}
 		},
-		onError: (error) => console.error("❌ GetCart error:", error),
+		onError: (error) => console.error("GetCart error:", error),
 		fetchPolicy: "network-only",
 		errorPolicy: "all",
 	});
@@ -80,7 +80,6 @@ export default function Cart() {
 		}
 	};
 
-	// ✅ Updated handleApplyCoupon with error handling
 	const handleApplyCoupon = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!couponCode.trim()) return;
@@ -113,7 +112,6 @@ export default function Cart() {
 		}
 	};
 
-	// ✅ Updated handleRemoveCoupon with error handling
 	const handleRemoveCoupon = async (code: string) => {
 		setCouponError(null);
 		setCouponSuccess(null);
@@ -176,7 +174,7 @@ export default function Cart() {
 					href="/shop"
 					className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors font-medium"
 				>
-					Continue Shopping
+					Start Shopping
 				</Link>
 			</div>
 		);
@@ -277,8 +275,7 @@ export default function Cart() {
 															onClick={() => handleRemoveItem(item.key)}
 															disabled={isUpdating}
 															className="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
-														>
-															{isUpdating ? "Removing..." : "Remove"}
+														>Remove															
 														</button>
 													</div>
 												</div>
@@ -324,7 +321,7 @@ export default function Cart() {
 														disabled={isUpdating}
 														className="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
 													>
-														{isUpdating ? "Removing..." : "Remove"}
+														Remove
 													</button>
 												</div>
 											</div>
@@ -410,8 +407,7 @@ export default function Cart() {
 									</div>
 								</div>
 							)}
-
-							{/* ✅ Error Message */}
+			
 							{couponError && (
 								<div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
 									<div className="flex items-start">
@@ -446,7 +442,6 @@ export default function Cart() {
 								</div>
 							)}
 
-							{/* ✅ Success Message */}
 							{couponSuccess && (
 								<div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
 									<div className="flex items-start">
