@@ -10,12 +10,12 @@ on:
     branches:
       - main
     paths:
-      - 'plugins/**/*.php'
+      - 'plugins/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'plugins/**/*.php'
+      - 'plugins/**'
 
 jobs:
   detect-plugins:
@@ -73,3 +73,5 @@ jobs:
             vendor
             node_modules
             tests
+          ignore-warnings: true
+          include-experimental: false
