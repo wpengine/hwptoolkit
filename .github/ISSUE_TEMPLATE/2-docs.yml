@@ -1,0 +1,49 @@
+name: "📒 Documentation Issue"
+description: Report an issue with the hwptoolkit documentation.
+title: "[docs]: "
+labels: ["docs"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for helping us improve our documentation!
+
+        Before opening this issue, consider contributing the fix yourself! Check our [Documentation Contribution Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md#writing-documentation) to learn how to edit our docs following the [Diátaxis](https://diataxis.fr/) approach.
+
+        For feature requests or general questions, please use [GitHub Discussions](https://github.com/wpengine/hwptoolkit/discussions) instead.
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is the documentation issue?
+      description: Briefly describe the problem with the documentation
+      placeholder: "Example: The tutorial for HWP Previews contains outdated configuration steps"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any extra details that might help us understand the issue
+      placeholder: "Example: The documentation mentions an old API that was changed in v2.0"
+    validations:
+      required: false
+
+  - type: input
+    id: page-link
+    attributes:
+      label: Link to the documentation page (if it exists)
+      description: Provide the URL or file path to the affected documentation
+      placeholder: "Example: /docs/plugins/hwp-previews/tutorial/index.md"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
