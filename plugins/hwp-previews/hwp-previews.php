@@ -2,16 +2,14 @@
 /**
  * Plugin Name: HWP Previews
  * Plugin URI: https://github.com/wpengine/hwptoolkit
- * GitHub Plugin URI: https://github.com/wpengine/hwptoolkit
  * Description: Headless Previews solution as a WordPress plugin with extensive configurability.
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
- * Update URI: https://github.com/wpengine/hwptoolkit
  * Version: 0.0.14
  * Text Domain: hwp-previews
  * Domain Path: /languages
  * Requires at least: 6.0
- * Tested up to: 6.8.1
+ * Tested up to: 6.9
  * Requires PHP: 7.4+
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html

@@ -1,8 +1,8 @@
 === HWP Previews ===
 Contributors: wpengine
-Tags: GraphQL, Headless, Previews, WPGraphQL, React, Rest
+Tags: headless, previews, decoupled, wpgraphql, rest-api
 Requires at least: 6.0
-Tested up to: 6.8.1
+Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: 0.0.14
 License: GPL-2.0
