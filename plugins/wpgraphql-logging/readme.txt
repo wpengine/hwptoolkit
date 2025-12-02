@@ -2,7 +2,7 @@
 Contributors: ahuseyn, colin-murphy, joefusco, thdespou, wpengine
 Tags: GraphQL, Headless, WPGraphQL, React, Rest, Logging, Performance, Debugging, Monitoring
 Requires at least: 6.5
-Tested up to: 6.8.2
+Tested up to: 6.9
 Requires PHP: 8.1.2
 Requires WPGraphQL: 2.3.0
 Stable tag: 1.0.0

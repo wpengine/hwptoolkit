@@ -78,10 +78,10 @@ jobs:
       matrix:
         plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
         php: ["8.3","8.2","8.1"]
-        wordpress: ["6.8","6.7","6.6","6.5"]
+        wordpress: ["6.9","6.8","6.7"]
         include:
           - php: "8.2"
-            wordpress: "6.8"
+            wordpress: "6.9"
             coverage: 1
       fail-fast: false
 
