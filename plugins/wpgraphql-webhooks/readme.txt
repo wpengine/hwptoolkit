@@ -2,7 +2,7 @@
 Contributors: wpengine
 Tags: GraphQL, Gatsby, Headless, WPGraphQL, React, Rest, Webhooks
 Requires at least: 6.0
-Tested up to: 6.8.1
+Tested up to: 6.9
 Requires PHP: 7.4
 Requires WPGraphQL: 1.8.0
 Stable tag: 0.0.6
