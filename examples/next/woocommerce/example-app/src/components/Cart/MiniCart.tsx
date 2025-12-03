@@ -85,7 +85,6 @@ export default function MiniCart({ isVisible = false, onClose }: MiniCartVisualP
 											"Product image";
 										const productName = variation?.name || item.product?.node?.name || "Unknown Product";
 
-										console.log(variation);
 										return (
 											<li
 												key={item.key}

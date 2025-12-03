@@ -164,7 +164,6 @@ export function getTemplate(availableTemplates, possibleTemplates = [], uri) {
 		let templateFromConfig = availableTemplates?.find((template) => template.id === possibleTemplate);
 		
 		if (uri.includes("/my-account/view-order/")) {
-			console.log("te", templateFromConfig);
 			templateFromConfig = availableTemplates?.find((template) => template.id === "page-my-account-order");
 		}
 		if (!templateFromConfig) {

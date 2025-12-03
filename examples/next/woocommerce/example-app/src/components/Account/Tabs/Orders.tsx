@@ -12,7 +12,6 @@ export default function Orders({ orders }: { orders: UserOrders }) {
 		const filtered = orders.filter((order: Order) => order.status !== "CHECKOUT_DRAFT");
 		setFilteredOrders(filtered);
 		setOrderTotal(filtered.length);
-		console.log(orders);
 	}, [orders]);
 
 	if (!orders) {

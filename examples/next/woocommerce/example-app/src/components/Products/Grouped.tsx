@@ -47,9 +47,7 @@ export default function ProductGroup({ products }: ProductGroupProps) {
 
 			const results = [];
 			for (const { productId, quantity } of selectedProducts) {
-				console.log(`Adding product ${productId} with quantity ${quantity}`);
 				const result = await addToCart(productId, quantity, [], undefined);
-				console.log(`Result for product ${productId}:`, result);
 				results.push(result);
 
 				// Small delay between additions to ensure session updates

@@ -48,7 +48,6 @@ export default function OrderReceivedPage() {
 
 	useEffect(() => {
 		if (data?.order) {
-			console.log("🔍 Using GraphQL order data:", data.order);
 			setOrderData(data.order);
 		}
 	}, [data]);
