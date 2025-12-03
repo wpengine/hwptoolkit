@@ -157,14 +157,24 @@ export function CartProvider({ children }) {
 						productId: parseInt(productId),
 						quantity: parseInt(quantity),
 					};
+
 					if (variationId) {
 						variables.variationId = parseInt(variationId);
 					}
-					if (variation) {
-						variables.variation = variation;
-					}
-					console.log(variables);
-					const { data, errors } = await addToCartMutation({ variables });
+
+					// ✅ Format variation attributes correctly
+					if (variation && Array.isArray(variation) && variation.length > 0) {
+						variables.variation = variation.map((attr) => ({
+							attributeName: attr.attributeName,
+							attributeValue: attr.attributeValue,
+						}));
+					}		
+
+					const { data, errors } = await addToCartMutation({
+						variables: {
+							input: variables, 
+						},
+					});
 
 					if (errors?.length > 0) {
 						throw new Error(errors[0]?.message || "Failed to add to cart");
@@ -235,7 +245,7 @@ export function CartProvider({ children }) {
 	}, [user, emptyCartMutation, storage]);
 
 	const refreshCart = useCallback(async () => {
-		try {		
+		try {
 			const result = await getMiniCartQuery();
 			return result.data?.cart || null;
 		} catch (error) {

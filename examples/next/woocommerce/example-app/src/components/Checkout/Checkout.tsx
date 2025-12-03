@@ -120,8 +120,7 @@ export default function Checkout() {
 	};
 
 	const [checkoutMutation, { loading: checkoutLoading }] = useMutation(CHECKOUT_MUTATION, {
-		onCompleted: (data) => {
-		},
+		onCompleted: (data) => {},
 		onError: (error) => console.error("Checkout error:", error),
 	});
 
@@ -535,7 +534,17 @@ export default function Checkout() {
 												<div className="mt-1">
 													{variation && (
 														<p className="text-sm text-gray-500">
-															{variation.attributes?.nodes?.map((attr) => attr.value).join(", ") || variation.name}
+															{variation.attributes?.nodes
+																?.filter((attr) => attr.value)
+																?.map((attr) => {
+																	const label =
+																		attr.name
+																			?.replace(/^pa_/, "")
+																			.replace(/_/g, " ")
+																			.replace(/\b\w/g, (l) => l.toUpperCase()) || "";
+																	return `${label}: ${attr.value}`;
+																})
+																.join(", ") || variation.name}
 														</p>
 													)}
 													<p className="text-sm text-gray-700 mt-1">Subtotal: {item.subtotal}</p>

@@ -326,8 +326,8 @@ export const GetProductVariation = gql`
 
 // MUTATIONS
 export const AddToCart = gql`
-	mutation AddToCart($productId: Int!, $variationId: Int, $quantity: Int, $extraData: String) {
-		addToCart(input: { productId: $productId, variationId: $variationId, quantity: $quantity, extraData: $extraData }) {
+mutation AddToCart($input: AddToCartInput!) {
+        addToCart(input: $input) {
 			cart {
 				...CartContent
 			}
@@ -515,6 +515,23 @@ export const GET_MINI_CART = gql`
 								id
 								sourceUrl(size: THUMBNAIL)
 								altText
+							}
+						}
+					}
+						variation {
+						node {
+							id
+							databaseId
+							name
+							image {
+								sourceUrl
+								altText
+							}
+							attributes {
+								nodes {
+									name
+									value
+								}
 							}
 						}
 					}

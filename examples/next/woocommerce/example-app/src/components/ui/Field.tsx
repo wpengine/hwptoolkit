@@ -1,6 +1,6 @@
 import React from "react";
 
-interface UserFieldProps {
+interface FieldProps {
 	name: string;
 	label: string;
 	type?: string;
@@ -22,7 +22,7 @@ export default function UserField({
 	colSpan = "",
 	required = false,
 	placeholder,
-}: UserFieldProps) {
+}: FieldProps) {
 	return (
 		<div className={colSpan}>
 			<label htmlFor={name} className="block text-sm font-medium text-gray-700">

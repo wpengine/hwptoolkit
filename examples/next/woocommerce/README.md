@@ -9,14 +9,6 @@ This example demonstrates a complete headless WooCommerce solution with Next.js,
 - **Data Fetching**: Dual approach with native fetch and Apollo Client
 - **GraphQL Integration**: Powered by WPGraphQL, WPGraphQL Headless Login, and WooGraphQL plugins
 
-## Screenshots
-
-After following the installation steps, you should have the example webpage as shown in the screenshots below:
-
-|                                                 |                                                            |
-| :---------------------------------------------: | :--------------------------------------------------------: |
-| ![login](./screenshots/login.png)<br>Login page | ![logged](./screenshots/logged.png "Posts")<br>After login |
-
 ## Project Structure
 
 ```

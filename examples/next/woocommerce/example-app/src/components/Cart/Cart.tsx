@@ -228,7 +228,17 @@ export default function Cart() {
 												<div className="mt-1">
 													{variation && (
 														<p className="text-sm text-gray-500">
-															{variation.attributes?.nodes?.map((attr) => attr.value).join(", ") || variation.name}
+															{variation.attributes?.nodes
+																?.filter((attr) => attr.value)
+																?.map((attr) => {
+																	const label =
+																		attr.name
+																			?.replace(/^pa_/, "")
+																			.replace(/_/g, " ")
+																			.replace(/\b\w/g, (l) => l.toUpperCase()) || "";
+																	return `${label}: ${attr.value}`;
+																})
+																.join(", ") || variation.name}
 														</p>
 													)}
 													<p className="text-sm text-gray-700 mt-1">Subtotal: {item.subtotal}</p>
@@ -275,7 +285,8 @@ export default function Cart() {
 															onClick={() => handleRemoveItem(item.key)}
 															disabled={isUpdating}
 															className="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
-														>Remove															
+														>
+															Remove
 														</button>
 													</div>
 												</div>
@@ -407,7 +418,7 @@ export default function Cart() {
 									</div>
 								</div>
 							)}
-			
+
 							{couponError && (
 								<div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
 									<div className="flex items-start">

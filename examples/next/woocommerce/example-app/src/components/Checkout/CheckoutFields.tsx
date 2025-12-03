@@ -249,8 +249,7 @@ export default function CheckoutFields({ onDataChange }: CheckoutFieldsProps) {
                                 name={field.id}
                                 value={formData.billing[field.id.replace("billing_", "").replace(/_([a-z])/g, (_, l) => l.toUpperCase()) as keyof typeof formData.billing] || ""}
                                 onChange={(value) => handleFieldChange(field.id, value)}
-                                placeholder={field.label}
-                                error={errors[field.id]}
+                                placeholder={field.label}                               
                             />
                         </div>
                     ))}

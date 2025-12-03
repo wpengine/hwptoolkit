@@ -12,6 +12,7 @@ const archiveProduct = dynamic(() => import("./archive-product.js"));
 const taxonomyProductCat = dynamic(() => import("./taxonomy-product_cat.js"));
 const singleProduct = dynamic(() => import("./single-product.js"));
 const pageMyAccount = dynamic(() => import("./page-my-account.js"));
+const pageMyAccountOrder = dynamic(() => import("./page-my-account-order.js"));
 const pageCart = dynamic(() => import("./page-cart.js"));
 const pageCheckout = dynamic(() => import("./page-checkout.js"));
 const pageOrderReceived = dynamic(() => import("./page-order-received.js"));
@@ -26,6 +27,7 @@ export default {
     singleProduct,
     pageCart,
     pageMyAccount,
+    pageMyAccountOrder,
     pageCheckout,
     pageOrderReceived,
 };

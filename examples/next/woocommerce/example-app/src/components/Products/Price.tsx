@@ -21,7 +21,7 @@ export default function ProductPrice({ prices, size }: ProductPriceProps) {
 			) : (
 				<span className="price">{prices.price}</span>
 			)}
-			{(!prices.regularPrice && prices.salePrice) ?? <span className="price">{prices.price}</span>}
+			{(!prices.regularPrice && prices.salePrice) && <span className="price">{prices.price}</span>}
 			<style jsx>{`
 				.product-price {
 					font-size: ${getFontSize()};

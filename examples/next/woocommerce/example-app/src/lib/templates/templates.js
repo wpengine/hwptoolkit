@@ -2,7 +2,7 @@ import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 const TEMPLATE_PATH = "wp-templates";
 
-export function getPossibleTemplates(node) {
+export function getPossibleTemplates(node, uri) {
 	let possibleTemplates = [];
 
 	if (node.template?.templateName && node.template.templateName !== "Default") {
@@ -125,7 +125,9 @@ export function getPossibleTemplates(node) {
 
 		possibleTemplates.push(`singular`);
 	}
-
+	if (node.slug === "my-account" && uri.includes("/my-account/view-order/")) {
+		possibleTemplates.push(`page-my-account-order`);
+	}
 	possibleTemplates.push("index");
 
 	return possibleTemplates;
@@ -153,15 +155,22 @@ export async function getAvailableTemplates() {
 }
 
 /* Find the first matching template from the possible templates list. 
+You can also override or add more routes such as view-order in my account.
 Used in /pages/[[...uri]].js to fetch the ID which must match in /wp-templates/index.js 
 Returns the matching template config object { id, path } */
 
-export function getTemplate(availableTemplates, possibleTemplates = []) {
+export function getTemplate(availableTemplates, possibleTemplates = [], uri) {
 	for (const possibleTemplate of possibleTemplates) {
-		const templateFromConfig = availableTemplates?.find((template) => template.id === possibleTemplate);
+		let templateFromConfig = availableTemplates?.find((template) => template.id === possibleTemplate);
+		
+		if (uri.includes("/my-account/view-order/")) {
+			console.log("te", templateFromConfig);
+			templateFromConfig = availableTemplates?.find((template) => template.id === "page-my-account-order");
+		}
 		if (!templateFromConfig) {
 			continue;
 		}
+
 		/* IMPORTANT: Example: If you have a filename such as taxonomy-product_cat or similar,
 		 * we must modify the ID here so it matches in in /wp-templates/index.js
 		 **/

@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Order } from "@/interfaces/order.interface";
 import OrderItem from "./OrderItem";
+import {formatDate} from "@/lib/utils";
 
 export default function OrderReceived({ order }: { order: Order | null }) {
 	if (!order) {
@@ -28,17 +29,6 @@ export default function OrderReceived({ order }: { order: Order | null }) {
 			</div>
 		);
 	}
-
-	const formatDate = (dateString: string | null) => {
-		if (!dateString) return "N/A";
-		return new Date(dateString).toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-	};
 
 	const getStatusColor = (status: string) => {
 		const colors: Record<string, string> = {

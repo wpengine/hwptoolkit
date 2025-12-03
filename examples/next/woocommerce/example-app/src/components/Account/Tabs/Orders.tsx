@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { UserOrders, Order } from "@/interfaces/customer.interface";
 import { formatDate } from "@/lib/utils";
-
+import Link from "next/link";
 export default function Orders({ orders }: { orders: UserOrders }) {
 	const [orderTotal, setOrderTotal] = useState(0);
 	const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
@@ -12,6 +12,7 @@ export default function Orders({ orders }: { orders: UserOrders }) {
 		const filtered = orders.filter((order: Order) => order.status !== "CHECKOUT_DRAFT");
 		setFilteredOrders(filtered);
 		setOrderTotal(filtered.length);
+		console.log(orders);
 	}, [orders]);
 
 	if (!orders) {
@@ -26,12 +27,13 @@ export default function Orders({ orders }: { orders: UserOrders }) {
 						<th className="border border-gray-300 px-4 py-2 text-left">ID</th>
 						<th className="border border-gray-300 px-4 py-2 text-left">Date</th>
 						<th className="border border-gray-300 px-4 py-2 text-left">Status</th>
+						<th className="border border-gray-300 px-4 py-2 text-left">Total</th>
 					</tr>
 				</thead>
 				<tbody>
 					{filteredOrders.map((order: Order) => (
 						<tr key={order.id} className="hover:bg-gray-50">
-							<td className="border border-gray-300 px-4 py-2">{order.databaseId}</td>
+							<td className="border border-gray-300 px-4 py-2"><Link href={`my-account/view-order/${order.databaseId}`}>{order.databaseId}</Link></td>
 							<td className="border border-gray-300 px-4 py-2">{formatDate(order.date)}</td>
 							<td className="border border-gray-300 px-4 py-2">{order.status}</td>
 							<td className="border border-gray-300 px-4 py-2">{order.total}</td>

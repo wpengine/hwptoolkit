@@ -153,14 +153,7 @@ export default function LoginForm() {
                             </button>
                         </div>
                     </Alert>
-                )}               
-                <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-md text-xs">
-                    <p className="font-semibold text-gray-700 mb-1">Debug Info:</p>
-                    <p className="text-gray-600">Loading: {loading ? "Yes" : "No"}</p>
-                    <p className="text-gray-600">Has Error: {error ? "Yes" : "No"}</p>
-                    <p className="text-gray-600">Success: {success ? "Yes" : "No"}</p>
-                    {error && <p className="text-red-600 mt-1">Error: {error}</p>}
-                </div>
+                )}
             </form>
         </div>
     );

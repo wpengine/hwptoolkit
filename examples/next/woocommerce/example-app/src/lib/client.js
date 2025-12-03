@@ -64,20 +64,18 @@ const logLink = new ApolloLink((operation, forward) => {
 // Initialize Apollo Client with the link and cache configuration
 // More info: https://www.apollographql.com/docs/react/api/core/ApolloClient/
 export const client = new ApolloClient({
-	link: logLink.concat(link),
-	ssrMode: typeof window === "undefined",
-	cache: new InMemoryCache({
-		typePolicies: {
-			Query: {
-				fields: {
-					posts: relayStylePagination(), // Enable relay-style pagination for posts
-					// More info: https://www.apollographql.com/docs/react/pagination/cursor-based#relay-style-cursor-pagination
-				},
-			},
-		},
-		//fragments: createFragmentRegistry(fragments), // Register the defined fragments
-		//More info: https://www.apollographql.com/docs/react/data/fragments#registering-named-fragments-using-createfragmentregistry
-	}),
+    link: logLink.concat(link),
+    ssrMode: typeof window === "undefined",
+    cache: new InMemoryCache({
+        typePolicies: {
+            Query: {
+                fields: {
+                    posts: relayStylePagination(),                
+                    products: relayStylePagination(),
+                },
+            },
+        },
+    }),
 });
 
 export function gql(strings, ...values) {

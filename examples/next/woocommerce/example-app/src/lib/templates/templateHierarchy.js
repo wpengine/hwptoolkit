@@ -15,7 +15,6 @@ export async function uriToTemplate({ uri }) {
 		const seedQueryData = await fetchGraphQL(SEED_QUERY, {
 			uri: uri,
 		});
-
 		if (!seedQueryData?.data.nodeByUri) {
 			console.error("HTTP/404 - Not Found in WordPress:", uri);
 			returnData.template = { id: "404 Not Found", path: "/404" };
@@ -31,8 +30,7 @@ export async function uriToTemplate({ uri }) {
 			console.error("No templates found");
 			return returnData;
 		}
-
-		const possibleTemplates = getPossibleTemplates(seedQueryData.data.nodeByUri);
+		const possibleTemplates = getPossibleTemplates(seedQueryData.data.nodeByUri, uri);
 		returnData.possibleTemplates = possibleTemplates;
 
 		if (!possibleTemplates || possibleTemplates.length === 0) {
@@ -40,7 +38,7 @@ export async function uriToTemplate({ uri }) {
 			return returnData;
 		}
 
-		const template = getTemplate(availableTemplates, possibleTemplates);
+		const template = getTemplate(availableTemplates, possibleTemplates, uri);
 		returnData.template = template;
 
 		if (!template) {
