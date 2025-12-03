@@ -157,7 +157,7 @@ export default function SingleProduct({ product }: SingleProductProps) {
 							onAttributeSelect={handleAttributeSelect}
 							selectedAttributes={selectedAttributes}
 						/>
-						<ProductGroup products={product.products.nodes} />
+						<ProductGroup products={product.products?.nodes} />
 
 						<ProductPrice prices={productPrices} />
 					</div>
