@@ -54,6 +54,7 @@
 		"phpstan/phpstan-strict-rules": "^2.0",
 		"slevomat/coding-standard": "^8.0",
 		"szepeviktor/phpstan-wordpress": "^2.0",
+		"vimeo/psalm": "^6.0",
 		"wp-cli/wp-cli-bundle": "^2.8.1"
 	},
 	"config": {
@@ -63,7 +64,7 @@
 		},
 		"optimize-autoloader": true,
 		"platform": {
-			"php": "8.1.2"
+			"php": "8.1.31"
 		},
 		"preferred-install": "dist",
 		"sort-packages": true
