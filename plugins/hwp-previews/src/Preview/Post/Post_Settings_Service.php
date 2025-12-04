@@ -19,7 +19,7 @@ class Post_Settings_Service {
 	 *
 	 * @var array<mixed>
 	 */
-	protected array $settings_values = [];
+	protected $settings_values = [];
 
 	/**
 	 * Initialize the settings service.

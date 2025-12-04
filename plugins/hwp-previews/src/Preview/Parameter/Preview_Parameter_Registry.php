@@ -22,7 +22,7 @@ class Preview_Parameter_Registry {
 	 *
 	 * @var self|null
 	 */
-	protected static ?self $instance = null;
+	protected static $instance = null;
 
 	/**
 	 * Registered parameters.
