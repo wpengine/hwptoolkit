@@ -53,7 +53,7 @@ class Settings_Field_Collection {
 	 *
 	 * @var array<\HWP\Previews\Admin\Settings\Fields\Settings_Field_Interface>
 	 */
-	protected $fields = [];
+	protected array $fields = [];
 
 	/**
 	 * Constructor to initialize the fields.
