@@ -48,7 +48,7 @@
 		"johnpbloch/wordpress-core": "^6.9",
 		"lucatume/wp-browser": "^4.0",
 		"mockery/mockery": "^1.5",
-		"php-stubs/wordpress-stubs": "^6.9",
+		"php-stubs/wordpress-stubs": "~6.8.0",
 		"phpcompatibility/php-compatibility": "^9.3",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
 		"phpstan/phpstan-strict-rules": "^2.0",
