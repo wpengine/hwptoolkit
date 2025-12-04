@@ -83,22 +83,22 @@ export default function ProductVariations({
                                 <div className="flex flex-wrap gap-2">
                                     {attr.options.map((option: string) => {
                                         const isSelected = isAttributeSelected(attr.name, option);
-                                    
+                                        const isAvailable = availableOptions.includes(option);
 
                                         return (
                                             <button
                                                 key={option}
-                                                onClick={() => onAttributeSelect(attr.name, option)}
+                                                onClick={isAvailable ? () => onAttributeSelect(attr.name, option) : undefined}
+                                                disabled={!isAvailable}
                                                 className={`px-4 py-2 border rounded-lg text-sm font-medium transition-all ${
                                                     isSelected
                                                         ? "bg-blue-600 text-white border-blue-600"
-                                                       
-                                                        : "bg-white hover:bg-gray-50 border-gray-300 text-gray-500 opacity-60"
+                                                        : isAvailable
+                                                            ? "bg-white hover:bg-gray-50 border-gray-300 text-gray-500"
+                                                            : "bg-white border-gray-300 text-gray-400 opacity-50 cursor-not-allowed"
                                                 }`}
                                             >
                                                 {option}                                             
-                                               
-                                            </button>
                                         );
                                     })}
                                 </div>
