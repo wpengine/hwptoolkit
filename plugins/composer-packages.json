@@ -369,6 +369,32 @@
       }
     },
     "wpengine/wpgraphql-webhooks": {
+      "0.0.7": {
+        "name": "wpengine/wpgraphql-webhooks",
+        "version": "0.0.7",
+        "type": "wordpress-plugin",
+        "description": "Headless webhooks for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.7/wpgraphql-webhooks.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
       "0.0.6": {
         "name": "wpengine/wpgraphql-webhooks",
         "version": "0.0.6",
