@@ -23,6 +23,9 @@
 	</plugins>
 
 	<issueHandlers>
+		<!-- Psalm 6 requires #[\Override] attributes - suppress for now -->
+		<MissingOverrideAttribute errorLevel="suppress"/>
+
 		<!-- Noting we had issues with trying to set stubs and also using issueHandlers for particular constants-->
 		<UndefinedConstant errorLevel="suppress">
 			<errorLevel type="suppress">
