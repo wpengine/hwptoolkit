@@ -33,12 +33,6 @@
 			</errorLevel>
 		</UndefinedConstant>
 
-		<MissingFile errorLevel="suppress">
-			<errorLevel type="suppress">
-				<file name="src/Logger/Database/WordPressDatabaseEntity.php"/>
-			</errorLevel>
-		</MissingFile>
-
 		<RedundantCast>
 			<errorLevel type="suppress">
 				<file name="src/Admin/View/Templates/WPGraphQLLoggerView.php"/>
@@ -50,21 +44,6 @@
 				<file name="src/Admin/View/Templates/WPGraphQLLoggerFilters.php"/>
 			</errorLevel>
 		</PossiblyInvalidArgument>
-
-		<UndefinedClass>
-			<errorLevel type="suppress">
-				<referencedClass name="GraphQL\Executor\ExecutionResult"/>
-			</errorLevel>
-			<errorLevel type="suppress">
-				<referencedClass name="GraphQL\Server\OperationParams"/>
-			</errorLevel>
-			<errorLevel type="suppress">
-				<referencedClass name="WPGraphQL\Request"/>
-			</errorLevel>
-			<errorLevel type="suppress">
-				<referencedClass name="WPGraphQL\WPSchema"/>
-			</errorLevel>
-		</UndefinedClass>
 
 		<UndefinedDocblockClass>
 			<errorLevel type="suppress">
