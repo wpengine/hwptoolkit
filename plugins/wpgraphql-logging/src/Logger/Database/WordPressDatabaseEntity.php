@@ -89,7 +89,7 @@ class WordPressDatabaseEntity implements LogEntityInterface {
 		$this->extra      = $this->sanitize_array_field( $extra );
 
 		// Set a default datetime for new, unsaved entries.
-		$this->datetime = current_time( 'mysql', 1 );
+		$this->datetime = current_time( 'mysql', true );
 	}
 
 	/**
