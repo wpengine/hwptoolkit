@@ -1,6 +1,6 @@
 === WPGraphQL Logging ===
 Contributors: ahuseyn, colin-murphy, joefusco, thdespou, wpengine
-Tags: GraphQL, Headless, WPGraphQL, React, Rest, Logging, Performance, Debugging, Monitoring
+Tags: wpgraphql, logging, headless, performance, debugging
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 8.1.2
