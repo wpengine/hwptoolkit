@@ -5,7 +5,7 @@ Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 8.1.2
 Requires WPGraphQL: 2.3.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

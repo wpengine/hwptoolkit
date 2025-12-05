@@ -7,7 +7,7 @@
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
- * Version: 1.0.0
+ * Version: 1.0.1
  * Text Domain: wpgraphql-logging
  * Domain Path: /languages
  * Requires at least: 6.5
@@ -50,7 +50,7 @@ if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
 	function wpgraphql_logging_constants(): void {
 
 		if ( ! defined( 'WPGRAPHQL_LOGGING_VERSION' ) ) {
-			define( 'WPGRAPHQL_LOGGING_VERSION', '1.0.0' );
+			define( 'WPGRAPHQL_LOGGING_VERSION', '1.0.1' );
 		}
 
 		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
