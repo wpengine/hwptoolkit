@@ -3,7 +3,7 @@
 	"description": "Headless webhooks for WPGraphQL",
 	"type": "library",
 	"license": "GPL-2.0",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
