@@ -1,5 +1,16 @@
 # WPGraphQL Logging
 
+## 1.0.1
+
+### Patch Changes
+
+- [#531](https://github.com/wpengine/hwptoolkit/pull/531) [`959ba90`](https://github.com/wpengine/hwptoolkit/commit/959ba9084e6aa61f90dd65307b5d3919f9b8cfc9) Thanks [@josephfusco](https://github.com/josephfusco)! - Verify WordPress 6.9 compatibility and update CI test matrix
+
+  - Tested compatibility with WordPress 6.9
+  - Updated CI test matrix to WordPress 6.9, 6.8, 6.7 (dropped 6.5, 6.6)
+  - Updated dev dependencies (wordpress-core, wordpress-stubs to ^6.9, phpcompatibility to ^9.3)
+  - Reduced readme.txt tags to 5 for WordPress.org compliance
+
 ## 1.0.0
 
 ### Major Changes
