@@ -65,18 +65,11 @@ jobs:
         id: detect-php-version
         run: |
           PLUGIN="${{ steps.plugin.outputs.slug }}"
-          PHP_VERSION="7.4"
-          if [ -f "plugins/$PLUGIN/composer.json" ]; then
-            DETECTED_VERSION=$(jq -r '.require["php"] // empty' plugins/$PLUGIN/composer.json | grep -oE '[0-9]+\.[0-9]+' | head -1)
-            if [ -n "$DETECTED_VERSION" ]; then
-              PHP_VERSION="$DETECTED_VERSION"
-              echo "Detected PHP version $PHP_VERSION from composer.json"
-            else
-              echo "No PHP version found in composer.json, using default $PHP_VERSION"
-            fi
-          else
-            echo "No composer.json found, using default PHP version $PHP_VERSION"
-          fi
+          # Use PHP 8.2 for code quality checks - PHPStan/Psalm can analyze older PHP code
+          # while running on newer PHP. This is required because wordpress-stubs v6.8+
+          # contain PHP 8+ syntax that cannot be parsed by PHP 7.4.
+          PHP_VERSION="8.2"
+          echo "Using PHP $PHP_VERSION for code quality checks"
           echo "php-version=$PHP_VERSION" >> $GITHUB_OUTPUT
   quality-checks:
     needs: detect-plugins

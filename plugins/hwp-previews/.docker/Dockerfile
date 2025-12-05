@@ -7,7 +7,7 @@
 ARG WP_VERSION
 ARG PHP_VERSION
 
-FROM wordpress:${WP_VERSION:-6.8}-php${PHP_VERSION:-8.2}
+FROM wordpress:${WP_VERSION:-6.9}-php${PHP_VERSION:-8.2}
 
 # Needed to specify the build args again after the FROM command.
 ARG WP_VERSION

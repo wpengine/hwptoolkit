@@ -19,21 +19,21 @@ class Post_Preview_Service {
 	 *
 	 * @var array<string>
 	 */
-	protected $post_types = [];
+	protected array $post_types = [];
 
 	/**
 	 * The allowed post-statuses for previews.
 	 *
 	 * @var array<string>
 	 */
-	protected $post_statuses = [];
+	protected array $post_statuses = [];
 
 	/**
 	 * The allowed post-statuses for parent post-types (hierarchical).
 	 *
 	 * @var array<string>
 	 */
-	protected $parent_post_statuses = [];
+	protected array $parent_post_statuses = [];
 
 	/**
 	 * Get the post-statuses.
