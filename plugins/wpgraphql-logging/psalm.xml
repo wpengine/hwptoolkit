@@ -22,6 +22,10 @@
 		<pluginClass class="PsalmWordPress\Plugin"/>
 	</plugins>
 
+	<stubs>
+		<file name="vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php"/>
+	</stubs>
+
 	<issueHandlers>
 		<!-- Psalm 6 requires #[\Override] attributes - suppress for now -->
 		<MissingOverrideAttribute errorLevel="suppress"/>
