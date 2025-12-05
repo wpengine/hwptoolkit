@@ -21,12 +21,6 @@ The example includes a wp-env setup, which will allow you to build and start thi
 6. Export logs to CSV format
 7. Configured WordPress instance with demo data and required plugins, using wp-env
 
-## Screenshots
-
-||                                                                              |                                                                                 |                                                                              |
-|| :--------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: | :--------------------------------------------------------------------------: |
-|| ![Admin logs view](./screenshots/admin-logs-view.png) <br> View all logs    | ![Log detail](./screenshots/log-detail.png) <br> Individual log details        | ![Filter logs](./screenshots/log-filters.png) <br> Filter and export logs   |
-
 ## Project Structure
 
 ```
