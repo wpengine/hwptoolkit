@@ -8,8 +8,6 @@ description: "This demonstrates the usage of HWP Previews with Next.js App Route
 > [!NOTE]
 > Check out [HWP Previews WPGraphQL example](../hwp-preview-wpgraphql) if you need the previews implementation with Next.js pages router, Draft Mode or WordPress Application Passwords.
 
-## Overview
-
 The purpose of this example is to showcase different use cases of HWP Previews. The example demonstrates the usage of [HWP Previews](https://github.com/wpengine/hwptoolkit/tree/main/plugins/hwp-previews) with Next.js App Router and REST API. Example uses credentials authentication to fetch the posts in draft status. Unlike [HWP Previews WPGraphQL example](../hwp-preview-wpgraphql) this example doesn't use [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode).
 
 The example includes a wp-env setup, which will allow you to build and start this example quickly. With this wp-env setup, you don't need to have a separate WordPress instance or demo data to inspect the example.
@@ -93,7 +91,6 @@ NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
 
 > [!CAUTION]
 > This setup is intended for demonstration purposes only. For production use, you should consider the security implications and implement appropriate measures based on your project's specific needs.
-
 
 After completing this step, clicking the preview button in wp-admin should open the preview in your front-end app. Login with your admin credentials on the frontend to enable draft preview functionality.
 
