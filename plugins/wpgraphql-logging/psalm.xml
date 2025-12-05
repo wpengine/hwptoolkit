@@ -47,12 +47,5 @@
 
 		<!-- WordPress admin includes not available during static analysis -->
 		<MissingFile errorLevel="suppress"/>
-
-		<!-- GraphQL classes referenced in docblocks not available during static analysis -->
-		<UndefinedDocblockClass>
-			<errorLevel type="suppress">
-				<referencedClass name="GraphQL\Server\OperationParams"/>
-			</errorLevel>
-		</UndefinedDocblockClass>
 	</issueHandlers>
 </psalm>

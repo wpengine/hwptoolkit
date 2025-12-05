@@ -34,6 +34,7 @@
 	"prefer-stable": true,
 	"require-dev": {
 		"automattic/vipwpcs": "^3.0",
+		"axepress/wp-graphql-stubs": "^2.3",
 		"codeception/lib-innerbrowser": "^4.0",
 		"codeception/module-asserts": "^3.0",
 		"codeception/module-cli": "^2.0",
