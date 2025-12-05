@@ -45,10 +45,23 @@
 			</errorLevel>
 		</PossiblyInvalidArgument>
 
-		<UndefinedDocblockClass>
+		<!-- WordPress admin includes not available during static analysis -->
+		<MissingFile errorLevel="suppress"/>
+
+		<!-- WPGraphQL and GraphQL classes not available during static analysis -->
+		<UndefinedClass>
+			<errorLevel type="suppress">
+				<referencedClass name="GraphQL\Executor\ExecutionResult"/>
+			</errorLevel>
 			<errorLevel type="suppress">
 				<referencedClass name="GraphQL\Server\OperationParams"/>
 			</errorLevel>
-		</UndefinedDocblockClass>
+			<errorLevel type="suppress">
+				<referencedClass name="WPGraphQL\Request"/>
+			</errorLevel>
+			<errorLevel type="suppress">
+				<referencedClass name="WPGraphQL\WPSchema"/>
+			</errorLevel>
+		</UndefinedClass>
 	</issueHandlers>
 </psalm>
