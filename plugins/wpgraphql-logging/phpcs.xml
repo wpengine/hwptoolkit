@@ -53,7 +53,10 @@
 	</rule>
 	<rule ref="PSR12.Files.DeclareStatement"/>
 	<rule ref="PEAR.NamingConventions.ValidClassName"/>
-	<rule ref="PHPCompatibilityWP"/>
+	<rule ref="PHPCompatibilityWP">
+		<!-- "List" as a namespace component is valid in PHP and works at runtime -->
+		<exclude name="PHPCompatibility.Keywords.ForbiddenNames.listFound"/>
+	</rule>
 	<rule ref="WordPress-VIP-Go">
 		<exclude name="WordPressVIPMinimum.JS.Window"/>
 		<exclude name="WordPressVIPMinimum.JS.DangerouslySetInnerHTML"/>

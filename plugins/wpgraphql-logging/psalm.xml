@@ -22,19 +22,20 @@
 		<pluginClass class="PsalmWordPress\Plugin"/>
 	</plugins>
 
+	<stubs>
+		<file name="vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php"/>
+	</stubs>
+
 	<issueHandlers>
+		<!-- Psalm 6 requires #[\Override] attributes - suppress for now -->
+		<MissingOverrideAttribute errorLevel="suppress"/>
+
 		<!-- Noting we had issues with trying to set stubs and also using issueHandlers for particular constants-->
 		<UndefinedConstant errorLevel="suppress">
 			<errorLevel type="suppress">
 				<directory name="src"/>
 			</errorLevel>
 		</UndefinedConstant>
-
-		<MissingFile errorLevel="suppress">
-			<errorLevel type="suppress">
-				<file name="src/Logger/Database/WordPressDatabaseEntity.php"/>
-			</errorLevel>
-		</MissingFile>
 
 		<RedundantCast>
 			<errorLevel type="suppress">
@@ -48,25 +49,7 @@
 			</errorLevel>
 		</PossiblyInvalidArgument>
 
-		<UndefinedClass>
-			<errorLevel type="suppress">
-				<referencedClass name="GraphQL\Executor\ExecutionResult"/>
-			</errorLevel>
-			<errorLevel type="suppress">
-				<referencedClass name="GraphQL\Server\OperationParams"/>
-			</errorLevel>
-			<errorLevel type="suppress">
-				<referencedClass name="WPGraphQL\Request"/>
-			</errorLevel>
-			<errorLevel type="suppress">
-				<referencedClass name="WPGraphQL\WPSchema"/>
-			</errorLevel>
-		</UndefinedClass>
-
-		<UndefinedDocblockClass>
-			<errorLevel type="suppress">
-				<referencedClass name="GraphQL\Server\OperationParams"/>
-			</errorLevel>
-		</UndefinedDocblockClass>
+		<!-- WordPress admin includes not available during static analysis -->
+		<MissingFile errorLevel="suppress"/>
 	</issueHandlers>
 </psalm>
