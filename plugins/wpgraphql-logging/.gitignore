@@ -56,3 +56,6 @@ tests/_data/
 
 # Playwright outputs
 artifacts
+
+# Keep example SQL files
+!examples/**/*.sql

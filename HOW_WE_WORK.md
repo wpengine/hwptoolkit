@@ -23,6 +23,7 @@ We believe in transparent, collaborative development. These guidelines document 
 
 - Schedule releases Monday-Wednesday only
 - Distribute to WPE Updater and WordPress.org when applicable
+- Notify the [Headless WordPress Discord](https://faustjs.org/discord) as applicable for plugin release announcements
 
 ## Effective Communication
 

@@ -1,17 +1,17 @@
 name: "✅ Bug Report"
 description: File a bug report.
-title: "[Bug]: "
+title: "[bug]: "
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
         ## Thank You for taking the time to fill out this bug report! The more information you provide, the faster we can help.
-        
+
         Please remember, a bug report is _not the place to ask questions_. You can
         use [Discord](https://discord.gg/YH8Pqja2) for that, or start a topic in [GitHub
         Discussions](https://github.com/wpengine/hwptoolkit/discussions).
-        
+
         Also please note that _not all the fields are required_, but _the more information_ you provide, _the better_ we can help you.
 
   - type: textarea

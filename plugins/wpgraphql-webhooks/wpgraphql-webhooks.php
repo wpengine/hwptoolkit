@@ -7,11 +7,11 @@
  * Author: WPEngine OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
- * Version: 0.0.6
+ * Version: 0.0.7
  * Text Domain: graphql-webhooks
  * Domain Path: /languages
  * Requires at least: 6.0
- * Tested up to: 6.8
+ * Tested up to: 6.9
  * Requires PHP: 7.4+
  * Requires Plugins: wp-graphql
  * WPGraphQL requires at least: 1.8.0
@@ -60,7 +60,7 @@ if ( file_exists( __DIR__ . '/deactivation.php' ) ) {
 function graphql_webhooks_constants(): void {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WEBHOOKS_VERSION' ) ) {
-		define( 'WPGRAPHQL_WEBHOOKS_VERSION', '0.0.6' );
+		define( 'WPGRAPHQL_WEBHOOKS_VERSION', '0.0.7' );
 	}
 
 	// Plugin Folder Path.
