@@ -39,7 +39,7 @@
 		"codeception/util-universalframework": "^1.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"humanmade/psalm-plugin-wordpress": "^3.1",
-		"johnpbloch/wordpress-core": "^6.8",
+		"johnpbloch/wordpress-core": "^6.9",
 		"lucatume/wp-browser": "^3.5",
 		"mockery/mockery": "^1.6",
 		"phpcompatibility/php-compatibility": "^9.3",
