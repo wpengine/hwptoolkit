@@ -17,13 +17,6 @@
 [![Code Quality](https://github.com/wpengine/hwptoolkit/actions/workflows/code-quality.yml/badge.svg)](https://github.com/wpengine/hwptoolkit/actions/workflows/code-quality.yml)
 [![End-to-End Tests](https://github.com/wpengine/hwptoolkit/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/wpengine/hwptoolkit/actions/workflows/e2e-test.yml)
 
-
------
-
-
-> [!CAUTION]
-> This plugin is currently in a beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible. You can create an issue at [https://github.com/wpengine/hwptoolkit/issues](https://github.com/wpengine/hwptoolkit/issues)
-
 -----
 
 ## Overview
