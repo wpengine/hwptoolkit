@@ -5,8 +5,6 @@ description: "This demonstrates the usage of HWP Previews with Next.js Pages Rou
 
 # Example: Headless WordPress Previews with Nextjs Draft Mode
 
-## Overview
-
 This example shows the HWP Previews plugin in action. Example implements the [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode) of Next.js. It uses WordPress [Application Passwords](https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/) for the authentication and WPGraphQL for data fetching.
 
 The example includes a wp-env setup, which will allow you to build and start this example quickly. With this wp-env setup, you don't need to have a separate WordPress instance or demo data to inspect the example.
