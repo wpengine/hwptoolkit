@@ -1,5 +1,13 @@
 # HWP Previews
 
+## 1.0.0
+
+### Major Changes
+
+- [#524](https://github.com/wpengine/hwptoolkit/pull/524) [`e6060f7`](https://github.com/wpengine/hwptoolkit/commit/e6060f7818cbf3abdd7a95d6f0e0defd71985d85) Thanks [@ahuseyn](https://github.com/ahuseyn)! - chore: Initial release of the HWP Previews Plugin
+  - Updated Readme and docs
+  - Upgraded wordpress-core into 6.9
+
 ## 0.0.15
 
 ### Patch Changes
