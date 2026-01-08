@@ -80,9 +80,8 @@
 	"archive": {
 		"name": "wpgraphql-logging",
 		"exclude": [
-			"/.DS_Store",
-			"/.docker/",
-			"/.env.dist",
+			"/.*",
+			"/build-sha.txt",
 			"/docs",
 			"/TESTING.md",
 			"/Thumbs.db",
@@ -93,7 +92,6 @@
 			"/codeception.dist.yml",
 			"/docker",
 			"/docker-compose.yml",
-			"/docs",
 			"/examples",
 			"/node_modules",
 			"/package-lock.json",
