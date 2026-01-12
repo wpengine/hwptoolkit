@@ -1,0 +1,17 @@
+{
+	"name": "wpengine/hwp-cors-local",
+	"type": "wordpress-plugin",
+	"description": "Enables CORS headers for local headless WordPress development. Allows configurable frontend origins via HEADLESS_FRONTEND_URL constant.",
+	"license": "GPL-2.0-or-later",
+	"version": "0.1.0",
+	"authors": [
+		{
+			"name": "WP Engine",
+			"email": "opensource@wpengine.com",
+			"homepage": "https://wpengine.com/"
+		}
+	],
+	"require": {
+		"php": "^7.4 || ^8.0"
+	}
+}

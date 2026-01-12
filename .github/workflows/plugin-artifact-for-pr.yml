@@ -9,41 +9,68 @@ on:
       - 'plugins/*/**.json'
 
 jobs:
-  create-plugin-artifact:
-    name: Create Plugin Artifact
+  detect-plugins:
+    name: Detect Changed Plugins
     runs-on: ubuntu-latest
-
+    outputs:
+      plugins: ${{ steps.plugin.outputs.plugins }}
+      has-plugins: ${{ steps.plugin.outputs.has-plugins }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get changed plugin directory
+      - name: Get changed plugin directories
         id: plugin
         run: |
           bash .github/scripts/get_plugin_slug.sh \
             ${{ github.event.pull_request.base.sha }} \
             ${{ github.event.pull_request.head.sha }}
 
-      - name: Create plugin artifact
+  create-plugin-artifacts:
+    name: Create Plugin Artifacts
+    runs-on: ubuntu-latest
+    needs: detect-plugins
+    if: needs.detect-plugins.outputs.has-plugins == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        plugin: ${{ fromJson(needs.detect-plugins.outputs.plugins) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create plugin artifact for ${{ matrix.plugin }}
         uses: ./.github/actions/create-plugin-artifact
-        env:
-          PLUGIN_SLUG: ${{ steps.plugin.outputs.slug }}
         with:
-            slug: ${{ env.PLUGIN_SLUG }}
+            slug: ${{ matrix.plugin }}
             composer-options: '--no-progress --optimize-autoloader --no-dev'
 
-      - name: Comment with artifact link
+  comment-on-pr:
+    name: Comment with Artifact Links  
+    runs-on: ubuntu-latest
+    needs: [detect-plugins, create-plugin-artifacts]
+    if: needs.detect-plugins.outputs.has-plugins == 'true'
+    steps:
+      - name: Comment with artifact links
         uses: actions/github-script@v7
         env:
-          PLUGIN_SLUG: ${{ steps.plugin.outputs.slug }}
+          PLUGINS: ${{ needs.detect-plugins.outputs.plugins }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr = context.payload.pull_request;
             const runId = context.runId;
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
-            const slug = process.env.PLUGIN_SLUG;
-            const body = `ℹ️ [Download the latest ${slug} plugin zip from this PR](${artifactUrl})\n<em>(See the 'Artifacts' section at the bottom)</em>`;
+            const plugins = JSON.parse(process.env.PLUGINS);
+            
+            let body = '## 📦 Plugin Artifacts Ready!\n\n';
+            body += `[Download from GitHub Actions run](${artifactUrl})\n\n`;
+            body += '**Available plugins:**\n';
+            plugins.forEach(plugin => {
+              body += `- ✅ ${plugin}.zip\n`;
+            });
+            body += '\n<em>See the "Artifacts" section at the bottom of the Actions run page</em>';
 
             // Find existing comment from this bot
             const comments = await github.rest.issues.listComments({
@@ -55,7 +82,7 @@ jobs:
             const botComment = comments.data.find(comment =>
               comment.user.type === 'Bot' &&
               comment.user.login === 'github-actions[bot]' &&
-              comment.body.includes(`ℹ️ [Download the latest ${slug} plugin zip from this PR]`)
+              comment.body.includes('## 📦 Plugin Artifacts Ready!')
             );
 
             if (botComment) {

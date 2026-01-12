@@ -1,3 +1,8 @@
+---
+title: "Next.js WordPress Global Styles"
+description: "This example demonstrates how to **fetch and apply WordPress Global Styles** in a Next.js project using the `globalStylesheet` GraphQL field. These styles reflect your active theme’s typography, spacing, colors, and layout rules — ensuring that your frontend matches the WordPress editor and theme design."
+---
+
 # Example: WordPress Global Styles in Next.js
 
 This example demonstrates how to **fetch and apply WordPress Global Styles** in a Next.js project using the `globalStylesheet` GraphQL field. These styles reflect your active theme’s typography, spacing, colors, and layout rules — ensuring that your frontend matches the WordPress editor and theme design.

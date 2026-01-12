@@ -2,8 +2,8 @@
 	"name": "wpengine/wpgraphql-logging",
 	"type": "wordpress-plugin",
   	"description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
-	"license": "GPL-2.0",
-	"version": "0.0.1",
+	"license": "GPLv2 or later",
+	"version": "1.0.1",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
@@ -26,13 +26,15 @@
 		"monolog"
 	],
 	"require": {
-		"php": "^8.1",
+		"php": ">=8.1.2",
+		"league/csv": "^9.9",
 		"monolog/monolog": "^3.9"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"require-dev": {
 		"automattic/vipwpcs": "^3.0",
+		"axepress/wp-graphql-stubs": "^2.3",
 		"codeception/lib-innerbrowser": "^4.0",
 		"codeception/module-asserts": "^3.0",
 		"codeception/module-cli": "^2.0",
@@ -44,16 +46,17 @@
 		"codeception/util-universalframework": "^1.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"humanmade/psalm-plugin-wordpress": "^3.1",
-		"johnpbloch/wordpress-core": "^6.8",
+		"johnpbloch/wordpress-core": "^6.9",
 		"lucatume/wp-browser": "^4.0",
 		"mockery/mockery": "^1.5",
-		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
+		"php-stubs/wordpress-stubs": "~6.8.0",
+		"phpcompatibility/php-compatibility": "^9.3",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
 		"phpstan/phpstan-strict-rules": "^2.0",
 		"slevomat/coding-standard": "^8.0",
 		"szepeviktor/phpstan-wordpress": "^2.0",
-		"wp-cli/wp-cli-bundle": "^2.8.1",
-		"wp-graphql/wp-graphql-testcase": "^3.0.1"
+		"vimeo/psalm": "^6.0",
+		"wp-cli/wp-cli-bundle": "^2.8.1"
 	},
 	"config": {
 		"allow-plugins": {
@@ -62,7 +65,7 @@
 		},
 		"optimize-autoloader": true,
 		"platform": {
-			"php": "8.1"
+			"php": "8.1.31"
 		},
 		"preferred-install": "dist",
 		"sort-packages": true
@@ -80,7 +83,7 @@
 			"/.DS_Store",
 			"/.docker/",
 			"/.env.dist",
-			"/ACTIONS_AND_FILTERS.md",
+			"/docs",
 			"/TESTING.md",
 			"/Thumbs.db",
 			"/artifacts",
@@ -105,7 +108,8 @@
 			"/screenshots",
 			"/tests",
 			"!vendor",
-			"!vendor-prefixed"
+			"!vendor-prefixed",
+			"/wp-env"
 		]
 	},
 	"autoload": {
@@ -142,9 +146,8 @@
 		"phpstan": [
 			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
 		],
-		"php:psalm": "psalm",
-		"php:psalm:info": "psalm --show-info=true",
-		"php:psalm:fix": "psalm --alter",
+		"php:psalm": "psalm --no-progress",
+		"php:psalm:fix": "psalm --alter --no-progress",
 		"qa": "sh bin/local/run-qa.sh",
 		"test": [
 			"sh bin/local/run-unit-tests.sh coverage",

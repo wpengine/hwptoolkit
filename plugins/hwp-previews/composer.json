@@ -3,7 +3,7 @@
 	"type": "wordpress-plugin",
 	"description": "A WordPress plugin for headless previews.",
 	"license": "GPL-2.0",
-	"version": "0.0.8",
+	"version": "1.0.0",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
@@ -39,16 +39,16 @@
 		"codeception/util-universalframework": "^1.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"humanmade/psalm-plugin-wordpress": "^3.1",
-		"johnpbloch/wordpress-core": "^6.8",
+		"johnpbloch/wordpress-core": "^6.9",
 		"lucatume/wp-browser": "^3.5",
-		"mockery/mockery": "^1.5",
-		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
+		"mockery/mockery": "^1.6",
+		"phpcompatibility/php-compatibility": "^9.3",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
 		"phpstan/phpstan-strict-rules": "^2.0",
 		"slevomat/coding-standard": "^8.0",
 		"szepeviktor/phpstan-wordpress": "^2.0",
 		"wp-cli/wp-cli-bundle": "^2.8.1",
-		"wp-graphql/wp-graphql-testcase": "^3.0.1"
+		"wp-graphql/wp-graphql-testcase": "^3.4"
 	},
 	"config": {
 		"allow-plugins": {

@@ -1,0 +1,10 @@
+{
+    "plugins": [
+      "remark-frontmatter",
+      "remark-gfm",
+      "remark-preset-lint-recommended"
+    ],
+    "settings": {
+      "linkReference": false
+    }
+}

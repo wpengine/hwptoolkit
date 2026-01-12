@@ -19,39 +19,21 @@ class Post_Preview_Service {
 	 *
 	 * @var array<string>
 	 */
-	protected $post_types = [];
+	protected array $post_types = [];
 
 	/**
 	 * The allowed post-statuses for previews.
 	 *
 	 * @var array<string>
 	 */
-	protected $post_statuses = [];
+	protected array $post_statuses = [];
 
 	/**
 	 * The allowed post-statuses for parent post-types (hierarchical).
 	 *
 	 * @var array<string>
 	 */
-	protected $parent_post_statuses = [];
-
-	/**
-	 * Constructor for the Post_Preview_Service class.
-	 *
-	 * Initializes the allowed post-types and statuses for previews.
-	 */
-	public function __construct() {
-		$this->set_post_types();
-		$this->set_post_statuses();
-		$this->set_post_parent_statuses();
-	}
-
-	/**
-	 * @return array<string>
-	 */
-	public function get_allowed_post_types(): array {
-		return $this->post_types;
-	}
+	protected array $parent_post_statuses = [];
 
 	/**
 	 * Get the post-statuses.
@@ -59,6 +41,11 @@ class Post_Preview_Service {
 	 * @return array<string>
 	 */
 	public function get_post_statuses(): array {
+		$post_statuses = $this->post_statuses;
+		if ( [] !== $post_statuses ) {
+			return $post_statuses;
+		}
+		$this->set_post_statuses();
 		return $this->post_statuses;
 	}
 
@@ -68,6 +55,11 @@ class Post_Preview_Service {
 	 * @return array<string>
 	 */
 	public function get_post_types(): array {
+		$post_types = $this->post_types;
+		if ( [] !== $post_types ) {
+			return $post_types;
+		}
+		$this->set_post_types();
 		return $this->post_types;
 	}
 
@@ -77,6 +69,11 @@ class Post_Preview_Service {
 	 * @return array<string>
 	 */
 	public function get_parent_post_statuses(): array {
+		$parent_post_statuses = $this->parent_post_statuses;
+		if ( [] !== $parent_post_statuses ) {
+			return $parent_post_statuses;
+		}
+		$this->set_post_parent_statuses();
 		return $this->parent_post_statuses;
 	}
 

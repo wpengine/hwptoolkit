@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Logger;
 
+use Monolog\Handler\BufferHandler;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Logger;
 use Monolog\Processor\MemoryPeakUsageProcessor;
@@ -12,7 +13,8 @@ use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\ProcessorInterface;
 use Monolog\Processor\WebProcessor;
 use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
-use WPGraphQL\Logging\Logger\Processors\WPGraphQLQueryProcessor;
+use WPGraphQL\Logging\Logger\Processors\DataSanitizationProcessor;
+use WPGraphQL\Logging\Logger\Processors\RequestHeadersProcessor;
 
 /**
  * LoggerService class for managing the Monolog logger instance.
@@ -44,7 +46,7 @@ class LoggerService {
 	/**
 	 * The instance of the logger based off the channel name.
 	 *
-	 * @var array<LoggerService>
+	 * @var array<\WPGraphQL\Logging\Logger\LoggerService>
 	 */
 	protected static array $instances = [];
 
@@ -90,16 +92,16 @@ class LoggerService {
 		?array $processors = null,
 		?array $default_context = null
 	): LoggerService {
-		if ( isset(self::$instances[$channel]) ) {
-			return self::$instances[$channel];
+		if ( isset( self::$instances[ $channel ] ) ) {
+			return self::$instances[ $channel ];
 		}
 
 		$processors      = $processors ?? self::get_default_processors();
 		$handlers        = $handlers ?? self::get_default_handlers();
 		$default_context = $default_context ?? self::get_default_context();
 
-		self::$instances[$channel] = new self( $channel, $handlers, $processors, $default_context );
-		return self::$instances[$channel];
+		self::$instances[ $channel ] = new self( $channel, $handlers, $processors, $default_context );
+		return self::$instances[ $channel ];
 	}
 
 	/**
@@ -212,6 +214,15 @@ class LoggerService {
 	}
 
 	/**
+	 * Gets the Monolog logger instance.
+	 *
+	 * @return \Monolog\Logger The Monolog logger instance.
+	 */
+	public function get_monolog(): Logger {
+		return $this->monolog;
+	}
+
+	/**
 	 * Returns an array of default processors.
 	 *
 	 * @link https://seldaek.github.io/monolog
@@ -224,8 +235,11 @@ class LoggerService {
 			new MemoryPeakUsageProcessor(), // Logs memory peak data.
 			new WebProcessor(), // Logs web request data. e.g. IP address, request method, URI, etc.
 			new ProcessIdProcessor(), // Logs the process ID.
-			new WPGraphQLQueryProcessor(), // Custom processor to capture GraphQL request data.
+			new RequestHeadersProcessor(), // Custom processor to capture request headers.
+			new DataSanitizationProcessor(), // Custom processor to sanitize data in log records.
 		];
+
+		// Filter for users to add their own processors.
 		return apply_filters( 'wpgraphql_logging_default_processors', $default_processors );
 	}
 
@@ -237,9 +251,14 @@ class LoggerService {
 	 * @return array<\Monolog\Handler\AbstractProcessingHandler>
 	 */
 	public static function get_default_handlers(): array {
+
+		$buffer_limit     = apply_filters( 'wpgraphql_logging_default_buffer_limit', 50 );
+		$database_handler = new BufferHandler( new WordPressDatabaseHandler(), $buffer_limit );
 		$default_handlers = [
-			new WordPressDatabaseHandler(),
+			$database_handler,
 		];
+
+		// Filter for users to add their own handlers.
 		return apply_filters( 'wpgraphql_logging_default_handlers', $default_handlers );
 	}
 
@@ -256,6 +275,7 @@ class LoggerService {
 			'site_url'       => home_url(),
 		];
 
+		// Filter for users to modify the default context.
 		return apply_filters( 'wpgraphql_logging_default_context', $context );
 	}
 }

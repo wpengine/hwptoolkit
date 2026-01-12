@@ -1,5 +1,10 @@
+---
+title: "Next.js Proxied Sitemap with Apollo Client"
+description: "This solution provides a proxied sitemap for a WordPress site that integrates seamlessly with a Next.js frontend. The WordPress XML sitemaps are fetched, and the domain URLs within the sitemap are replaced with the frontend domain (headless site URL). These transformed sitemaps are then served via a Next.js API route, ensuring SEO-friendly URLs that point to your frontend domain."
+---
+
 # WordPress to Next.js Sitemap Integration
-## Overview
+
 This solution provides a proxied sitemap for a WordPress site that integrates seamlessly with a Next.js frontend. The WordPress XML sitemaps are fetched, and the domain URLs within the sitemap are replaced with the frontend domain (headless site URL). These transformed sitemaps are then served via a Next.js API route, ensuring SEO-friendly URLs that point to your frontend domain.
 
 
@@ -94,7 +99,7 @@ http://localhost:3000/sitemap.xml
 
 | Command                | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| `example:build`        | Prepares the environment by starting WordPress, importing the database, and starting the application. |
+| `example:setup`        | Prepares the environment by starting WordPress, importing the database, and starting the application. |
 | `example:dev`          | Runs the Next.js development server.                                       |
 | `example:dev:install`  | Installs the required Next.js packages.                                    |
 | `example:start`        | Starts WordPress and the Next.js development server.                       |

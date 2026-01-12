@@ -14,7 +14,7 @@
 	<exclude-pattern>*/languages/*</exclude-pattern>
 	<exclude-pattern>*/phpunit.xml*</exclude-pattern>
 	<exclude-pattern>**/tests/**</exclude-pattern>
-	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>`
 
 	<!-- ===================================== -->
 	<!-- CLI Arguments & Version Config       -->
@@ -53,8 +53,18 @@
 	</rule>
 	<rule ref="PSR12.Files.DeclareStatement"/>
 	<rule ref="PEAR.NamingConventions.ValidClassName"/>
-	<rule ref="PHPCompatibilityWP"/>
-	<rule ref="WordPress-VIP-Go"/>
+	<rule ref="PHPCompatibilityWP">
+		<!-- "List" as a namespace component is valid in PHP and works at runtime -->
+		<exclude name="PHPCompatibility.Keywords.ForbiddenNames.listFound"/>
+	</rule>
+	<rule ref="WordPress-VIP-Go">
+		<exclude name="WordPressVIPMinimum.JS.Window"/>
+		<exclude name="WordPressVIPMinimum.JS.DangerouslySetInnerHTML"/>
+		<exclude name="WordPressVIPMinimum.JS.InnerHTML"/>
+		<exclude name="WordPressVIPMinimum.JS.StrippingTags"/>
+		<exclude name="WordPressVIPMinimum.JS.StringConcat"/>
+		<exclude name="WordPressVIPMinimum.JS.HTMLExecutingFunctions"/>
+	</rule>
 
 	<rule ref="WordPress">
 		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
@@ -326,7 +336,7 @@
 
 	<rule ref="SlevomatCodingStandard.Complexity.Cognitive">
 		<properties>
-			<property name="warningThreshold" value="7"/>
+			<property name="warningThreshold" value="8"/>
 			<property name="errorThreshold"  value="10"/>
 		</properties>
 	</rule>

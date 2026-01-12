@@ -1,0 +1,89 @@
+.graphql-logs_page_wpgraphql-logging #poststuff .postbox .inside h2 {
+	font-size: 16.9px;
+	font-weight: 600;
+	padding-left: 0;
+}
+
+.form-table td input[type="number"],
+.form-table td input[type="text"] {
+	width: calc(99% - 24px);
+	display: inline-block;
+}
+
+.form-table td select {
+	width: calc(99% - 24px);
+	display: inline-block;
+}
+
+.wpgraphql-logging-tooltip {
+	position: relative;
+	vertical-align: middle;
+	display: inline-block;
+	margin-right: 0.25rem;
+}
+
+.wpgraphql-logging-tooltip .dashicons {
+	color: #787c82;
+	vertical-align: middle;
+}
+
+.wpgraphql-logging-tooltip .tooltip-text.description {
+	opacity: 0;
+	visibility: hidden;
+	text-align: center;
+	color: #fff;
+	background-color: #1d2327;
+	border-radius: 4px;
+	position: absolute;
+	z-index: 1;
+	width: 180px;
+	padding: 0.5rem;
+	top: 50%;
+	transform: translateY(-50%);
+	vertical-align: middle;
+	margin-left: 0.25rem;
+	transition: opacity 0.12s ease;
+}
+
+.wpgraphql-logging-tooltip .tooltip-text::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: -10px;
+	border-width: 6px;
+	border-style: solid;
+	border-color: transparent #1d2327 transparent transparent;
+	transform: translateY(-50%);
+}
+
+.wpgraphql-logging-tooltip:hover .tooltip-text,
+.wpgraphql-logging-tooltip:focus-within .tooltip-text {
+	visibility: visible;
+	opacity: 1;
+}
+
+.wpgraphql-logging-docs ul li {
+	list-style-type: none;
+	margin-left: 30px;
+	padding-bottom: 16px;
+}
+
+.wpgraphql-logging-docs ul li:before {
+	content: url(../../icons/doc.svg);
+	height: 1em;
+	width: 0.5em;
+	margin-left: -29px;
+	margin-top: -2px;
+	position: absolute;
+}
+
+.wpgraphql-logging-feature-list {
+	list-style-type: disc;
+	font-size: 1.1em;
+	margin-left: 30px;
+	padding-bottom: 16px;
+}
+
+.wpgraphql-logging-custom:not(.block) {
+	display: none;
+}

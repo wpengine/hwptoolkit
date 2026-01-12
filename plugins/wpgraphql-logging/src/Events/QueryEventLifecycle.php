@@ -4,19 +4,48 @@ declare(strict_types=1);
 
 namespace WPGraphQL\Logging\Events;
 
-use Monolog\Level;
+use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Logger\LoggerService;
 
 /**
- * WPGraphQL Query Event Lifecycle -
+ * WPGraphQL Query Event Lifecycle Orchestrator.
  *
- * POC @TODO - Add pub/sub for query events.
+ * This class acts as a facade, orchestrating the logging of GraphQL query
+ * events by delegating responsibilities to specialized logger classes.
  *
  * @package WPGraphQL\Logging
  *
  * @since 0.0.1
  */
 class QueryEventLifecycle {
+	/**
+	 * The logger service instance.
+	 *
+	 * @var \WPGraphQL\Logging\Logger\LoggerService
+	 */
+	protected LoggerService $logger;
+
+	/**
+	 * The basic configuration settings.
+	 *
+	 * @var array<string, string|int|bool|array<string>>
+	 */
+	protected array $config;
+
+	/**
+	 * The logger for handling WordPress action hooks.
+	 *
+	 * @var \WPGraphQL\Logging\Events\QueryActionLogger
+	 */
+	protected QueryActionLogger $action_logger;
+
+	/**
+	 * The logger for handling WordPress filter hooks.
+	 *
+	 * @var \WPGraphQL\Logging\Events\QueryFilterLogger
+	 */
+	protected QueryFilterLogger $filter_logger;
+
 	/**
 	 * The single instance of the class.
 	 *
@@ -25,11 +54,18 @@ class QueryEventLifecycle {
 	private static ?QueryEventLifecycle $instance = null;
 
 	/**
-	 * The logger service instance.
+	 * QueryEventLifecycle constructor.
 	 *
-	 * @param \WPGraphQL\Logging\Logger\LoggerService $logger
+	 * @param \WPGraphQL\Logging\Logger\LoggerService $logger The logger instance.
 	 */
-	protected function __construct(readonly LoggerService $logger) {
+	protected function __construct( LoggerService $logger ) {
+		$this->logger  = $logger;
+		$config_helper = ConfigurationHelper::get_instance();
+		$this->config  = $config_helper->get_basic_config();
+
+		// Initialize the specialized logger components.
+		$this->action_logger = new QueryActionLogger( $this->logger, $this->config );
+		$this->filter_logger = new QueryFilterLogger( $this->logger, $this->config );
 	}
 
 	/**
@@ -37,72 +73,61 @@ class QueryEventLifecycle {
 	 */
 	public static function init(): QueryEventLifecycle {
 		if ( null === self::$instance ) {
-			// @TODO - Add filter to allow for custom logger service.
 			$logger         = LoggerService::get_instance();
 			self::$instance = new self( $logger );
 			self::$instance->setup();
 		}
+
 		return self::$instance;
 	}
 
 	/**
-	 * Logs the pre-request event for a GraphQL query.
+	 * Register actions and filters to log the query event lifecycle.
 	 *
-	 * @param string $query The GraphQL query.
-	 * @param mixed  $variables The variables for the query.
-	 * @param string $operation_name The name of the operation.
-	 */
-	public function log_pre_request( $query, $variables, $operation_name ): void {
-
-		try {
-			$context = [];
-			$context = apply_filters( 'wpgraphql_logging_pre_request_context', $context, $query, $variables, $operation_name );
-			$level   = apply_filters( 'wpgraphql_logging_pre_request_level', Level::Info, $query, $variables, $operation_name );
-			$this->logger->log( $level, 'WPGraphQL Incoming Request', $context );
-		} catch ( \Throwable $e ) {
-			// @TODO - Handle logging errors gracefully.
-			error_log( 'Error in log_pre_request: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-		}
-	}
-
-	/**
-	 * Logs the post-request event for a GraphQL query.
-	 *
-	 * @param mixed                $response The response from the GraphQL request.
-	 * @param mixed                $result The result of the GraphQL request.
-	 * @param string               $operation_name The name of the operation.
-	 * @param string               $query The GraphQL query.
-	 * @param array<string, mixed> $variables The variables for the query.
-	 */
-	public function log_post_request( $response, $result, string $operation_name, string $query, array $variables ): void {
-
-		try {
-			$context = [];
-			$level   = Level::Info;
-			$context = apply_filters( 'wpgraphql_logging_post_request_context', $context, $response, $result, $operation_name, $query, $variables );
-			$level   = apply_filters( 'wpgraphql_logging_post_request_level', $level, $response, $result, $operation_name, $query, $variables );
-			$this->logger->log( $level, 'WPGraphQL Outgoing Response', $context );
-		} catch ( \Throwable $e ) {
-			// @TODO - Handle logging errors gracefully.
-			error_log( 'Error in log_post_request: ' . $e->getMessage() );  // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-		}
-	}
-
-	/**
-	 * Register actions and filters.
+	 * @psalm-suppress HookNotFound
 	 */
 	protected function setup(): void {
+		// Map of action events to their corresponding logger methods and accepted args.
+		$action_events = [
+			Events::PRE_REQUEST              => [
+				'method'        => 'log_pre_request',
+				'accepted_args' => 3,
+			],
+			Events::BEFORE_GRAPHQL_EXECUTION => [
+				'method'        => 'log_graphql_before_execute',
+				'accepted_args' => 1,
+			],
+			Events::BEFORE_RESPONSE_RETURNED => [
+				'method'        => 'log_before_response_returned',
+				'accepted_args' => 8,
+			],
+		];
 
-		// @TODO: Update POC and use pub/sub for query events.
+		// Map of filter events to their corresponding logger methods and accepted args.
+		$filter_events = [
+			Events::REQUEST_DATA             => [
+				'method'        => 'log_graphql_request_data',
+				'accepted_args' => 1,
+			],
+			Events::REQUEST_RESULTS          => [
+				'method'        => 'log_graphql_request_results',
+				'accepted_args' => 7,
+			],
+			Events::RESPONSE_HEADERS_TO_SEND => [
+				'method'        => 'add_logging_headers',
+				'accepted_args' => 1,
+			],
+		];
 
-		/**
-		 * @psalm-suppress HookNotFound
-		 */
-		add_action( 'do_graphql_request', [ $this, 'log_pre_request' ], 10, 3 );
+		// Add action hooks.
+		foreach ( $action_events as $event_name => $data ) {
+			add_action( $event_name, [ $this->action_logger, $data['method'] ], 10, $data['accepted_args'] );
+		}
 
-		/**
-		 * @psalm-suppress HookNotFound
-		 */
-		add_action( 'graphql_process_http_request_response', [ $this, 'log_post_request' ], 10, 5 );
+		// Add filter hooks.
+		foreach ( $filter_events as $event_name => $data ) {
+			/** @psalm-suppress PossiblyInvalidArgument */
+			add_filter( $event_name, [ $this->filter_logger, $data['method'] ], 10, $data['accepted_args'] );
+		}
 	}
 }

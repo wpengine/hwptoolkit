@@ -1,6 +1,6 @@
 {
 	"name": "@wpengine/wpgraphql-logging-wordpress-plugin",
-	"version": "0.0.7",
+	"version": "1.0.1",
 	"private": true,
 	"description": "A POC plugin for logging WPGraphQL queries.",
 	"scripts": {
@@ -14,10 +14,10 @@
 	"author": "wpengine",
 	"license": "GPL-2.0",
 	"devDependencies": {
-		"@playwright/test": "^1.52.0",
+		"@playwright/test": "^1.56.1",
 		"@wordpress/e2e-test-utils-playwright": "^1.25.0",
 		"@wordpress/env": "^10.25.0",
 		"@wordpress/jest-console": "^8.25.0",
-		"@wordpress/scripts": "^30.18.0"
+		"@wordpress/scripts": "^30.24.0"
 	}
 }

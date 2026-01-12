@@ -1,3 +1,8 @@
+---
+title: "Next.js Authentication with Apollo Client"
+description: "This example demonstrates authentication with username and password in a headless WordPress setup, running Next.js as a frontend framework. Example is using WPGraphQL and WPGraphQL Headless Login plugins to enable authentication features."
+---
+
 # Next.js pages Apollo Authentication
 
 This example demonstrates authentication with username and password in a headless WordPress setup, running Next.js as a frontend framework. Example is using WPGraphQL and WPGraphQL Headless Login plugins to enable authentication features.

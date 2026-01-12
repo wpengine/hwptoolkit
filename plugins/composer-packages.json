@@ -1,6 +1,214 @@
 {
   "packages": {
     "wpengine/hwp-previews": {
+      "1.0.0": {
+        "name": "wpengine/hwp-previews",
+        "version": "1.0.0",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-1.0.0/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.15": {
+        "name": "wpengine/hwp-previews",
+        "version": "0.0.15",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.15/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.14": {
+        "name": "wpengine/hwp-previews",
+        "version": "0.0.14",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.14/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.13": {
+        "name": "wpengine/hwp-previews",
+        "version": "0.0.13",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.13/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.12": {
+        "name": "wpengine/hwp-previews",
+        "version": "0.0.12",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.12/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.11": {
+        "name": "wpengine/hwp-previews",
+        "version": "0.0.11",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.11/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.10": {
+        "name": "wpengine/hwp-previews",
+        "version": "0.0.10",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.10/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.9": {
+        "name": "wpengine/hwp-previews",
+        "version": "0.0.9",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin for headless previews.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.9/hwp-previews.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
       "0.0.8": {
         "name": "wpengine/hwp-previews",
         "version": "0.0.8",
@@ -133,11 +341,11 @@
       }
     },
     "wpengine/wpgraphql-debug-extensions": {
-      "0.0.1": {
+      "0.0.3": {
         "name": "wpengine/wpgraphql-debug-extensions",
-        "version": "0.0.1",
+        "version": "0.0.3",
         "type": "wordpress-plugin",
-        "description": "A WordPress plugin for wpgraphql debug extensions.",
+        "description": "Debug extensions for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
         "license": "GPL-2.0",
         "authors": [
@@ -152,7 +360,59 @@
           "email": "support@wpengine.com"
         },
         "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-debug-extensions-plugin-0.0.1/wpgraphql-debug-extensions.zip",
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-debug-extensions-wordpress-plugin-0.0.3/wpgraphql-debug-extensions.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.2": {
+        "name": "wpengine/wpgraphql-debug-extensions",
+        "version": "0.0.2",
+        "type": "wordpress-plugin",
+        "description": "Debug extensions for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-debug-extensions-wordpress-plugin-0.0.2/wpgraphql-debug-extensions.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.1": {
+        "name": "wpengine/wpgraphql-debug-extensions",
+        "version": "0.0.1",
+        "type": "wordpress-plugin",
+        "description": "Debug extensions for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-debug-extensions-wordpress-plugin-0.0.1/wpgraphql-debug-extensions.zip",
           "type": "zip"
         },
         "require": {
@@ -160,9 +420,61 @@
         }
       }
     },
-    "wpengine/wp-graphql-webhooks": {
+    "wpengine/wpgraphql-webhooks": {
+      "0.0.7": {
+        "name": "wpengine/wpgraphql-webhooks",
+        "version": "0.0.7",
+        "type": "wordpress-plugin",
+        "description": "Headless webhooks for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.7/wpgraphql-webhooks.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.6": {
+        "name": "wpengine/wpgraphql-webhooks",
+        "version": "0.0.6",
+        "type": "wordpress-plugin",
+        "description": "Headless webhooks for WPGraphQL",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.6/wpgraphql-webhooks.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
       "0.0.4": {
-        "name": "wpengine/wp-graphql-webhooks",
+        "name": "wpengine/wpgraphql-webhooks",
         "version": "0.0.4",
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
@@ -180,7 +492,7 @@
           "email": "support@wpengine.com"
         },
         "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.4/wp-graphql-webhooks.zip",
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.4/wpgraphql-webhooks.zip",
           "type": "zip"
         },
         "require": {
@@ -188,7 +500,7 @@
         }
       },
       "0.0.3": {
-        "name": "wpengine/wp-graphql-webhooks",
+        "name": "wpengine/wpgraphql-webhooks",
         "version": "0.0.3",
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
@@ -206,7 +518,7 @@
           "email": "support@wpengine.com"
         },
         "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.3/wp-graphql-webhooks.zip",
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.3/wpgraphql-webhooks.zip",
           "type": "zip"
         },
         "require": {
@@ -214,7 +526,7 @@
         }
       },
       "0.0.2": {
-        "name": "wpengine/wp-graphql-webhooks",
+        "name": "wpengine/wpgraphql-webhooks",
         "version": "0.0.2",
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
@@ -232,7 +544,321 @@
           "email": "support@wpengine.com"
         },
         "dist": {
-          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.2/wp-graphql-webhooks.zip",
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-webhooks-wordpress-plugin-0.0.2/wpgraphql-webhooks.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      }
+    },
+    "wpengine/wpgraphql-logging": {
+      "1.0.1": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "1.0.1",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-1.0.1/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "1.0.0": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "1.0.0",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-1.0.0/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.2.3": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.2.3",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.2.3/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.2.2": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.2.2",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.2.2/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.2.1": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.2.1",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.2.1/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.2.0": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.2.0",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.2.0/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.1.0": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.1.0",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.1.0/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.12": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.0.12",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.0.12/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.11": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.0.11",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.0.11/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.10": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.0.10",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.0.10/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.8": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.0.8",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.0.8/wpgraphql-logging.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      },
+      "0.0.7": {
+        "name": "wpengine/wpgraphql-logging",
+        "version": "0.0.7",
+        "type": "wordpress-plugin",
+        "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-0.0.7/wpgraphql-logging.zip",
           "type": "zip"
         },
         "require": {

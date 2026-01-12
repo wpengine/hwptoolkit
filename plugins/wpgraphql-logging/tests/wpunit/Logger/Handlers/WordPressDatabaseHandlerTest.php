@@ -8,11 +8,12 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use Monolog\Level;
 use Monolog\LogRecord;
 use DateTimeImmutable;
-use WPGraphQL\Logging\Logger\Database\DatabaseEntity;
+use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 use WPGraphQL\Logging\Logger\Handlers\WordPressDatabaseHandler;
+use WPGraphQL\Logging\Logger\Store\LogStoreService;
 
 /**
- * Class WPGraphQLQueryProcessorTest
+ * Class WordPressDatabaseHandlerTest
  *
  * Tests for the WordPressDatabaseHandler class.
  *
@@ -31,7 +32,8 @@ class WordPressDatabaseHandlerTest extends WPTestCase
 	public function setUp(): void
     {
         parent::setUp();
-        DatabaseEntity::create_table();
+		$log_service = LogStoreService::get_log_service();
+		$log_service->activate();
 
 		// Setup test record data.
 		$this->log_data = [
@@ -75,7 +77,11 @@ class WordPressDatabaseHandlerTest extends WPTestCase
 
     public function tearDown(): void
     {
-        DatabaseEntity::drop_table();
+		$log_service = LogStoreService::get_log_service();
+		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
+			define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
+		}
+		$log_service->deactivate();
         parent::tearDown();
     }
 
@@ -89,14 +95,14 @@ class WordPressDatabaseHandlerTest extends WPTestCase
 		$log_data = $this->log_data;
 
         // 4. Verify the data was saved correctly in the database.
-        $table_name = DatabaseEntity::get_table_name();
+        $table_name = WordPressDatabaseEntity::get_table_name();
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $saved_row = $wpdb->get_row("SELECT * FROM {$table_name} ORDER BY id DESC LIMIT 1", ARRAY_A);
 
         $this->assertNotNull($saved_row, 'A log entry should have been created in the database.');
         $this->assertEquals($log_data['channel'], $saved_row['channel']);
         $this->assertEquals($log_data['level']->value, $saved_row['level']);
-        $this->assertEquals($log_data['level']->getName(), $saved_row['level_name']);
+        $this->assertEquals($log_data['level']->name, $saved_row['level_name']);
         $this->assertEquals($log_data['message'], $saved_row['message']);
 
         // Compare the JSON-decoded context and extra fields.
@@ -107,7 +113,11 @@ class WordPressDatabaseHandlerTest extends WPTestCase
     public function test_write_method_handles_exceptions_gracefully(): void
     {
         // Drop the table to force the save operation to fail.
-        DatabaseEntity::drop_table();
+		$log_service = LogStoreService::get_log_service();
+		if ( ! defined( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN' ) ) {
+			define( 'WP_GRAPHQL_LOGGING_UNINSTALL_PLUGIN', true );
+		}
+		$log_service->deactivate();
 		global $wpdb;
 		$wpdb->flush();
 

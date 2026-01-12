@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { idToTemplate } from "../lib/templateHierarchy";
+
+const { uri = "/" } = Astro.params;
+
+if (Astro.url.pathname.includes(".well-known")) {
+  return Astro.rewrite("/404");
+}
+
+const isPreview = Astro.url.searchParams.get("preview") === "true";
+const postId = Astro.url.searchParams.get("post_id") || undefined;
+
+const results = await idToTemplate({ uri, asPreview: isPreview, id: postId });
+
+Astro.locals.templateData = results;
+Astro.locals.isPreview = isPreview || false;
+
+if (results.template) {
+  return Astro.rewrite(results.template.path);
+}
+---
+
+<Layout>
+  <h1 style="color: red;">
+    Oops! You shouldn't be here, something went wrong!
+  </h1>
+  <pre>
+    <code>{JSON.stringify(results, null, 2)}</code>
+  </pre>
+</Layout>

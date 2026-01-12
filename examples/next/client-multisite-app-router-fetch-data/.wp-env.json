@@ -4,7 +4,7 @@
   "plugins": [
     "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
     "https://github.com/wp-graphql/wpgraphql-ide/releases/latest/download/wpgraphql-ide.zip",
-    "https://github.com/AdvancedCustomFields/acf/releases/download/6.4.2/advanced-custom-fields-6.4.2.zip",
+    "https://github.com/AdvancedCustomFields/acf/releases/latest/download/advanced-custom-fields.zip",
     "https://github.com/wp-graphql/wpgraphql-acf/releases/latest/download/wpgraphql-acf.zip",
     "https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip"
   ],

@@ -1,0 +1,17 @@
+{
+	"name": "wpengine/hwp-cli",
+	"type": "wordpress-plugin",
+	"description": "Command-line interface for Headless WordPress Toolkit",
+	"license": "GPL-2.0-or-later",
+	"version": "0.1.0",
+	"authors": [
+		{
+			"name": "WP Engine",
+			"email": "opensource@wpengine.com",
+			"homepage": "https://wpengine.com/"
+		}
+	],
+	"require": {
+		"php": "^7.4 || ^8.0"
+	}
+}

@@ -1,5 +1,69 @@
 # HWP Previews
 
+## 1.0.0
+
+### Major Changes
+
+- [#524](https://github.com/wpengine/hwptoolkit/pull/524) [`e6060f7`](https://github.com/wpengine/hwptoolkit/commit/e6060f7818cbf3abdd7a95d6f0e0defd71985d85) Thanks [@ahuseyn](https://github.com/ahuseyn)! - chore: Initial release of the HWP Previews Plugin
+  - Updated Readme and docs
+  - Upgraded wordpress-core into 6.9
+
+## 0.0.15
+
+### Patch Changes
+
+- [#530](https://github.com/wpengine/hwptoolkit/pull/530) [`447530b`](https://github.com/wpengine/hwptoolkit/commit/447530b0b5a966bcc03fbbfd2b1c1c94264037e7) Thanks [@josephfusco](https://github.com/josephfusco)! - Verify WordPress 6.9 compatibility and update CI test matrix
+
+  - Tested compatibility with WordPress 6.9
+  - Updated CI test matrix to WordPress 6.9, 6.8, 6.7 (dropped 6.5, 6.6)
+  - Updated dev dependencies (mockery/mockery to ^1.6, wp-graphql/wp-graphql-testcase to ^3.4)
+  - Updated Docker defaults to WordPress 6.9
+  - Reduced readme.txt tags to 5 for WordPress.org compliance
+
+## 0.0.14
+
+### Patch Changes
+
+- [#525](https://github.com/wpengine/hwptoolkit/pull/525) [`a120c89`](https://github.com/wpengine/hwptoolkit/commit/a120c899d6f8fe2b11ec122e142da24d7859dbda) Thanks [@ahuseyn](https://github.com/ahuseyn)! - Add optional data cleanup on uninstall via HWP_PREVIEWS_UNINSTALL_PLUGIN constant
+
+## 0.0.13
+
+### Patch Changes
+
+- [#519](https://github.com/wpengine/hwptoolkit/pull/519) [`0dff8ff`](https://github.com/wpengine/hwptoolkit/commit/0dff8fff953767fd33c2a864909955b28a620b75) Thanks [@ahuseyn](https://github.com/ahuseyn)! - Changed documentation links on wp-admin
+
+## 0.0.12
+
+### Patch Changes
+
+- [#416](https://github.com/wpengine/hwptoolkit/pull/416) [`641fa27`](https://github.com/wpengine/hwptoolkit/commit/641fa27d11a62fe2433a96299776732435a1eacd) Thanks [@ahuseyn](https://github.com/ahuseyn)! - Fixed security vulnerability by updating @wordpress/scripts from 30.18.0 to 30.24.0.
+  Other packages bumped:
+
+  - @changesets/cli
+  - @playwright/test
+  - @wordpress/e2e-test-utils-playwright
+  - @wordpress/env
+  - @wordpress/jest-console
+  - @wordpress/scripts
+
+## 0.0.11
+
+### Patch Changes
+
+- [#406](https://github.com/wpengine/hwptoolkit/pull/406) [`7e5a134`](https://github.com/wpengine/hwptoolkit/commit/7e5a13476a3bfba0b92479ff2a03acc01875ff28) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Fix for the admin settings page to check capabilities.
+
+## 0.0.10
+
+### Patch Changes
+
+- [#377](https://github.com/wpengine/hwptoolkit/pull/377) [`90e14d8`](https://github.com/wpengine/hwptoolkit/commit/90e14d85c338ca23d20678ff57cf8496c37585dd) Thanks [@colinmurphy](https://github.com/colinmurphy)! - Fixed priority issue with ACF and Previews.
+
+## 0.0.9
+
+### Patch Changes
+
+- [#370](https://github.com/wpengine/hwptoolkit/pull/370) [`e8f3904`](https://github.com/wpengine/hwptoolkit/commit/e8f39041e114a05db37de6dc38714e278a2d9f95) Thanks [@colinmurphy](https://github.com/colinmurphy)! - bug: Fixed issue with retrieving post types before ACF hook initialisation.
+
 ## 0.0.8
 
 ### Patch Changes

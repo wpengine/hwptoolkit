@@ -1,21 +1,21 @@
+---
+title: "Headless WordPress Previews with Next.js Pages Router and WPGraphQL"
+description: "This demonstrates the usage of HWP Previews with Next.js Pages Router and WPGraphQL. It uses WordPress Application Passwords for authentication and implements Draft Mode for secure preview functionality."
+---
+
 # Example: Headless WordPress Previews with Nextjs Draft Mode
 
-## Overview
-
-This example shows the HWP Previews plugin in action. Example implements the [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode) of Nextjs. It uses WordPress [Application Passwords](https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/) for the authentication and WPGraphQL for data fetching.
+This example shows the HWP Previews plugin in action. Example implements the [Draft Mode](https://nextjs.org/docs/pages/guides/draft-mode) of Next.js. It uses WordPress [Application Passwords](https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/) for the authentication and WPGraphQL for data fetching.
 
 The example includes a wp-env setup, which will allow you to build and start this example quickly. With this wp-env setup, you don't need to have a separate WordPress instance or demo data to inspect the example.
 
-> [!CAUTION]
-> The HWP Previews plugin is currently in an beta state. It's still under active development, so you may encounter bugs or incomplete features. Updates will be rolled out regularly. Use with caution and provide feedback if possible.
-
 ## What does this example do
 
-1. `/api/preview/` route to enable Nextjs Draft Mode
-2. `/api/disable-preview` route to disable Nextjs Draft Mode
+1. `/api/preview/` route to enable Next.js Draft Mode
+2. `/api/disable-preview` route to disable Next.js Draft Mode
 3. Preview posts, pages and custom post types
 4. Use WordPress Application Password as an authentication method
-5. Configured WordPress instance with demo data and required plugins, using wp-env
+5. Configured WordPress instance with demo data and required plugins, using wp-env.
 
 ## Screenshots
 
@@ -55,24 +55,20 @@ The example includes a wp-env setup, which will allow you to build and start thi
 
 **Note** Please make sure you have all prerequisites installed as mentioned above and Docker running (`docker ps`)
 
-### Setup Repository and Packages
+### 1. Setup Repository and Packages
 
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && npm install`
 
-### Build and start the application
+### 2. Build and start the application
 
 - `cd plugins/hwp-previews/examples/hwp-preview-wpgraphql`
 - Then run `npm run example:build` will build and start your application.
-- Copy .env.local to .env under example-app `cp example-app/.env.local example-app/.env`
-- This does the following:
-  - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
-  - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
-  - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
-  - Install Next.js dependencies for `example-app`
-  - Runs the Next.js dev script
 
-Congratulations, WordPress should now be fully set up.
+This starts the wp-env instance and frontend application. You can access them now, but one more installation step remains.
+
+> [!IMPORTANT]
+> After logging in to the WordPress instance, ensure that all installed plugins are activated for this example to work properly.
 
 | Frontend               | Admin                           |
 | ---------------------- | ------------------------------- |
@@ -80,9 +76,9 @@ Congratulations, WordPress should now be fully set up.
 
 > **Note:** The login details for the admin is username "admin" and password "password"
 
-### Add environment variables to the Nextjs
+### 3. Add environment variables to the Nextjs
 
-In this step we will create an Application Password and a secret preview token for the previews. At the end we'll prepare a .env file for the Nextjs application and put it inside `examples/next/hwp-preview-wpgraphql/example-app` folder. Below are the step by step guide to achieve this.
+In this step we will create an Application Password and a secret preview token for the previews. At the end we'll prepare a .env file for the Next.js application and put it inside `plugins/hwp-previews/examples/hwp-preview-wpgraphql/example-app` folder. Below are the step by step guide to achieve this.
 
 1. Login to your newly created [wp-env instance](http://localhost:8888/wp-admin/). You can find the credentials above
 2. a. Follow [these instructions](https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/) to create an Application Password. At the end it should look like this:
@@ -95,7 +91,7 @@ In this step we will create an Application Password and a secret preview token f
 
 ![index](./screenshots/preview_token.png "Change secret preview token")
 
-4. Create a .env file under `examples/next/hwp-preview-wpgraphql/example-app` and add these values inside:
+4. Create a .env file under `plugins/hwp-previews/examples/hwp-preview-wpgraphql/example-app` and add these values inside:
 
 ```bash
 NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888
@@ -110,7 +106,7 @@ WP_PREVIEW_SECRET=YOUR-SECRET-PREVIEW-TOKEN
 
 After completing this step, clicking the preview button in wp-admin should open the preview in your front-end app.
 
-If you want to learn more about the preview plugin, check out [the documentation](/plugins/hwp-previews/README.md).
+If you want to learn more about the preview plugin, check out [the documentation](../../../../docs/plugins/hwp-previews/index.md).
 
 ### Command Reference
 

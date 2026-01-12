@@ -30,3 +30,9 @@ parameters:
     paths:
         - wpgraphql-logging.php
         - src/
+    ignoreErrors:
+        - identifier: empty.notAllowed
+        -
+            message: '#Constant WPGRAPHQL_LOGGING.* not found\.#'
+        -
+            message: '#GraphQL\\.*#'

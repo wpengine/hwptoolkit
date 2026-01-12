@@ -8,6 +8,7 @@
 	findUnusedBaselineEntry="true"
 	findUnusedCode="false"
 	phpVersion="8.1"
+	cacheDirectory=".psalm-cache"
 >
 	<projectFiles>
 		<file name="wpgraphql-logging.php"/>
@@ -21,7 +22,14 @@
 		<pluginClass class="PsalmWordPress\Plugin"/>
 	</plugins>
 
+	<stubs>
+		<file name="vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php"/>
+	</stubs>
+
 	<issueHandlers>
+		<!-- Psalm 6 requires #[\Override] attributes - suppress for now -->
+		<MissingOverrideAttribute errorLevel="suppress"/>
+
 		<!-- Noting we had issues with trying to set stubs and also using issueHandlers for particular constants-->
 		<UndefinedConstant errorLevel="suppress">
 			<errorLevel type="suppress">
@@ -29,10 +37,19 @@
 			</errorLevel>
 		</UndefinedConstant>
 
-		<MissingFile errorLevel="suppress">
+		<RedundantCast>
 			<errorLevel type="suppress">
-				<file name="src/Logger/Database/DatabaseEntity.php"/>
+				<file name="src/Admin/View/Templates/WPGraphQLLoggerView.php"/>
 			</errorLevel>
-		</MissingFile>
+		</RedundantCast>
+
+		<PossiblyInvalidArgument>
+			<errorLevel type="suppress">
+				<file name="src/Admin/View/Templates/WPGraphQLLoggerFilters.php"/>
+			</errorLevel>
+		</PossiblyInvalidArgument>
+
+		<!-- WordPress admin includes not available during static analysis -->
+		<MissingFile errorLevel="suppress"/>
 	</issueHandlers>
 </psalm>

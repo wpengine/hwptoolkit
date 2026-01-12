@@ -8,8 +8,12 @@ use WPGraphQL\Logging\Autoloader;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use ReflectionClass;
 
+
 /**
- * Test class for the Autoloader.
+ * Test for the Autoloader
+ *
+ * @package WPGraphQL\Logging
+ * @since 0.0.1
  */
 class Autoloader_Test extends WPTestCase {
 

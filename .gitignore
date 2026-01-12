@@ -4,6 +4,9 @@ node_modules
 
 # Build outputs
 dist
+build
+.next
+out
 
 # Testing
 coverage
@@ -29,4 +32,6 @@ __MACOSX
 ## Examples
 examples/**/package-lock.json
 examples/**/__MACOSX
+examples/**/mu-plugin.php
+examples/**/.wp-env.json
 ``

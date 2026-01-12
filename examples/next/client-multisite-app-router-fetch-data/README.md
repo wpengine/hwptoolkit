@@ -1,21 +1,9 @@
+---
+title: "Next.js Multisite App Router with Fetch API"
+description: "An example mulitsite headless WordPress application using Next.js App Router and the fetch API to fetch data from WordPress using WPGraphQL. It showcases different data fetching strategies, state management techniques, and modern web development patterns in a real-world application context. This also contains a full example using wp-env and sample data."
+---
+
 # Example: Multisite Next.js App Router using the Fetch API
-
-# Table of Contents
-- [Overview](#overview)
-  - [Prerequisites](#prerequisites)
-  - [Project Structure](#project-structure)
-  - [Features](#features)
-  - [Screenshots](#screenshots)
-- [Running the Example with wp-env](#running-the-example-with-wp-env)
-  - [Prerequisites](#prerequisites-1)
-  - [Setup Repository and Packages](#setup-repository-and-packages)
-  - [Build and Start the Application](#build-and-start-the-application)
-  - [Command Reference](#command-reference)
-  - [Database Access](#database-access)
-  - [Adding More Sites to the Multisite Examples](#adding-more-sites-to-the-multisite-examples)
-
-
-# Overview
 
 An example mulitsite headless WordPress application using Next.js App Router and the fetch API to fetch data from WordPress using WPGraphQL. It showcases different data fetching strategies, state management techniques, and modern web development patterns in a real-world application context. This also contains a full example using wp-env and sample data.
 

@@ -3,25 +3,27 @@
  * Plugin Name: WPGraphQL Logging
  * Plugin URI: https://github.com/wpengine/hwptoolkit
  * GitHub Plugin URI: https://github.com/wpengine/hwptoolkit
- * Description: A WPGraphQL logging plugin that provides visibility into request lifecycle to help quickly identify and resolve bottlenecks in your headless WordPress application.
+ * Description: A WPGraphQL logging plugin that provides visibility into the request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application.
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
- * Version: 0.0.1
+ * Version: 1.0.1
  * Text Domain: wpgraphql-logging
  * Domain Path: /languages
  * Requires at least: 6.5
- * Tested up to: 6.8.2
- * Requires PHP: 8.1+
+ * Tested up to: 6.9
+ * Requires PHP: 8.1.2+
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: wp-graphql
  * WPGraphQL requires at least: 2.3.0
- * WPGraphQL tested up to: 2.3.3
+ * WPGraphQL tested up to: 2.5.1
  *
  * @package WPGraphQL\Logging
  *
  * @author WPEngine Headless OSS Team
+ *
+ * @since 0.0.1
  *
  * @license GPL-2
  */
@@ -35,11 +37,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load the autoloader.
+// Composer autoloader.
 require_once __DIR__ . '/src/Autoloader.php';
 if ( ! Autoloader::autoload() ) {
 	return;
 }
+
+if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
+	/**
+	 * Define plugin constants.
+	 */
+	function wpgraphql_logging_constants(): void {
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_VERSION' ) ) {
+			define( 'WPGRAPHQL_LOGGING_VERSION', '1.0.1' );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
+			define( 'WPGRAPHQL_LOGGING_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_URL' ) ) {
+			define( 'WPGRAPHQL_LOGGING_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_KEY' ) ) {
+			define( 'WPGRAPHQL_LOGGING_SETTINGS_KEY', 'wpgraphql_logging_settings' );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP' ) ) {
+			define( 'WPGRAPHQL_LOGGING_SETTINGS_GROUP', 'wpgraphql_logging_settings_group' );
+		}
+	}
+}
+
+// Define constants early - needed for activation/deactivation hooks.
+wpgraphql_logging_constants();
 
 if ( file_exists( __DIR__ . '/activation.php' ) ) {
 	require_once __DIR__ . '/activation.php';
@@ -62,29 +95,9 @@ if ( ! function_exists( 'wpgraphql_logging_init' ) ) {
 	 * Initializes plugin.
 	 */
 	function wpgraphql_logging_init(): void {
-		wpgraphql_logging_constants();
 		wpgraphql_logging_plugin_init();
-		wpgraphql_logging_plugin_admin_notice();
-	}
-}
-
-if ( ! function_exists( 'wpgraphql_logging_constants' ) ) {
-	/**
-	 * Define plugin constants.
-	 */
-	function wpgraphql_logging_constants(): void {
-
-		if ( ! defined( 'WPGRAPHQL_LOGGING_VERSION' ) ) {
-			define( 'WPGRAPHQL_LOGGING_VERSION', '0.0.1' );
-		}
-
-		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
-			define( 'WPGRAPHQL_LOGGING_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-		}
-
-		if ( ! defined( 'WPGRAPHQL_LOGGING_PLUGIN_URL' ) ) {
-			define( 'WPGRAPHQL_LOGGING_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-		}
+		wpgraphql_logging_plugin_admin_notice_correct_build();
+		wpgraphql_logging_plugin_admin_notice_min_php_version();
 	}
 }
 
@@ -102,11 +115,11 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_init' ) ) {
 }
 
 
-if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice' ) ) {
+if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_correct_build' ) ) {
 	/**
 	 * Display an admin notice if the plugin is not properly initialized.
 	 */
-	function wpgraphql_logging_plugin_admin_notice(): void {
+	function wpgraphql_logging_plugin_admin_notice_correct_build(): void {
 		if ( defined( 'WPGRAPHQL_LOGGING_PLUGIN_DIR' ) ) {
 			return;
 		}
@@ -118,7 +131,41 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice' ) ) {
 				<div class="error notice">
 					<p>
 						<?php
-						echo 'Composer vendor directory must be present for WPGraphQL Logging to work.'
+						echo esc_html__( 'Composer vendor directory must be present for WPGraphQL Logging to work.', 'wpgraphql-logging' );
+						?>
+					</p>
+				</div>
+				<?php
+			},
+			10,
+			0
+		);
+	}
+}
+
+if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' ) ) {
+	/**
+	 * Display an admin notice if the PHP version is not met.
+	 */
+	function wpgraphql_logging_plugin_admin_notice_min_php_version(): void {
+		if ( version_compare( PHP_VERSION, '8.1.2', '>=' ) ) {
+			return;
+		}
+
+		add_action(
+			'admin_notices',
+			static function (): void {
+				?>
+				<div class="error notice">
+					<p>
+						<?php
+						echo esc_html(
+							sprintf(
+							/* translators: %s: PHP version */
+								__( 'PHP %s is not supported. Please upgrade to PHP 8.1.2 or higher in order to use WPGraphQL Logging Plugin.', 'wpgraphql-logging' ),
+								PHP_VERSION
+							)
+						);
 						?>
 					</p>
 				</div>
@@ -140,4 +187,6 @@ function wpgraphql_logging_load_textdomain(): void {
 add_action( 'init', 'wpgraphql_logging_load_textdomain', 1, 0 );
 
 /** @psalm-suppress HookNotFound */
-wpgraphql_logging_init();
+add_action( 'plugins_loaded', static function (): void {
+	wpgraphql_logging_init();
+}, 100, 0 );

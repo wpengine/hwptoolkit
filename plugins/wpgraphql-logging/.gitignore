@@ -48,6 +48,7 @@ c3.php
 
 # Cache
 phpcs-cache.json
+.psalm-cache/
 tests/_support/
 tests/_output/
 tests/_generated/
@@ -55,3 +56,6 @@ tests/_data/
 
 # Playwright outputs
 artifacts
+
+# Keep example SQL files
+!examples/**/*.sql
