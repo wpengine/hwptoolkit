@@ -98,7 +98,8 @@ export default function ProductVariations({
                                                             : "bg-white border-gray-300 text-gray-400 opacity-50 cursor-not-allowed"
                                                 }`}
                                             >
-                                                {option}                                             
+                                                {option}
+                                            </button>
                                         );
                                     })}
                                 </div>

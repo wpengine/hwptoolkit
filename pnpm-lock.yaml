@@ -93,6 +93,24 @@ importers:
         specifier: ^30.19.0
         version: 30.19.0(@playwright/test@1.53.2)(@types/eslint@9.6.1)(@types/node@24.0.12)(@types/webpack@4.41.40)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.12.1(stylelint@16.21.1(typescript@5.8.3)))(type-fest@4.41.0)(typescript@5.8.3)
 
+  plugins/wpgraphql-logging:
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.52.0
+        version: 1.53.2
+      '@wordpress/e2e-test-utils-playwright':
+        specifier: ^1.25.0
+        version: 1.26.0(@playwright/test@1.53.2)
+      '@wordpress/env':
+        specifier: ^10.25.0
+        version: 10.26.0(@types/node@24.0.12)
+      '@wordpress/jest-console':
+        specifier: ^8.25.0
+        version: 8.26.0(jest@29.7.0(@types/node@24.0.12))
+      '@wordpress/scripts':
+        specifier: ^30.18.0
+        version: 30.19.0(@playwright/test@1.53.2)(@types/eslint@9.6.1)(@types/node@24.0.12)(@types/webpack@4.41.40)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.12.1(stylelint@16.21.1(typescript@5.8.3)))(type-fest@4.41.0)(typescript@5.8.3)
+
 packages:
 
   '@ampproject/remapping@2.3.0':
@@ -6338,6 +6356,9 @@ packages:
   third-party-web@0.27.0:
     resolution: {integrity: sha512-h0JYX+dO2Zr3abCQpS6/uFjujaOjA1DyDzGQ41+oFn9VW/ARiq9g5ln7qEP9+BTzDpOMyIfsfj4OvfgXAsMUSA==}
 
+  third-party-web@0.29.0:
+    resolution: {integrity: sha512-nBDSJw5B7Sl1YfsATG2XkW5qgUPODbJhXw++BKygi9w6O/NKS98/uY/nR/DxDq2axEjL6halHW1v+jhm/j1DBQ==}
+
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
 
@@ -8750,7 +8771,7 @@ snapshots:
   '@paulirish/trace_engine@0.0.56':
     dependencies:
       legacy-javascript: 0.0.1
-      third-party-web: 0.27.0
+      third-party-web: 0.29.0
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -9451,12 +9472,19 @@ snapshots:
   '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.100.0)':
     dependencies:
       webpack: 5.100.0(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2(webpack-cli@5.1.4)(webpack@5.100.0))(webpack@5.100.0)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0)
 
   '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.100.0)':
     dependencies:
       webpack: 5.100.0(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2(webpack-cli@5.1.4)(webpack@5.100.0))(webpack@5.100.0)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0)
+
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0))(webpack-dev-server@5.2.2)(webpack@5.100.0)':
+    dependencies:
+      webpack: 5.100.0(webpack-cli@5.1.4)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0)
+    optionalDependencies:
+      webpack-dev-server: 5.2.2(webpack-cli@5.1.4)(webpack@5.100.0)
 
   '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack-dev-server@5.2.2(webpack-cli@5.1.4)(webpack@5.100.0))(webpack@5.100.0)':
     dependencies:
@@ -9464,13 +9492,7 @@ snapshots:
       webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2(webpack-cli@5.1.4)(webpack@5.100.0))(webpack@5.100.0)
     optionalDependencies:
       webpack-dev-server: 5.2.2(webpack-cli@5.1.4)(webpack@5.100.0)
-
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack-dev-server@5.2.2)(webpack@5.100.0)':
-    dependencies:
-      webpack: 5.100.0(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-dev-server@5.2.2)(webpack@5.100.0)
-    optionalDependencies:
-      webpack-dev-server: 5.2.2(webpack-cli@5.1.4)(webpack@5.100.0)
+    optional: true
 
   '@wordpress/babel-preset-default@8.26.0':
     dependencies:
@@ -9670,7 +9692,7 @@ snapshots:
       url-loader: 4.1.1(webpack@5.100.0)
       webpack: 5.100.0(webpack-cli@5.1.4)
       webpack-bundle-analyzer: 4.10.2
-      webpack-cli: 5.1.4(webpack-dev-server@5.2.2)(webpack@5.100.0)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0)
       webpack-dev-server: 5.2.2(webpack-cli@5.1.4)(webpack@5.100.0)
     transitivePeerDependencies:
       - '@rspack/core'
@@ -9765,7 +9787,7 @@ snapshots:
       url-loader: 4.1.1(webpack@5.100.0)
       webpack: 5.100.0(webpack-cli@5.1.4)
       webpack-bundle-analyzer: 4.10.2
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2(webpack-cli@5.1.4)(webpack@5.100.0))(webpack@5.100.0)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0)
       webpack-dev-server: 5.2.2(webpack-cli@5.1.4)(webpack@5.100.0)
     transitivePeerDependencies:
       - '@rspack/core'
@@ -14641,6 +14663,8 @@ snapshots:
 
   third-party-web@0.27.0: {}
 
+  third-party-web@0.29.0: {}
+
   through@2.3.8: {}
 
   thunky@1.1.0: {}
@@ -14932,13 +14956,14 @@ snapshots:
     optionalDependencies:
       webpack-bundle-analyzer: 4.10.2
       webpack-dev-server: 5.2.2(webpack-cli@5.1.4)(webpack@5.100.0)
+    optional: true
 
-  webpack-cli@5.1.4(webpack-dev-server@5.2.2)(webpack@5.100.0):
+  webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.100.0)
       '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.100.0)
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack-dev-server@5.2.2)(webpack@5.100.0)
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0))(webpack-dev-server@5.2.2)(webpack@5.100.0)
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.6
@@ -14950,6 +14975,7 @@ snapshots:
       webpack: 5.100.0(webpack-cli@5.1.4)
       webpack-merge: 5.10.0
     optionalDependencies:
+      webpack-bundle-analyzer: 4.10.2
       webpack-dev-server: 5.2.2(webpack-cli@5.1.4)(webpack@5.100.0)
 
   webpack-dev-middleware@7.4.2(webpack@5.100.0):
@@ -14995,7 +15021,7 @@ snapshots:
       ws: 8.18.3
     optionalDependencies:
       webpack: 5.100.0(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-dev-server@5.2.2)(webpack@5.100.0)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.2)(webpack@5.100.0)
     transitivePeerDependencies:
       - bufferutil
       - debug

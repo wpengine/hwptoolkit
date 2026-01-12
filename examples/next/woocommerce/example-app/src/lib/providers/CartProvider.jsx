@@ -141,9 +141,11 @@ export function CartProvider({ children }) {
 
 				if (existingItem) {
 					const newQuantity = existingItem.quantity + quantity;
-					const { data, errors } = await updateCartMutation({
+					const { data, errors } = updateCartMutation({
 						variables: {
-							items: [{ key: existingItem.key, quantity: newQuantity }],
+							input:{
+								items: [{ key: existingItem.key, quantity: newQuantity }]
+							},
 						},
 					});
 
