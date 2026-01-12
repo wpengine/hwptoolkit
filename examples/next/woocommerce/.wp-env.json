@@ -1,0 +1,37 @@
+{
+  "phpVersion": "8.0",
+  "plugins": [
+    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "https://github.com/AxeWP/wp-graphql-headless-login/releases/latest/download/wp-graphql-headless-login.zip",
+    "https://github.com/woocommerce/woocommerce/releases/latest/download/woocommerce.zip",
+    "https://downloads.wordpress.org/plugin/wpgraphql-ide.latest-stable.zip",
+    "https://github.com/wp-graphql/wp-graphql-woocommerce/releases/download/v0.21.2/wp-graphql-woocommerce.zip"
+  ],
+  "themes": [
+    "https://downloads.wordpress.org/theme/storefront.latest-stable.zip"
+  ],
+  "env": {
+    "development": {
+      "port": 8890
+    },
+    "tests": {
+      "port": 8891
+    }
+  },
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": false,
+    "GRAPHQL_DEBUG": true,
+    "WP_DEBUG_LOG": true,
+    "WP_DEBUG_DISPLAY": false,
+    "SAVEQUERIES": false
+  },
+  "mappings": {
+    "db": "./wp-env/db",
+    "wp-content/uploads": "./wp-env/uploads",
+    ".htaccess": "./wp-env/setup/.htaccess"
+  },
+  "lifecycleScripts": {
+    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+  }
+}
