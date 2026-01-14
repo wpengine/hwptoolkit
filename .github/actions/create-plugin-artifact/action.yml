@@ -22,12 +22,16 @@ runs:
       working-directory: plugins/${{ inputs.slug }}
       run: |
         echo "${GITHUB_SHA}" > build-sha.txt
-        rm -f plugin-build/${{ inputs.slug }}-*.zip
+        rm -rf plugin-build/${{ inputs.slug }}*
         composer archive -vvv --format=zip --file="plugin-build/${{ inputs.slug }}" --dir="."
+        # Extract the zip so artifact upload creates proper structure
+        # (avoids double-zip issue where downloaded artifact contains a zip)
+        unzip plugin-build/${{ inputs.slug }}.zip -d plugin-build/${{ inputs.slug }}
+        rm plugin-build/${{ inputs.slug }}.zip
       shell: bash
 
     - name: Upload plugin artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.slug }}
-        path: plugins/${{ inputs.slug }}/plugin-build/*.zip
+        path: plugins/${{ inputs.slug }}/plugin-build/${{ inputs.slug }}

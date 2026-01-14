@@ -72,9 +72,8 @@
 	"archive": {
 		"name": "hwp-previews",
 		"exclude": [
-			"/.DS_Store",
-			"/.docker/",
-			"/.env.dist",
+			"/.*",
+			"/build-sha.txt",
 			"/ACTIONS_AND_FILTERS.md",
 			"/TESTING.md",
 			"/Thumbs.db",
