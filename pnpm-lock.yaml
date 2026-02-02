@@ -138,24 +138,6 @@ importers:
         specifier: ^30.27.0
         version: 30.27.0(@playwright/test@1.56.1)(@types/eslint@9.6.1)(@types/node@24.10.0)(@types/webpack@4.41.40)(@wordpress/env@10.34.0(@types/node@24.10.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(stylelint-scss@6.12.1(stylelint@16.25.0(typescript@5.8.3)))(type-fest@4.41.0)(typescript@5.8.3)
 
-  plugins/wpgraphql-logging:
-    devDependencies:
-      '@playwright/test':
-        specifier: ^1.52.0
-        version: 1.53.2
-      '@wordpress/e2e-test-utils-playwright':
-        specifier: ^1.25.0
-        version: 1.26.0(@playwright/test@1.53.2)
-      '@wordpress/env':
-        specifier: ^10.25.0
-        version: 10.26.0(@types/node@24.0.12)
-      '@wordpress/jest-console':
-        specifier: ^8.25.0
-        version: 8.26.0(jest@29.7.0(@types/node@24.0.12))
-      '@wordpress/scripts':
-        specifier: ^30.18.0
-        version: 30.19.0(@playwright/test@1.53.2)(@types/eslint@9.6.1)(@types/node@24.0.12)(@types/webpack@4.41.40)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.12.1(stylelint@16.21.1(typescript@5.8.3)))(type-fest@4.41.0)(typescript@5.8.3)
-
 packages:
 
   '@ampproject/remapping@2.3.0':
