@@ -38,6 +38,7 @@
 		"codeception/module-rest": "^2.0",
 		"codeception/module-webdriver": "^1.0",
 		"codeception/phpunit-wrapper": "^9.0",
+		"composer/composer": "~2.2.26",
 		"lucatume/wp-browser": "^3.7",
 		"mockery/mockery": "^1.5"
 	},
