@@ -39,5 +39,8 @@
   "license": "BSD-0-Clause",
   "dependencies": {
     "@wordpress/env": "^10.20.0"
+  },
+  "overrides": {
+    "ajv@<8.17.2": ">=8.17.2"
   }
 }

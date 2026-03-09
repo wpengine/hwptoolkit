@@ -28,5 +28,8 @@
   "dependencies": {
     "@wordpress/env": "^10.31.0",
     "concurrently": "^8.2.2"
+  },
+  "overrides": {
+    "ajv@<8.17.2": ">=8.17.2"
   }
 }

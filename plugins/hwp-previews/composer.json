@@ -37,6 +37,7 @@
 		"codeception/module-rest": "^2.0",
 		"codeception/module-webdriver": "^1.0",
 		"codeception/util-universalframework": "^1.0",
+		"composer/composer": "~2.2.26",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"humanmade/psalm-plugin-wordpress": "^3.1",
 		"johnpbloch/wordpress-core": "^6.9",
