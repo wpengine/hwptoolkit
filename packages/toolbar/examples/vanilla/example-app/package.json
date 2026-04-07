@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "@wpengine/hwp-toolbar": "file:../../../",
-    "vite": "^6.0.11"
+    "vite": "^6.4.2"
   }
 }
