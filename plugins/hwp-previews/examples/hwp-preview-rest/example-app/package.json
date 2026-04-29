@@ -19,5 +19,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "tailwindcss": "^4"
+  },
+  "overrides": {
+    "postcss": "^8.5.10"
   }
 }

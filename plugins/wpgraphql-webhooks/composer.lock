@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7d79ba004db4eb21b6b59cd0347710ec",
+    "content-hash": "f1bbb524d9dab5db60577e3798d8e287",
     "packages": [
         {
             "name": "axepress/wp-graphql-plugin-boilerplate",
@@ -1487,16 +1487,16 @@
         },
         {
             "name": "composer/composer",
-            "version": "2.2.26",
+            "version": "2.2.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "c6ad1d795efbea3f15805c5e5a86c5a60ba3ed87"
+                "reference": "c800ff7ca5ade720cb3a46ab2c98856b9358615c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/c6ad1d795efbea3f15805c5e5a86c5a60ba3ed87",
-                "reference": "c6ad1d795efbea3f15805c5e5a86c5a60ba3ed87",
+                "url": "https://api.github.com/repos/composer/composer/zipball/c800ff7ca5ade720cb3a46ab2c98856b9358615c",
+                "reference": "c800ff7ca5ade720cb3a46ab2c98856b9358615c",
                 "shasum": ""
             },
             "require": {
@@ -1566,7 +1566,7 @@
             "support": {
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/composer/issues",
-                "source": "https://github.com/composer/composer/tree/2.2.26"
+                "source": "https://github.com/composer/composer/tree/2.2.27"
             },
             "funding": [
                 {
@@ -1578,7 +1578,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-30T12:39:48+00:00"
+            "time": "2026-04-14T09:40:47+00:00"
         },
         {
             "name": "composer/metadata-minifier",
