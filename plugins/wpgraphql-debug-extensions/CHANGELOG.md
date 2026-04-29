@@ -1,5 +1,11 @@
 # @wpengine/wpgraphql-debug-extensions-plugin
 
+## 0.0.4
+
+### Patch Changes
+
+- [#587](https://github.com/wpengine/hwptoolkit/pull/587) [`063c571`](https://github.com/wpengine/hwptoolkit/commit/063c571d2e2019ef40ef35bd5139b58a762dd1e6) Thanks [@ahuseyn](https://github.com/ahuseyn)! - Security fix: update "composer/composer"
+
 ## 0.0.3
 
 ### Patch Changes
