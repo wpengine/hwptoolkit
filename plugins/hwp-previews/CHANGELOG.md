@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 1.0.1
+
+### Patch Changes
+
+- [`063c571`](https://github.com/wpengine/hwptoolkit/commit/063c571d2e2019ef40ef35bd5139b58a762dd1e6) Thanks [@ahuseyn](https://github.com/ahuseyn)! - Security fix: update "composer/composer"
+
 ## 1.0.0
 
 ### Major Changes
