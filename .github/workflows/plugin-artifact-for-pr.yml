@@ -47,10 +47,10 @@ jobs:
             composer-options: '--no-progress --optimize-autoloader --no-dev'
 
   comment-on-pr:
-    name: Comment with Artifact Links  
+    name: Comment with Artifact Links
     runs-on: ubuntu-latest
     needs: [detect-plugins, create-plugin-artifacts]
-    if: needs.detect-plugins.outputs.has-plugins == 'true'
+    if: needs.detect-plugins.outputs.has-plugins == 'true' && github.actor != 'dependabot[bot]'
     steps:
       - name: Comment with artifact links
         uses: actions/github-script@v7
