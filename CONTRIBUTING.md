@@ -1,6 +1,6 @@
 # Contributing to hwptoolkit
 
-Thank you for your interest in hwptoolkit. This project is maintained by a team committed to transparency, responsiveness and supporting the community. We embrace the spirit of open-source and we believe community is the key for success. We welcome all forms of engagement with the community and contributions of all levels of skill and experience.
+Thank you for your interest in hwptoolkit. This project is maintained by a team committed to transparency, responsiveness and supporting the community. We embrace the spirit of open-source and we believe community is the key to success. We welcome all forms of engagement with the community and contributions of all levels of skill and experience.
 
 In this guide we will discuss the different types of contribution, how you can get started and how you should proceed for each type of contribution.
 
