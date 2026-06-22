@@ -7,4 +7,3 @@ composer.json @wpe-ie-deploy-bot @wpengine/headless-open-source @wpengine/spcs
 composer.lock @wpe-ie-deploy-bot @wpengine/headless-open-source @wpengine/spcs
 Dockerfile @wpe-ie-deploy-bot @wpengine/headless-open-source @wpengine/spcs
 docker-compose.yml @wpe-ie-deploy-bot @wpengine/headless-open-source @wpengine/spcs
-.github/workflows/ @wpe-ie-deploy-bot @wpengine/headless-open-source @wpengine/spcs
