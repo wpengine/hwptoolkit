@@ -13,6 +13,6 @@ declare(strict_types=1);
 /**
  * Runs when the plugin is deactivated.
  */
-function hwp_previews_deactivation_callback( bool $network_wide = false ): void {
+function hwp_previews_deactivation_callback( bool $_network_wide = false ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	do_action( 'hwp_previews_deactivate' );
 }
