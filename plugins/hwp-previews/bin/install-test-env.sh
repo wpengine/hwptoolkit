@@ -198,6 +198,7 @@ post_setup() {
 
 	echo -e "$(status_message "Installed plugins")"
 	wp plugin list --allow-root --format=json
+	wp plugin list --allow-root
 }
 
 ##
