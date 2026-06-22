@@ -12,8 +12,6 @@ declare(strict_types=1);
 /**
  * Runs when the plugin is activated.
  */
-function hwp_previews_activation_callback(): callable {
-	return static function (): void {
-		do_action( 'hwp_previews_activate' );
-	};
+function hwp_previews_activation_callback( bool $network_wide = false ): void {
+	do_action( 'hwp_previews_activate' );
 }
