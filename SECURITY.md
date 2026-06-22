@@ -5,7 +5,7 @@ of the open-source code repositories managed through our
 [WP Engine organization](https://github.com/wpengine).
 
 ## Reporting Security Issues
-If you believe you have found a security vulnerability in any WP Engine-owned repository, please report it to us via email at [opensource@wpengine.com](mailto:opensource@wpengine.com?subject=HWPToolkit%20Security%20Vulnerability)
+If you believe you have found a security vulnerability in any WP Engine-owned repository, please report it to us via our [Bug Bounty program](https://wpeng.in/bugbounty/) or email to security@wpengine.com.
 
 **Please do not report security vulnerabilities through public GitHub issues,
 discussions, or pull requests.**

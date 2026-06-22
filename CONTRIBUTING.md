@@ -33,7 +33,7 @@ Example:
 You'll eventually come across a bug or a missing feature. Reporting it will not just help you to seek a solution for your project, it will help other community members to avoid potential roadblocks. It will also help us to detect issues early on and improve the hwptoolkit.
 
 > [!CAUTION]
-> Use [GitHub issues](https://github.com/wpengine/hwptoolkit/issues) for non-security related bugs only. To avoid the exposure of the potential vulnerabilities, please report security related issues to us via email at opensource@wpengine.com.
+> Use [GitHub issues](https://github.com/wpengine/hwptoolkit/issues) for non-security related bugs only. To avoid the exposure of the potential vulnerabilities, please report security related issues to us via our [Bug Bounty program](https://wpeng.in/bugbounty/) or email to security@wpengine.com.
 
 A usual bug reporting/feature suggesting workflow should look like this:
 
