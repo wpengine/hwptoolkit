@@ -130,8 +130,8 @@ jobs:
             git commit -m "chore: apply version bump from changesets for ${{ steps.plugin.outputs.slug }}"
             git push origin "$BRANCH_NAME"
 
-            # Create PR
-            gh pr create \
+            # Create PR and capture URL for auto-merge steps
+            RELEASE_PR_URL=$(gh pr create \
               --title "Release: ${{ steps.plugin.outputs.slug }} version bump" \
               --body "Automated release PR for ${{ steps.plugin.outputs.slug }} plugin.
 
@@ -139,8 +139,21 @@ jobs:
 
             Plugin: ${{ steps.plugin.outputs.slug }}" \
               --base main \
-              --head "$BRANCH_NAME"
+              --head "$BRANCH_NAME")
+            echo "RELEASE_PR_URL=$RELEASE_PR_URL" >> $GITHUB_ENV
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve release PR
+        if: env.RELEASE_PR_URL != ''
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+        run: gh pr review --approve "$RELEASE_PR_URL"
+
+      - name: Enable auto-merge on release PR
+        if: env.RELEASE_PR_URL != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --squash "$RELEASE_PR_URL"
