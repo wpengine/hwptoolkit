@@ -21,7 +21,7 @@
 		"previews"
 	],
 	"require": {
-		"php": "^8.2"
+		"php": "^8.2.27"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
@@ -47,6 +47,7 @@
 		"phpstan/phpstan-strict-rules": "^2.0",
 		"slevomat/coding-standard": "^8.0",
 		"szepeviktor/phpstan-wordpress": "^2.0",
+		"vimeo/psalm": "^6",
 		"wp-cli/wp-cli-bundle": "^2.8.1",
 		"wp-graphql/wp-graphql-testcase": "^3.4"
 	},
@@ -57,7 +58,7 @@
 		},
 		"optimize-autoloader": true,
 		"platform": {
-			"php": "8.2"
+			"php": "8.2.27"
 		},
 		"preferred-install": "dist",
 		"sort-packages": true
