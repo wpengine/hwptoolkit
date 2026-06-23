@@ -31,8 +31,7 @@ class DeactivationTest extends WPTestCase {
 			$called = true;
 		} );
 
-		$callback = hwp_previews_deactivation_callback();
-		$callback();
+		hwp_previews_deactivation_callback();
 
 		$this->assertTrue( $called, 'Custom filter on hwp_previews_deactivate was not called.' );
 	}

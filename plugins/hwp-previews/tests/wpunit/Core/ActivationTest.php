@@ -30,8 +30,7 @@ class ActivationTest extends WPTestCase {
 			$called = true;
 		} );
 
-		$callback = hwp_previews_activation_callback();
-		$callback();
+		hwp_previews_activation_callback();
 
 		$this->assertTrue( $called, 'Custom filter on hwp_previews_activate was not called.' );
 	}
