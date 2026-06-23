@@ -106,7 +106,10 @@
 	"autoload": {
 		"psr-4": {
 			"HWP\\Previews\\": "src/"
-		}
+		},
+		"exclude-from-classmap": [
+			"/vendor/wp-cli/"
+		]
 	},
 	"autoload-dev": {
 		"psr-4": {
