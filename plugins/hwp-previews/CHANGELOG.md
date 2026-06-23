@@ -1,5 +1,11 @@
 # HWP Previews
 
+## 1.0.2
+
+### Patch Changes
+
+- [#698](https://github.com/wpengine/hwptoolkit/pull/698) [`b11d16b`](https://github.com/wpengine/hwptoolkit/commit/b11d16b66eb8e1b4ccddb369210cdd67493f11ee) Thanks [@colinmurphy](https://github.com/colinmurphy)! - chore: Various dev package upgrades. PHP set to minimum of 8.2 from 7.4
+
 ## 1.0.1
 
 ### Patch Changes
