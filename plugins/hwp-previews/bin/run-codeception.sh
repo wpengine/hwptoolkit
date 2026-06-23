@@ -35,15 +35,12 @@ run_tests() {
 	fi
 
 	if [[ -n "$COVERAGE" ]]; then
-		if [[ -n "$COVERAGE_OUTPUT" ]]; then
-			local coverage="--coverage --coverage-xml $COVERAGE_OUTPUT"
-		else
-			local coverage="--coverage --coverage-xml $suites-coverage.xml"
-		fi
+		# Generate coverage in default output locations (XML + HTML)
+		local coverage="--coverage --coverage-xml --coverage-html"
 	fi
 
 	# If maintenance mode is active, de-activate it
-	if $(wp maintenance-mode is-active --allow-root); then
+	if wp maintenance-mode is-active --allow-root >/dev/null 2>&1; then
 		echo "Deactivating maintenance mode"
 		wp maintenance-mode deactivate --allow-root
 	fi
@@ -69,14 +66,18 @@ run_tests() {
 	# Check code coverage if coverage was requested
 	if [[ -n "$COVERAGE" ]]; then
 
-		if [[ -n "$COVERAGE_OUTPUT" ]]; then
-			coverage_percent=$(grep -oP '(\d+\.\d+)%' "tests/_output/coverage/index.html" | head -1 | tr -d '%')
-		else
-			coverage_percent=$(grep -oP 'line-rate="(\d+\.\d+)"' "tests/_output/coverage.xml" | head -1 | grep -oP '\d+\.\d+')
-			# Convert to percent
-			if [[ -n "$coverage_percent" ]]; then
-				coverage_percent=$(awk "BEGIN { printf \"%.2f\", $coverage_percent * 100 }")
+		# Prefer XML summary for robustness; fallback to HTML if present
+		if [[ -f "tests/_output/coverage.xml" ]]; then
+			# Extract total statements and covered statements from the summary metrics line
+			total_statements=$(grep -Eo ' statements="[0-9]+"' "tests/_output/coverage.xml" | tail -1 | grep -Eo '[0-9]+')
+			total_covered=$(grep -Eo ' coveredstatements="[0-9]+"' "tests/_output/coverage.xml" | tail -1 | grep -Eo '[0-9]+')
+			if [[ -n "$total_statements" && -n "$total_covered" && "$total_statements" -gt 0 ]]; then
+				coverage_percent=$(awk "BEGIN { printf \"%.2f\", ($total_covered / $total_statements) * 100 }")
 			fi
+		fi
+
+		if [[ -z "$coverage_percent" && -f "tests/_output/coverage/index.html" ]]; then
+			coverage_percent=$(grep -Eo '[0-9]+\.[0-9]+%' "tests/_output/coverage/index.html" | head -1 | tr -d '%')
 		fi
 		if [[ -z "$coverage_percent" ]]; then
 			echo "Warning: Could not determine code coverage percentage."
@@ -122,7 +123,7 @@ cleanup_after() {
 		if [[ "$USING_XDEBUG" == '1' ]]; then
 			echo "Disabling XDebug 3"
 			rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-		else98
+		else
 			echo "Disabling pcov/clobber"
 			docker-php-ext-disable pcov
 			sed -i '/pcov.enabled=1/d' /usr/local/etc/php/conf.d/docker-php-ext-pcov.ini

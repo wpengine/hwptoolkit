@@ -61,10 +61,11 @@ RUN curl -L -O https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN chmod +x /usr/local/bin/composer
 
-# Install WP-CLI
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-    && chmod +x wp-cli.phar \
-    && mv wp-cli.phar /usr/local/bin/wp
+# Install WP-CLI (pinned to latest stable to avoid nightly incompatibilities)
+ENV WP_CLI_VERSION=2.12.0
+RUN curl -L -O https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar \
+    && chmod +x wp-cli-${WP_CLI_VERSION}.phar \
+    && mv wp-cli-${WP_CLI_VERSION}.phar /usr/local/bin/wp
 
 # Install nvm, Node.js, and npm
 ENV NVM_DIR=/usr/local/nvm

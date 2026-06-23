@@ -196,8 +196,6 @@ post_setup() {
 	wp config set WP_AUTO_UPDATE_CORE false --raw --type=constant --quiet --allow-root
 	wp config set AUTOMATIC_UPDATER_DISABLED true --raw --type=constant --quiet --allow-root
 
-	echo -e "$(status_message "Installed plugins")"
-	wp plugin list --allow-root
 }
 
 ##

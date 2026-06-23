@@ -7,7 +7,6 @@ namespace HWP\Previews\Tests\Integration;
 use HWP\Previews\Integration\Faust_Integration;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use ReflectionClass;
-use WP_Mock;
 
 /**
  * Test class for Faust_Integration.
@@ -16,12 +15,6 @@ class Faust_Integration_Test extends WPTestCase {
 
 	public function setUp() : void {
 		parent::setUp();
-
-		// Note: We need WP_Mock so we can test frontend URL resolution for Faust
-		if (class_exists('\WP_Mock')) {
-			WP_Mock::setUp();
-		}
-
 
 		// Reset singleton instance before each test
 		$reflection       = new ReflectionClass( Faust_Integration::class );
@@ -113,23 +106,22 @@ class Faust_Integration_Test extends WPTestCase {
 		} );
 
 		$frontend_uri = 'https://mocked-frontend.com';
-
-		// We need to Mock each type so that the function can be called in different ways
-		WP_Mock::userFunction('\WPE\FaustWP\Settings\faustwp_get_setting', [
-			'return' => $frontend_uri
-		]);
-
-		WP_Mock::userFunction('faustwp_get_setting', [
-			'return' => $frontend_uri
-		]);
-
-		WP_Mock::userFunction('WPE\FaustWP\Settings\faustwp_get_setting', [
-			'return' => $frontend_uri
-		]);
+		$GLOBALS['_test_faustwp_frontend_uri'] = $frontend_uri;
 
 		$instance = Faust_Integration::init();
-		$this->assertTrue(function_exists( '\WPE\FaustWP\Settings\faustwp_get_setting' ) );
+		$this->assertTrue( function_exists( '\WPE\FaustWP\Settings\faustwp_get_setting' ) );
 		$this->assertEquals( $frontend_uri, $instance->get_faust_frontend_url() );
 
+		unset( $GLOBALS['_test_faustwp_frontend_uri'] );
+	}
+}
+
+// Stub the FaustWP settings function for tests. The production code guards all
+// calls with function_exists(), so this only runs when FaustWP is not installed.
+namespace WPE\FaustWP\Settings;
+
+if ( ! function_exists( 'WPE\FaustWP\Settings\faustwp_get_setting' ) ) {
+	function faustwp_get_setting( string $key, string $default = '' ): string {
+		return $GLOBALS[ '_test_faustwp_' . $key ] ?? $default;
 	}
 }

@@ -13,8 +13,6 @@ declare(strict_types=1);
 /**
  * Runs when the plugin is deactivated.
  */
-function hwp_previews_deactivation_callback(): callable {
-	return static function (): void {
-		do_action( 'hwp_previews_deactivate' );
-	};
+function hwp_previews_deactivation_callback(): void {
+	do_action( 'hwp_previews_deactivate' );
 }

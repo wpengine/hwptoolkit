@@ -56,7 +56,7 @@ class Autoloader_Test extends WPTestCase {
 		// Override method to return our temp path
 		$mock = $this->getMockBuilder( Autoloader::class )
 		             ->disableOriginalConstructor()
-		             ->setMethods( [ 'get_composer_autoloader_path' ] )
+		             ->onlyMethods( [ 'get_composer_autoloader_path' ] )
 		             ->getMock();
 
 		// Reset static property
