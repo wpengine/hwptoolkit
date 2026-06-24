@@ -35,3 +35,8 @@ examples/**/__MACOSX
 examples/**/mu-plugin.php
 examples/**/.wp-env.json
 ``
+
+# Lock files
+examples/**/package-lock.json
+plugins/**/examples/**/package-lock.json
+packages/**/examples/**/package-lock.json
