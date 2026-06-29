@@ -30,7 +30,7 @@
     "@wordpress/env": "^10.39.0",
     "@wordpress/jest-console": "^8.31.0",
     "@wordpress/scripts": "30.26.2",
-    "js-yaml": "^4.1.1",
+    "js-yaml": "^4.3.0",
     "remark-gfm": "^4.0.1",
     "rimraf": "^5.0.5"
   },
