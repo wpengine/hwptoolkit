@@ -41,11 +41,11 @@ importers:
         specifier: ^2.29.7
         version: 2.31.0(@types/node@25.6.0)
       '@playwright/test':
-        specifier: ^1.56.1
-        version: 1.59.1
+        specifier: ^1.61.1
+        version: 1.61.1
       '@wordpress/e2e-test-utils-playwright':
         specifier: ^1.31.0
-        version: 1.44.0(@playwright/test@1.59.1)(@types/node@25.6.0)
+        version: 1.44.0(@playwright/test@1.61.1)(@types/node@25.6.0)
       '@wordpress/env':
         specifier: ^10.39.0
         version: 10.39.0(@types/node@25.6.0)
@@ -54,7 +54,7 @@ importers:
         version: 8.44.0(jest@29.7.0(@types/node@25.6.0))
       '@wordpress/scripts':
         specifier: 30.26.2
-        version: 30.26.2(@playwright/test@1.59.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)
+        version: 30.26.2(@playwright/test@1.61.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)
       js-yaml:
         specifier: ^4.1.1
         version: 4.1.1
@@ -92,11 +92,11 @@ importers:
   plugins/wpgraphql-debug-extensions:
     devDependencies:
       '@playwright/test':
-        specifier: ^1.56.1
-        version: 1.59.1
+        specifier: ^1.61.1
+        version: 1.61.1
       '@wordpress/e2e-test-utils-playwright':
         specifier: ^1.34.0
-        version: 1.44.0(@playwright/test@1.59.1)(@types/node@25.6.0)
+        version: 1.44.0(@playwright/test@1.61.1)(@types/node@25.6.0)
       '@wordpress/env':
         specifier: ^10.34.0
         version: 10.39.0(@types/node@25.6.0)
@@ -105,16 +105,16 @@ importers:
         version: 8.44.0(jest@29.7.0(@types/node@25.6.0))
       '@wordpress/scripts':
         specifier: ^30.27.0
-        version: 30.27.0(@playwright/test@1.59.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)
+        version: 30.27.0(@playwright/test@1.61.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)
 
   plugins/wpgraphql-logging:
     devDependencies:
       '@playwright/test':
-        specifier: ^1.56.1
-        version: 1.59.1
+        specifier: ^1.61.1
+        version: 1.61.1
       '@wordpress/e2e-test-utils-playwright':
         specifier: ^1.25.0
-        version: 1.44.0(@playwright/test@1.59.1)(@types/node@25.6.0)
+        version: 1.44.0(@playwright/test@1.61.1)(@types/node@25.6.0)
       '@wordpress/env':
         specifier: ^10.25.0
         version: 10.39.0(@types/node@25.6.0)
@@ -123,16 +123,16 @@ importers:
         version: 8.44.0(jest@29.7.0(@types/node@25.6.0))
       '@wordpress/scripts':
         specifier: ^30.24.0
-        version: 30.27.0(@playwright/test@1.59.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)
+        version: 30.27.0(@playwright/test@1.61.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)
 
   plugins/wpgraphql-webhooks:
     devDependencies:
       '@playwright/test':
-        specifier: ^1.56.1
-        version: 1.59.1
+        specifier: ^1.61.1
+        version: 1.61.1
       '@wordpress/e2e-test-utils-playwright':
         specifier: ^1.34.0
-        version: 1.44.0(@playwright/test@1.59.1)(@types/node@25.6.0)
+        version: 1.44.0(@playwright/test@1.61.1)(@types/node@25.6.0)
       '@wordpress/env':
         specifier: ^10.34.0
         version: 10.39.0(@types/node@25.6.0)
@@ -141,7 +141,7 @@ importers:
         version: 8.44.0(jest@29.7.0(@types/node@25.6.0))
       '@wordpress/scripts':
         specifier: ^30.27.0
-        version: 30.27.0(@playwright/test@1.59.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)
+        version: 30.27.0(@playwright/test@1.61.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)
 
 packages:
 
@@ -1935,8 +1935,8 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@playwright/test@1.59.1':
-    resolution: {integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==}
+  '@playwright/test@1.61.1':
+    resolution: {integrity: sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -2439,6 +2439,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
     resolution: {integrity: sha512-ppLRUgHVaGRWUx0R0Ut06Mjo9gBaBkg3v/8AxusGLhsIotbBLuRk51rAzqLC8gq6NyyAojEXglNjzf6R948DNw==}
@@ -6380,13 +6381,13 @@ packages:
     resolution: {integrity: sha512-emEcLuomt2j03vxD54giVB4SxTjnsqkU692xZOZXHDVoYyypEm+b3jpiTcc+Cf+myooc+/Ly0z01jqeNHVgJGw==}
     engines: {node: '>=16.0.0'}
 
-  playwright-core@1.59.1:
-    resolution: {integrity: sha512-HBV/RJg81z5BiiZ9yPzIiClYV/QMsDCKUyogwH9p3MCP6IYjUFu/MActgYAvK0oWyV9NlwM3GLBjADyWgydVyg==}
+  playwright-core@1.61.1:
+    resolution: {integrity: sha512-h7Qlt6m4REp25qvIdvbDtVmD4LqVXfpRxhORv9L0jzETM05p4fuPJ3dKyuSXQxDSbXnmS79HAgi9589lGSpLkg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.59.1:
-    resolution: {integrity: sha512-C8oWjPR3F81yljW9o5OxcWzfh6avkVwDD2VYdwIGqTkl+OGFISgypqzfu7dOe4QNLL2aqcWBmI3PMtLIK233lw==}
+  playwright@1.61.1:
+    resolution: {integrity: sha512-DWnY5o3YbLWK4GovuAVwpqL+1VwGNdUGrRr++8j8PtQQzvAVZUIMjKQ90fY689sEJZJBbZVw1rXaOKSTitkzPQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -7589,8 +7590,8 @@ packages:
   third-party-web@0.27.0:
     resolution: {integrity: sha512-h0JYX+dO2Zr3abCQpS6/uFjujaOjA1DyDzGQ41+oFn9VW/ARiq9g5ln7qEP9+BTzDpOMyIfsfj4OvfgXAsMUSA==}
 
-  third-party-web@0.29.0:
-    resolution: {integrity: sha512-nBDSJw5B7Sl1YfsATG2XkW5qgUPODbJhXw++BKygi9w6O/NKS98/uY/nR/DxDq2axEjL6halHW1v+jhm/j1DBQ==}
+  third-party-web@0.29.2:
+    resolution: {integrity: sha512-fegtha91tq2DHphyoiBXVHjVi2YG9zFaRnboT9C28tO1en9Y3wJsfspuy40F+u5wl3hHVbw7cnd1b67kEGHb8g==}
 
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
@@ -7882,6 +7883,7 @@ packages:
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v8-to-istanbul@9.3.0:
@@ -10519,7 +10521,7 @@ snapshots:
   '@paulirish/trace_engine@0.0.59':
     dependencies:
       legacy-javascript: 0.0.1
-      third-party-web: 0.29.0
+      third-party-web: 0.29.2
 
   '@peculiar/asn1-cms@2.6.1':
     dependencies:
@@ -10767,11 +10769,11 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@playwright/test@1.59.1':
+  '@playwright/test@1.61.1':
     dependencies:
-      playwright: 1.59.1
+      playwright: 1.61.1
 
-  '@pmmmwh/react-refresh-webpack-plugin@0.5.17(react-refresh@0.14.2)(type-fest@4.41.0)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2)':
+  '@pmmmwh/react-refresh-webpack-plugin@0.5.17(react-refresh@0.14.2)(type-fest@4.41.0)(webpack-dev-server@5.2.3)(webpack@5.106.2)':
     dependencies:
       ansi-html: 0.0.9
       core-js-pure: 3.49.0
@@ -11556,17 +11558,17 @@ snapshots:
   '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.106.2)':
     dependencies:
       webpack: 5.106.2(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2(webpack-cli@5.1.4))
 
   '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.106.2)':
     dependencies:
       webpack: 5.106.2(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2(webpack-cli@5.1.4))
 
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2))(webpack-dev-server@5.2.3)(webpack@5.106.2)':
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack-dev-server@5.2.3)(webpack@5.106.2)':
     dependencies:
       webpack: 5.106.2(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2(webpack-cli@5.1.4))
     optionalDependencies:
       webpack-dev-server: 5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2)
 
@@ -11597,9 +11599,9 @@ snapshots:
       json2php: 0.0.7
       webpack: 5.106.2(webpack-cli@5.1.4)
 
-  '@wordpress/e2e-test-utils-playwright@1.44.0(@playwright/test@1.59.1)(@types/node@25.6.0)':
+  '@wordpress/e2e-test-utils-playwright@1.44.0(@playwright/test@1.61.1)(@types/node@25.6.0)':
     dependencies:
-      '@playwright/test': 1.59.1
+      '@playwright/test': 1.61.1
       '@types/node': 25.6.0
       change-case: 4.1.2
       get-port: 5.1.1
@@ -11729,16 +11731,16 @@ snapshots:
 
   '@wordpress/private-apis@1.44.0': {}
 
-  '@wordpress/scripts@30.26.2(@playwright/test@1.59.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)':
+  '@wordpress/scripts@30.26.2(@playwright/test@1.61.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)':
     dependencies:
       '@babel/core': 7.25.7
-      '@playwright/test': 1.59.1
-      '@pmmmwh/react-refresh-webpack-plugin': 0.5.17(react-refresh@0.14.2)(type-fest@4.41.0)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2)
+      '@playwright/test': 1.61.1
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.17(react-refresh@0.14.2)(type-fest@4.41.0)(webpack-dev-server@5.2.3)(webpack@5.106.2)
       '@svgr/webpack': 8.1.0(typescript@6.0.3)
       '@wordpress/babel-preset-default': 8.44.0
       '@wordpress/browserslist-config': 6.44.0
       '@wordpress/dependency-extraction-webpack-plugin': 6.44.0(webpack@5.106.2)
-      '@wordpress/e2e-test-utils-playwright': 1.44.0(@playwright/test@1.59.1)(@types/node@25.6.0)
+      '@wordpress/e2e-test-utils-playwright': 1.44.0(@playwright/test@1.61.1)(@types/node@25.6.0)
       '@wordpress/eslint-plugin': 22.22.0(@babel/core@7.25.7)(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@25.6.0))(typescript@6.0.3)(wp-prettier@3.0.3)
       '@wordpress/jest-preset-default': 12.44.0(@babel/core@7.25.7)(jest@29.7.0(@types/node@25.6.0))
       '@wordpress/npm-package-json-lint-config': 5.44.0(npm-package-json-lint@6.4.0(typescript@6.0.3))
@@ -11791,7 +11793,7 @@ snapshots:
       url-loader: 4.1.1(webpack@5.106.2)
       webpack: 5.106.2(webpack-cli@5.1.4)
       webpack-bundle-analyzer: 4.10.2
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2(webpack-cli@5.1.4))
       webpack-dev-server: 5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2)
     optionalDependencies:
       '@wordpress/env': 10.39.0(@types/node@25.6.0)
@@ -11828,16 +11830,16 @@ snapshots:
       - webpack-hot-middleware
       - webpack-plugin-serve
 
-  '@wordpress/scripts@30.27.0(@playwright/test@1.59.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)':
+  '@wordpress/scripts@30.27.0(@playwright/test@1.61.1)(@types/eslint@9.6.1)(@types/node@25.6.0)(@wordpress/env@10.39.0(@types/node@25.6.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(stylelint-scss@6.14.0(stylelint@16.26.1(typescript@6.0.3)))(tslib@2.8.1)(type-fest@4.41.0)(typescript@6.0.3)':
     dependencies:
       '@babel/core': 7.25.7
-      '@playwright/test': 1.59.1
-      '@pmmmwh/react-refresh-webpack-plugin': 0.5.17(react-refresh@0.14.2)(type-fest@4.41.0)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2)
+      '@playwright/test': 1.61.1
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.17(react-refresh@0.14.2)(type-fest@4.41.0)(webpack-dev-server@5.2.3)(webpack@5.106.2)
       '@svgr/webpack': 8.1.0(typescript@6.0.3)
       '@wordpress/babel-preset-default': 8.44.0
       '@wordpress/browserslist-config': 6.44.0
       '@wordpress/dependency-extraction-webpack-plugin': 6.44.0(webpack@5.106.2)
-      '@wordpress/e2e-test-utils-playwright': 1.44.0(@playwright/test@1.59.1)(@types/node@25.6.0)
+      '@wordpress/e2e-test-utils-playwright': 1.44.0(@playwright/test@1.61.1)(@types/node@25.6.0)
       '@wordpress/eslint-plugin': 22.22.0(@babel/core@7.25.7)(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@25.6.0))(typescript@6.0.3)(wp-prettier@3.0.3)
       '@wordpress/jest-preset-default': 12.44.0(@babel/core@7.25.7)(jest@29.7.0(@types/node@25.6.0))
       '@wordpress/npm-package-json-lint-config': 5.44.0(npm-package-json-lint@6.4.0(typescript@6.0.3))
@@ -11890,7 +11892,7 @@ snapshots:
       url-loader: 4.1.1(webpack@5.106.2)
       webpack: 5.106.2(webpack-cli@5.1.4)
       webpack-bundle-analyzer: 4.10.2
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2(webpack-cli@5.1.4))
       webpack-dev-server: 5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2)
     optionalDependencies:
       '@wordpress/env': 10.39.0(@types/node@25.6.0)
@@ -16425,11 +16427,11 @@ snapshots:
       pvutils: 1.1.5
       tslib: 2.8.1
 
-  playwright-core@1.59.1: {}
+  playwright-core@1.61.1: {}
 
-  playwright@1.59.1:
+  playwright@1.61.1:
     dependencies:
-      playwright-core: 1.59.1
+      playwright-core: 1.61.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -17935,7 +17937,7 @@ snapshots:
 
   third-party-web@0.27.0: {}
 
-  third-party-web@0.29.0: {}
+  third-party-web@0.29.2: {}
 
   through@2.3.8: {}
 
@@ -18398,12 +18400,12 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2):
+  webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2(webpack-cli@5.1.4)):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.106.2)
       '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.106.2)
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2))(webpack-dev-server@5.2.3)(webpack@5.106.2)
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack-dev-server@5.2.3)(webpack@5.106.2)
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.6
@@ -18463,7 +18465,7 @@ snapshots:
       ws: 8.20.0
     optionalDependencies:
       webpack: 5.106.2(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2(webpack-cli@5.1.4))
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -18506,7 +18508,7 @@ snapshots:
       watchpack: 2.5.1
       webpack-sources: 3.3.4
     optionalDependencies:
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3)(webpack@5.106.2)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.3(tslib@2.8.1)(webpack-cli@5.1.4)(webpack@5.106.2))(webpack@5.106.2(webpack-cli@5.1.4))
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
