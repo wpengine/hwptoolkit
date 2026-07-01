@@ -1,5 +1,7 @@
 name: Dependabot Automation
-on: pull_request
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: write
