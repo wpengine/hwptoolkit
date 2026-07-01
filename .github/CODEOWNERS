@@ -1,4 +1,7 @@
-* @wpengine/spcs
+# Code Owners
+* @wpengine/spcs @colinmurphy @josephfusco
+
+# jira:[18721] is where issues related to this repository should be ticketed
 
 # Dependency files: bot is co-owner so its approval satisfies CODEOWNERS for Dependabot PRs
 package.json @wpe-ie-deploy-bot @wpengine/spcs
