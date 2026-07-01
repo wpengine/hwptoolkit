@@ -4,9 +4,9 @@
 # jira:[18721] is where issues related to this repository should be ticketed
 
 # Dependency files: bot is co-owner so its approval satisfies CODEOWNERS for Dependabot PRs
-package.json @wpe-ie-deploy-bot @wpengine/spcs
-package-lock.json @wpe-ie-deploy-bot @wpengine/spcs
-composer.json @wpe-ie-deploy-bot @wpengine/spcs
-composer.lock @wpe-ie-deploy-bot @wpengine/spcs
-Dockerfile @wpe-ie-deploy-bot @wpengine/spcs
-docker-compose.yml @wpe-ie-deploy-bot @wpengine/spcs
+package.json @wpe-ie-deploy-bot @wpengine/spcs @colinmurphy @josephfusco
+package-lock.json @wpe-ie-deploy-bot @wpengine/spcs @colinmurphy @josephfusco
+composer.json @wpe-ie-deploy-bot @wpengine/spcs @colinmurphy @josephfusco
+composer.lock @wpe-ie-deploy-bot @wpengine/spcs @colinmurphy @josephfusco
+Dockerfile @wpe-ie-deploy-bot @wpengine/spcs @colinmurphy @josephfusco
+docker-compose.yml @wpe-ie-deploy-bot @wpengine/spcs @colinmurphy @josephfusco
