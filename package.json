@@ -26,7 +26,7 @@
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.1",
     "@playwright/test": "^1.61.1",
-    "@wordpress/e2e-test-utils-playwright": "^1.50.0",
+    "@wordpress/e2e-test-utils-playwright": "^1.51.0",
     "@wordpress/env": "^10.39.0",
     "@wordpress/jest-console": "^8.51.0",
     "@wordpress/scripts": "30.27.0",
