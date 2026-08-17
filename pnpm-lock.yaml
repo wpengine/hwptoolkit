@@ -44,8 +44,8 @@ importers:
         specifier: ^1.62.1
         version: 1.62.1
       '@wordpress/e2e-test-utils-playwright':
-        specifier: ^1.52.0
-        version: 1.52.0(@playwright/test@1.62.1)(@types/node@26.2.0)
+        specifier: ^1.53.0
+        version: 1.53.0(@playwright/test@1.62.1)(@types/node@26.2.0)
       '@wordpress/env':
         specifier: ^10.39.0
         version: 10.39.0(@types/node@26.2.0)
@@ -95,8 +95,8 @@ importers:
         specifier: ^1.62.1
         version: 1.62.1
       '@wordpress/e2e-test-utils-playwright':
-        specifier: ^1.52.0
-        version: 1.52.0(@playwright/test@1.62.1)(@types/node@26.2.0)
+        specifier: ^1.53.0
+        version: 1.53.0(@playwright/test@1.62.1)(@types/node@26.2.0)
       '@wordpress/env':
         specifier: ^10.34.0
         version: 10.39.0(@types/node@26.2.0)
@@ -113,8 +113,8 @@ importers:
         specifier: ^1.62.1
         version: 1.62.1
       '@wordpress/e2e-test-utils-playwright':
-        specifier: ^1.52.0
-        version: 1.52.0(@playwright/test@1.62.1)(@types/node@26.2.0)
+        specifier: ^1.53.0
+        version: 1.53.0(@playwright/test@1.62.1)(@types/node@26.2.0)
       '@wordpress/env':
         specifier: ^10.25.0
         version: 10.39.0(@types/node@26.2.0)
@@ -131,8 +131,8 @@ importers:
         specifier: ^1.62.1
         version: 1.62.1
       '@wordpress/e2e-test-utils-playwright':
-        specifier: ^1.52.0
-        version: 1.52.0(@playwright/test@1.62.1)(@types/node@26.2.0)
+        specifier: ^1.53.0
+        version: 1.53.0(@playwright/test@1.62.1)(@types/node@26.2.0)
       '@wordpress/env':
         specifier: ^10.34.0
         version: 10.39.0(@types/node@26.2.0)
@@ -1744,42 +1744,36 @@ packages:
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-arm-musl@2.5.6':
     resolution: {integrity: sha512-Ve3gUCG57nuUUSyjBq/MAM0CzArtuIOxsBdQ+ftz6ho8n7s1i9E1Nmk/xmP323r2YL0SONs1EuwqBp2u1k5fxg==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@parcel/watcher-linux-arm64-glibc@2.5.6':
     resolution: {integrity: sha512-f2g/DT3NhGPdBmMWYoxixqYr3v/UXcmLOYy16Bx0TM20Tchduwr4EaCbmxh1321TABqPGDpS8D/ggOTaljijOA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-arm64-musl@2.5.6':
     resolution: {integrity: sha512-qb6naMDGlbCwdhLj6hgoVKJl2odL34z2sqkC7Z6kzir8b5W65WYDpLB6R06KabvZdgoHI/zxke4b3zR0wAbDTA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@parcel/watcher-linux-x64-glibc@2.5.6':
     resolution: {integrity: sha512-kbT5wvNQlx7NaGjzPFu8nVIW1rWqV780O7ZtkjuWaPUgpv2NMFpjYERVi0UYj1msZNyCzGlaCWEtzc+exjMGbQ==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-x64-musl@2.5.6':
     resolution: {integrity: sha512-1JRFeC+h7RdXwldHzTsmdtYR/Ku8SylLgTU/reMuqdVD7CtLwf0VR1FqeprZ0eHQkO0vqsbvFLXUmYm/uNKJBg==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@parcel/watcher-win32-arm64@2.5.6':
     resolution: {integrity: sha512-3ukyebjc6eGlw9yRt678DxVF7rjXatWiHvTXqphZLvo7aC5NdEgFufVwjFfY51ijYEWpXbqF5jtrK275z52D4Q==}
@@ -2484,61 +2478,51 @@ packages:
     resolution: {integrity: sha512-zJc0H99FEPoFfSrNpa91HYfxzfAJCr502oxNK1cfdC9hlaFI43RT+JFCann9JUgZmLzzntChHyn13Sgn9ljHNg==}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.12.2':
     resolution: {integrity: sha512-KQ3Lki6l+Pz1k/eBipN41ES+YUK30beLGb9YqcB1O542cyLCNE6GaxrfcY3T6EezmGGk84wb5XyO9loTM9tkcA==}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-linux-loong64-gnu@1.12.2':
     resolution: {integrity: sha512-3SJGEh1DborhG6pyxvhPzCT4bbSIVihsvgJc13P1bHG7KLdNDaF9T3gsTwFc7Jw/5Y5/iWOjkEx7Zy0NvCGX3Q==}
     cpu: [loong64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-loong64-musl@1.12.2':
     resolution: {integrity: sha512-jiuG/Obbel7uw1PwHNFfrkiKhLAF6mnyZ6aWlOAVN9WqKm8v0OFGnciJIHu8+CMvXLQ8AD51LPzAoUfT21D5Ew==}
     cpu: [loong64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.12.2':
     resolution: {integrity: sha512-q7xRvVpmcfeL+LlZg8Pbbo6QaTZwDU5BaGZbwfhkEsXJn3Was8xYfE0RBH266xZt0rM6B7i8xAYIvjthuUIWHg==}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.12.2':
     resolution: {integrity: sha512-0CVdx6lcnT3Q9inOH8tsMIOJ6ImndllMjqJHg8RLVdB7Vq4SfkEXl9mCSsVNuNA4MCYycRicCUxPCabVHJRr6A==}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.12.2':
     resolution: {integrity: sha512-iOwlRo9vnp6R6ohHQS11n0NnfdXx/omhkocmIfaPRpQhKZ+3BDMkkdRVh53qjkFkpPddf+FETA28NwGN7l5l+w==}
     cpu: [riscv64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.12.2':
     resolution: {integrity: sha512-HYJtLfXq94q8iZNFT1lknx258wlkkWhZeUXJRqzKBBUJ00CvZ+N33zgbCqimLjsyw5Va6uUxhVa12mI+kaveEw==}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.12.2':
     resolution: {integrity: sha512-mPsUhunKKDih5O96Y6enDQyHc1SqBPlY1E/SfMWDM3EdJ95Z9CArPeCVwCCqbP45ljvivdEk8Fxn+SIb1rDAJQ==}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.12.2':
     resolution: {integrity: sha512-azrt6+5ydLd8Vt210AAFis/lZevSfPw93EJRIJG+xPu4WCJ8K0kppCTpMyLPcKT7H15M4Jnt2tMp5bOvCkRC6A==}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-openharmony-arm64@1.12.2':
     resolution: {integrity: sha512-YZ9hP4O0X9PQb8eO980qmLNGH4zT3I9+SZTdt0Pr0YyuGQhYKoOZkV02VzrzyOZJ5xIJ3UFIenKkUkGg8GjgWQ==}
@@ -2675,8 +2659,8 @@ packages:
     resolution: {integrity: sha512-ysZvqyw1PvClTWqVwLzsE7cqfYU+QppJwu2Ji/rUGyFL9WSNdMIgIQhJWZMBiw0gBtD/uuiQe7OoVJfEGw0JYw==}
     engines: {node: '>=18.12.0', npm: '>=8.19.2'}
 
-  '@wordpress/e2e-test-utils-playwright@1.52.0':
-    resolution: {integrity: sha512-LK0/WJd8iGfTo9ONaHrLSBh0IjKHeXU7urZPaNuXXB7jdt+coLTF+y0gP4c6sQ5m9OgfQqf01FPT/t2XzEbJ+w==}
+  '@wordpress/e2e-test-utils-playwright@1.53.0':
+    resolution: {integrity: sha512-46wLx4MUEoXeWq+JtmFjFsQd0+m219bA1WUDW4vpMrNzO2qU87Rm+9LWudRQ5+niJvPiYyZruNAhscl5KRxbOQ==}
     engines: {node: '>=18.12.0', npm: '>=8.19.2'}
     peerDependencies:
       '@playwright/test': '>=1'
@@ -6487,8 +6471,8 @@ packages:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
     engines: {node: '>=4.0.0'}
 
-  pg-protocol@1.15.0:
-    resolution: {integrity: sha512-cq9sECI5s0+uPUXjbz8ioyPJni6RzsRib0US67i5IoTZKw8fNeYlVE7u8F4dG7vEJJtc5wdD1K189lCCUwqWTQ==}
+  pg-protocol@1.16.0:
+    resolution: {integrity: sha512-sILXutLVjCLjcDuOmvhX5e2Z4cS5qG/6Bu3VkpFwdf/633ElGLpEh9bgmuI5I4sqKqkifQiGyiCcx1HdtrK7tg==}
 
   pg-types@2.2.0:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
@@ -11351,7 +11335,7 @@ snapshots:
   '@types/pg@8.6.1':
     dependencies:
       '@types/node': 26.2.0
-      pg-protocol: 1.15.0
+      pg-protocol: 1.16.0
       pg-types: 2.2.0
 
   '@types/prop-types@15.7.15': {}
@@ -11778,7 +11762,7 @@ snapshots:
     dependencies:
       '@wordpress/deprecated': 4.49.0
 
-  '@wordpress/e2e-test-utils-playwright@1.52.0(@playwright/test@1.62.1)(@types/node@26.2.0)':
+  '@wordpress/e2e-test-utils-playwright@1.53.0(@playwright/test@1.62.1)(@types/node@26.2.0)':
     dependencies:
       '@playwright/test': 1.62.1
       '@types/node': 26.2.0
@@ -11943,7 +11927,7 @@ snapshots:
       '@wordpress/babel-preset-default': 8.49.0
       '@wordpress/browserslist-config': 6.49.0
       '@wordpress/dependency-extraction-webpack-plugin': 6.49.0(webpack@5.108.1)
-      '@wordpress/e2e-test-utils-playwright': 1.52.0(@playwright/test@1.62.1)(@types/node@26.2.0)
+      '@wordpress/e2e-test-utils-playwright': 1.53.0(@playwright/test@1.62.1)(@types/node@26.2.0)
       '@wordpress/eslint-plugin': 22.22.0(@babel/core@7.25.7)(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@26.2.0))(typescript@6.0.3)(wp-prettier@3.0.3)
       '@wordpress/jest-preset-default': 12.49.0(@babel/core@7.25.7)(jest@29.7.0(@types/node@26.2.0))
       '@wordpress/npm-package-json-lint-config': 5.49.0(npm-package-json-lint@6.4.0(typescript@6.0.3))
@@ -16608,7 +16592,7 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
-  pg-protocol@1.15.0: {}
+  pg-protocol@1.16.0: {}
 
   pg-types@2.2.0:
     dependencies:
