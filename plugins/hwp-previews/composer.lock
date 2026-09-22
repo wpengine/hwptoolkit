@@ -8401,16 +8401,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v6.4.45",
+            "version": "v6.4.46",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "3b8473e0d14157f2d22b0a0d7259ad23483d1e6d"
+                "reference": "9e118dd9e3b94544ff3cce860457c2951a0a2bd6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/3b8473e0d14157f2d22b0a0d7259ad23483d1e6d",
-                "reference": "3b8473e0d14157f2d22b0a0d7259ad23483d1e6d",
+                "url": "https://api.github.com/repos/symfony/console/zipball/9e118dd9e3b94544ff3cce860457c2951a0a2bd6",
+                "reference": "9e118dd9e3b94544ff3cce860457c2951a0a2bd6",
                 "shasum": ""
             },
             "require": {
@@ -8475,7 +8475,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v6.4.45"
+                "source": "https://github.com/symfony/console/tree/v6.4.46"
             },
             "funding": [
                 {
@@ -8495,7 +8495,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-25T13:08:31+00:00"
+            "time": "2026-09-10T10:42:14+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -9760,16 +9760,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v7.4.15",
+            "version": "v7.4.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "e394af32256bf9e7bf80849d95e589167c10097b"
+                "reference": "02731ce2bd26514bec9efc0baef2cd0b0cf67f46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/e394af32256bf9e7bf80849d95e589167c10097b",
-                "reference": "e394af32256bf9e7bf80849d95e589167c10097b",
+                "url": "https://api.github.com/repos/symfony/string/zipball/02731ce2bd26514bec9efc0baef2cd0b0cf67f46",
+                "reference": "02731ce2bd26514bec9efc0baef2cd0b0cf67f46",
                 "shasum": ""
             },
             "require": {
@@ -9827,7 +9827,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v7.4.15"
+                "source": "https://github.com/symfony/string/tree/v7.4.19"
             },
             "funding": [
                 {
@@ -9847,7 +9847,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-28T07:33:02+00:00"
+            "time": "2026-09-11T14:46:58+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -10127,16 +10127,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "6.17.0",
+            "version": "6.17.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "056992a902704e2b691d33f9bfe4a063e43c79f2"
+                "reference": "dd625545733d24633e5d386a26c13004dae80e19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/056992a902704e2b691d33f9bfe4a063e43c79f2",
-                "reference": "056992a902704e2b691d33f9bfe4a063e43c79f2",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/dd625545733d24633e5d386a26c13004dae80e19",
+                "reference": "dd625545733d24633e5d386a26c13004dae80e19",
                 "shasum": ""
             },
             "require": {
@@ -10158,7 +10158,7 @@
                 "felixfbecker/language-server-protocol": "^1.5.3",
                 "fidry/cpu-core-counter": "^0.4.1 || ^0.5.1 || ^1.0.0",
                 "netresearch/jsonmapper": "^5.0",
-                "nikic/php-parser": "^5.0.0",
+                "nikic/php-parser": "^5.2.0",
                 "php": "~8.1.31 || ~8.2.27 || ~8.3.16 || ~8.4.3 || ~8.5.0",
                 "sebastian/diff": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
                 "spatie/array-to-xml": "^2.17.0 || ^3.0",
@@ -10241,7 +10241,7 @@
                 "issues": "https://github.com/vimeo/psalm/issues",
                 "source": "https://github.com/vimeo/psalm"
             },
-            "time": "2026-09-10T11:14:46+00:00"
+            "time": "2026-09-15T12:34:23+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
