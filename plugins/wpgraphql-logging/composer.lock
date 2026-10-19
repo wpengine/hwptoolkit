@@ -1127,16 +1127,16 @@
         },
         {
             "name": "axepress/wp-graphql-stubs",
-            "version": "v2.23.1",
+            "version": "v2.24.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AxeWP/wp-graphql-stubs.git",
-                "reference": "af779998bfa1f30dee1e128591ad78da1aa86115"
+                "reference": "535c9cafa9ee49775c9465228fc6603854097e6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AxeWP/wp-graphql-stubs/zipball/af779998bfa1f30dee1e128591ad78da1aa86115",
-                "reference": "af779998bfa1f30dee1e128591ad78da1aa86115",
+                "url": "https://api.github.com/repos/AxeWP/wp-graphql-stubs/zipball/535c9cafa9ee49775c9465228fc6603854097e6f",
+                "reference": "535c9cafa9ee49775c9465228fc6603854097e6f",
                 "shasum": ""
             },
             "require": {
@@ -1168,7 +1168,7 @@
             ],
             "support": {
                 "issues": "https://github.com/AxeWP/wp-graphql-stubs/issues",
-                "source": "https://github.com/AxeWP/wp-graphql-stubs/tree/v2.23.1"
+                "source": "https://github.com/AxeWP/wp-graphql-stubs/tree/v2.24.1"
             },
             "funding": [
                 {
@@ -1176,7 +1176,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-23T04:33:22+00:00"
+            "time": "2026-10-15T16:48:57+00:00"
         },
         {
             "name": "behat/gherkin",
