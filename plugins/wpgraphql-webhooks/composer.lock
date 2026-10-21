@@ -1487,16 +1487,16 @@
         },
         {
             "name": "composer/composer",
-            "version": "2.2.27",
+            "version": "2.2.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "c800ff7ca5ade720cb3a46ab2c98856b9358615c"
+                "reference": "dcf399dbf5a5d05b54169fe2caf018152edba181"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/c800ff7ca5ade720cb3a46ab2c98856b9358615c",
-                "reference": "c800ff7ca5ade720cb3a46ab2c98856b9358615c",
+                "url": "https://api.github.com/repos/composer/composer/zipball/dcf399dbf5a5d05b54169fe2caf018152edba181",
+                "reference": "dcf399dbf5a5d05b54169fe2caf018152edba181",
                 "shasum": ""
             },
             "require": {
@@ -1566,7 +1566,7 @@
             "support": {
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/composer/issues",
-                "source": "https://github.com/composer/composer/tree/2.2.27"
+                "source": "https://github.com/composer/composer/tree/2.2.30"
             },
             "funding": [
                 {
@@ -1578,7 +1578,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-14T09:40:47+00:00"
+            "time": "2026-08-27T11:34:49+00:00"
         },
         {
             "name": "composer/metadata-minifier",
@@ -11411,12 +11411,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^7.4 || ^8.0"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
