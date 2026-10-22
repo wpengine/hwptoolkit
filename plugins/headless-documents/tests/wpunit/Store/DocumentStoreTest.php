@@ -309,6 +309,81 @@ class DocumentStoreTest extends WPTestCase {
 		$this->assertSame( '1', $wpdb->get_var( 'SELECT COUNT(*) FROM ' . Document_Table::name() ) );
 	}
 
+	/**
+	 * Simulates another request deleting the document between this delete's
+	 * read and its UPDATE. Only one delete succeeds; the other finds nothing.
+	 */
+	public function test_concurrent_delete_is_rejected() {
+		Document_Store::save( 'prefs', 'settings', 0, [ 'theme' => 'dark' ] );
+
+		$raced = false;
+		add_filter(
+			'query',
+			function ( $query ) use ( &$raced ) {
+				if ( ! $raced && 0 === strpos( $query, 'UPDATE ' . Document_Table::name() . " SET version = version + 1, data = 'null'" ) ) {
+					$raced = true;
+					Document_Store::delete( 'prefs', 'settings', 1 );
+				}
+				return $query;
+			}
+		);
+
+		$result = Document_Store::delete( 'prefs', 'settings', 1 );
+
+		$this->assertTrue( $raced );
+		$this->assertWPError( $result );
+		$this->assertSame( 'headless_document_not_found', $result->get_error_code() );
+	}
+
+	/**
+	 * Simulates another request updating the document between this delete's
+	 * read and its UPDATE. The delete must not remove the newer version.
+	 */
+	public function test_delete_racing_an_update_is_rejected() {
+		Document_Store::save( 'prefs', 'settings', 0, [ 'theme' => 'dark' ] );
+
+		$raced = false;
+		add_filter(
+			'query',
+			function ( $query ) use ( &$raced ) {
+				if ( ! $raced && 0 === strpos( $query, 'UPDATE ' . Document_Table::name() . " SET version = version + 1, data = 'null'" ) ) {
+					$raced = true;
+					Document_Store::save( 'prefs', 'settings', 1, [ 'theme' => 'light' ] );
+				}
+				return $query;
+			}
+		);
+
+		$result = Document_Store::delete( 'prefs', 'settings', 1 );
+
+		$this->assertTrue( $raced );
+		$this->assertSame( 'headless_document_conflict', $result->get_error_code() );
+		$this->assertSame( 2, $result->get_error_data()['version'] );
+		$this->assertSame( [ 'theme' => 'light' ], $this->normalize( Document_Store::get( 'prefs', 'settings' )['data'] ) );
+	}
+
+	public function test_a_failed_query_returns_a_500_without_database_details() {
+		global $wpdb;
+
+		Document_Store::save( 'prefs', 'settings', 0, [ 'theme' => 'dark' ] );
+		add_filter(
+			'query',
+			function ( $query ) {
+				return 0 === strpos( $query, 'UPDATE ' . Document_Table::name() ) ? 'NOT VALID SQL' : $query;
+			}
+		);
+
+		$suppress = $wpdb->suppress_errors( true );
+		$response = $this->put( 'settings', [ 'version' => 1, 'data' => [ 'theme' => 'light' ] ] );
+		$deleted  = $this->delete( 'settings', 1 );
+		$wpdb->suppress_errors( $suppress );
+
+		$this->assertSame( 500, $response->get_status() );
+		$this->assertSame( 'headless_document_db_error', $response->get_data()['code'] );
+		$this->assertSame( [ 'status' => 500 ], $response->get_data()['data'] );
+		$this->assertSame( 500, $deleted->get_status() );
+	}
+
 	public function test_ids_and_collections_outside_the_allowed_characters_do_not_match_the_route() {
 		$this->assertSame( 'rest_no_route', $this->put( 'Settings', array( 'version' => 0, 'data' => array() ) )->get_data()['code'] );
 		$this->assertSame( 'rest_no_route', $this->put( 'my_settings', array( 'version' => 0, 'data' => array() ) )->get_data()['code'] );

@@ -125,7 +125,7 @@ Content-Type: application/json
 
 ### List documents
 
-Pass `limit` (1 to 100, default 20). To get the next page, pass the previous response's `next_cursor` as `cursor`. `next_cursor` is `null` on the last page.
+Documents are listed newest first, by when each was first created; updating a document doesn't move it. Pass `limit` (1 to 100, default 20). To get the next page, pass the previous response's `next_cursor` as `cursor`. `next_cursor` is `null` on the last page.
 
 ```http
 GET /wp-json/headless/v1/collections/waitlist/documents?limit=20
