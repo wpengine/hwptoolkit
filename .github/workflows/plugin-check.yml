@@ -41,15 +41,21 @@ jobs:
 
       - name: Set output
         id: detect
+        # Pass the values through env so the shell doesn't strip the quotes in
+        # the JSON array.
+        env:
+          SLUG: ${{ steps.plugin.outputs.slug }}
+          PLUGINS: ${{ steps.plugin.outputs.plugins }}
+          HAS_PLUGINS: ${{ steps.plugin.outputs.has-plugins }}
         run: |
           # get_plugin_slug.sh outputs: slug, plugins (JSON array), has-plugins
-          if [ -z "${{ steps.plugin.outputs.slug }}" ]; then
-            echo "plugins=[]" >> $GITHUB_OUTPUT
-            echo "has-plugins=false" >> $GITHUB_OUTPUT
+          if [ -z "$SLUG" ]; then
+            echo "plugins=[]" >> "$GITHUB_OUTPUT"
+            echo "has-plugins=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          echo "plugins=${{ steps.plugin.outputs.plugins }}" >> $GITHUB_OUTPUT
-          echo "has-plugins=${{ steps.plugin.outputs.has-plugins }}" >> $GITHUB_OUTPUT
+          echo "plugins=$PLUGINS" >> "$GITHUB_OUTPUT"
+          echo "has-plugins=$HAS_PLUGINS" >> "$GITHUB_OUTPUT"
 
   plugin-check:
     needs: detect-plugins
