@@ -14,6 +14,7 @@ The toolkit includes several WordPress plugins to enhance the headless experienc
 | Plugin | Description |
 |--------|-------------|
 | [wpgraphql-logging](../plugins/wpgraphql-logging/) | Logging for WPGraphQL requests with granular lifecycle events and Monolog integration. |
+| [headless-documents](../plugins/headless-documents/) | Store your app's JSON documents in WordPress over REST, with versioned writes that reject stale updates. |
 | [hwp-previews](../plugins/hwp-previews/) | Headless Previews solution for WordPress: fully configurable preview URLs via the settings page which is framework agnostic. |
 
 ## Examples

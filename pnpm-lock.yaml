@@ -106,6 +106,8 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1
 
+  plugins/headless-documents: {}
+
   plugins/hwp-previews: {}
 
   plugins/wpgraphql-debug-extensions:

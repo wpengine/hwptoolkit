@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<psalm
+	errorLevel="3"
+	resolveFromConfigFile="true"
+	xmlns="https://getpsalm.org/schema/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+	findUnusedBaselineEntry="true"
+	findUnusedCode="false"
+>
+	<projectFiles>
+		<file name="headless-documents.php"/>
+		<file name="activation.php"/>
+		<file name="deactivation.php"/>
+		<file name="uninstall.php"/>
+		<file name="vendor/autoload.php"/>
+		<directory name="src"/>
+	</projectFiles>
+
+	<plugins>
+		<pluginClass class="PsalmWordPress\Plugin"/>
+	</plugins>
+
+	<issueHandlers>
+		<!-- WordPress admin includes not available during static analysis -->
+		<MissingFile errorLevel="suppress"/>
+
+		<PossiblyInvalidArgument>
+			<errorLevel type="suppress">
+				<file name="headless-documents.php" />
+			</errorLevel>
+		</PossiblyInvalidArgument>
+	</issueHandlers>
+</psalm>

@@ -11,6 +11,14 @@ updates:
 
   # composer (plugins)
   - package-ecosystem: "composer"
+    directory: "/plugins/headless-documents"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "composer"
     directory: "/plugins/hwp-cli"
     schedule:
       interval: "weekly"
@@ -52,6 +60,14 @@ updates:
 
   # docker (Dockerfiles)
   - package-ecosystem: "docker"
+    directory: "/plugins/headless-documents/.docker"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "docker"
     directory: "/plugins/hwp-previews/.docker"
     schedule:
       interval: "weekly"
@@ -68,6 +84,14 @@ updates:
         update-types: ["version-update:semver-major"]
 
   # docker (docker-compose)
+  - package-ecosystem: "docker"
+    directory: "/plugins/headless-documents"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: "docker"
     directory: "/plugins/hwp-previews"
     schedule:
