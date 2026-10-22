@@ -52,9 +52,12 @@ jobs:
 
       - name: Sync version into plugin files
         run: |
-          # Only plugins whose version this release PR bumps (three-dot ignores main moving ahead)
-          for file in $(git diff --name-only origin/main...HEAD -- 'plugins/*/package.json'); do
-            slug=$(echo "$file" | cut -d/ -f2)
+          # Only plugins whose version this release PR bumps. Read it from the manifest, since
+          # package.json may already hold the new version and so not show up in the diff.
+          BASE=$(git merge-base origin/main HEAD)
+          for path in $(jq -r --argjson base "$(git show "$BASE:.release-please-manifest.json")" \
+            'to_entries[] | select(.value != $base[.key]) | .key' .release-please-manifest.json); do
+            slug=$(basename "$path")
             echo "Syncing release files for $slug"
             bash .github/scripts/sync_plugin_release_files.sh "$slug"
           done
