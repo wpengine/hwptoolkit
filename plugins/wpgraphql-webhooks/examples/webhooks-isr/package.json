@@ -37,6 +37,6 @@
     "author": "hwptoolkit",
     "license": "BSD-0-Clause",
     "dependencies": {
-      "@wordpress/env": "^10.20.0"
+      "@wordpress/env": "^12.0.0"
     }
   }
