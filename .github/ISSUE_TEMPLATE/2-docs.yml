@@ -1,7 +1,7 @@
 name: "📒 Documentation Issue"
 description: Report an issue with the hwptoolkit documentation.
 title: "[docs]: "
-labels: ["docs"]
+labels: ["[Type] Documentation", "Needs Triage"]
 body:
   - type: markdown
     attributes:
