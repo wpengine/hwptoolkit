@@ -81,4 +81,3 @@ jobs:
     uses: ./.github/workflows/release-plugin.yml
     with:
       path: ${{ matrix.path }}
-    secrets: inherit
