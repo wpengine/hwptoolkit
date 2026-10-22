@@ -6,6 +6,7 @@
 
 WordPress plugins for the Headless WordPress Toolkit. Each plugin is paired with an NPM package.
 
+- [Headless Documents](https://github.com/wpengine/hwptoolkit/blob/main/plugins/headless-documents/README.md)
 - [HWP CLI Plugin](https://github.com/wpengine/hwptoolkit/blob/main/plugins/hwp-cli/README.md)
 - [HWP Previews](https://github.com/wpengine/hwptoolkit/blob/main/plugins/hwp-previews/README.md)
 - [WPGraphQL Debug Extensions](https://github.com/wpengine/hwptoolkit/blob/main/plugins/wpgraphql-debug-extensions/README.md)
