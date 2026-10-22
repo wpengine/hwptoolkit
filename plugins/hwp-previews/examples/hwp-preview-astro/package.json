@@ -17,6 +17,6 @@
     "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql"
   },
   "devDependencies": {
-    "@wordpress/env": "^10.21.0"
+    "@wordpress/env": "^12.0.0"
   }
 }
