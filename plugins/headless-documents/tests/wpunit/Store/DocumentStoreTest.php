@@ -474,6 +474,18 @@ class DocumentStoreTest extends WPTestCase {
 		$this->assertNull( Document_Store::get( 'prefs', 'settings' ) );
 	}
 
+	public function test_a_non_json_body_cannot_replace_the_validated_data() {
+		$request = new \WP_REST_Request( 'PUT', self::ROUTE . '/settings' );
+		$request->set_header( 'content-type', 'text/plain' );
+		$request->set_body( '{"version":0,"data":"not an object"}' );
+		$request->set_query_params( [ 'version' => 0, 'data' => [ 'theme' => 'dark' ] ] );
+
+		$response = $this->server->dispatch( $request );
+
+		$this->assertSame( 201, $response->get_status() );
+		$this->assertSame( [ 'theme' => 'dark' ], $this->normalize( Document_Store::get( 'prefs', 'settings' )['data'] ) );
+	}
+
 	public function test_document_larger_than_max_size_returns_413() {
 		add_filter(
 			'headless_document_max_bytes',

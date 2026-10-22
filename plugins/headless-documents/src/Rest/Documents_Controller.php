@@ -267,16 +267,17 @@ final class Documents_Controller {
 	 * Get the document data from a request.
 	 *
 	 * WordPress decodes JSON request bodies into associative arrays, which
-	 * turns an empty object into an empty array. The body is decoded again
+	 * turns an empty object into an empty array. A JSON body is decoded again
 	 * here with objects kept as objects, so the stored data matches what was
-	 * sent.
+	 * sent. Other bodies aren't decoded, so the data stored is always the data
+	 * the route validated.
 	 *
 	 * @param \WP_REST_Request $request Current request.
 	 *
 	 * @return mixed Document data.
 	 */
 	private static function request_data( WP_REST_Request $request ) {
-		$body = json_decode( $request->get_body() );
+		$body = $request->is_json_content_type() ? json_decode( $request->get_body() ) : null;
 
 		if ( is_object( $body ) && property_exists( $body, 'data' ) ) {
 			return $body->data;
