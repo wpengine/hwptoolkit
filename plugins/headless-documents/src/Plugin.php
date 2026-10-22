@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Headless\Documents;
 
+use Headless\Documents\Admin\Documents_Page;
 use Headless\Documents\Rest\Documents_Controller;
 use Headless\Documents\Store\Document_Table;
 
@@ -55,6 +56,7 @@ final class Plugin {
 		add_filter( 'wpmu_drop_tables', [ Document_Table::class, 'drop_with_site' ], 10, 1 );
 		add_filter( 'user_has_cap', [ Capabilities::class, 'grant_to_admins' ], 10, 1 );
 		add_action( 'rest_api_init', [ Documents_Controller::class, 'register_routes' ], 10, 0 );
+		add_action( 'admin_menu', [ Documents_Page::class, 'register' ], 10, 0 );
 	}
 
 	/**
