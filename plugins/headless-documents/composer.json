@@ -1,0 +1,150 @@
+{
+	"name": "wpengine/headless-documents",
+	"type": "wordpress-plugin",
+	"description": "A WordPress plugin that stores versioned JSON documents for headless apps.",
+	"license": "GPL-2.0",
+	"version": "0.0.0",
+	"authors": [
+		{
+			"name": "WP Engine Headless OSS Development Team",
+			"email": "headless-oss@wpengine.com",
+			"homepage": "https://wpengine.com/"
+		}
+	],
+	"keywords": [
+		"headless",
+		"wordpress",
+		"plugin",
+		"documents",
+		"rest-api"
+	],
+	"require": {
+		"php": "^8.2.27"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"require-dev": {
+		"automattic/vipwpcs": "^3.0",
+		"codeception/lib-innerbrowser": "^4.0",
+		"codeception/module-asserts": "^3.0",
+		"codeception/module-cli": "^2.0",
+		"codeception/module-db": "^3.0",
+		"codeception/module-filesystem": "^3.0",
+		"codeception/module-phpbrowser": "^3.0",
+		"codeception/module-rest": "^3.0",
+		"codeception/module-webdriver": "^4.0",
+		"codeception/util-universalframework": "^1.0",
+		"composer/composer": "~2.10.1",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"humanmade/psalm-plugin-wordpress": "^3.1",
+		"johnpbloch/wordpress-core": "^6.9",
+		"lucatume/wp-browser": "^4.0",
+		"mockery/mockery": "^1.6",
+		"phpcompatibility/php-compatibility": "^9.3",
+		"phpcompatibility/phpcompatibility-wp": "^2.0",
+		"phpstan/phpstan-strict-rules": "^2.0",
+		"slevomat/coding-standard": "^8.0",
+		"szepeviktor/phpstan-wordpress": "^2.0",
+		"vimeo/psalm": "^6",
+		"wp-cli/wp-cli-bundle": "^2.8.1"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		},
+		"optimize-autoloader": true,
+		"platform": {
+			"php": "8.2.27"
+		},
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
+	"extra": {
+		"phpstan": {
+			"includes": [
+				"phpstan/rules.neon"
+			]
+		}
+	},
+	"archive": {
+		"name": "headless-documents",
+		"exclude": [
+			"/.*",
+			"/build-sha.txt",
+			"/Thumbs.db",
+			"/artifacts",
+			"/auth.json",
+			"/bin",
+			"/c3.php",
+			"/codeception.dist.yml",
+			"/docker",
+			"/docker-compose.yml",
+			"/docs",
+			"/node_modules",
+			"/package-lock.json",
+			"/package.json",
+			"/phpcs",
+			"/phpcs-cache.json",
+			"/phpcs.xml",
+			"/phpstan",
+			"/phpstan.neon.dist",
+			"/plugin-build",
+			"/psalm.xml",
+			"/tests",
+			"!vendor",
+			"!vendor-prefixed"
+		]
+	},
+	"autoload": {
+		"psr-4": {
+			"Headless\\Documents\\": "src/"
+		},
+		"exclude-from-classmap": [
+			"/vendor/wp-cli/"
+		]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Headless\\Documents\\Tests\\": "tests/wpunit/",
+			"Headless\\Documents\\PHPStan\\": "phpstan/",
+			"HeadlessStandard\\": "phpcs/HeadlessStandard"
+		}
+	},
+	"scripts": {
+		"install-test-env": "bash bin/install-test-env.sh",
+		"delete-vendor-files": "rm -rf composer.lock vendor src/vendor-prefixed/*",
+		"docker:build": "bash bin/build-docker.sh",
+		"docker:start": "@docker:build && @docker:up",
+		"docker:stop": "docker compose down --volumes",
+		"docker:up": " sh -c 'composer docker:stop' && docker compose --env-file .env up --detach",
+		"lint": "vendor/bin/phpcs",
+		"phpcs-i": [
+			"php ./vendor/bin/phpcs -i"
+		],
+		"check-cs": [
+			"php ./vendor/bin/phpcs"
+		],
+		"fix-cs": [
+			"php ./vendor/bin/phpcbf"
+		],
+		"phpstan": [
+			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
+		],
+		"php:psalm": "psalm",
+		"php:psalm:info": "psalm --show-info=true",
+		"php:psalm:fix": "psalm --alter",
+		"qa": "sh bin/local/run-qa.sh",
+		"test": [
+			"sh bin/local/run-unit-tests.sh"
+		],
+		"test:unit:coverage": "sh bin/local/run-unit-tests.sh coverage"
+	},
+	"support": {
+		"docs": "https://github.com/wpengine/hwptoolkit/tree/main/docs",
+		"email": "headless-oss@wpengine.com",
+		"forum": "https://github.com/wpengine/hwptoolkit/discussions",
+		"issues": "https://github.com/wpengine/hwptoolkit/issues",
+		"security": "https://github.com/wpengine/hwptoolkit/blob/main/SECURITY.md"
+	}
+}
