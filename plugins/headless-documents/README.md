@@ -27,7 +27,7 @@ Realtime updates, complex queries and high write volume are out of scope.
 
 ## Setup
 
-1. Install the plugin. See [Install toolkit plugins](../../docs/how-to/install-toolkit-plugins/index.md) for Composer, or download it from [Releases](https://github.com/wpengine/hwptoolkit/releases).
+1. Download the plugin from [Releases](https://github.com/wpengine/hwptoolkit/releases) and upload it to WordPress, or copy this folder into `wp-content/plugins` and run `composer install --no-dev` in it.
 2. Activate it. Activation creates the documents table. On a multisite network, each site creates its table on its first request after the plugin is network activated.
 3. Authenticate your app's requests with any WordPress REST API authentication, such as [Application Passwords](https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/).
 

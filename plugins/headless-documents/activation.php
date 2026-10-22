@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 use Headless\Documents\Store\Document_Table;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Runs when the plugin is activated.
  *

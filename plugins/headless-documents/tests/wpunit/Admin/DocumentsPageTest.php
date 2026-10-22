@@ -21,7 +21,7 @@ class DocumentsPageTest extends WPTestCase {
 
 		delete_option( Identifiers::DB_VERSION_OPTION );
 		Document_Table::maybe_install();
-		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		set_current_screen( 'dashboard' );
 	}
 
@@ -32,7 +32,7 @@ class DocumentsPageTest extends WPTestCase {
 		remove_all_filters( 'wp_die_handler' );
 		Document_Table::uninstall();
 		unset( $submenu['tools.php'] );
-		$_registered_pages = array();
+		$_registered_pages = [];
 
 		parent::tearDown();
 	}
@@ -58,7 +58,7 @@ class DocumentsPageTest extends WPTestCase {
 	}
 
 	public function test_render_denies_users_without_the_read_capability() {
-		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
 		add_filter(
 			'wp_die_handler',
 			function () {
@@ -73,8 +73,8 @@ class DocumentsPageTest extends WPTestCase {
 	}
 
 	public function test_list_shows_the_document_collection_id_and_version() {
-		Document_Store::save( 'notes', 'team-notes', 0, array( 'title' => 'First' ) );
-		Document_Store::save( 'notes', 'team-notes', 1, array( 'title' => 'Second' ) );
+		Document_Store::save( 'notes', 'team-notes', 0, [ 'title' => 'First' ] );
+		Document_Store::save( 'notes', 'team-notes', 1, [ 'title' => 'Second' ] );
 
 		$output = $this->render();
 
@@ -89,7 +89,7 @@ class DocumentsPageTest extends WPTestCase {
 	}
 
 	public function test_detail_view_escapes_document_data() {
-		Document_Store::save( 'notes', 'xss', 0, array( 'note' => '<script>alert(1)</script>' ) );
+		Document_Store::save( 'notes', 'xss', 0, [ 'note' => '<script>alert(1)</script>' ] );
 		$_GET['collection'] = 'notes';
 		$_GET['document']   = 'xss';
 
