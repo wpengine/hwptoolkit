@@ -15,7 +15,7 @@
     "reformat:md": "remark --rc-path .remarkrc.json --output --"
   },
   "engines": {
-    "node": ">=18",
+    "node": ">=20",
     "pnpm": ">=10"
   },
   "keywords": [],
