@@ -98,6 +98,7 @@ We're using [Conventional Commits](https://www.conventionalcommits.org/) to orga
 # build:    Changes that affect the build system or external dependencies
 # chore:    Routine tasks, maintenance, or refactors that don't change functionality
 # ci:       Changes to CI configuration files and scripts
+# deps:     Dependency updates
 # docs:     Documentation only changes
 # feat:     A new feature for the user or a significant enhancement
 # fix:      A bug fix
@@ -132,6 +133,17 @@ We use the [feature branch](https://www.atlassian.com/git/tutorials/comparing-wo
 6. Mention your PR in the original issue
 
 We will try to review your PR as soon as possible. Once approved by two maintainers, you can merge your PR into `main`.
+
+#### Releases
+
+Plugins are released with [release-please](https://github.com/googleapis/release-please). Releases are built from squash-merged PR titles, so the title decides the version bump:
+
+- `feat:` releases a minor version
+- `fix:`, `perf:`, and `deps:` release a patch version
+- `!` after the type (e.g. `feat!:`) or a `BREAKING CHANGE:` footer releases a major version
+- Other types don't trigger a release
+
+After a merge to `main`, release-please opens or updates one release PR per plugin with the version bump and changelog. Merging that PR tags the release and attaches the plugin zip to the GitHub Release. Changes under a plugin's `examples/` directory don't count toward its release.
 
 ### Discussions
 

@@ -1,0 +1,83 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+
+# Runs write to the same release PR branches, so queue them instead of racing
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+permissions:
+  contents: write      # For creating releases/tags and pushing to release PR branches
+  pull-requests: write # For creating release PRs
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    outputs:
+      prs: ${{ steps.release.outputs.prs }}
+      paths-released: ${{ steps.release.outputs.paths_released }}
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release
+        with:
+          target-branch: main
+
+  # release-please bumps each plugin's package.json and CHANGELOG.md but knows nothing
+  # about the plugin header, readme.txt Stable tag, composer.json, or composer-packages.json.
+  # Sync those onto each release PR branch so they ship together.
+  sync-release-files:
+    name: Sync release files (${{ matrix.pr.headBranchName }})
+    needs: release-please
+    if: needs.release-please.outputs.prs && needs.release-please.outputs.prs != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pr: ${{ fromJSON(needs.release-please.outputs.prs) }}
+    steps:
+      - name: Checkout release PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.pr.headBranchName }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Sync version into plugin files
+        run: |
+          # Only plugins whose version this release PR bumps (three-dot ignores main moving ahead)
+          for file in $(git diff --name-only origin/main...HEAD -- 'plugins/*/package.json'); do
+            slug=$(echo "$file" | cut -d/ -f2)
+            echo "Syncing release files for $slug"
+            bash .github/scripts/sync_plugin_release_files.sh "$slug"
+          done
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "Release files already in sync"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore: sync release files"
+          git push
+
+  # Releases created with GITHUB_TOKEN don't trigger other workflows, so call the build directly.
+  release-plugin:
+    name: Release plugin (${{ matrix.path }})
+    needs: release-please
+    if: needs.release-please.outputs.paths-released && needs.release-please.outputs.paths-released != '[]'
+    strategy:
+      matrix:
+        path: ${{ fromJSON(needs.release-please.outputs.paths-released) }}
+    uses: ./.github/workflows/release-plugin.yml
+    with:
+      path: ${{ matrix.path }}
