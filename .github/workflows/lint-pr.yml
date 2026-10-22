@@ -21,6 +21,7 @@ jobs:
           # build:    Changes that affect the build system or external dependencies
           # chore:    Routine tasks, maintenance, or refactors that don't change functionality
           # ci:       Changes to CI configuration files and scripts
+          # deps:     Dependency updates (listed under Dependencies in release notes)
           # docs:     Documentation only changes
           # feat:     A new feature for the user or a significant enhancement
           # fix:      A bug fix
@@ -34,6 +35,7 @@ jobs:
             build
             chore
             ci
+            deps
             docs
             feat
             fix

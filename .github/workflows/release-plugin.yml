@@ -1,0 +1,109 @@
+# Builds a plugin zip and attaches it to the GitHub Release that release-please created.
+# Called by release-please.yml; can also be run by hand to rebuild a release's zip.
+
+name: Release Plugin
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: 'Plugin path (e.g. plugins/hwp-previews)'
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      path:
+        description: 'Plugin path (e.g. plugins/hwp-previews)'
+        required: true
+        type: string
+      tag:
+        description: 'Release tag to rebuild (e.g. @wpengine/hwp-previews-wordpress-plugin-1.0.2)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and upload plugin archive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.sha }}
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Note: All plugins are compatible with PHP 8.2
+          extensions: mbstring, json, zip
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10 # Min version required by the repo
+
+      - name: Read package metadata
+        id: metadata
+        env:
+          PLUGIN_DIR: ${{ inputs.path }}
+        run: |
+          if [ ! -f "$PLUGIN_DIR/package.json" ]; then
+            echo "package.json not found in $PLUGIN_DIR"
+            exit 1
+          fi
+
+          package_name=$(jq -r '.name' "$PLUGIN_DIR/package.json")
+          package_version=$(jq -r '.version' "$PLUGIN_DIR/package.json")
+
+          # Matches the tag format in release-please-config.json
+          echo "tag=${package_name}-${package_version}" >> "$GITHUB_OUTPUT"
+          echo "version=$package_version" >> "$GITHUB_OUTPUT"
+          echo "slug=$(basename "$PLUGIN_DIR")" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run composer install
+        working-directory: ${{ inputs.path }}
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Validate composer setup
+        working-directory: ${{ inputs.path }}
+        run: composer validate --no-check-publish --no-check-lock
+
+      - name: Create plugin archive
+        working-directory: ${{ inputs.path }}
+        env:
+          SLUG: ${{ steps.metadata.outputs.slug }}
+        run: |
+          rm -f "plugin-build/$SLUG.zip"
+          composer archive -vvv --format=zip --file="plugin-build/$SLUG" --dir="."
+
+          if [ ! -f "plugin-build/$SLUG.zip" ]; then
+            echo "Failed to create plugin archive"
+            exit 1
+          fi
+
+          echo "Archive created successfully: $(ls -lh "plugin-build/$SLUG.zip")"
+
+      - name: Upload archive to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.metadata.outputs.tag }}
+          VERSION: ${{ steps.metadata.outputs.version }}
+          ARCHIVE: ${{ inputs.path }}/plugin-build/${{ steps.metadata.outputs.slug }}.zip
+        run: |
+          gh release upload "$TAG" "$ARCHIVE" --clobber
+
+          # 0.x versions are pre-releases
+          if [[ "$VERSION" =~ ^0\. ]]; then
+            gh release edit "$TAG" --prerelease
+          fi
