@@ -31,7 +31,11 @@ Realtime updates, complex queries and high write volume are out of scope.
 2. Activate it. Activation creates the documents table. On a multisite network, each site creates its table on its first request after the plugin is network activated.
 3. Authenticate your app's requests with any WordPress REST API authentication, such as [Application Passwords](https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/).
 
-Deactivating the plugin keeps your documents. Deleting the plugin drops the table, and every document in it, on every site.
+Deactivating or deleting the plugin keeps your documents. To also drop the table, and every document in it, on every site when you delete the plugin, add this to `wp-config.php` first:
+
+```php
+define( 'HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN', true );
+```
 
 ### Permissions
 

@@ -20,7 +20,7 @@ Documents are grouped into collections. Each document has an ID that's unique wi
 
 * REST routes to read, create, update, delete, list and add documents under `headless/v1`
 * Compare-and-swap writes: of two writers sending the same version, only one succeeds
-* A dedicated database table, created on activation and dropped when the plugin is deleted
+* A dedicated database table, created on activation and kept when the plugin is deleted unless you opt in
 * Access through WordPress users and the `read_headless_documents` and `edit_headless_documents` capabilities
 * `headless_document_saved` and `headless_document_deleted` actions
 * A read-only Tools → Headless Documents screen
@@ -43,7 +43,7 @@ Administrators can. Give other users the `read_headless_documents` capability to
 
 = What happens to my documents if I deactivate or delete the plugin? =
 
-Deactivating keeps them. Deleting the plugin drops the documents table and every document in it.
+Deactivating or deleting the plugin keeps them. To drop the documents table and every document in it when you delete the plugin, define `HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN` as `true` in `wp-config.php` first.
 
 = Does it support WPGraphQL? =
 

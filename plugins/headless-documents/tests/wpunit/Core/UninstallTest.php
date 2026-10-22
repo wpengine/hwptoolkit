@@ -14,8 +14,33 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
  */
 class UninstallTest extends WPTestCase {
 
+	/**
+	 * Runs before the test below defines the constant, which can't be undone.
+	 */
+	public function test_uninstall_keeps_documents_without_the_constant() {
+		if ( defined( 'HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN' ) ) {
+			$this->markTestSkipped( 'HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN is already defined.' );
+		}
+
+		delete_option( Identifiers::DB_VERSION_OPTION );
+		Document_Table::maybe_install();
+		Document_Store::save( 'prefs', 'kept', 0, [ 'theme' => 'dark' ] );
+
+		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+			define( 'WP_UNINSTALL_PLUGIN', 'headless-documents/headless-documents.php' );
+		}
+		include dirname( __DIR__, 3 ) . '/uninstall.php';
+
+		$this->assertEquals( (object) [ 'theme' => 'dark' ], Document_Store::get( 'prefs', 'kept' )['data'] );
+		$this->assertNotFalse( get_option( Identifiers::DB_VERSION_OPTION ) );
+	}
+
 	public function test_uninstall_drops_the_table_and_its_version() {
 		global $wpdb;
+
+		if ( ! defined( 'HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN' ) ) {
+			define( 'HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN', true );
+		}
 
 		delete_option( Identifiers::DB_VERSION_OPTION );
 		Document_Table::maybe_install();

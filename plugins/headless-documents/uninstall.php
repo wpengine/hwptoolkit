@@ -3,7 +3,8 @@
  * Uninstall Headless Documents
  *
  * Drops the documents table, and every document in it, on each site when the
- * plugin is deleted.
+ * plugin is deleted, but only if HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN is
+ * defined. The documents are the app's data, so they're kept by default.
  *
  * @package Headless\Documents
  */
@@ -16,6 +17,11 @@ use Headless\Documents\Store\Document_Table;
 // If uninstall not called from WordPress, then exit.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
+}
+
+// Only proceed if the uninstall constant is defined.
+if ( ! defined( 'HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN' ) || ! HEADLESS_DOCUMENTS_UNINSTALL_PLUGIN ) {
+	return;
 }
 
 require_once __DIR__ . '/src/Autoloader.php';
