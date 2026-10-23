@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 use WPGraphQL\Logging\Admin\ViewLogsPage;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Log detail view template.
  *
@@ -17,6 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="wrap">
 	<div class="wpgraphql-logging-view-header">
