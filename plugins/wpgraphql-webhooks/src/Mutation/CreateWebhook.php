@@ -70,7 +70,7 @@ class CreateWebhook {
 			'mutateAndGetPayload' => function ($input, $context, $info) {
 				// Check user capabilities
 				if ( ! current_user_can( 'manage_options' ) ) {
-					throw new UserError( __( 'You do not have permission to create webhooks.', 'wpgraphql-webhooks' ) );
+					throw new UserError( esc_html__( 'You do not have permission to create webhooks.', 'wpgraphql-webhooks' ) );
 				}
 
 				// Prepare post data
@@ -83,7 +83,7 @@ class CreateWebhook {
 				$post_id = wp_insert_post( $post_data );
 
 				if ( is_wp_error( $post_id ) ) {
-					throw new UserError( __( 'Failed to create webhook.', 'wpgraphql-webhooks' ) );
+					throw new UserError( esc_html__( 'Failed to create webhook.', 'wpgraphql-webhooks' ) );
 				}
 				if ( isset( $input['eventTrigger'] ) ) {
 					update_post_meta( $post_id, '_event_trigger', sanitize_text_field( $input['eventTrigger'] ) );

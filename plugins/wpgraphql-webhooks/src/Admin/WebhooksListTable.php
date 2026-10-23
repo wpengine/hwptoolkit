@@ -198,7 +198,7 @@ class WebhooksListTable extends \WP_List_Table {
 				return '<span class="webhook-method">' . esc_html( $item->method ) . '</span>';
 			case 'headers':
 				$count = is_array( $item->headers ) ? count( $item->headers ) : 0;
-				return $count > 0 ? sprintf( __( '%d headers', 'wpgraphql-webhooks' ), $count ) : '—';
+				return $count > 0 ? sprintf( /* translators: %d: number of headers */ _n( '%d header', '%d headers', $count, 'wpgraphql-webhooks' ), $count ) : '—';
 			default:
 				return '';
 		}

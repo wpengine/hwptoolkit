@@ -27,10 +27,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="notice notice-success is-dismissible">
 			<p>
 				<?php
-				printf(
-					/* translators: %d: number of webhooks deleted */
-					_n( '%d webhook deleted.', '%d webhooks deleted.', $deleted, 'wpgraphql-webhooks' ),
-					$deleted
+				echo esc_html(
+					sprintf(
+						/* translators: %d: number of webhooks deleted */
+						_n( '%d webhook deleted.', '%d webhooks deleted.', $deleted, 'wpgraphql-webhooks' ),
+						$deleted
+					)
 				);
 				?>
 			</p>

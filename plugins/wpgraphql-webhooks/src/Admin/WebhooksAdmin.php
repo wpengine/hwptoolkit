@@ -154,7 +154,7 @@ class WebhooksAdmin {
 	 */
 	private function verify_admin_permission(): bool {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', 'wpgraphql-webhooks' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-webhooks' ) );
 			return false;
 		}
 		return true;
@@ -169,7 +169,7 @@ class WebhooksAdmin {
 	 */
 	private function verify_nonce( string $nonce_name, string $action ): bool {
 		if ( ! isset( $_REQUEST[ $nonce_name ] ) || ! wp_verify_nonce( wp_unslash( $_REQUEST[ $nonce_name ] ), $action ) ) {
-			wp_die( __( 'Security check failed.', 'wpgraphql-webhooks' ) );
+			wp_die( esc_html__( 'Security check failed.', 'wpgraphql-webhooks' ) );
 			return false;
 		}
 		return true;
@@ -182,7 +182,7 @@ class WebhooksAdmin {
 	 */
 	public function handle_webhook_save() {
 		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'webhook_nonce', 'webhook_save' ) ) {
-			wp_die( __( 'Unauthorized', 'wpgraphql-webhooks' ) );
+			wp_die( esc_html__( 'Unauthorized', 'wpgraphql-webhooks' ) );
 		}
 
 		$webhook_id = isset( $_POST['webhook_id'] ) ? intval( $_POST['webhook_id'] ) : 0;
@@ -197,7 +197,7 @@ class WebhooksAdmin {
 
 		$validation = $this->repository->validate( $webhook );
 		if ( is_wp_error( $validation ) ) {
-			wp_die( $validation->get_error_message() );
+			wp_die( esc_html( $validation->get_error_message() ) );
 		}
 
 		if ( $webhook_id > 0 ) {
@@ -251,7 +251,7 @@ class WebhooksAdmin {
 
 		// Verify nonce
 		if ( ! wp_verify_nonce( $nonce, 'delete-webhook-' . $webhook_id ) ) {
-			wp_die( __( 'Security check failed.', 'wpgraphql-webhooks' ) );
+			wp_die( esc_html__( 'Security check failed.', 'wpgraphql-webhooks' ) );
 		}
 
 		// Delete webhook
@@ -314,7 +314,7 @@ class WebhooksAdmin {
 			$webhook = $this->repository->get( $webhook_id );
 
 			if ( ! $webhook ) {
-				wp_die( __( 'Webhook not found.', 'wpgraphql-webhooks' ) );
+				wp_die( esc_html__( 'Webhook not found.', 'wpgraphql-webhooks' ) );
 			}
 
 			$name = $webhook->name;
@@ -434,6 +434,7 @@ class WebhooksAdmin {
 		if ( is_wp_error( $response ) ) {
 			wp_send_json_error( [ 
 				'message' => sprintf(
+					/* translators: %s: error message from the failed request */
 					__( 'Failed to send test webhook: %s', 'wpgraphql-webhooks' ),
 					$response->get_error_message()
 				),
@@ -450,8 +451,8 @@ class WebhooksAdmin {
 		$response_data = [ 
 			'success' => $is_success,
 			'message' => $is_success
-				? sprintf( __( 'Test webhook sent successfully to %s', 'wpgraphql-webhooks' ), $webhook->url )
-				: sprintf( __( 'Webhook returned HTTP %d', 'wpgraphql-webhooks' ), $response_code ),
+				? sprintf( /* translators: %s: webhook URL */ __( 'Test webhook sent successfully to %s', 'wpgraphql-webhooks' ), $webhook->url )
+				: sprintf( /* translators: %d: HTTP status code */ __( 'Webhook returned HTTP %d', 'wpgraphql-webhooks' ), $response_code ),
 			'webhook_id' => $webhook->id,
 			'webhook_name' => $webhook->name,
 			'target_url' => $webhook->url,

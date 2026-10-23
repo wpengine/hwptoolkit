@@ -48,27 +48,27 @@ class DeleteWebhook {
 			'mutateAndGetPayload' => function ($input, $context, $info) {
 				// Capability check
 				if ( ! current_user_can( 'manage_options' ) ) {
-					throw new UserError( __( 'You do not have permission to delete webhooks.', 'wpgraphql-webhooks' ) );
+					throw new UserError( esc_html__( 'You do not have permission to delete webhooks.', 'wpgraphql-webhooks' ) );
 				}
 
 				if ( empty( $input['id'] ) ) {
-					throw new UserError( __( 'The ID of the webhook to delete is required.', 'wpgraphql-webhooks' ) );
+					throw new UserError( esc_html__( 'The ID of the webhook to delete is required.', 'wpgraphql-webhooks' ) );
 				}
 				$post_id = is_numeric( $input['id'] ) ? (int) $input['id'] : 0;
 
 				if ( $post_id <= 0 ) {
-					throw new UserError( __( 'Invalid webhook ID.', 'wpgraphql-webhooks' ) );
+					throw new UserError( esc_html__( 'Invalid webhook ID.', 'wpgraphql-webhooks' ) );
 				}
 
 				$post = get_post( $post_id );
 				if ( ! $post || $post->post_type !== 'graphql_webhook' ) {
-					throw new UserError( __( 'Webhook not found.', 'wpgraphql-webhooks' ) );
+					throw new UserError( esc_html__( 'Webhook not found.', 'wpgraphql-webhooks' ) );
 				}
 
 				// Delete the post (force delete to bypass trash)
 				$deleted = wp_delete_post( $post_id, true );
 				if ( ! $deleted ) {
-					throw new UserError( __( 'Failed to delete webhook.', 'wpgraphql-webhooks' ) );
+					throw new UserError( esc_html__( 'Failed to delete webhook.', 'wpgraphql-webhooks' ) );
 				}
 
 				return [ 
