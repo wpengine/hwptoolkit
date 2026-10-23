@@ -85,6 +85,7 @@ jobs:
           SLUG: ${{ matrix.plugin }}
         run: |
           composer archive --format=zip --file="plugin-build/$SLUG" --dir="."
+          mkdir -p "$RUNNER_TEMP/plugin-check/$SLUG"
           unzip -q "plugin-build/$SLUG.zip" -d "$RUNNER_TEMP/plugin-check/$SLUG"
 
       - name: Run Plugin Check
