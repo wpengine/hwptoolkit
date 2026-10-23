@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use WPGraphQL\Logging\Admin\ViewLogsPage;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Log detail view template.
  *
