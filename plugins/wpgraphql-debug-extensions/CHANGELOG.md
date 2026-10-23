@@ -1,5 +1,13 @@
 # @wpengine/wpgraphql-debug-extensions-plugin
 
+## [0.0.5](https://github.com/wpengine/hwptoolkit/compare/@wpengine/wpgraphql-debug-extensions-wordpress-plugin-0.0.4...@wpengine/wpgraphql-debug-extensions-wordpress-plugin-0.0.5) (2026-10-23)
+
+
+### Bug Fixes
+
+* composer vulnerabilities in plugins ([8a087f0](https://github.com/wpengine/hwptoolkit/commit/8a087f0d8f577b49620b4cb7604425278cd1a778))
+* npm vulnerabilities via pnpm overrides and version bumps ([c34899e](https://github.com/wpengine/hwptoolkit/commit/c34899e3598415630d5e8f417979674d8642ad2c))
+
 ## 0.0.4
 
 ### Patch Changes
