@@ -13,9 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <div class="wrap">
-	<h1 class="wp-heading-inline"><?php esc_html_e( 'Webhooks', 'graphql-webhooks' ); ?></h1>
+	<h1 class="wp-heading-inline"><?php esc_html_e( 'Webhooks', 'wpgraphql-webhooks' ); ?></h1>
 	<a href="<?php echo esc_url( add_query_arg( 'action', 'add', remove_query_arg( [ 'id', 'deleted' ] ) ) ); ?>" class="page-title-action">
-		<?php esc_html_e( 'Add New', 'graphql-webhooks' ); ?>
+		<?php esc_html_e( 'Add New', 'wpgraphql-webhooks' ); ?>
 	</a>
 	<hr class="wp-header-end">
 
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				printf(
 					/* translators: %d: number of webhooks deleted */
-					_n( '%d webhook deleted.', '%d webhooks deleted.', $deleted, 'graphql-webhooks' ),
+					_n( '%d webhook deleted.', '%d webhooks deleted.', $deleted, 'wpgraphql-webhooks' ),
 					$deleted
 				);
 				?>
@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	if ( isset( $_GET['added'] ) ) {
 		?>
 		<div class="notice notice-success is-dismissible">
-			<p><?php esc_html_e( 'Webhook added successfully.', 'graphql-webhooks' ); ?></p>
+			<p><?php esc_html_e( 'Webhook added successfully.', 'wpgraphql-webhooks' ); ?></p>
 		</div>
 		<?php
 	}
@@ -49,7 +49,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	if ( isset( $_GET['updated'] ) ) {
 		?>
 		<div class="notice notice-success is-dismissible">
-			<p><?php esc_html_e( 'Webhook updated successfully.', 'graphql-webhooks' ); ?></p>
+			<p><?php esc_html_e( 'Webhook updated successfully.', 'wpgraphql-webhooks' ); ?></p>
 		</div>
 		<?php
 	}

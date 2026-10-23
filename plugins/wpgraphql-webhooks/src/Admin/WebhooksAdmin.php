@@ -63,8 +63,8 @@ class WebhooksAdmin {
 	public function add_admin_menu(): void {
 		// Add submenu under GraphQL menu using the correct parent slug
 		add_menu_page(
-			__( 'Webhooks', 'graphql-webhooks' ),
-			__( 'Webhooks', 'graphql-webhooks' ),
+			__( 'Webhooks', 'wpgraphql-webhooks' ),
+			__( 'Webhooks', 'wpgraphql-webhooks' ),
 			'manage_options',
 			self::ADMIN_PAGE_SLUG,
 			[ $this, 'render_admin_page' ],
@@ -73,8 +73,8 @@ class WebhooksAdmin {
 		);
 		add_submenu_page(
 			'graphiql-ide',
-			__( 'GraphQL Webhooks', 'graphql-webhooks' ),
-			__( 'Webhooks', 'graphql-webhooks' ),
+			__( 'GraphQL Webhooks', 'wpgraphql-webhooks' ),
+			__( 'Webhooks', 'wpgraphql-webhooks' ),
 			'manage_options',
 			self::ADMIN_PAGE_SLUG,
 			[ $this, 'render_admin_page' ]
@@ -129,7 +129,7 @@ class WebhooksAdmin {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'restUrl' => rest_url( 'graphql-webhooks/v1/' ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
-				'confirmDelete' => __( 'Are you sure you want to delete this webhook?', 'graphql-webhooks' ),
+				'confirmDelete' => __( 'Are you sure you want to delete this webhook?', 'wpgraphql-webhooks' ),
 				'headerTemplate' => $this->get_header_row_template(),
 			]
 		);
@@ -154,7 +154,7 @@ class WebhooksAdmin {
 	 */
 	private function verify_admin_permission(): bool {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.', 'graphql-webhooks' ) );
+			wp_die( __( 'You do not have sufficient permissions to access this page.', 'wpgraphql-webhooks' ) );
 			return false;
 		}
 		return true;
@@ -169,7 +169,7 @@ class WebhooksAdmin {
 	 */
 	private function verify_nonce( string $nonce_name, string $action ): bool {
 		if ( ! isset( $_REQUEST[ $nonce_name ] ) || ! wp_verify_nonce( wp_unslash( $_REQUEST[ $nonce_name ] ), $action ) ) {
-			wp_die( __( 'Security check failed.', 'graphql-webhooks' ) );
+			wp_die( __( 'Security check failed.', 'wpgraphql-webhooks' ) );
 			return false;
 		}
 		return true;
@@ -182,7 +182,7 @@ class WebhooksAdmin {
 	 */
 	public function handle_webhook_save() {
 		if ( ! $this->verify_admin_permission() || ! $this->verify_nonce( 'webhook_nonce', 'webhook_save' ) ) {
-			wp_die( __( 'Unauthorized', 'graphql-webhooks' ) );
+			wp_die( __( 'Unauthorized', 'wpgraphql-webhooks' ) );
 		}
 
 		$webhook_id = isset( $_POST['webhook_id'] ) ? intval( $_POST['webhook_id'] ) : 0;
@@ -251,7 +251,7 @@ class WebhooksAdmin {
 
 		// Verify nonce
 		if ( ! wp_verify_nonce( $nonce, 'delete-webhook-' . $webhook_id ) ) {
-			wp_die( __( 'Security check failed.', 'graphql-webhooks' ) );
+			wp_die( __( 'Security check failed.', 'wpgraphql-webhooks' ) );
 		}
 
 		// Delete webhook
@@ -300,8 +300,8 @@ class WebhooksAdmin {
 	 */
 	private function render_form_page( $action ) {
 		$webhook = null;
-		$form_title = 'add' === $action ? __( 'Add New Webhook', 'graphql-webhooks' ) : __( 'Edit Webhook', 'graphql-webhooks' );
-		$submit_text = 'add' === $action ? __( 'Add Webhook', 'graphql-webhooks' ) : __( 'Update Webhook', 'graphql-webhooks' );
+		$form_title = 'add' === $action ? __( 'Add New Webhook', 'wpgraphql-webhooks' ) : __( 'Edit Webhook', 'wpgraphql-webhooks' );
+		$submit_text = 'add' === $action ? __( 'Add Webhook', 'wpgraphql-webhooks' ) : __( 'Update Webhook', 'wpgraphql-webhooks' );
 
 		$name = '';
 		$event = '';
@@ -314,7 +314,7 @@ class WebhooksAdmin {
 			$webhook = $this->repository->get( $webhook_id );
 
 			if ( ! $webhook ) {
-				wp_die( __( 'Webhook not found.', 'graphql-webhooks' ) );
+				wp_die( __( 'Webhook not found.', 'wpgraphql-webhooks' ) );
 			}
 
 			$name = $webhook->name;
@@ -365,14 +365,14 @@ class WebhooksAdmin {
 	public function ajax_test_webhook(): void {
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'wp_rest' ) ) {
 			wp_send_json_error( [ 
-				'message' => __( 'Invalid security token.', 'graphql-webhooks' ),
+				'message' => __( 'Invalid security token.', 'wpgraphql-webhooks' ),
 				'error_code' => 'invalid_nonce'
 			] );
 		}
 
 		if ( ! $this->verify_admin_permission() ) {
 			wp_send_json_error( [ 
-				'message' => __( 'You do not have permission to test webhooks.', 'graphql-webhooks' ),
+				'message' => __( 'You do not have permission to test webhooks.', 'wpgraphql-webhooks' ),
 				'error_code' => 'insufficient_permissions'
 			] );
 		}
@@ -380,7 +380,7 @@ class WebhooksAdmin {
 		$webhook_id = isset( $_POST['webhook_id'] ) ? intval( $_POST['webhook_id'] ) : 0;
 		if ( ! $webhook_id ) {
 			wp_send_json_error( [ 
-				'message' => __( 'Invalid webhook ID.', 'graphql-webhooks' ),
+				'message' => __( 'Invalid webhook ID.', 'wpgraphql-webhooks' ),
 				'error_code' => 'invalid_webhook_id'
 			] );
 		}
@@ -388,7 +388,7 @@ class WebhooksAdmin {
 		$webhook = $this->repository->get( $webhook_id );
 		if ( ! $webhook ) {
 			wp_send_json_error( [ 
-				'message' => __( 'Webhook not found.', 'graphql-webhooks' ),
+				'message' => __( 'Webhook not found.', 'wpgraphql-webhooks' ),
 				'error_code' => 'webhook_not_found'
 			] );
 		}
@@ -434,7 +434,7 @@ class WebhooksAdmin {
 		if ( is_wp_error( $response ) ) {
 			wp_send_json_error( [ 
 				'message' => sprintf(
-					__( 'Failed to send test webhook: %s', 'graphql-webhooks' ),
+					__( 'Failed to send test webhook: %s', 'wpgraphql-webhooks' ),
 					$response->get_error_message()
 				),
 				'error_code' => $response->get_error_code(),
@@ -450,8 +450,8 @@ class WebhooksAdmin {
 		$response_data = [ 
 			'success' => $is_success,
 			'message' => $is_success
-				? sprintf( __( 'Test webhook sent successfully to %s', 'graphql-webhooks' ), $webhook->url )
-				: sprintf( __( 'Webhook returned HTTP %d', 'graphql-webhooks' ), $response_code ),
+				? sprintf( __( 'Test webhook sent successfully to %s', 'wpgraphql-webhooks' ), $webhook->url )
+				: sprintf( __( 'Webhook returned HTTP %d', 'wpgraphql-webhooks' ), $response_code ),
 			'webhook_id' => $webhook->id,
 			'webhook_name' => $webhook->name,
 			'target_url' => $webhook->url,

@@ -24,18 +24,18 @@ class WebhookPostType {
 	 */
 	public static function register_webhook_cpt(): void {
 		$labels = [ 
-			'name' => __( 'Webhooks', 'graphql-webhooks' ),
-			'singular_name' => __( 'Webhook', 'graphql-webhooks' ),
-			'add_new' => __( 'Add New', 'graphql-webhooks' ),
-			'add_new_item' => __( 'Add New Webhook', 'graphql-webhooks' ),
-			'edit_item' => __( 'Edit Webhook', 'graphql-webhooks' ),
-			'new_item' => __( 'New Webhook', 'graphql-webhooks' ),
-			'view_item' => __( 'View Webhook', 'graphql-webhooks' ),
-			'search_items' => __( 'Search Webhooks', 'graphql-webhooks' ),
-			'not_found' => __( 'No Webhooks found', 'graphql-webhooks' ),
-			'not_found_in_trash' => __( 'No Webhooks found in Trash', 'graphql-webhooks' ),
-			'parent_item_colon' => __( 'Parent Webhook:', 'graphql-webhooks' ),
-			'menu_name' => __( 'Webhooks', 'graphql-webhooks' ),
+			'name' => __( 'Webhooks', 'wpgraphql-webhooks' ),
+			'singular_name' => __( 'Webhook', 'wpgraphql-webhooks' ),
+			'add_new' => __( 'Add New', 'wpgraphql-webhooks' ),
+			'add_new_item' => __( 'Add New Webhook', 'wpgraphql-webhooks' ),
+			'edit_item' => __( 'Edit Webhook', 'wpgraphql-webhooks' ),
+			'new_item' => __( 'New Webhook', 'wpgraphql-webhooks' ),
+			'view_item' => __( 'View Webhook', 'wpgraphql-webhooks' ),
+			'search_items' => __( 'Search Webhooks', 'wpgraphql-webhooks' ),
+			'not_found' => __( 'No Webhooks found', 'wpgraphql-webhooks' ),
+			'not_found_in_trash' => __( 'No Webhooks found in Trash', 'wpgraphql-webhooks' ),
+			'parent_item_colon' => __( 'Parent Webhook:', 'wpgraphql-webhooks' ),
+			'menu_name' => __( 'Webhooks', 'wpgraphql-webhooks' ),
 		];
 		$args = [ 
 			'labels' => $labels,
