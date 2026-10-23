@@ -8,6 +8,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
 
   # composer (plugins)
   - package-ecosystem: "composer"
@@ -17,6 +20,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
 
   - package-ecosystem: "composer"
     directory: "/plugins/hwp-cli"
@@ -25,6 +31,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
 
   - package-ecosystem: "composer"
     directory: "/plugins/hwp-previews"
@@ -33,6 +42,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
 
   - package-ecosystem: "composer"
     directory: "/plugins/wpgraphql-debug-extensions"
@@ -41,6 +53,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
 
   - package-ecosystem: "composer"
     directory: "/plugins/wpgraphql-logging"
@@ -49,6 +64,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
 
   - package-ecosystem: "composer"
     directory: "/plugins/wpgraphql-webhooks"
@@ -57,6 +75,9 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
 
   # docker (Dockerfiles)
   - package-ecosystem: "docker"
