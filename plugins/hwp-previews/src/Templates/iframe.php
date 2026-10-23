@@ -11,6 +11,10 @@
 
 declare(strict_types=1);
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $hwp_previews_url_template = \HWP\Previews\Preview\Template\Template_Resolver_Service::get_query_variable();
 ?>
 
