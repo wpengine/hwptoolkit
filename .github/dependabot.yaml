@@ -14,7 +14,7 @@ updates:
 
   # composer (plugins)
   - package-ecosystem: "composer"
-    directory: "/plugins/headless-documents"
+    directory: "/plugins/hwp-documents"
     schedule:
       interval: "weekly"
     ignore:
@@ -81,7 +81,7 @@ updates:
 
   # docker (Dockerfiles)
   - package-ecosystem: "docker"
-    directory: "/plugins/headless-documents/.docker"
+    directory: "/plugins/hwp-documents/.docker"
     schedule:
       interval: "weekly"
     ignore:
@@ -106,7 +106,7 @@ updates:
 
   # docker (docker-compose)
   - package-ecosystem: "docker"
-    directory: "/plugins/headless-documents"
+    directory: "/plugins/hwp-documents"
     schedule:
       interval: "weekly"
     ignore:
