@@ -1,5 +1,13 @@
 # WPGraphQL Logging
 
+## [1.0.2](https://github.com/wpengine/hwptoolkit/compare/@wpengine/wpgraphql-logging-wordpress-plugin-1.0.1...@wpengine/wpgraphql-logging-wordpress-plugin-1.0.2) (2026-10-23)
+
+
+### Bug Fixes
+
+* exclude build-sha.txt from plugin archives ([a9c0b42](https://github.com/wpengine/hwptoolkit/commit/a9c0b429e854ff880afe7c4d7cd43a46bca92f9d))
+* exclude build-sha.txt from plugin archives ([66fc3e3](https://github.com/wpengine/hwptoolkit/commit/66fc3e33b656ad503807b7fdcb44bb20c0d90d44)), closes [#550](https://github.com/wpengine/hwptoolkit/issues/550)
+
 ## 1.0.1
 
 ### Patch Changes
