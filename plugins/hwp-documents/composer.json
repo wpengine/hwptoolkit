@@ -2,7 +2,7 @@
 	"name": "wpengine/hwp-documents",
 	"type": "wordpress-plugin",
 	"description": "A WordPress plugin that stores versioned JSON documents for headless apps.",
-	"license": "GPL-2.0",
+	"license": "GPL-2.0-or-later",
 	"version": "0.0.0",
 	"authors": [
 		{
