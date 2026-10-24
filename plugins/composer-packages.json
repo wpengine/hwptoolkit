@@ -7,7 +7,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -33,7 +33,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -59,7 +59,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -85,7 +85,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -111,7 +111,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -137,7 +137,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -163,7 +163,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -189,7 +189,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -215,7 +215,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -241,7 +241,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -267,7 +267,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -293,7 +293,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -319,7 +319,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -345,7 +345,7 @@
         "type": "wordpress-plugin",
         "description": "A WordPress plugin for headless previews.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -373,7 +373,7 @@
         "type": "wordpress-plugin",
         "description": "Debug extensions for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -399,7 +399,7 @@
         "type": "wordpress-plugin",
         "description": "Debug extensions for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -425,7 +425,7 @@
         "type": "wordpress-plugin",
         "description": "Debug extensions for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -451,7 +451,7 @@
         "type": "wordpress-plugin",
         "description": "Debug extensions for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -479,7 +479,7 @@
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -505,7 +505,7 @@
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -531,7 +531,7 @@
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -557,7 +557,7 @@
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -583,7 +583,7 @@
         "type": "wordpress-plugin",
         "description": "Headless webhooks for WPGraphQL",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -611,7 +611,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -637,7 +637,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -663,7 +663,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -689,7 +689,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -715,7 +715,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -741,7 +741,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -767,7 +767,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -793,7 +793,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -819,7 +819,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -845,7 +845,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -871,7 +871,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
@@ -897,7 +897,7 @@
         "type": "wordpress-plugin",
         "description": "A plugin for logging WPGraphQL request lifecycle tp help with debugging and performance analysis for WPGraphQL queries.",
         "homepage": "https://github.com/wpengine/hwptoolkit",
-        "license": "GPL-2.0",
+        "license": "GPL-2.0-or-later",
         "authors": [
           {
             "name": "WP Engine Headless OSS Development Team",
