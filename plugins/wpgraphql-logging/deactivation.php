@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 use WPGraphQL\Logging\Plugin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Runs when the plugin is deactivated.
  */

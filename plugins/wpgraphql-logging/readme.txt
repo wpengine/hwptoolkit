@@ -6,7 +6,7 @@ Tested up to: 6.9
 Requires PHP: 8.1.2
 Requires WPGraphQL: 2.3.0
 Stable tag: 1.0.1
-License: GPL-2.0-or-later
+License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 WPGraphQL Logging plugin provides observability and visibility into the GraphQL request and event lifecycle. This allows users to quickly identify and resolve performance issues and bottlenecks within their headless WordPress application.

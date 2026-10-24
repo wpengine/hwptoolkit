@@ -10,6 +10,10 @@ use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 use WP_List_Table;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Include the WP_List_Table class if not already loaded.
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';

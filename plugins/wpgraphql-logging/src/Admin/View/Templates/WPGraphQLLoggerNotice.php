@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 use WPGraphQL\Logging\Admin\AdminNotice;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $wpgraphql_logging_key        = AdminNotice::ADMIN_NOTICE_KEY;
 $wpgraphql_logging_ajax_nonce = wp_create_nonce( $wpgraphql_logging_key );
 $wpgraphql_logging_notice     = __( "Heads up! While very useful for debugging, the WPGraphQL Logging Plugin can impact your site's performance under heavy usage, so please use it judiciously.", 'wpgraphql-logging' );
