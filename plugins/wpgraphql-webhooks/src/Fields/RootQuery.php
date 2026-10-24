@@ -25,7 +25,7 @@ class RootQuery {
         // Register the "webhooks" field (list of webhooks)
         register_graphql_field( 'RootQuery', 'webhooks', [
             'type'        => [ 'list_of' => 'Webhook' ],
-            'description' => __( 'List all registered webhooks.', 'graphql-webhooks' ),
+            'description' => __( 'List all registered webhooks.', 'wpgraphql-webhooks' ),
             'resolve'     => function() {
                 $query = new \WP_Query([
                     'post_type'      => 'graphql_webhook',
@@ -40,11 +40,11 @@ class RootQuery {
         // Register the "webhook" field (fetch single webhook by ID)
         register_graphql_field( 'RootQuery', 'webhook', [
             'type'        => 'Webhook',
-            'description' => __( 'Fetch a webhook by ID.', 'graphql-webhooks' ),
+            'description' => __( 'Fetch a webhook by ID.', 'wpgraphql-webhooks' ),
             'args'        => [
                 'id' => [
                     'type'        => Type::nonNull( Type::id() ),
-                    'description' => __( 'The global ID of the webhook to retrieve.', 'graphql-webhooks' ),
+                    'description' => __( 'The global ID of the webhook to retrieve.', 'wpgraphql-webhooks' ),
                 ],
             ],
             'resolve'     => function( $root, $args ) {

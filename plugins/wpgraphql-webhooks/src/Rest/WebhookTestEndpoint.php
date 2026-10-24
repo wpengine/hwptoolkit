@@ -79,7 +79,7 @@ class WebhookTestEndpoint {
 		if ( ! $webhook ) {
 			return new WP_Error(
 				'webhook_not_found',
-				__( 'Webhook not found.', 'graphql-webhooks' ),
+				__( 'Webhook not found.', 'wpgraphql-webhooks' ),
 				[ 'status' => 404 ]
 			);
 		}
@@ -136,7 +136,7 @@ class WebhookTestEndpoint {
 			return new WP_REST_Response(
 				[
 					'success' => true,
-					'message' => __( 'Test webhook dispatched successfully.', 'graphql-webhooks' ),
+					'message' => __( 'Test webhook dispatched successfully.', 'wpgraphql-webhooks' ),
 					'details' => [
 						'webhook_id' => $webhook_id,
 						'webhook_name' => $webhook->name,
@@ -161,7 +161,7 @@ class WebhookTestEndpoint {
 				'webhook_test_failed',
 				sprintf(
 					/* translators: %s: error message */
-					__( 'Failed to dispatch test webhook: %s', 'graphql-webhooks' ),
+					__( 'Failed to dispatch test webhook: %s', 'wpgraphql-webhooks' ),
 					$e->getMessage()
 				),
 				[ 'status' => 500 ]

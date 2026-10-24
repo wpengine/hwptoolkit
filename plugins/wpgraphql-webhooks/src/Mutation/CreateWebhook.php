@@ -26,42 +26,42 @@ class CreateWebhook {
 			'inputFields' => [ 
 				'title' => [ 
 					'type' => 'String',
-					'description' => __( 'The title of the webhook', 'graphql-webhooks' ),
+					'description' => __( 'The title of the webhook', 'wpgraphql-webhooks' ),
 				],
 				'content' => [ 
 					'type' => 'String',
-					'description' => __( 'The content/description of the webhook', 'graphql-webhooks' ),
+					'description' => __( 'The content/description of the webhook', 'wpgraphql-webhooks' ),
 				],
 				'eventTrigger' => [ 
 					'type' => 'String',
-					'description' => __( 'The event hook name that triggers this webhook', 'graphql-webhooks' ),
+					'description' => __( 'The event hook name that triggers this webhook', 'wpgraphql-webhooks' ),
 				],
 				'enabled' => [ 
 					'type' => 'Boolean',
-					'description' => __( 'Whether the webhook is enabled', 'graphql-webhooks' ),
+					'description' => __( 'Whether the webhook is enabled', 'wpgraphql-webhooks' ),
 				],
 				'security' => [ 
 					'type' => 'String',
-					'description' => __( 'Security information for the webhook', 'graphql-webhooks' ),
+					'description' => __( 'Security information for the webhook', 'wpgraphql-webhooks' ),
 				],
 				'handlerClass' => [ 
 					'type' => 'String',
-					'description' => __( 'The handler class used for dispatching', 'graphql-webhooks' ),
+					'description' => __( 'The handler class used for dispatching', 'wpgraphql-webhooks' ),
 				],
 				'handlerConfig' => [ 
 					'type' => 'String',
-					'description' => __( 'Configuration for the handler, JSON encoded', 'graphql-webhooks' ),
+					'description' => __( 'Configuration for the handler, JSON encoded', 'wpgraphql-webhooks' ),
 				],
 				'status' => [ 
 					'type' => 'String',
-					'description' => __( 'Post status, e.g. PUBLISH or DRAFT', 'graphql-webhooks' ),
+					'description' => __( 'Post status, e.g. PUBLISH or DRAFT', 'wpgraphql-webhooks' ),
 					'defaultValue' => 'publish',
 				],
 			],
 			'outputFields' => [ 
 				'webhook' => [ 
 					'type' => 'Webhook',
-					'description' => __( 'The created webhook', 'graphql-webhooks' ),
+					'description' => __( 'The created webhook', 'wpgraphql-webhooks' ),
 					'resolve' => function ($payload) {
 						return get_post( $payload['webhookId'] );
 					},
@@ -70,7 +70,7 @@ class CreateWebhook {
 			'mutateAndGetPayload' => function ($input, $context, $info) {
 				// Check user capabilities
 				if ( ! current_user_can( 'manage_options' ) ) {
-					throw new UserError( __( 'You do not have permission to create webhooks.', 'graphql-webhooks' ) );
+					throw new UserError( esc_html__( 'You do not have permission to create webhooks.', 'wpgraphql-webhooks' ) );
 				}
 
 				// Prepare post data
@@ -83,7 +83,7 @@ class CreateWebhook {
 				$post_id = wp_insert_post( $post_data );
 
 				if ( is_wp_error( $post_id ) ) {
-					throw new UserError( __( 'Failed to create webhook.', 'graphql-webhooks' ) );
+					throw new UserError( esc_html__( 'Failed to create webhook.', 'wpgraphql-webhooks' ) );
 				}
 				if ( isset( $input['eventTrigger'] ) ) {
 					update_post_meta( $post_id, '_event_trigger', sanitize_text_field( $input['eventTrigger'] ) );

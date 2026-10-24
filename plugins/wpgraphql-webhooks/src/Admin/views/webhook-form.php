@@ -39,44 +39,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<tbody>
 				<tr>
 					<th scope="row">
-						<label for="webhook_name"><?php esc_html_e( 'Name', 'graphql-webhooks' ); ?></label>
+						<label for="webhook_name"><?php esc_html_e( 'Name', 'wpgraphql-webhooks' ); ?></label>
 					</th>
 					<td>
 						<input type="text" id="webhook_name" name="webhook_name" value="<?php echo esc_attr( $name ); ?>" class="regular-text" required>
-						<p class="description"><?php esc_html_e( 'A descriptive name for this webhook (e.g., "Notify Slack on Post Publish")', 'graphql-webhooks' ); ?></p>
+						<p class="description"><?php esc_html_e( 'A descriptive name for this webhook (e.g., "Notify Slack on Post Publish")', 'wpgraphql-webhooks' ); ?></p>
 					</td>
 				</tr>
 
 				<tr>
 					<th scope="row">
-						<label for="webhook_event"><?php esc_html_e( 'Event', 'graphql-webhooks' ); ?></label>
+						<label for="webhook_event"><?php esc_html_e( 'Event', 'wpgraphql-webhooks' ); ?></label>
 					</th>
 					<td>
 						<select id="webhook_event" name="webhook_event" required>
-							<option value=""><?php esc_html_e( '— Select Event —', 'graphql-webhooks' ); ?></option>
+							<option value=""><?php esc_html_e( '— Select Event —', 'wpgraphql-webhooks' ); ?></option>
 							<?php foreach ( $events as $event_key => $event_label ) : ?>
 								<option value="<?php echo esc_attr( $event_key ); ?>" <?php selected( $event, $event_key ); ?>>
 									<?php echo esc_html( $event_label ); ?>
 								</option>
 							<?php endforeach; ?>
 						</select>
-						<p class="description"><?php esc_html_e( 'Choose which WordPress event will trigger this webhook', 'graphql-webhooks' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Choose which WordPress event will trigger this webhook', 'wpgraphql-webhooks' ); ?></p>
 					</td>
 				</tr>
 
 				<tr>
 					<th scope="row">
-						<label for="webhook_url"><?php esc_html_e( 'URL', 'graphql-webhooks' ); ?></label>
+						<label for="webhook_url"><?php esc_html_e( 'URL', 'wpgraphql-webhooks' ); ?></label>
 					</th>
 					<td>
 						<input type="url" id="webhook_url" name="webhook_url" value="<?php echo esc_attr( $url ); ?>" class="large-text" required>
-						<p class="description"><?php esc_html_e( 'The endpoint URL where the webhook payload will be sent', 'graphql-webhooks' ); ?></p>
+						<p class="description"><?php esc_html_e( 'The endpoint URL where the webhook payload will be sent', 'wpgraphql-webhooks' ); ?></p>
 					</td>
 				</tr>
 
 				<tr>
 					<th scope="row">
-						<label for="webhook_method"><?php esc_html_e( 'HTTP Method', 'graphql-webhooks' ); ?></label>
+						<label for="webhook_method"><?php esc_html_e( 'HTTP Method', 'wpgraphql-webhooks' ); ?></label>
 					</th>
 					<td>
 						<select id="webhook_method" name="webhook_method" required>
@@ -91,7 +91,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				<tr>
 					<th scope="row">
-						<?php esc_html_e( 'Headers', 'graphql-webhooks' ); ?>
+						<?php esc_html_e( 'Headers', 'wpgraphql-webhooks' ); ?>
 					</th>
 					<td>
 						<div class="webhook-headers">
@@ -105,9 +105,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 								?>
 							</div>
 							<button type="button" class="button" id="add-header">
-								<?php esc_html_e( 'Add Header', 'graphql-webhooks' ); ?>
+								<?php esc_html_e( 'Add Header', 'wpgraphql-webhooks' ); ?>
 							</button>
-							<p class="description"><?php esc_html_e( 'Optional HTTP headers to send with the webhook request', 'graphql-webhooks' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Optional HTTP headers to send with the webhook request', 'wpgraphql-webhooks' ); ?></p>
 						</div>
 					</td>
 				</tr>
@@ -117,7 +117,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p class="submit">
 			<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $submit_text ); ?>">
 			<a href="<?php echo esc_url( $admin->get_admin_url() ); ?>" class="button">
-				<?php esc_html_e( 'Cancel', 'graphql-webhooks' ); ?>
+				<?php esc_html_e( 'Cancel', 'wpgraphql-webhooks' ); ?>
 			</a>
 		</p>
 	</form>
