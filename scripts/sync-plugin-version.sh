@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Syncs a plugin's package.json version into composer.json, readme.txt, the plugin header,
+# and the <SLUG>_VERSION constant.
+#
+# Run it from the plugin folder (it's each plugin's `npm run version` script), or pass the
+# plugin folder as the first argument.
+
 # Exit on any error
 set -e
 
@@ -9,6 +15,13 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+cd "${1:-.}"
+
+SLUG=$(basename "$PWD")
+PLUGIN_FILE="$SLUG.php"
+# e.g. hwp-previews -> HWP_PREVIEWS_VERSION
+VERSION_CONSTANT="$(echo "$SLUG" | tr '[:lower:]-' '[:upper:]_')_VERSION"
+
 # Get the version from package.json
 VERSION=$(node -p "require('./package.json').version")
 
@@ -17,7 +30,7 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-echo -e "${YELLOW}Syncing version ${VERSION} across all files...${NC}"
+echo -e "${YELLOW}Syncing $SLUG version ${VERSION} across all files...${NC}"
 
 # Update composer.json
 if [ -f "composer.json" ]; then
@@ -38,17 +51,15 @@ else
     echo -e "${YELLOW}⚠ readme.txt not found${NC}"
 fi
 
-# Update hwp-previews.php
-PLUGIN_FILE="hwp-previews.php"
-
+# Update the main plugin file
 if [ -f "$PLUGIN_FILE" ]; then
     echo "Updating main plugin file: $PLUGIN_FILE..."
 
     # Update WordPress plugin header version (handles beta versions)
     sed -i.bak -E "s/(\* Version:[[:space:]]*)[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?/\1$VERSION/g" "$PLUGIN_FILE" && rm "${PLUGIN_FILE}.bak"
 
-    # Update HWP_PREVIEWS_VERSION define statement
-    sed -i.bak -E "s/(define\([[:space:]]*['\"]HWP_PREVIEWS_VERSION['\"][[:space:]]*,[[:space:]]*['\"])[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?(['\"][[:space:]]*\))/\1$VERSION\3/g" "$PLUGIN_FILE" && rm "${PLUGIN_FILE}.bak"
+    # Update the version constant's define statement
+    sed -i.bak -E "s/(define\([[:space:]]*['\"]${VERSION_CONSTANT}['\"][[:space:]]*,[[:space:]]*['\"])[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?(['\"][[:space:]]*\))/\1$VERSION\3/g" "$PLUGIN_FILE" && rm "${PLUGIN_FILE}.bak"
 
     echo -e "${GREEN}✓ Updated $PLUGIN_FILE${NC}"
 else
@@ -56,4 +67,3 @@ else
 fi
 
 echo -e "${GREEN}✅ Version sync complete! All files updated to version ${VERSION}${NC}"
-echo -e "${YELLOW}Files will be staged by the workflow's 'git add .' command${NC}"``
