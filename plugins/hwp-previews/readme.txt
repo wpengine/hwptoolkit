@@ -3,9 +3,9 @@ Contributors: colin-murphy, joefusco, thdespou, ahuseyn, wpengine
 Tags: GraphQL, Headless, Previews, WPGraphQL, React, Rest
 Requires at least: 6.0
 Tested up to: 6.9
-Requires PHP: 7.4
+Requires PHP: 8.2
 Stable tag: 1.0.2
-License: GPL-2.0
+License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Headless Previews solution for WordPress: fully configurable preview URLs via the settings page which is framework agnostic.
