@@ -1,5 +1,17 @@
 # WPGraphQL Logging
 
+## [1.0.2](https://github.com/wpengine/hwptoolkit/compare/@wpengine/wpgraphql-logging-wordpress-plugin-1.0.1...@wpengine/wpgraphql-logging-wordpress-plugin-1.0.2) (2026-10-26)
+
+
+### Bug Fixes
+
+* **logging:** block direct access to the files Plugin Check flagged ([c820a6e](https://github.com/wpengine/hwptoolkit/commit/c820a6e2e004da912593550f86d89530e8867d8e))
+* **logging:** declare GPL-2.0-or-later consistently ([9fbe16f](https://github.com/wpengine/hwptoolkit/commit/9fbe16fe0f48840182027b436d198bb191b4a193))
+* **logging:** keep the log view template's docblock above its guard ([be94aa6](https://github.com/wpengine/hwptoolkit/commit/be94aa600284e5b2f5d55a4dca79fa2fee4d45b0))
+* **logging:** note why the CSV export closes php://output directly ([9dae020](https://github.com/wpengine/hwptoolkit/commit/9dae02056647b6fd3c888ed2b2e6af8f33c7a18f))
+* **logging:** resolve Plugin Check errors in the shipped plugin ([77aee39](https://github.com/wpengine/hwptoolkit/commit/77aee39405d16245bbc757a1d45efb55dcf9d0b8))
+* **logging:** use a plain version in the Requires PHP header ([e0acd48](https://github.com/wpengine/hwptoolkit/commit/e0acd4833354f62c44ebd659084dbf57b5d021e0))
+
 ## 1.0.1
 
 ### Patch Changes
