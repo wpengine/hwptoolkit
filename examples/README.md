@@ -68,7 +68,7 @@ You can copy on of existing examples to use it as a _skeleton_ of your new examp
    ```json
    {
      "phpVersion": "7.4",
-     "plugins": ["https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip"],
+     "plugins": ["https://downloads.wordpress.org/plugin/wp-graphql.zip"],
      "config": {
        "WP_DEBUG": true
      },

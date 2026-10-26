@@ -2,7 +2,7 @@
 	"name": "wpengine/wpgraphql-webhooks",
 	"description": "Headless webhooks for WPGraphQL",
 	"type": "library",
-	"license": "GPL-2.0",
+	"license": "GPL-2.0-or-later",
 	"version": "0.0.7",
 	"authors": [
 		{
