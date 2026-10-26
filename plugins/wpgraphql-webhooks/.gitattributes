@@ -9,7 +9,6 @@
 /wpgraphql-webhooks export-ignore
 
 /.coveralls export-ignore
-/.distignore export-ignore
 /.dockerignore export-ignore
 /.env.dist export-ignore
 /.gitattributes export-ignore
