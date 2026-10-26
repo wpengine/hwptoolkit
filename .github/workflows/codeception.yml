@@ -46,26 +46,26 @@ jobs:
               ${{ github.event.pull_request.head.sha }}
           fi
 
-      - name: Detect changed plugins with quality config
+      - name: Detect changed plugins with test config
         id: detect
+        env:
+          PLUGINS: ${{ steps.plugin.outputs.plugins }}
         run: |
-          if [ -z "${{ steps.plugin.outputs.slug }}" ]; then
-            echo "No plugin slug detected"
-            echo "plugins=[]" >> $GITHUB_OUTPUT
-            echo "has-plugins=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          PLUGIN="${{ steps.plugin.outputs.slug }}"
-
-          if [ -f "plugins/$PLUGIN/codeception.dist.yml" ]; then
-            echo "plugins=[\"$PLUGIN\"]" >> $GITHUB_OUTPUT
-            echo "has-plugins=true" >> $GITHUB_OUTPUT
-            echo "✅ Found codeception.dist.yml for plugin: $PLUGIN"
+          # Test every changed plugin that has a codeception.dist.yml, not just the first one.
+          WITH_TESTS="[]"
+          for plugin in $(echo "${PLUGINS:-[]}" | jq -r '.[]'); do
+            if [ -f "plugins/$plugin/codeception.dist.yml" ]; then
+              echo "✅ Found codeception.dist.yml for plugin: $plugin"
+              WITH_TESTS=$(echo "$WITH_TESTS" | jq -c --arg p "$plugin" '. + [$p]')
+            else
+              echo "ℹ️ No codeception.dist.yml found for plugin: $plugin, skipping automated tests"
+            fi
+          done
+          echo "plugins=$WITH_TESTS" >> "$GITHUB_OUTPUT"
+          if [ "$WITH_TESTS" = "[]" ]; then
+            echo "has-plugins=false" >> "$GITHUB_OUTPUT"
           else
-            echo "plugins=[]" >> $GITHUB_OUTPUT
-            echo "has-plugins=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ No codeception.dist.yml found for plugin: $PLUGIN, skipping automated tests"
+            echo "has-plugins=true" >> "$GITHUB_OUTPUT"
           fi
 
   continuous_integration:
