@@ -1,5 +1,17 @@
 # HWP Previews
 
+## [1.0.3](https://github.com/wpengine/hwptoolkit/compare/@wpengine/hwp-previews-wordpress-plugin-1.0.2...@wpengine/hwp-previews-wordpress-plugin-1.0.3) (2026-10-26)
+
+
+### Bug Fixes
+
+* **previews:** align the Requires PHP and Tested up to headers ([b7b0a53](https://github.com/wpengine/hwptoolkit/commit/b7b0a53b5175f44bb130a32be6dfe6e9c58a9626))
+* **previews:** block direct access to the files Plugin Check flagged ([783e17c](https://github.com/wpengine/hwptoolkit/commit/783e17c36af1dc9e11ca2bd4799efb4f70c29248))
+* **previews:** declare GPL-2.0-or-later consistently ([321b358](https://github.com/wpengine/hwptoolkit/commit/321b35861da0316389fa532d0e7fabe3f19cb824))
+* **previews:** put the deactivation.php docblock before declare() ([f2a0be8](https://github.com/wpengine/hwptoolkit/commit/f2a0be87789591af1088f4cf0553808cb12bfc81))
+* **previews:** resolve Plugin Check errors in the shipped plugin ([3af02fc](https://github.com/wpengine/hwptoolkit/commit/3af02fcad44ceb1ac865a7c6a57886226d4f2262))
+* **previews:** set Tested up to 6.9, the newest WordPress the CI matrix runs ([103fa13](https://github.com/wpengine/hwptoolkit/commit/103fa1331e7f803877afecf0e1d21d91d9549b56))
+
 ## 1.0.2
 
 ### Patch Changes
