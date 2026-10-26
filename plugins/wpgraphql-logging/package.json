@@ -8,7 +8,7 @@
 		"test:e2e": "playwright test --config tests/e2e/playwright.config.js",
 		"test:e2e:debug": "npm run test:e2e -- --debug",
 		"wp-env": "wp-env",
-		"version": "./bin/sync-package-version.sh"
+		"version": "../../scripts/sync-plugin-version.sh"
 	},
 	"keywords": [],
 	"author": "wpengine",
