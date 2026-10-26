@@ -12,9 +12,10 @@ updates:
       prefix: "deps"
       prefix-development: "chore(deps-dev)"
 
-  # composer (plugins)
+  # composer (every plugin, so new plugins are covered without an entry here)
   - package-ecosystem: "composer"
-    directory: "/plugins/hwp-documents"
+    directories:
+      - "/plugins/*"
     schedule:
       interval: "weekly"
     ignore:
@@ -24,130 +25,11 @@ updates:
       prefix: "deps"
       prefix-development: "chore(deps-dev)"
 
-  - package-ecosystem: "composer"
-    directory: "/plugins/hwp-cli"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    commit-message:
-      prefix: "deps"
-      prefix-development: "chore(deps-dev)"
-
-  - package-ecosystem: "composer"
-    directory: "/plugins/hwp-previews"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    commit-message:
-      prefix: "deps"
-      prefix-development: "chore(deps-dev)"
-
-  - package-ecosystem: "composer"
-    directory: "/plugins/wpgraphql-debug-extensions"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    commit-message:
-      prefix: "deps"
-      prefix-development: "chore(deps-dev)"
-
-  - package-ecosystem: "composer"
-    directory: "/plugins/wpgraphql-logging"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    commit-message:
-      prefix: "deps"
-      prefix-development: "chore(deps-dev)"
-
-  - package-ecosystem: "composer"
-    directory: "/plugins/wpgraphql-webhooks"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    commit-message:
-      prefix: "deps"
-      prefix-development: "chore(deps-dev)"
-
-  # docker (Dockerfiles)
-  - package-ecosystem: "docker"
-    directory: "/plugins/hwp-documents/.docker"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-
-  - package-ecosystem: "docker"
-    directory: "/plugins/hwp-previews/.docker"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-
-  - package-ecosystem: "docker"
-    directory: "/plugins/wpgraphql-logging/.docker"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-
-  # docker (docker-compose)
-  - package-ecosystem: "docker"
-    directory: "/plugins/hwp-documents"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-
-  - package-ecosystem: "docker"
-    directory: "/plugins/hwp-previews"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-
-  - package-ecosystem: "docker"
-    directory: "/plugins/wpgraphql-debug-extensions"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-
-  - package-ecosystem: "docker"
-    directory: "/plugins/wpgraphql-logging"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-
-  - package-ecosystem: "docker"
-    directory: "/plugins/wpgraphql-webhooks"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-
-  # github-actions
+  # github-actions (workflows and the composite actions they use)
   - package-ecosystem: "github-actions"
-    directory: "/.github/workflows"
+    directories:
+      - "/"
+      - "/.github/actions/*"
     schedule:
       interval: "weekly"
     ignore:

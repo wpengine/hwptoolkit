@@ -26,45 +26,45 @@ class UpdateWebhook {
             'inputFields' => [
                 'id' => [
                     'type' => 'ID',
-                    'description' => __('The ID of the webhook to update', 'graphql-webhooks'),
+                    'description' => __('The ID of the webhook to update', 'wpgraphql-webhooks'),
                 ],
                 'title' => [
                     'type' => 'String',
-                    'description' => __('The new title of the webhook', 'graphql-webhooks'),
+                    'description' => __('The new title of the webhook', 'wpgraphql-webhooks'),
                 ],
                 'content' => [
                     'type' => 'String',
-                    'description' => __('The new content/description of the webhook', 'graphql-webhooks'),
+                    'description' => __('The new content/description of the webhook', 'wpgraphql-webhooks'),
                 ],
                 'eventTrigger' => [
                     'type' => 'String',
-                    'description' => __('The new event hook name that triggers this webhook', 'graphql-webhooks'),
+                    'description' => __('The new event hook name that triggers this webhook', 'wpgraphql-webhooks'),
                 ],
                 'enabled' => [
                     'type' => 'Boolean',
-                    'description' => __('Whether the webhook is enabled', 'graphql-webhooks'),
+                    'description' => __('Whether the webhook is enabled', 'wpgraphql-webhooks'),
                 ],
                 'security' => [
                     'type' => 'String',
-                    'description' => __('Security information for the webhook', 'graphql-webhooks'),
+                    'description' => __('Security information for the webhook', 'wpgraphql-webhooks'),
                 ],
                 'handlerClass' => [
                     'type' => 'String',
-                    'description' => __('The handler class used for dispatching', 'graphql-webhooks'),
+                    'description' => __('The handler class used for dispatching', 'wpgraphql-webhooks'),
                 ],
                 'handlerConfig' => [
                     'type' => 'String',
-                    'description' => __('Configuration for the handler, JSON encoded', 'graphql-webhooks'),
+                    'description' => __('Configuration for the handler, JSON encoded', 'wpgraphql-webhooks'),
                 ],
                 'status' => [
                     'type' => 'String',
-                    'description' => __('Post status, e.g. PUBLISH or DRAFT', 'graphql-webhooks'),
+                    'description' => __('Post status, e.g. PUBLISH or DRAFT', 'wpgraphql-webhooks'),
                 ],
             ],
             'outputFields' => [
                 'webhook' => [
                     'type' => 'Webhook',
-                    'description' => __('The updated webhook', 'graphql-webhooks'),
+                    'description' => __('The updated webhook', 'wpgraphql-webhooks'),
                     'resolve' => function ($payload) {
                         return get_post($payload['webhookId']);
                     },
@@ -72,22 +72,22 @@ class UpdateWebhook {
             ],
             'mutateAndGetPayload' => function ($input, $context, $info) {
                 if (!current_user_can('manage_options')) {
-                    throw new UserError(__('You do not have permission to update webhooks.', 'graphql-webhooks'));
+                    throw new UserError(esc_html__('You do not have permission to update webhooks.', 'wpgraphql-webhooks'));
                 }
 
                 if (empty($input['id'])) {
-                    throw new UserError(__('The ID of the webhook to update is required.', 'graphql-webhooks'));
+                    throw new UserError(esc_html__('The ID of the webhook to update is required.', 'wpgraphql-webhooks'));
                 }
 
                 $post_id = is_numeric($input['id']) ? (int) $input['id'] : 0;
 
                 if ($post_id <= 0) {
-                    throw new UserError(__('Invalid webhook ID.', 'graphql-webhooks'));
+                    throw new UserError(esc_html__('Invalid webhook ID.', 'wpgraphql-webhooks'));
                 }
 
                 $post = get_post($post_id);
                 if (!$post || $post->post_type !== 'graphql_webhook') {
-                    throw new UserError(__('Webhook not found.', 'graphql-webhooks'));
+                    throw new UserError(esc_html__('Webhook not found.', 'wpgraphql-webhooks'));
                 }
                 $post_data = ['ID' => $post_id];
 
@@ -102,7 +102,7 @@ class UpdateWebhook {
                 }
                 $updated_post_id = wp_update_post($post_data, true);
                 if (is_wp_error($updated_post_id)) {
-                    throw new UserError(__('Failed to update webhook.', 'graphql-webhooks'));
+                    throw new UserError(esc_html__('Failed to update webhook.', 'wpgraphql-webhooks'));
                 }
 
                 if (isset($input['eventTrigger'])) {

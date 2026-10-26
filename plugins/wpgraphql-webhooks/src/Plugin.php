@@ -18,6 +18,10 @@ use WPGraphQL\Webhooks\Events\SmartCacheWebhookManager;
 use WPGraphQL\Webhooks\Services\Interfaces\ServiceLocator;
 use WPGraphQL\Webhooks\Services\PluginServiceLocator;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Plugin singleton class.
  */
