@@ -20,14 +20,14 @@ $header_value = $header_value ?? '';
 	<input type="text" 
 		   name="webhook_headers[name][]" 
 		   value="<?php echo esc_attr( $header_name ); ?>" 
-		   placeholder="<?php esc_attr_e( 'Header Name', 'graphql-webhooks' ); ?>" 
+		   placeholder="<?php esc_attr_e( 'Header Name', 'wpgraphql-webhooks' ); ?>" 
 		   class="regular-text">
 	<input type="text" 
 		   name="webhook_headers[value][]" 
 		   value="<?php echo esc_attr( $header_value ); ?>" 
-		   placeholder="<?php esc_attr_e( 'Header Value', 'graphql-webhooks' ); ?>" 
+		   placeholder="<?php esc_attr_e( 'Header Value', 'wpgraphql-webhooks' ); ?>" 
 		   class="regular-text">
 	<button type="button" class="button remove-header">
-		<?php esc_html_e( 'Remove', 'graphql-webhooks' ); ?>
+		<?php esc_html_e( 'Remove', 'wpgraphql-webhooks' ); ?>
 	</button>
 </div>

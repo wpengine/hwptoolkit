@@ -17,6 +17,10 @@ use WPGraphQL\Utils\QueryAnalyzer as OriginalQueryAnalyzer;
 use WPGraphQL\Debug\Analysis\Rules\Complexity;
 use WPGraphQL\Debug\Analysis\Rules\UnfilteredLists;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Plugin singleton class.
  */

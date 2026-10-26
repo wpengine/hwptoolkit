@@ -13,6 +13,10 @@ use WPGraphQL\Logging\Admin\Settings\ConfigurationHelper;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\DataManagementTab;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $wpgraphql_logging_configuration_helper = ConfigurationHelper::get_instance();
 $wpgraphql_logging_tabs_config          = (array) get_query_var( 'wpgraphql_logging_main_page_config' );
 $wpgraphql_logging_current_tab          = (string) ( $wpgraphql_logging_tabs_config['current_tab'] ?? '' );
