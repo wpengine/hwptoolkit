@@ -7,7 +7,7 @@
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
- * Version: 0.0.0
+ * Version: 1.0.0
  * Text Domain: hwp-documents
  * Domain Path: /languages
  * Requires at least: 6.0
@@ -60,7 +60,7 @@ if ( ! function_exists( 'hwp_documents_constants' ) ) {
 	 */
 	function hwp_documents_constants(): void {
 		if ( ! defined( 'HWP_DOCUMENTS_VERSION' ) ) {
-			define( 'HWP_DOCUMENTS_VERSION', '0.0.0' );
+			define( 'HWP_DOCUMENTS_VERSION', '1.0.0' );
 		}
 
 		if ( ! defined( 'HWP_DOCUMENTS_PLUGIN_DIR' ) ) {

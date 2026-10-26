@@ -917,6 +917,34 @@
           "composer/installers": "~1.0 || ~2.0"
         }
       }
+    },
+    "wpengine/hwp-documents": {
+      "1.0.0": {
+        "name": "wpengine/hwp-documents",
+        "version": "1.0.0",
+        "type": "wordpress-plugin",
+        "description": "A WordPress plugin that stores versioned JSON documents for headless apps.",
+        "homepage": "https://github.com/wpengine/hwptoolkit",
+        "license": "GPL-2.0-or-later",
+        "authors": [
+          {
+            "name": "WP Engine Headless OSS Development Team",
+            "email": "headless-oss@wpengine.com",
+            "homepage": "https://wpengine.com/"
+          }
+        ],
+        "support": {
+          "issues": "https://github.com/wpengine/hwptoolkit/issues",
+          "email": "support@wpengine.com"
+        },
+        "dist": {
+          "url": "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-documents-wordpress-plugin-1.0.0/hwp-documents.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0 || ~2.0"
+        }
+      }
     }
   }
 }
