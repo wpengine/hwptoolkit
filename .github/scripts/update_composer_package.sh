@@ -159,7 +159,7 @@ update_package_jq() {
            "type": "wordpress-plugin",
            "description": $desc,
            "homepage": "https://github.com/wpengine/hwptoolkit",
-           "license": "GPL-2.0",
+           "license": "GPL-2.0-or-later",
            "authors": [
                {
                    "name": "WP Engine Headless OSS Development Team",
@@ -216,7 +216,7 @@ data['packages']['$package_name']['$version'] = {
     "type": "wordpress-plugin",
     "description": "$description",
     "homepage": "https://github.com/wpengine/hwptoolkit",
-    "license": "GPL-2.0",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "WP Engine Headless OSS Development Team",
