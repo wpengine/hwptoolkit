@@ -46,6 +46,8 @@
 		<PossiblyInvalidArgument>
 			<errorLevel type="suppress">
 				<file name="src/Admin/View/Templates/WPGraphQLLoggerFilters.php"/>
+				<file name="src/Logger/Scheduler/DataDeletionScheduler.php"/>
+				<file name="wpgraphql-logging.php"/>
 			</errorLevel>
 		</PossiblyInvalidArgument>
 
