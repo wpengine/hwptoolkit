@@ -12,6 +12,10 @@ declare(strict_types=1);
 use HWP\Previews\Integration\Faust_Integration;
 use HWP\Previews\Preview\Post\Post_Settings_Service;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $hwp_previews_tabs_config       = (array) get_query_var( 'hwp_previews_main_page_config' );
 $hwp_previews_current_tab       = (string) ( $hwp_previews_tabs_config['current_tab'] ?? '' );
 $hwp_previews_tabs              = (array) ( $hwp_previews_tabs_config['tabs'] ?? [] );
