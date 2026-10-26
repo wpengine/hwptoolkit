@@ -2,7 +2,7 @@
 Contributors: ahuseyn, colin-murphy, joefusco, thdespou, wpengine
 Tags: wpgraphql, logging, headless, performance, debugging
 Requires at least: 6.5
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 8.1.2
 Requires WPGraphQL: 2.3.0
 Stable tag: 1.0.1

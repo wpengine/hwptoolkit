@@ -2,7 +2,7 @@
 Contributors: wpengine
 Tags: GraphQL, Gatsby, Headless, WPGraphQL, React, Rest, Debug
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 7.4
 Requires WPGraphQL: 1.8.0
 Stable tag: 0.0.4

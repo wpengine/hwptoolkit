@@ -2,7 +2,7 @@
 Contributors: wpengine
 Tags: headless, rest api, json, documents, app data
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 8.2
 Stable tag: 0.0.0
 License: GPLv2 or later
