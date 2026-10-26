@@ -21,6 +21,10 @@
     { "type": "style", "section": "Styles", "hidden": true }
   ],
   "packages": {
+    "plugins/hwp-documents": {
+      "component": "@wpengine/hwp-documents-wordpress-plugin",
+      "exclude-paths": ["plugins/hwp-documents/examples"]
+    },
     "plugins/hwp-previews": {
       "component": "@wpengine/hwp-previews-wordpress-plugin",
       "exclude-paths": ["plugins/hwp-previews/examples"]

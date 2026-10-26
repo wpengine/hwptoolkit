@@ -34,22 +34,6 @@ jobs:
         with:
           ref: ${{ inputs.tag || github.sha }}
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2' # Note: All plugins are compatible with PHP 8.2
-          extensions: mbstring, json, zip
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24.x
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 10 # Min version required by the repo
-
       - name: Read package metadata
         id: metadata
         env:
@@ -68,12 +52,12 @@ jobs:
           echo "version=$package_version" >> "$GITHUB_OUTPUT"
           echo "slug=$(basename "$PLUGIN_DIR")" >> "$GITHUB_OUTPUT"
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run composer install
-        working-directory: ${{ inputs.path }}
-        run: composer install --no-dev --optimize-autoloader
+      - name: Setup PHP and install production dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2' # Note: All plugins are compatible with PHP 8.2
+          working-directory: ${{ inputs.path }}
+          composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Validate composer setup
         working-directory: ${{ inputs.path }}

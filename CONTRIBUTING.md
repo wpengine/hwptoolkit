@@ -104,7 +104,6 @@ We're using [Conventional Commits](https://www.conventionalcommits.org/) to orga
 # fix:      A bug fix
 # perf:     A code change that improves performance
 # refactor: A code change that neither fixes a bug nor adds a feature
-# release:  Used for release PRs/commits
 # revert:   Reverts a previous commit
 # style:    Changes that don't affect the meaning of the code (formatting, missing semi-colons, etc)
 # test:     Adding missing tests or correcting existing tests

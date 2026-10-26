@@ -4,6 +4,10 @@ inputs:
   slug:
     description: 'Plugin slug (directory name under plugins/)'
     required: true
+  php:
+    description: 'PHP version to build with'
+    required: false
+    default: '8.2' # Note: All plugins are compatible with PHP 8.2
   composer-options:
     description: 'Additional composer options'
     required: false
