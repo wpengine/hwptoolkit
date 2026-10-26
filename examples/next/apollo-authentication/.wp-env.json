@@ -1,7 +1,7 @@
 {
   "phpVersion": "7.4",
   "plugins": [
-    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "https://downloads.wordpress.org/plugin/wp-graphql.zip",
     "https://github.com/AxeWP/wp-graphql-headless-login/releases/latest/download/wp-graphql-headless-login.zip"
   ],
   "config": {
