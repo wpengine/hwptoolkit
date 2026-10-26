@@ -8,6 +8,10 @@ declare(strict_types=1);
  * @package WPGraphql\Webhooks
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Runs when WPGraphQL Webhooks is de-activated.
  *

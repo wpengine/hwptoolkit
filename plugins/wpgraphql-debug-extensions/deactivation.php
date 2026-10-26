@@ -8,6 +8,10 @@ declare(strict_types=1);
  * @package WPGraphql\Debug
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Runs when WPGraphQL Debug Extensions is de-activated.
  *

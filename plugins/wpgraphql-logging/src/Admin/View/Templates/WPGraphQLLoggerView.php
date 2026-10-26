@@ -13,6 +13,10 @@ use WPGraphQL\Logging\Admin\ViewLogsPage;
  *
  * @since 0.0.1
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="wrap">
 	<div class="wpgraphql-logging-view-header">
