@@ -1,7 +1,7 @@
 {
-  "plugins/hwp-documents": "0.0.0",
-  "plugins/hwp-previews": "1.0.2",
-  "plugins/wpgraphql-debug-extensions": "0.0.4",
-  "plugins/wpgraphql-logging": "1.0.1",
-  "plugins/wpgraphql-webhooks": "0.0.7"
+  "plugins/hwp-documents": "1.0.0",
+  "plugins/hwp-previews": "1.0.3",
+  "plugins/wpgraphql-debug-extensions": "0.0.5",
+  "plugins/wpgraphql-logging": "1.0.2",
+  "plugins/wpgraphql-webhooks": "0.0.8"
 }
