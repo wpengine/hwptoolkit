@@ -2,7 +2,7 @@
   "phpVersion": "8.1",
   "plugins": [
     "https://downloads.wordpress.org/plugin/wp-graphql.zip",
-    "https://github.com/wpengine/hwptoolkit/releases/latest/download/wpgraphql-logging.zip"
+    "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fwpgraphql-logging-wordpress-plugin-1.0.2/wpgraphql-logging.zip"
   ],
   "config": {
     "WP_DEBUG": true,

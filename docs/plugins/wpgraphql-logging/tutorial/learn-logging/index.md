@@ -34,7 +34,7 @@ First, we will install the WPGraphQL Logging plugin. Since this plugin extends W
 
 Download the latest release from the GitHub repository:
 
-Visit <https://github.com/wpengine/hwptoolkit/releases/latest/download/wpgraphql-logging.zip> and download the plugin zip file.
+Visit the [WPGraphQL Logging releases page](https://github.com/wpengine/hwptoolkit/releases?q=wpgraphql-logging-wordpress-plugin&expanded=true) and download `wpgraphql-logging.zip` from the newest release.
 
 Install and activate the plugin through your WordPress admin.
 
