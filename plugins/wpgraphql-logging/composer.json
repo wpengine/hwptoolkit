@@ -81,6 +81,7 @@
 		"name": "wpgraphql-logging",
 		"exclude": [
 			"/.*",
+			".gitkeep",
 			"/build-sha.txt",
 			"/docs",
 			"/TESTING.md",
