@@ -2,7 +2,7 @@
 Contributors: colin-murphy, joefusco, thdespou, ahuseyn, wpengine
 Tags: GraphQL, Headless, Previews, WPGraphQL, React, Rest
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 8.2
 Stable tag: 1.0.3
 License: GPLv2 or later
