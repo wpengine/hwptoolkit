@@ -3,7 +3,7 @@
 	"description": "Debug extensions for WPGraphQL",
 	"type": "library",
 	"license": "GPL-2.0-or-later",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"authors": [
 		{
 			"name": "WP Engine Headless OSS Development Team",
