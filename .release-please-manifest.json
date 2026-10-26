@@ -3,5 +3,5 @@
   "plugins/hwp-previews": "1.0.2",
   "plugins/wpgraphql-debug-extensions": "0.0.4",
   "plugins/wpgraphql-logging": "1.0.1",
-  "plugins/wpgraphql-webhooks": "0.0.7"
+  "plugins/wpgraphql-webhooks": "0.0.8"
 }

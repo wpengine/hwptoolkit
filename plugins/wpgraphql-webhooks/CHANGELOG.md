@@ -1,5 +1,17 @@
 # @wpengine/wpgraphql-webhooks-wordpress-plugin
 
+## [0.0.8](https://github.com/wpengine/hwptoolkit/compare/@wpengine/wpgraphql-webhooks-wordpress-plugin-0.0.7...@wpengine/wpgraphql-webhooks-wordpress-plugin-0.0.8) (2026-10-26)
+
+
+### Bug Fixes
+
+* **webhooks:** block direct access to the files Plugin Check flagged ([54c25e7](https://github.com/wpengine/hwptoolkit/commit/54c25e794957393fa34e743c8ea30ff09c91c2ea))
+* **webhooks:** escape admin output and error messages, and add translator comments ([53d2d41](https://github.com/wpengine/hwptoolkit/commit/53d2d4151de2964483466e63c5fed4dba819e597))
+* **webhooks:** license the plugin under GPL-2.0-or-later ([7741a7c](https://github.com/wpengine/hwptoolkit/commit/7741a7c0e21ac2ecd675304318f5927111acfa32))
+* **webhooks:** resolve Plugin Check errors in the shipped plugin ([9d33e16](https://github.com/wpengine/hwptoolkit/commit/9d33e16490e5fbe532866df4ca254e93eba86683))
+* **webhooks:** use a plain version in the Requires PHP header ([d065d8b](https://github.com/wpengine/hwptoolkit/commit/d065d8b9fdce9177788d2c1a9518262245748c09))
+* **webhooks:** use the plugin slug as the text domain ([89c5c5f](https://github.com/wpengine/hwptoolkit/commit/89c5c5f0a879a4a18c1d3aa80a2be9c823246bde))
+
 ## 0.0.8
 
 ### Patch Changes
