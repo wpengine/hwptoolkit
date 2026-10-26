@@ -1,5 +1,5 @@
 import { defineConfig } from "@playwright/test";
-import baseConfig from "@wordpress/scripts/config/playwright.config";
+import baseConfig from "../../../../playwright.config.base.js";
 
 const config = defineConfig({
 	...baseConfig,

@@ -6,7 +6,8 @@
  * Version: 0.1.0
  * Author: HWP Team
  * Author URI: https://github.com/hwp
- * License: MIT
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: hwp-cli
  * Domain Path: /languages
  * Requires PHP: 7.4

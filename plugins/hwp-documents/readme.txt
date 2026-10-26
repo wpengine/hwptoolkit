@@ -2,10 +2,10 @@
 Contributors: wpengine
 Tags: headless, rest api, json, documents, app data
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 6.9
 Requires PHP: 8.2
 Stable tag: 0.0.0
-License: GPL-2.0
+License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Store your app's JSON documents in WordPress over REST, with versioned writes that reject stale updates instead of overwriting them.

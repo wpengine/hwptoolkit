@@ -62,7 +62,7 @@ class DownloadLogService {
 		$content = $this->get_content( $log );
 		$writer->insertOne( $headers );
 		$writer->insertOne( $content );
-		fclose( $output );
+		fclose( $output ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closes the php://output stream, which WP_Filesystem can't handle.
 		exit;
 	}
 

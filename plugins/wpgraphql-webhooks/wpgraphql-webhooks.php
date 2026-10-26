@@ -8,15 +8,15 @@
  * Author URI: https://github.com/wpengine
  * Update URI: https://github.com/wpengine/hwptoolkit
  * Version: 0.0.7
- * Text Domain: graphql-webhooks
+ * Text Domain: wpgraphql-webhooks
  * Domain Path: /languages
  * Requires at least: 6.0
  * Tested up to: 6.9
- * Requires PHP: 7.4+
+ * Requires PHP: 7.4
  * Requires Plugins: wp-graphql
  * WPGraphQL requires at least: 1.8.0
- * License: BSD-0-Clause
- * License URI: https://opensource.org/licenses/BSD-3-Clause
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  *
  * @package WPGraphQL\Webhooks
  */
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define text domain constant to use instead of string literals
 if ( ! defined( 'WPGRAPHQL_WEBHOOKS_TEXT_DOMAIN' ) ) {
-	define( 'WPGRAPHQL_WEBHOOKS_TEXT_DOMAIN', 'graphql-webhooks' );
+	define( 'WPGRAPHQL_WEBHOOKS_TEXT_DOMAIN', 'wpgraphql-webhooks' );
 }
 
 // Load the autoloader.
@@ -145,7 +145,7 @@ function graphql_webhooks_init(): void {
  */
 function graphql_webhooks_load_textdomain(): void {
 	load_plugin_textdomain(
-		'graphql-webhooks',
+		'wpgraphql-webhooks',
 		false,
 		dirname( plugin_basename( __FILE__ ) ) . '/languages'
 	);
