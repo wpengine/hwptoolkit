@@ -17,6 +17,11 @@ on:
     paths:
       - 'plugins/**'
 
+# Read-only, so plugin-check-action can't post its report as a PR comment. Results stay
+# in the job log and the uploaded artifact.
+permissions:
+  contents: read
+
 jobs:
   detect-plugins:
     runs-on: ubuntu-latest
@@ -92,6 +97,8 @@ jobs:
         uses: wordpress/plugin-check-action@v1
         with:
           build-dir: ${{ runner.temp }}/plugin-check/${{ matrix.plugin }}
+          # No token, no PR comment.
+          repo-token: ''
           exclude-directories: |
             vendor
           # The plugins ship through GitHub Releases and Composer, not WordPress.org,
