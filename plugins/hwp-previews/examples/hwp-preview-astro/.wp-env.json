@@ -1,7 +1,7 @@
 {
   "phpVersion": "8.3",
   "plugins": [
-    "https://github.com/wp-graphql/wp-graphql/releases/latest/download/wp-graphql.zip",
+    "https://downloads.wordpress.org/plugin/wp-graphql.zip",
     "https://github.com/wpengine/hwptoolkit/releases/download/%40wpengine%2Fhwp-previews-wordpress-plugin-0.0.12/hwp-previews.zip",
     "https://github.com/wp-graphql/wpgraphql-ide/releases/latest/download/wpgraphql-ide.zip"
   ],
