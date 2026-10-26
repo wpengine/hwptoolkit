@@ -142,7 +142,7 @@ Plugins are released with [release-please](https://github.com/googleapis/release
 - `!` after the type (e.g. `feat!:`) or a `BREAKING CHANGE:` footer releases a major version
 - Other types don't trigger a release
 
-After a merge to `main`, release-please opens or updates one release PR per plugin with the version bump and changelog. Merging that PR tags the release and attaches the plugin zip to the GitHub Release. Changes under a plugin's `examples/` directory don't count toward its release.
+After a merge to `main`, release-please opens or updates a single release PR covering every plugin with unreleased changes, each with its own version bump and changelog. Merging that PR tags each release and attaches each plugin zip to its GitHub Release. Changes under a plugin's `examples/` directory don't count toward its release.
 
 ### Discussions
 
