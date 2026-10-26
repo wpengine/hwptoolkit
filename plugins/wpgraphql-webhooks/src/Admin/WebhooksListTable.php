@@ -9,6 +9,10 @@ namespace WPGraphQL\Webhooks\Admin;
 
 use WPGraphQL\Webhooks\Repository\WebhookRepository;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Include the WP_List_Table class if not already loaded
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
@@ -35,8 +39,8 @@ class WebhooksListTable extends \WP_List_Table {
 		$this->repository = $repository;
 		
 		parent::__construct( [
-			'singular' => __( 'Webhook', 'graphql-webhooks' ),
-			'plural'   => __( 'Webhooks', 'graphql-webhooks' ),
+			'singular' => __( 'Webhook', 'wpgraphql-webhooks' ),
+			'plural'   => __( 'Webhooks', 'wpgraphql-webhooks' ),
 			'ajax'     => false,
 		] );
 	}
@@ -49,11 +53,11 @@ class WebhooksListTable extends \WP_List_Table {
 	public function get_columns() {
 		return [
 			'cb'      => '<input type="checkbox" />',
-			'name'    => __( 'Name', 'graphql-webhooks' ),
-			'event'   => __( 'Event', 'graphql-webhooks' ),
-			'method'  => __( 'Method', 'graphql-webhooks' ),
-			'url'     => __( 'URL', 'graphql-webhooks' ),
-			'headers' => __( 'Headers', 'graphql-webhooks' ),
+			'name'    => __( 'Name', 'wpgraphql-webhooks' ),
+			'event'   => __( 'Event', 'wpgraphql-webhooks' ),
+			'method'  => __( 'Method', 'wpgraphql-webhooks' ),
+			'url'     => __( 'URL', 'wpgraphql-webhooks' ),
+			'headers' => __( 'Headers', 'wpgraphql-webhooks' ),
 		];
 	}
 
@@ -77,7 +81,7 @@ class WebhooksListTable extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		return [
-			'delete' => __( 'Delete', 'graphql-webhooks' ),
+			'delete' => __( 'Delete', 'wpgraphql-webhooks' ),
 		];
 	}
 
@@ -93,12 +97,12 @@ class WebhooksListTable extends \WP_List_Table {
 
 		// Verify nonce
 		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'bulk-' . $this->_args['plural'] ) ) {
-			wp_die( esc_html__( 'Security check failed.', 'graphql-webhooks' ) );
+			wp_die( esc_html__( 'Security check failed.', 'wpgraphql-webhooks' ) );
 		}
 
 		// Check permissions
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'graphql-webhooks' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wpgraphql-webhooks' ) );
 		}
 
 		// Get selected webhooks
@@ -194,7 +198,7 @@ class WebhooksListTable extends \WP_List_Table {
 				return '<span class="webhook-method">' . esc_html( $item->method ) . '</span>';
 			case 'headers':
 				$count = is_array( $item->headers ) ? count( $item->headers ) : 0;
-				return $count > 0 ? sprintf( __( '%d headers', 'graphql-webhooks' ), $count ) : '—';
+				return $count > 0 ? sprintf( /* translators: %d: number of headers */ _n( '%d header', '%d headers', $count, 'wpgraphql-webhooks' ), $count ) : '—';
 			default:
 				return '';
 		}
@@ -236,9 +240,9 @@ class WebhooksListTable extends \WP_List_Table {
 		);
 		
 		$actions = [
-			'edit' => sprintf( '<a href="%s">%s</a>', esc_url( $edit_url ), __( 'Edit', 'graphql-webhooks' ) ),
-			'test' => sprintf( '<a href="#" class="test-webhook" data-webhook-id="%d">%s</a>', $item->id, __( 'Test', 'graphql-webhooks' ) ),
-			'delete' => sprintf( '<a href="%s" class="submitdelete">%s</a>', esc_url( $delete_url ), __( 'Delete', 'graphql-webhooks' ) ),
+			'edit' => sprintf( '<a href="%s">%s</a>', esc_url( $edit_url ), __( 'Edit', 'wpgraphql-webhooks' ) ),
+			'test' => sprintf( '<a href="#" class="test-webhook" data-webhook-id="%d">%s</a>', $item->id, __( 'Test', 'wpgraphql-webhooks' ) ),
+			'delete' => sprintf( '<a href="%s" class="submitdelete">%s</a>', esc_url( $delete_url ), __( 'Delete', 'wpgraphql-webhooks' ) ),
 		];
 		
 		return sprintf(
@@ -253,7 +257,7 @@ class WebhooksListTable extends \WP_List_Table {
 	 * Display when no items
 	 */
 	public function no_items() {
-		esc_html_e( 'No webhooks found.', 'graphql-webhooks' );
+		esc_html_e( 'No webhooks found.', 'wpgraphql-webhooks' );
 	}
 
 	/**

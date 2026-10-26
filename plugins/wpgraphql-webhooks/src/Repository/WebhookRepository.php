@@ -145,7 +145,7 @@ class WebhookRepository implements WebhookRepositoryInterface {
 	public function update( int $id, Webhook $webhook ) {
 		$post = get_post( $id );
 		if ( ! $post || $post->post_type !== 'graphql_webhook' ) {
-			return new WP_Error( 'invalid_webhook', __( 'Webhook not found.', 'graphql-webhooks' ) );
+			return new WP_Error( 'invalid_webhook', __( 'Webhook not found.', 'wpgraphql-webhooks' ) );
 		}
 
 		// Validate using the Webhook entity
