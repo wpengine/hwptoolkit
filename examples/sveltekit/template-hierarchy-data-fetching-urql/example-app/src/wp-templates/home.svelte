@@ -1,6 +1,6 @@
 <script lang="ts" module>
-  import { gql } from "$lib/client";
-  import type { TemplateQueries } from "$lib/queryHandler";
+  import { gql } from "#lib/client.ts";
+  import type { TemplateQueries } from "#lib/queryHandler.ts";
 
   export const queries: TemplateQueries = [
     {

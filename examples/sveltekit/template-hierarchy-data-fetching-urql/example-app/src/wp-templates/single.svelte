@@ -1,5 +1,5 @@
 <script module lang="ts">
-  import { gql } from "$lib/client";
+  import { gql } from "#lib/client.ts";
   import type { LoadEvent } from "@sveltejs/kit";
 
   export const queries = [

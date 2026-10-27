@@ -1,6 +1,6 @@
 <script module lang="ts">
-  import { gql } from "$lib/client";
-  import type { TemplateQuery } from "$lib/queryHandler";
+  import { gql } from "#lib/client.ts";
+  import type { TemplateQuery } from "#lib/queryHandler.ts";
   import NavStructure from "./NavStructure.svelte";
 
   export const query: TemplateQuery = {
@@ -27,7 +27,7 @@
 </script>
 
 <script>
-  import { flatListToHierarchical } from "$lib/wpgraphql";
+  import { flatListToHierarchical } from "#lib/wpgraphql.js";
 
   import { page } from "$app/state";
 
