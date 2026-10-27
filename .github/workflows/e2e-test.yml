@@ -118,7 +118,3 @@ jobs:
       - name: Run Playwright tests
         run: pnpm test:e2e
         working-directory: plugins/${{ env.PLUGIN }}
-
-      - name: Stop wp-env
-        run: pnpm wp-env stop
-        working-directory: plugins/${{ env.PLUGIN }}
