@@ -9,7 +9,7 @@ use HWP\Previews\Preview\Post\Post_Settings_Service;
 
 abstract class Abstract_Settings_Field implements Settings_Field_Interface {
 	/**
-	 * The settings field ID.
+	 * The settings field ID (CI timing test).
 	 *
 	 * @var string
 	 */
