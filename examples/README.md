@@ -39,6 +39,29 @@ This directory contains examples demonstrating how to use various features of th
 | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [nuxt-headlesswp-gravity-forms](nuxt/nuxt-headlesswp-gravity-forms) | Shows you how to wire up a full headless WordPress backend—complete with Gravity Forms, WPGraphQL, and a pre-built "Questionnaire" form—alongside a Nuxt 3 front end. |
 
+## Running an example
+
+Every example has the same npm scripts. Run them from the example's directory (the one containing `.wp-env.json`). You'll need [Docker](https://www.docker.com/) for the local WordPress.
+
+```bash
+npm run setup   # once: install dependencies, start WordPress, import the database
+npm run dev     # start WordPress and the front end
+```
+
+| Script | What it does |
+| --- | --- |
+| `setup` | Installs dependencies, unzips any media into `wp-env/uploads`, starts WordPress and imports `wp-env/db/database.sql`. Doesn't start the front end. |
+| `dev` | Starts WordPress and the front end. |
+| `app:dev` | Starts only the front end. Use it to restart the app while WordPress keeps running. |
+| `stop` | Stops WordPress. Stopping the front end doesn't stop WordPress. |
+| `clean` | Removes the WordPress environment. Run `setup` again to start fresh. |
+| `wp:start` | Starts only WordPress. |
+| `db:import` / `db:export` | Imports or exports `wp-env/db/database.sql`. |
+| `db:query` | Runs a SQL query against the WordPress database, e.g. `npm run db:query -- "SELECT 1"`. |
+| `assets:unzip` / `assets:zip` | Unzips or re-zips `wp-env/uploads.zip`, for examples that include media. |
+
+Some examples add their own scripts on top; their READMEs list them. For any other wp-env command, use `npx wp-env`.
+
 ## Contributing
 
 If you feel like something is missing or you want to add an example for another framework, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.
@@ -85,25 +108,23 @@ You can copy on of existing examples to use it as a _skeleton_ of your new examp
 
 3. **Scripts**
 
-   Scripts in your package.json help automate common tasks. You can use our standard scripts to achieve the recommended workflow..
+   Scripts in your package.json help automate common tasks. Use the standard scripts so every example works the same way:
 
    ```json
    "scripts": {
-       "example:build": "npm run example:dev:install && npm run wp:start && npm run wp:db:import && npm run example:start",
-       "example:dev:install": "cd example-app && npm install && cd ..",
-       "example:start": "npm run wp:start && npm run example:dev",
-       "example:stop": "npm run wp:stop",
-       "example:prune": "wp-env destroy && npm run example:build && npm run example:start",
-       "example:dev": "npm --prefix ./example-app run dev",
-       "wp:start": "npm install && wp-env start",
-       "wp:stop": "wp-env stop",
-       "wp:destroy": "wp-env destroy --config ./wp-env/wp-env.json",
-       "wp:db:query": "wp-env run cli -- wp db query",
-       "wp:db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
-       "wp:db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
-       "wp-env": "wp-env"
+       "setup": "npm install && npm --prefix ./example-app install && npm run wp:start && npm run db:import",
+       "dev": "npm run wp:start && npm run app:dev",
+       "app:dev": "npm --prefix ./example-app run dev",
+       "stop": "wp-env stop",
+       "clean": "wp-env destroy",
+       "wp:start": "wp-env start",
+       "db:import": "wp-env run cli -- wp db import /var/www/html/db/database.sql",
+       "db:export": "wp-env run cli -- wp db export /var/www/html/db/database.sql",
+       "db:query": "wp-env run cli -- wp db query"
    },
    ```
+
+   If the example includes media in `wp-env/uploads.zip`, add `assets:unzip` and `assets:zip`, and run `npm run assets:unzip` in `setup` before `wp:start`. See [Running an example](#running-an-example) for what each script does.
 
 4. **Documentation (README.md)**
 

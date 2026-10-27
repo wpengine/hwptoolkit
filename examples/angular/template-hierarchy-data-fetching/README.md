@@ -12,23 +12,23 @@ In this example we show how to implement the **WordPress Template Hierarchy in A
 > [!IMPORTANT]
 > **Docker Desktop** needs to be installed to run WordPress locally.
 
-1. Run `npm run example:setup` to install dependencies and configure the local WP server.
-2. **Configure CORS:** Create a file named **`.env`** inside the **`/backend`** directory and add the following content to set the allowed frontend URL:
+1. Run `npm run setup` to install dependencies and configure the local WP server.
+2. **Configure CORS:** `setup` copies **`/backend/.env.example`** to **`/backend/.env`**, which sets the allowed frontend URL. Change it if your Angular app runs elsewhere:
     ```
     FRONTEND_URL=http://localhost:4200
     ```
     *(For more details on the backend service, please refer to the **`/backend/README.md`** file.)*
-3. Run `npm run backend:start` starts the backend server for template fetching at **http://localhost:3000/api/templates**
-4. Run `npm run example:start` to start the WordPress server and Angular development server.
+3. Run `npm run backend:dev` to start the backend server for template fetching at **http://localhost:3000/api/templates**
+4. Run `npm run dev` to start the WordPress server and Angular development server.
 
 > [!NOTE]
-> When you kill the long running process this will not shutdown the local WP instance, only Angular. You must run `npm run example:stop` to kill the local WP server.
+> When you kill the long running process this will not shutdown the local WP instance, only Angular. Run `npm run app:dev` to restart only the front end, or `npm run stop` to stop the local WP server.
 
 ## Trouble Shooting
 
 1. I get "Page Not Found. Sorry, the page you are looking for does not exist. Please check the URL." when opening the Angular app and trying to navigate through it.
-- Run `npm run backend:start` and verify that **http://localhost:3000/api/templates** returns correct data.
-- **Verify that you have created the `/backend/.env` file with the correct `FRONTEND_URL`** to resolve CORS issues.
+- Run `npm run backend:dev` and verify that **http://localhost:3000/api/templates** returns correct data.
+- **Verify that `/backend/.env` exists and has the correct `FRONTEND_URL`** to resolve CORS issues.
 - Check for any errors in the console.
 2. In some cases, you might have to install **`@angular/cli`** globally. In `/example-app/` run `npm install -g @angular/cli@latest`
-3. To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.
+3. To reset the WP server, run `npm run clean` and confirm "Yes" at the prompt, then run `npm run setup` again.
