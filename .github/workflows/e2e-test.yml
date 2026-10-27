@@ -104,8 +104,10 @@ jobs:
           composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Install playwright browsers
-        # Use the locked @playwright/test, and only Chromium since that's all the config runs
-        run: pnpm exec playwright install --with-deps chromium
+        # Use the locked @playwright/test, and only Chromium since that's all the config runs.
+        # Skip --with-deps because the runner image has Chromium's libraries and its apt
+        # step has hung for up to 40 minutes.
+        run: pnpm exec playwright install chromium
         working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Start wp-env
