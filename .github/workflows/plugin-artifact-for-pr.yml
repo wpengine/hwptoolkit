@@ -18,6 +18,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # get_plugin_slug.sh diffs against history, so fetch all of it without file contents.
+          fetch-depth: 0
+          # Skip the example sites' uploads.zip files (590 MB), which plugin jobs don't use.
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !**/wp-env/uploads.zip
 
       - name: Get changed plugin directories
         id: plugin
