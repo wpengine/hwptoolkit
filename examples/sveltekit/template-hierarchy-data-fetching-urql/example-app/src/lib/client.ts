@@ -8,7 +8,7 @@ import {
 } from "@urql/core";
 // import { persistedExchange } from "@urql/exchange-persisted";
 import merge from "deepmerge";
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 export { gql } from "@urql/core";
 
 const GRAPHQL_URL = "index.php?graphql";

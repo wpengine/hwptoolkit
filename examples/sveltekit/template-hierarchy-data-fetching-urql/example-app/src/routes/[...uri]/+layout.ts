@@ -1,7 +1,7 @@
 import type { LayoutLoad } from "./$types";
-import { fetchQueries } from "$lib/queryHandler";
+import { fetchQueries } from "#lib/queryHandler.ts";
 
-import { query as NavQuery } from "$components/Nav.svelte";
+import { query as NavQuery } from "#components/Nav.svelte";
 
 export const load: LayoutLoad = async (event) => {
   const queryResults = await fetchQueries({ queries: [NavQuery], event });

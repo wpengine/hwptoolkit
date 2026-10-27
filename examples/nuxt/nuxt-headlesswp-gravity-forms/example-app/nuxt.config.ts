@@ -14,6 +14,6 @@ export default defineNuxtConfig({
     // Individual blog posts - cached until next deployment
     "/wpblog/**": { isr: true },
     // Pre-render the form page at build time
-    "/headlesswp-gform": { prerender: true },
+    "/questionnaire": { prerender: true },
   },
 });
