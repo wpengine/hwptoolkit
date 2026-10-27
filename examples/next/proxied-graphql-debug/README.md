@@ -91,6 +91,7 @@ This will:
 - Start [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
 - Import the database from `wp-env/db/database.sql`
 - Install Next.js dependencies for `example-app`
+- Run the Next.js dev server
 
 | Frontend | Admin                        |
 |----------|------------------------------|

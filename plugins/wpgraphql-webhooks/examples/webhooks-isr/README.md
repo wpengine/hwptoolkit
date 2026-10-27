@@ -156,11 +156,6 @@ echo "WEBHOOK_REVALIDATE_SECRET=your_webhook_secret_token" >> plugins/wpgraphql-
 
 - `cd plugins/wpgraphql-webhooks/examples/webhooks-isr`
 - Run `npm run setup` to set up the example, then `npm run dev` to start it.
-- `setup` does the following:
-    - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
-    - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
-    - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
-    - Install Next.js dependencies for `example-app`
 
 Congratulations, WordPress should now be fully set up.
 

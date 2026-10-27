@@ -81,10 +81,6 @@ cd hwptoolkit && npm install
 
 - `cd examples/next/wp-theme-rendered-blocks`
 - Run `npm run setup` to set up the example, then `npm run dev` to start it.
-- `setup` does the following:
-  - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
-  - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
-  - Install Next.js dependencies for `example-app`
 
 Congratulations, WordPress should now be fully set up.
 
