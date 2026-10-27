@@ -2,7 +2,7 @@
   "phpVersion": "7.4",
   "plugins": [
     "https://downloads.wordpress.org/plugin/wp-graphql.zip",
-    "https://github.com/AdvancedCustomFields/acf/releases/latest/download/advanced-custom-fields.zip",
+    "https://github.com/AdvancedCustomFields/acf/releases/download/6.8.10/advanced-custom-fields-6.8.10.zip",
     "https://github.com/wp-graphql/wpgraphql-acf/releases/latest/download/wpgraphql-acf.zip"
   ],
   "config": {
