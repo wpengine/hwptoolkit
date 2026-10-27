@@ -83,6 +83,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Skip the example sites' uploads.zip files (590 MB), which plugin jobs don't use.
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !**/wp-env/uploads.zip
 
       - name: PHP Code Quality for ${{ matrix.plugin }}
         uses: ./.github/actions/code-quality
