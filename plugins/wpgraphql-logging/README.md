@@ -37,9 +37,7 @@ WPGraphQL Logging plugin provides observability and visibility into the GraphQL 
 
 ### Option 1: Plugin Zip
 
-You can get the latest release here - <https://github.com/wpengine/hwptoolkit/releases/latest/download/wpgraphql-logging.zip>
-
-You can also download it from our release page - <https://github.com/wpengine/hwptoolkit/releases>
+Download `wpgraphql-logging.zip` from the newest release on our [WPGraphQL Logging releases page](https://github.com/wpengine/hwptoolkit/releases?q=wpgraphql-logging-wordpress-plugin&expanded=true).
 
 ### Option 2: Composer
 
