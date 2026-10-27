@@ -36,6 +36,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history without file contents, for get_plugin_slug.sh's git diff.
+          fetch-depth: 0
+          # Skip the example sites' wp-env/uploads.zip files (~590 MB). Plugin jobs don't use them.
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !**/wp-env/uploads.zip
 
       - name: Get changed plugin directory
         id: plugin
@@ -82,6 +91,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Skip the example sites' wp-env/uploads.zip files (~590 MB). Plugin jobs don't use them.
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !**/wp-env/uploads.zip
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -104,8 +120,10 @@ jobs:
           composer-options: '--no-progress --optimize-autoloader --no-dev'
 
       - name: Install playwright browsers
-        # Use the locked @playwright/test, and only Chromium since that's all the config runs
-        run: pnpm exec playwright install --with-deps chromium
+        # Use the locked @playwright/test, and only Chromium since that's all the config runs.
+        # No --with-deps: the runner image already has Chromium's libraries, and the apt
+        # step it adds has stalled for 10-40 minutes when the Ubuntu mirror is slow.
+        run: pnpm exec playwright install chromium
         working-directory: plugins/${{ env.PLUGIN }}
 
       - name: Start wp-env
@@ -115,8 +133,4 @@ jobs:
 
       - name: Run Playwright tests
         run: pnpm test:e2e
-        working-directory: plugins/${{ env.PLUGIN }}
-
-      - name: Stop wp-env
-        run: pnpm wp-env stop
         working-directory: plugins/${{ env.PLUGIN }}

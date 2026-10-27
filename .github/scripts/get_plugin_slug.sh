@@ -5,13 +5,15 @@ set -e
 BASE_SHA="$1"
 HEAD_SHA="$2"
 
-git fetch --prune --unshallow 2>/dev/null || git fetch --prune
+# Expects a checkout with fetch-depth: 0 and filter: blob:none, so the history is
+# already here without file contents. --no-renames keeps git diff from fetching
+# blobs for rename detection, and lists both the old and new path of a move.
 
 # Get changed files in plugins subdirectories
 if [ "$BASE_SHA" = "main" ]; then
-  CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/[^/]\+/' || true)
+  CHANGED_FILES=$(git diff --no-renames --name-only HEAD~1 HEAD | grep '^plugins/[^/]\+/' || true)
 else
-  CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '^plugins/[^/]\+/' || true)
+  CHANGED_FILES=$(git diff --no-renames --name-only "$BASE_SHA" "$HEAD_SHA" | grep '^plugins/[^/]\+/' || true)
 fi
 
 if [ -z "$CHANGED_FILES" ]; then
