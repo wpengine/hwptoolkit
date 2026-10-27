@@ -5,13 +5,14 @@ set -e
 BASE_SHA="$1"
 HEAD_SHA="$2"
 
-git fetch --prune --unshallow 2>/dev/null || git fetch --prune
+# The checkout's blobless history covers this diff, and --no-renames stops git from
+# fetching blobs to detect renames.
 
 # Get changed files in plugins subdirectories
 if [ "$BASE_SHA" = "main" ]; then
-  CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^plugins/[^/]\+/' || true)
+  CHANGED_FILES=$(git diff --no-renames --name-only HEAD~1 HEAD | grep '^plugins/[^/]\+/' || true)
 else
-  CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '^plugins/[^/]\+/' || true)
+  CHANGED_FILES=$(git diff --no-renames --name-only "$BASE_SHA" "$HEAD_SHA" | grep '^plugins/[^/]\+/' || true)
 fi
 
 if [ -z "$CHANGED_FILES" ]; then
