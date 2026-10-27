@@ -62,6 +62,8 @@ npm run dev     # start WordPress and the front end
 
 Some examples add their own scripts on top; their READMEs list them. For any other wp-env command, use `npx wp-env`.
 
+If port 8888 is already in use, for example by another wp-env site, set `WP_ENV_PORT` for every command, e.g. `WP_ENV_PORT=8977 npm run setup`, and point the front end's WordPress URL at the same port.
+
 ## Contributing
 
 If you feel like something is missing or you want to add an example for another framework, we encourage you to contribute! Please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details.
@@ -125,6 +127,8 @@ You can copy on of existing examples to use it as a _skeleton_ of your new examp
    ```
 
    If the example includes media in `wp-env/uploads.zip`, add `assets:unzip` and `assets:zip`, and run `npm run assets:unzip` in `setup` before `wp:start`. See [Running an example](#running-an-example) for what each script does.
+
+   Run `pnpm check:examples` from the repository root to check that your example follows these scripts. CI runs the same check on pull requests.
 
 4. **Documentation (README.md)**
 
