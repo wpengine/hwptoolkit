@@ -1,6 +1,6 @@
 <script lang="ts">
-  import TemplateHierarchyInfo from "$components/TemplateHierarchyInfo.svelte";
-  import Nav from "$components/Nav.svelte";
+  import TemplateHierarchyInfo from "#components/TemplateHierarchyInfo.svelte";
+  import Nav from "#components/Nav.svelte";
   import type { LayoutProps } from "./$types";
 
   const { children }: LayoutProps = $props();

@@ -47,7 +47,7 @@ wp-env/
 
 ### Prerequisites
 
-- Node.js (v18+ recommended)
+- Node.js 22.22+ or 24.15+ (required by Nuxt 4)
 - npm
 - Docker (so that @wordpress/env can spin up the WP container)
 

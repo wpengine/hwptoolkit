@@ -1,5 +1,5 @@
 import type { PageServerLoad } from "./$types";
-import { uriToTemplate, type TemplateData } from "$lib/templateHierarchy";
+import { uriToTemplate, type TemplateData } from "#lib/templateHierarchy.ts";
 
 export const load: PageServerLoad = async (event) => {
   const {

@@ -4,27 +4,14 @@ Headless WordPress Toolkit
 
 > A modern toolkit for building headless WordPress applications. Provides plugins, packages, examples, and best practices for decoupling WordPress into a powerful headless CMS.
 
-## Plugins
+## What's inside
 
-| Plugin | Description | Status |
-|---|---|---|
-| [HWP Previews](./plugins/hwp-previews) | Configure headless previews per post type from one settings screen. | Stable |
-| [WPGraphQL Logging](./plugins/wpgraphql-logging) | Log the WPGraphQL request lifecycle to find and fix bottlenecks. | Stable |
-| [HWP Documents](./plugins/hwp-documents) | Store your app's JSON documents in WordPress over REST, without silently losing writes. | Stable |
-| [WPGraphQL Webhooks](./plugins/wpgraphql-webhooks) | Register webhooks that fire on WordPress events, such as revalidating a front end. | Pre-release |
-| [WPGraphQL Debug Extensions](./plugins/wpgraphql-debug-extensions) | Analyse WPGraphQL queries for performance issues such as deep nesting and over-fetching. | Pre-release |
-
-Download plugin zips from [GitHub Releases](https://github.com/wpengine/hwptoolkit/releases), or [install them with Composer](./docs/how-to/install-toolkit-plugins/index.md).
-
-## Packages
-
-| Package | Description | Status |
-|---|---|---|
-| [@wpengine/hwp-toolbar](./packages/toolbar) | Framework-agnostic toolbar for headless WordPress front ends. | Experimental |
+- [`plugins`](./plugins): WordPress plugins for headless sites. Each plugin's README covers what it does and its status. Download zips from [GitHub Releases](https://github.com/wpengine/hwptoolkit/releases), or [install them with Composer](./docs/how-to/install-toolkit-plugins/index.md).
+- [`packages`](./packages): JavaScript packages for headless front ends.
 
 ## Examples
 
-[`examples`](./examples) has runnable headless WordPress projects for Next.js, Nuxt, SvelteKit, Astro, Angular, and vanilla JavaScript, each with its own local WordPress environment. Plugin-specific examples live in each plugin's `examples` directory.
+[`examples`](./examples) has runnable headless WordPress projects for a range of front-end frameworks, each with its own local WordPress environment. Plugin-specific examples live in each plugin's `examples` directory.
 
 ## Documentation
 
