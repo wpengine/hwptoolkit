@@ -2,21 +2,37 @@
 
 Headless WordPress Toolkit
 
-> A modern toolkit for building headless WordPress applications. Provides CLI tools, plugins, and best practices for decoupling WordPress into a powerful headless CMS.
+> A modern toolkit for building headless WordPress applications. Provides plugins, packages, examples, and best practices for decoupling WordPress into a powerful headless CMS.
 
-## Project Organization
+## Plugins
 
-- [`plugins`](./plugins): PHP based WordPress Plugins
-- [`packages`](./packages): Dependency packages to be published on NPM
-- [`docs`](./docs): Documentation for the Toolkit
-- [`examples`](./examples): Example code for HWP
+| Plugin | Description | Status |
+|---|---|---|
+| [HWP Previews](./plugins/hwp-previews) | Configure headless previews per post type from one settings screen. | Stable |
+| [WPGraphQL Logging](./plugins/wpgraphql-logging) | Log the WPGraphQL request lifecycle to find and fix bottlenecks. | Stable |
+| [HWP Documents](./plugins/hwp-documents) | Store your app's JSON documents in WordPress over REST, without silently losing writes. | Stable |
+| [WPGraphQL Webhooks](./plugins/wpgraphql-webhooks) | Register webhooks that fire on WordPress events, such as revalidating a front end. | Pre-release |
+| [WPGraphQL Debug Extensions](./plugins/wpgraphql-debug-extensions) | Analyse WPGraphQL queries for performance issues such as deep nesting and over-fetching. | Pre-release |
 
+Download plugin zips from [GitHub Releases](https://github.com/wpengine/hwptoolkit/releases), or [install them with Composer](./docs/how-to/install-toolkit-plugins/index.md).
+
+## Packages
+
+| Package | Description | Status |
+|---|---|---|
+| [@wpengine/hwp-toolbar](./packages/toolbar) | Framework-agnostic toolbar for headless WordPress front ends. | Experimental |
+
+## Examples
+
+[`examples`](./examples) has runnable headless WordPress projects for Next.js, Nuxt, SvelteKit, Astro, Angular, and vanilla JavaScript, each with its own local WordPress environment. Plugin-specific examples live in each plugin's `examples` directory.
+
+## Documentation
+
+[`docs`](./docs) has tutorials, how-to guides, and explanations for headless WordPress and for each plugin.
 
 ## Community
 
 To chat with other headless WordPress users and the headless community as a whole, you can join the [WP Engine Developers Discord](https://discord.gg/J2khkF9XYK).
-
-> **Note**: We also have a fortnightly Headless WordPress Community Meeting [here](https://discord.gg/fdWjcTt8?event=1351712352155992075).
 
 Additionally, if you have questions or ideas, please share them on [GitHub Discussions](https://github.com/wpengine/hwptoolkit/discussions).
 
