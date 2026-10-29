@@ -47,7 +47,8 @@ echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/proxied-g
 
 To start WordPress and run your proxy/debugger setup:
 ```
-npm run example:build
+npm run setup
+npm run dev
 ```
 
 ## How It Works
@@ -80,8 +81,9 @@ npm install
 ### Build and Start Application
 
 ```
-cd examples/next/graphql-proxy-debug
-npm run example:setup
+cd examples/next/proxied-graphql-debug
+npm run setup
+npm run dev
 ```
 
 This will:
@@ -99,22 +101,9 @@ This will:
 
 ## Command Reference
 
-| Command                | Description                                                                 |
-|------------------------|-----------------------------------------------------------------------------|
-| `example:setup`        | Prepares the environment, starts WordPress, imports the database, and starts the application. |
-| `example:dev`          | Runs the Next.js development server.                                       |
-| `example:dev:install`  | Installs required Next.js packages.                                         |
-| `example:start`        | Starts WordPress and the Next.js dev server.                                |
-| `example:stop`         | Stops the WordPress environment.                                            |
-| `example:prune`        | Rebuilds and restarts the environment by destroying and recreating it.      |
-| `wp:start`             | Starts the WordPress environment.                                           |
-| `wp:stop`              | Stops the WordPress environment.                                            |
-| `wp:destroy`           | Removes the WordPress environment.                                          |
-| `wp:db:query`          | Executes a database query in WordPress.                                     |
-| `wp:db:export`         | Exports the WordPress database to `wp-env/db/database.sql`.                 |
-| `wp:db:import`         | Imports the WordPress database from `wp-env/db/database.sql`.               |
+This example uses the [standard example scripts](../../README.md#running-an-example): run `npm run setup` once, then `npm run dev`. Use `npm run app:dev` to restart only the front end while WordPress keeps running, `npm run stop` to stop WordPress, and `npm run clean` to remove it.
 
->**Note:** You can run `npm run wp-env` and use other [wp-env](https://www.npmjs.com/package/@wordpress/env) commands as needed.
+> **Note** You can run `npx wp-env` for any other wp-env command. See <https://www.npmjs.com/package/@wordpress/env> for details.
 
 ## Database Access (Optional)
 

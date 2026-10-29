@@ -58,12 +58,14 @@ This example demonstrates a complete headless WooCommerce solution with Next.js,
    cd examples/next/woocommerce
    ```
 
-2. Build and start everything:
+2. Set up and start everything:
    ```bash
-   npm run example:build
+   npm run setup
+   npm run dev
    ```
 
-This command will:
+These commands will:
+- Unzip `wp-env/uploads.zip` into `wp-env/uploads`
 - Start [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
 - Import the database from [wp-env/db/database.sql](wp-env/db/database.sql)
 - Install Next.js dependencies
@@ -79,22 +81,9 @@ This command will:
 
 ### Command Reference
 
-| Command               | Description                                                                                                             |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `example:build`       | Prepares the environment by starting WordPress, importing the database, and starting the application. |
-| `example:dev`         | Runs the Next.js development server.                                                                                    |
-| `example:dev:install` | Installs the required Next.js packages.                                                                                 |
-| `example:start`       | Starts WordPress and the Next.js development server.                                                                    |
-| `example:stop`        | Stops the WordPress environment.                                                                                        |
-| `example:prune`       | Rebuilds and restarts the application by destroying and recreating the WordPress environment.                           |
-| `wp:start`            | Starts the WordPress environment.                                                                                       |
-| `wp:stop`             | Stops the WordPress environment.                                                                                        |
-| `wp:destroy`          | Completely removes the WordPress environment.                                                                           |
-| `wp:db:query`         | Executes a database query within the WordPress environment.                                                             |
-| `wp:db:export`        | Exports the WordPress database to `wp-env/db/database.sql`.                                                             |
-| `wp:db:import`        | Imports the WordPress database from `wp-env/db/database.sql`.                                                           |
+This example uses the [standard example scripts](../../README.md#running-an-example): run `npm run setup` once, then `npm run dev`. Use `npm run app:dev` to restart only the front end while WordPress keeps running, `npm run stop` to stop WordPress, and `npm run clean` to remove it.
 
-> **Tip:** Run `npm run wp-env` for additional wp-env commands. See the [official documentation](https://www.npmjs.com/package/@wordpress/env) for more details.
+> **Note** You can run `npx wp-env` for any other wp-env command. See <https://www.npmjs.com/package/@wordpress/env> for details.
 
 ### Database Access
 

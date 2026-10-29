@@ -12,12 +12,12 @@ In this example we show how to implement the WP Template Hierarchy in Next.js fo
 > [!IMPORTANT]
 > Docker Desktop needs to be installed to run WordPress locally.
 
-1. Run `npm run example:setup` to install dependencies and configure the local WP server.
-2. Run `npm run example:start` to start the WP server and Astro development server.
+1. Run `npm run setup` to install dependencies and configure the local WP server.
+2. Run `npm run dev` to start the WP server and Next.js development server.
 
 > [!NOTE]
-> When you kill the long running process this will not shutdown the local WP instance, only Next.js. You must run `npm run example:stop` to kill the local WP server.
+> When you kill the long running process this will not shutdown the local WP instance, only Next.js. Run `npm run app:dev` to restart only the front end, or `npm run stop` to stop the local WP server.
 
 ## Trouble Shooting
 
-To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.
+To reset the WP server, run `npm run clean` and confirm "Yes" at the prompt, then run `npm run setup` again.

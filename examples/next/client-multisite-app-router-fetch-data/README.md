@@ -113,13 +113,7 @@ echo "NEXT_PUBLIC_MOVIE_WORDPRESS_URL=http://localhost:8888/movies" >> examples/
 ## Build and start the application
 
 - `cd examples/next/client-multisite-app-router-fetch-data`
-- Then run `npm run example:build` will build and start your application.
-- This does the following:
-    - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
-    - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
-    - Sets the mulitisite wp-config.php variables
-    - Install Next.js dependencies for `example-app`
-    - Runs the Next.js dev script
+- Run `npm run setup` to set up the example, then `npm run dev` to start it.
 
 Congratulations, WordPress should now be fully set up.
 
@@ -132,27 +126,15 @@ The login details for the admin is username "admin" and password "password"
 
 > [!IMPORTANT]
 There are issues with setting variables for multisite in .wp-env.json before converting the site to multisite. For this reason we set the variables after the sample database (which is multisite) is imported.
-**You also need to update the port in wp:multisite:set:variables if you ever change 8888**
+**You also need to update the port in the `wp:multisite` script if you ever change 8888**
 
 ## Command Reference
 
-| Command                     | Description                                                                 |
-|-----------------------------|-----------------------------------------------------------------------------|
-| `example:build`             | Prepares the environment by starting WordPress, importing the database, and starting the application. |
-| `example:dev`               | Runs the Next.js development server.                                       |
-| `example:dev:install`       | Installs the required Next.js packages.                                    |
-| `example:start`             | Starts WordPress, sets the multisite variables, and starts the Next.js development server. |
-| `example:stop`              | Stops the WordPress environment.                                           |
-| `example:prune`             | Rebuilds and restarts the application by destroying and recreating the WordPress environment. |
-| `wp:start`                  | Starts the WordPress environment.                                          |
-| `wp:stop`                   | Stops the WordPress environment.                                           |
-| `wp:multisite:set:variables`| Sets the variables for multisite in `wp-config.php`.                       |
-| `wp:destroy`                | Completely removes the WordPress environment.                              |
-| `wp:db:query`               | Executes a database query within the WordPress environment.                |
-| `wp:db:export`              | Exports the WordPress database to `wp-env/db/database.sql`.                |
-| `wp:db:import`              | Imports the WordPress database from `wp-env/db/database.sql`.              |
+This example uses the [standard example scripts](../../README.md#running-an-example): run `npm run setup` once, then `npm run dev`. Use `npm run app:dev` to restart only the front end while WordPress keeps running, `npm run stop` to stop WordPress, and `npm run clean` to remove it.
 
->**Note** You can run `npm run wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
+`wp:start` also runs `npm run wp:multisite`, which sets the multisite constants in `wp-config.php`.
+
+> **Note** You can run `npx wp-env` for any other wp-env command. See <https://www.npmjs.com/package/@wordpress/env> for details.
 
 ### Database access
 

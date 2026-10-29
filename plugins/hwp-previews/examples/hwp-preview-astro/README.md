@@ -11,19 +11,19 @@ In this example, we show how to implement **Headless WordPress Previews in Astro
 
 > [!IMPORTANT] > **Docker Desktop** needs to be installed to run WordPress locally.
 
-1. Run `npm run example:setup` to install dependencies and configure the local WP server.
-2. Run `npm run example:start` to start the WP server and Astro development server.
+1. Run `npm run setup` to install dependencies and configure the local WP server.
+2. Run `npm run dev` to start the WP server and Astro development server.
 
 > [!NOTE]
-> When you kill the long running process this will not shutdown the local WP instance, only Astro. You must run `npm run example:stop` to kill the local WP server.
+> When you kill the long running process this will not shutdown the local WP instance, only Astro. Run `npm run app:dev` to restart only the front end, or `npm run stop` to stop the local WP server.
 
 ## How to Test Previews
 
-1.  After running `npm run example:start`, navigate to the WordPress Admin at **http://localhost:8888/wp-admin**.
+1.  After running `npm run dev`, navigate to the WordPress Admin at **http://localhost:8888/wp-admin**.
 2.  Log in using the credentials specified in the example's `wp-env.json`.
 3.  Edit any draft post.
 4.  In the editor, click the **"Preview"** button. The post should open in the Astro frontend, displaying the draft content.
 
 ## Trouble Shooting
 
-To reset the WP server and re-run setup you can run `npm run example:prune` and confirm "Yes" at any prompts.
+To reset the WP server, run `npm run clean` and confirm "Yes" at the prompt, then run `npm run setup` again.

@@ -10,7 +10,8 @@
     "clean": "bash ./scripts/clean.sh",
     "dev": "bash ./scripts/dev.sh",
     "stop": "pnpm --filter '*' stop",
-    "reformat:md": "remark --rc-path .remarkrc.json --output --"
+    "reformat:md": "remark --rc-path .remarkrc.json --output --",
+    "check:examples": "node ./scripts/check-example-scripts.js"
   },
   "engines": {
     "node": ">=22.19.0",

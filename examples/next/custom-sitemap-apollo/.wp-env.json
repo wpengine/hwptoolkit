@@ -2,8 +2,8 @@
   "phpVersion": "7.4",
   "plugins": [
     "https://downloads.wordpress.org/plugin/wp-graphql.zip",
-    "https://github.com/AdvancedCustomFields/acf/releases/latest/download/advanced-custom-fields.zip",
-    "https://github.com/wp-graphql/wpgraphql-acf/releases/latest/download/wpgraphql-acf.zip",
+    "https://downloads.wordpress.org/plugin/advanced-custom-fields.latest-stable.zip",
+    "https://github.com/wp-graphql/wpgraphql-acf/releases/download/v2.4.1/wpgraphql-acf.zip",
     "./wp-env/plugins/hwpt-wpgraphql-sitemap"
   ],
   "config": {
@@ -20,6 +20,6 @@
     ".htaccess": "./wp-env/setup/.htaccess"
   },
   "lifecycleScripts": {
-    "afterStart": "wp-env run cli -- wp plugin update wpgraphql-acf && wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
+    "afterStart": "wp-env run cli -- wp rewrite structure '/%postname%/' && wp-env run cli -- wp rewrite flush"
   }
 }

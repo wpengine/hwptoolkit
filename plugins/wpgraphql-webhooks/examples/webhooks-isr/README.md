@@ -144,24 +144,18 @@ This integration:
 - Clone the repo `git clone https://github.com/wpengine/hwptoolkit.git`
 - Install packages `cd hwptoolkit && pnpm install`
 - Install composer vendor directory `cd plugins/wpgraphql-webhooks && composer install`
-- Setup a .env file under `examples/next/webhooks-isr/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
+- Setup a .env file under `plugins/wpgraphql-webhooks/examples/webhooks-isr/example-app` with `NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888`
 e.g.
 
 ```bash
-echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > examples/next/webhooks-isr/example-app/.env
-echo "WEBHOOK_REVALIDATE_SECRET=your_webhook_secret_token" > examples/next/webhooks-isr/example-app/.env
+echo "NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > plugins/wpgraphql-webhooks/examples/webhooks-isr/example-app/.env
+echo "WEBHOOK_REVALIDATE_SECRET=your_webhook_secret_token" >> plugins/wpgraphql-webhooks/examples/webhooks-isr/example-app/.env
 ```
 
 ## Build and start the application
 
-- `cd plugins/webhooks-isr/examples/next/webhooks-isr`
-- Then run `pnpm example:build` will build and start your application.
-- This does the following:
-    - Unzips `wp-env/uploads.zip` to `wp-env/uploads` which is mapped to the wp-content/uploads directory for the Docker container.
-    - Starts up [wp-env](https://developer.wordpress.org/block-editor/getting-started/devenv/get-started-with-wp-env/)
-    - Imports the database from [wp-env/db/database.sql](wp-env/db/database.sql)
-    - Install Next.js dependencies for `example-app`
-    - Runs the Next.js dev script
+- `cd plugins/wpgraphql-webhooks/examples/webhooks-isr`
+- Run `npm run setup` to set up the example, then `npm run dev` to start it.
 
 Congratulations, WordPress should now be fully set up.
 
@@ -174,24 +168,9 @@ Congratulations, WordPress should now be fully set up.
 
 ## Command Reference
 
-| Command                | Description                                                                 |
-|------------------------|-----------------------------------------------------------------------------|
-| `example:build`        | Prepares the environment by unzipping images, starting WordPress, importing the database, and starting the application. |
-| `example:dev`          | Runs the Next.js development server.                                       |
-| `example:dev:install`  | Installs the required Next.js packages.                                    |
-| `example:start`        | Starts WordPress and the Next.js development server.                       |
-| `example:stop`         | Stops the WordPress environment.                                           |
-| `example:prune`        | Rebuilds and restarts the application by destroying and recreating the WordPress environment. |
-| `wp:start`             | Starts the WordPress environment.                                          |
-| `wp:stop`              | Stops the WordPress environment.                                           |
-| `wp:destroy`           | Completely removes the WordPress environment.                              |
-| `wp:db:query`          | Executes a database query within the WordPress environment.                |
-| `wp:db:export`         | Exports the WordPress database to `wp-env/db/database.sql`.                |
-| `wp:db:import`         | Imports the WordPress database from `wp-env/db/database.sql`.              |
-| `wp:images:unzip`      | Extracts the WordPress uploads directory.                                  |
-| `wp:images:zip`        | Compresses the WordPress uploads directory.                                |
+This example uses the [standard example scripts](../../../../examples/README.md#running-an-example): run `npm run setup` once, then `npm run dev`. Use `npm run app:dev` to restart only the front end while WordPress keeps running, `npm run stop` to stop WordPress, and `npm run clean` to remove it.
 
->**Note** You can run `pnpm wp-env` and use any other wp-env command. You can also see <https://www.npmjs.com/package/@wordpress/env> for more details on how to use or configure `wp-env`.
+> **Note** You can run `npx wp-env` for any other wp-env command. See <https://www.npmjs.com/package/@wordpress/env> for details.
 
 ### Database access
 

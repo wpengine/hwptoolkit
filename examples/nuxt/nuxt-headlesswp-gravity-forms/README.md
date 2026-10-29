@@ -63,10 +63,11 @@ echo "NUXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > example-app/.env
 
 ### Quick Start
 
-1. Start WP, import DB, then launch Nuxt:
+1. Install dependencies and start WP, then launch Nuxt:
 
    ```bash
-   npm run example:setup
+   npm run setup
+   npm run dev
    ```
 
 2. Or run steps separately:
@@ -76,10 +77,10 @@ echo "NUXT_PUBLIC_WORDPRESS_URL=http://localhost:8888" > example-app/.env
    npm run wp:start
 
    # Import DB
-   npm run wp:db:import
+   npm run db:import
 
    # Start Nuxt dev server
-   npm run dev
+   npm run app:dev
    ```
 
 By the end, you will have:
@@ -88,21 +89,11 @@ By the end, you will have:
   - user: admin / pass: password
 - Nuxt Front End: http://localhost:3000/
 
-## Scripts
+## Command Reference
 
-| Command                   | Description                                                      |
-| ------------------------- | ---------------------------------------------------------------- |
-| `npm run example:setup`   | Start WP env → import DB → launch Nuxt dev server  |
-| `npm run example:start`   | Start WP env, then Nuxt dev server                               |
-| `npm run example:stop`    | Stop the WordPress environment (wp-env stop)                     |
-| `npm run example:prune`   | Destroy & rebuild the WP environment, then restart—all in one go |
-| `npm run wp:start`        | @wordpress/env start (launches PHP/MySQL container with WP)      |
-| `npm run wp:stop`         | @wordpress/env stop                                              |
-| `npm run wp:db:import`    | Import the SQL dump into the running WP container                |
-| `npm run wp:db:export`    | Export the current WP database back to wp-env/db/database.sql    |
-| `npm run dev`             | Start the Nuxt 3 development server on port 3000                 |
+This example uses the [standard example scripts](../../README.md#running-an-example): run `npm run setup` once, then `npm run dev`. Use `npm run app:dev` to restart only the front end while WordPress keeps running, `npm run stop` to stop WordPress, and `npm run clean` to remove it.
 
-> **Tip:** You can also run any arbitrary WP-CLI command inside the container via `npm run wp:cli -- <wp-cli-command>`
+> **Note** You can run `npx wp-env` for any other wp-env command. See <https://www.npmjs.com/package/@wordpress/env> for details.
 
 ## Database Access
 

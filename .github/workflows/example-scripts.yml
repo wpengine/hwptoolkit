@@ -1,0 +1,37 @@
+# Checks that every example follows the standard npm scripts
+# (see examples/README.md "Running an example").
+
+name: Example Scripts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'examples/**'
+      - 'plugins/*/examples/**'
+      - 'scripts/check-example-scripts.js'
+  pull_request:
+    paths:
+      - 'examples/**'
+      - 'plugins/*/examples/**'
+      - 'scripts/check-example-scripts.js'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check example scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Check example scripts
+        run: node scripts/check-example-scripts.js
