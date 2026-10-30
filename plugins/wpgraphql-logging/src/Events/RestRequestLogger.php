@@ -123,14 +123,14 @@ class RestRequestLogger {
 	 * Hooked to the `rest_pre_dispatch` filter. The filtered value is
 	 * returned untouched.
 	 *
-	 * @param mixed                 $result  Response to replace the requested version with.
-	 * @param \WP_REST_Server|mixed $server  Server instance.
-	 * @param \WP_REST_Request      $request Request used to generate the response.
+	 * @param mixed                  $result  Response to replace the requested version with.
+	 * @param \WP_REST_Server|mixed  $server  Server instance.
+	 * @param \WP_REST_Request|mixed $request Request used to generate the response.
 	 *
 	 * @return mixed The unmodified result.
 	 */
-	public function start_timer( mixed $result, mixed $server, WP_REST_Request $request ): mixed {
-		if ( [] === $this->start_time ) {
+	public function start_timer( mixed $result, mixed $server, mixed $request ): mixed {
+		if ( $request instanceof WP_REST_Request && [] === $this->start_time ) {
 			$this->start_time = [ spl_object_id( $request ) => microtime( true ) ];
 		}
 		return $result;
@@ -144,17 +144,22 @@ class RestRequestLogger {
 	 *
 	 * @param bool|mixed              $served  Whether the request has already been served.
 	 * @param \WP_HTTP_Response|mixed $result  Result to send to the client.
-	 * @param \WP_REST_Request        $request Request used to generate the response.
+	 * @param \WP_REST_Request|mixed  $request Request used to generate the response.
 	 *
 	 * @return bool|mixed The unmodified served flag.
 	 */
-	public function log_rest_request( mixed $served, mixed $result, WP_REST_Request $request ): mixed {
+	public function log_rest_request( mixed $served, mixed $result, mixed $request ): mixed {
+		if ( ! $request instanceof WP_REST_Request ) {
+			return $served;
+		}
+
 		try {
 			$duration_ms = $this->stop_timer( $request );
-			$route       = $request->get_route();
-			if ( ! $this->should_log_rest_request( $route ) ) {
+			if ( ! $this->should_log_rest_request( $request ) ) {
 				return $served;
 			}
+
+			$route = $request->get_route();
 
 			$context = $this->get_context( $request, $result, $duration_ms );
 			$level   = Level::Info;
@@ -194,15 +199,22 @@ class RestRequestLogger {
 	/**
 	 * Whether the REST request should be logged.
 	 *
-	 * @param string $route The REST route.
+	 * @param \WP_REST_Request $request The REST request.
 	 */
-	protected function should_log_rest_request( string $route ): bool {
-		// WPGraphQL requests are logged by the GraphQL lifecycle, never here.
-		if ( function_exists( 'is_graphql_request' ) && is_graphql_request() ) {
+	protected function should_log_rest_request( WP_REST_Request $request ): bool {
+		// CORS preflight requests carry no payload and would double the entries for browser clients.
+		if ( 'OPTIONS' === $request->get_method() ) {
 			return false;
 		}
 
-		return $this->is_logging_enabled( $this->config, $route );
+		// HTTP requests to the GraphQL endpoint are logged by the GraphQL lifecycle. This is a
+		// safeguard: WPGraphQL does not serve those through the REST server. is_graphql_request()
+		// is deliberately not used, as it is also true while a REST callback runs graphql().
+		if ( function_exists( 'is_graphql_http_request' ) && is_graphql_http_request() ) {
+			return false;
+		}
+
+		return $this->is_logging_enabled( $this->config, $request->get_route() );
 	}
 
 	/**
@@ -234,8 +246,11 @@ class RestRequestLogger {
 			$context['matched_route'] = $result->get_matched_route();
 		}
 
+		// Error bodies are small (code, message, data) and always useful, so they are logged
+		// regardless of the Log Response setting. Success bodies are only logged when opted in.
 		if ( $result->get_status() >= 400 ) {
 			$context['errors'] = $result->get_data();
+			return $context;
 		}
 
 		if ( $this->should_log_response( $this->config ) ) {

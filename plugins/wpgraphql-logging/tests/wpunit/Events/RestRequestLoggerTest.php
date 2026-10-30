@@ -198,6 +198,30 @@ class RestRequestLoggerTest extends WPTestCase {
 		$this->assertSame( 'rest_no_route', $context['errors']['code'] );
 	}
 
+	public function test_error_body_is_not_duplicated_as_response(): void {
+		$this->create_instance( [ BasicConfigurationTab::LOG_RESPONSE => true ] );
+		$this->serve( 'GET', '/wp/v2/does-not-exist' );
+
+		$context = $this->get_logs()[0]->get_context();
+		$this->assertArrayHasKey( 'errors', $context );
+		$this->assertArrayNotHasKey( 'response', $context );
+	}
+
+	public function test_options_preflight_requests_are_not_logged(): void {
+		$this->create_instance( [] );
+		$this->serve( 'OPTIONS', '/wp/v2/posts' );
+
+		$this->assertCount( 0, $this->get_logs() );
+	}
+
+	public function test_non_rest_request_arguments_are_ignored(): void {
+		$instance = $this->create_instance( [] );
+
+		$this->assertSame( 'served', $instance->log_rest_request( 'served', null, 'not-a-request' ) );
+		$this->assertSame( 'pre', $instance->start_timer( 'pre', null, null ) );
+		$this->assertCount( 0, $this->get_logs() );
+	}
+
 	public function test_logs_response_when_log_response_enabled(): void {
 		$this->create_instance( [ BasicConfigurationTab::LOG_RESPONSE => true ] );
 		$this->serve( 'GET', '/wp/v2/types/post' );
