@@ -71,8 +71,10 @@ class ListTableTest extends WPTestCase {
 	public function test_get_bulk_actions_returns_expected_actions(): void {
 		$actions = $this->list_table->get_bulk_actions();
 
+		$this->assertArrayHasKey(ListTable::BULK_DOWNLOAD_ACTION, $actions);
 		$this->assertArrayHasKey('delete', $actions);
 		$this->assertArrayHasKey('delete_all', $actions);
+		$this->assertEquals('Download Selected', $actions[ListTable::BULK_DOWNLOAD_ACTION]);
 		$this->assertEquals('Delete Selected', $actions['delete']);
 		$this->assertEquals('Delete All', $actions['delete_all']);
 	}
@@ -424,4 +426,61 @@ class ListTableTest extends WPTestCase {
 		$this->assertEquals('', $result);
 	}
 
+	public function test_process_bulk_download_ignores_other_actions(): void {
+		$_REQUEST['action'] = 'delete';
+		$this->log_service->shouldNotReceive('find_entity_by_id');
+
+		$this->list_table->process_bulk_download();
+		$this->assertTrue(true);
+
+		unset($_REQUEST['action']);
+	}
+
+	public function test_process_bulk_download_dies_with_invalid_nonce(): void {
+		$_REQUEST['action']   = ListTable::BULK_DOWNLOAD_ACTION;
+		$_REQUEST['_wpnonce'] = 'invalid';
+		$_REQUEST['log']      = ['1', '2'];
+
+		try {
+			$this->expectException(\WPDieException::class);
+			$this->expectExceptionMessage('Nonce verification failed!');
+			$this->list_table->process_bulk_download();
+		} finally {
+			unset($_REQUEST['action'], $_REQUEST['_wpnonce'], $_REQUEST['log']);
+		}
+	}
+
+	public function test_process_bulk_download_returns_when_nothing_selected(): void {
+		$_REQUEST['action']   = ListTable::BULK_DOWNLOAD_ACTION;
+		$_REQUEST['_wpnonce'] = wp_create_nonce('bulk-logs');
+		$_REQUEST['log']      = ['0', 'abc'];
+		$this->log_service->shouldNotReceive('find_entity_by_id');
+
+		$this->list_table->process_bulk_download();
+		$this->assertTrue(true);
+
+		unset($_REQUEST['action'], $_REQUEST['_wpnonce'], $_REQUEST['log']);
+	}
+
+	public function test_process_bulk_download_passes_selected_ids_to_downloader(): void {
+		$admin_user = $this->factory()->user->create(['role' => 'administrator']);
+		wp_set_current_user($admin_user);
+		set_current_screen('dashboard');
+
+		$_REQUEST['action']   = ListTable::BULK_DOWNLOAD_ACTION;
+		$_REQUEST['_wpnonce'] = wp_create_nonce('bulk-logs');
+		$_REQUEST['log']      = ['11', '12'];
+
+		// Neither ID exists, so the downloader dies before sending headers.
+		$this->log_service->shouldReceive('find_entity_by_id')->with(11)->once()->andReturn(null);
+		$this->log_service->shouldReceive('find_entity_by_id')->with(12)->once()->andReturn(null);
+
+		try {
+			$this->expectException(\WPDieException::class);
+			$this->expectExceptionMessage('Logs not found.');
+			$this->list_table->process_bulk_download();
+		} finally {
+			unset($_REQUEST['action'], $_REQUEST['_wpnonce'], $_REQUEST['log']);
+		}
+	}
 }

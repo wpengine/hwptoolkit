@@ -142,4 +142,133 @@ class DownloadLogServiceTest extends WPTestCase {
 		$this->assertEquals(wp_json_encode($this->fixture['extra']), $content[8]);
 	}
 
+	/**
+	 * Creates a real log entry in the database and returns its ID.
+	 */
+	private function create_log(string $message): int {
+		$entity = $this->log_service->create_log_entity(
+			$this->fixture['channel'],
+			$this->fixture['level'],
+			$this->fixture['level_name'],
+			$message,
+			$this->fixture['context'],
+			$this->fixture['extra']
+		);
+		$this->assertNotNull($entity);
+		return $entity->get_id();
+	}
+
+	/**
+	 * Reads every row back out of a CSV stream.
+	 *
+	 * @param resource $stream
+	 */
+	private function read_csv($stream): array {
+		rewind($stream);
+		$rows = [];
+		while (false !== ($row = fgetcsv($stream, null, ',', '"', '\\'))) {
+			$rows[] = $row;
+		}
+		return $rows;
+	}
+
+	public function test_generate_bulk_csv_requires_admin_capabilities(): void {
+		wp_set_current_user(0);
+
+		$this->expectException(\WPDieException::class);
+		$this->expectExceptionMessage('You do not have sufficient permissions to access this page.');
+
+		$this->service->generate_bulk_csv([1, 2]);
+	}
+
+	public function test_generate_bulk_csv_requires_valid_ids(): void {
+		$this->set_as_admin();
+
+		$this->expectException(\WPDieException::class);
+		$this->expectExceptionMessage('No logs selected.');
+
+		$this->service->generate_bulk_csv([0, 'abc', null]);
+	}
+
+	public function test_generate_bulk_csv_dies_when_no_logs_found(): void {
+		$this->set_as_admin();
+
+		$this->expectException(\WPDieException::class);
+		$this->expectExceptionMessage('Logs not found.');
+
+		$this->service->generate_bulk_csv([9999998, 9999999]);
+	}
+
+	public function test_sanitize_log_ids_removes_invalid_and_duplicate_ids(): void {
+		$this->assertSame([3, 7, 12], $this->service->sanitize_log_ids(['3', 7, 0, 'abc', 3, '12', null]));
+	}
+
+	public function test_sanitize_log_ids_caps_at_bulk_download_limit(): void {
+		$this->assertSame(DownloadLogService::DEFAULT_BULK_DOWNLOAD_LIMIT, $this->service->get_bulk_download_limit());
+
+		$limit_filter = static fn() => 2;
+		add_filter('wpgraphql_logging_bulk_download_limit', $limit_filter);
+
+		$this->assertSame(2, $this->service->get_bulk_download_limit());
+		$this->assertSame([5, 6], $this->service->sanitize_log_ids([5, 6, 7, 8]));
+
+		remove_filter('wpgraphql_logging_bulk_download_limit', $limit_filter);
+	}
+
+	public function test_get_bulk_download_limit_is_at_least_one(): void {
+		$limit_filter = static fn() => 0;
+		add_filter('wpgraphql_logging_bulk_download_limit', $limit_filter);
+
+		$this->assertSame(1, $this->service->get_bulk_download_limit());
+
+		remove_filter('wpgraphql_logging_bulk_download_limit', $limit_filter);
+	}
+
+	public function test_write_csv_writes_one_header_row_and_one_row_per_log(): void {
+		$first_id  = $this->create_log('First bulk log');
+		$second_id = $this->create_log('Second bulk log');
+
+		$logs = [
+			$this->log_service->find_entity_by_id($first_id),
+			$this->log_service->find_entity_by_id($second_id),
+		];
+
+		$stream = fopen('php://temp', 'w+');
+		$count  = $this->service->write_csv($stream, $logs);
+		$rows   = $this->read_csv($stream);
+		fclose($stream);
+
+		$this->assertSame(2, $count);
+		$this->assertCount(3, $rows);
+		$this->assertSame('ID', $rows[0][0]);
+		$this->assertSame((string) $first_id, $rows[1][0]);
+		$this->assertSame('First bulk log', $rows[1][4]);
+		$this->assertSame((string) $second_id, $rows[2][0]);
+		$this->assertSame('Second bulk log', $rows[2][4]);
+	}
+
+	public function test_write_csv_with_no_logs_writes_nothing(): void {
+		$stream = fopen('php://temp', 'w+');
+		$count  = $this->service->write_csv($stream, []);
+		$rows   = $this->read_csv($stream);
+		fclose($stream);
+
+		$this->assertSame(0, $count);
+		$this->assertSame([], $rows);
+	}
+
+	public function test_get_logs_skips_missing_entries(): void {
+		$first_id  = $this->create_log('Kept log one');
+		$second_id = $this->create_log('Kept log two');
+
+		$reflection = new \ReflectionClass($this->service);
+		$method     = $reflection->getMethod('get_logs');
+		$method->setAccessible(true);
+
+		$logs = iterator_to_array($method->invoke($this->service, [$first_id, 9999999, $second_id]), false);
+
+		$this->assertCount(2, $logs);
+		$this->assertSame($first_id, $logs[0]->get_id());
+		$this->assertSame($second_id, $logs[1]->get_id());
+	}
 }

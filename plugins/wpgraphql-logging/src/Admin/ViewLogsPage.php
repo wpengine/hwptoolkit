@@ -210,6 +210,10 @@ class ViewLogsPage {
 			$this->process_log_download();
 		}
 
+		// Runs before rendering because it streams a CSV and exits. Nonce handled in the list table.
+		$list_table = new ListTable( $this->get_log_service() );
+		$list_table->process_bulk_download();
+
 		$this->process_filters_redirect();
 	}
 
