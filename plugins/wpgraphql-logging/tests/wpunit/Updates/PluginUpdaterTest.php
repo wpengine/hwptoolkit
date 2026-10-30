@@ -20,6 +20,12 @@ class PluginUpdaterTest extends WPTestCase {
 
 	private const SLUG = 'wpgraphql-logging';
 
+	private const CACHE_OPTION = 'wpesu-plugin-wpgraphql-logging';
+
+	private const CACHE_EXPIRY_OPTION = 'wpesu-plugin-wpgraphql-logging-expiry';
+
+	private const MANIFEST_URL = 'https://wpe-plugin-updates.wpengine.com/wpgraphql-logging/info.json';
+
 	/**
 	 * URLs requested through the HTTP API during a test.
 	 *
@@ -45,8 +51,8 @@ class PluginUpdaterTest extends WPTestCase {
 		remove_all_filters( 'pre_http_request' );
 		remove_all_filters( 'plugins_api' );
 		remove_all_filters( 'pre_set_site_transient_update_plugins' );
-		delete_option( 'wpesu-plugin-wpgraphql-logging' );
-		delete_option( 'wpesu-plugin-wpgraphql-logging-expiry' );
+		delete_option( self::CACHE_OPTION );
+		delete_option( self::CACHE_EXPIRY_OPTION );
 
 		// Forget updaters registered by earlier tests or by admin_init during bootstrap.
 		$instances = new \ReflectionProperty( PluginUpdater::class, 'instances' );
@@ -118,6 +124,10 @@ class PluginUpdaterTest extends WPTestCase {
 		return $updater;
 	}
 
+	private function info_args( string $slug = self::SLUG ): stdClass {
+		return (object) [ 'slug' => $slug ];
+	}
+
 	private function empty_transient(): stdClass {
 		$transient           = new stdClass();
 		$transient->response = [];
@@ -163,9 +173,9 @@ class PluginUpdaterTest extends WPTestCase {
 	public function test_manifest_url_and_cache_option_names(): void {
 		$updater = $this->updater();
 
-		$this->assertSame( 'https://wpe-plugin-updates.wpengine.com/wpgraphql-logging/info.json', $updater->get_manifest_url() );
-		$this->assertSame( 'wpesu-plugin-wpgraphql-logging', $updater->get_cache_option_name() );
-		$this->assertSame( 'wpesu-plugin-wpgraphql-logging-expiry', $updater->get_cache_expiry_option_name() );
+		$this->assertSame( self::MANIFEST_URL, $updater->get_manifest_url() );
+		$this->assertSame( self::CACHE_OPTION, $updater->get_cache_option_name() );
+		$this->assertSame( self::CACHE_EXPIRY_OPTION, $updater->get_cache_expiry_option_name() );
 	}
 
 	public function test_transient_gets_update_when_newer_version_available(): void {
@@ -173,7 +183,7 @@ class PluginUpdaterTest extends WPTestCase {
 
 		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
 
-		$this->assertSame( [ 'https://wpe-plugin-updates.wpengine.com/wpgraphql-logging/info.json' ], $this->requests );
+		$this->assertSame( [ self::MANIFEST_URL ], $this->requests );
 		$this->assertArrayHasKey( $this->basename, $transient->response );
 
 		$update = $transient->response[ $this->basename ];
@@ -215,7 +225,7 @@ class PluginUpdaterTest extends WPTestCase {
 		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
 
 		$this->assertSame( [], $transient->response );
-		$this->assertFalse( get_option( 'wpesu-plugin-wpgraphql-logging' ) );
+		$this->assertFalse( get_option( self::CACHE_OPTION ) );
 	}
 
 	public function test_non_200_response_leaves_transient_unchanged(): void {
@@ -232,7 +242,7 @@ class PluginUpdaterTest extends WPTestCase {
 		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
 
 		$this->assertSame( [], $transient->response );
-		$this->assertFalse( get_option( 'wpesu-plugin-wpgraphql-logging' ) );
+		$this->assertFalse( get_option( self::CACHE_OPTION ) );
 	}
 
 	public function test_manifest_missing_required_fields_is_ignored(): void {
@@ -251,16 +261,16 @@ class PluginUpdaterTest extends WPTestCase {
 		$this->updater()->filter_plugin_update_transient( $this->empty_transient() );
 
 		$this->assertCount( 1, $this->requests );
-		$this->assertSame( $this->manifest(), get_option( 'wpesu-plugin-wpgraphql-logging' ) );
-		$this->assertGreaterThan( time(), (int) get_option( 'wpesu-plugin-wpgraphql-logging-expiry' ) );
+		$this->assertSame( $this->manifest(), get_option( self::CACHE_OPTION ) );
+		$this->assertGreaterThan( time(), (int) get_option( self::CACHE_EXPIRY_OPTION ) );
 
 		$alloptions = wp_load_alloptions();
-		$this->assertArrayNotHasKey( 'wpesu-plugin-wpgraphql-logging', $alloptions );
+		$this->assertArrayNotHasKey( self::CACHE_OPTION, $alloptions );
 	}
 
 	public function test_expired_cache_is_refreshed(): void {
-		update_option( 'wpesu-plugin-wpgraphql-logging', $this->manifest( [ 'version' => '1.0.0' ] ), false );
-		update_option( 'wpesu-plugin-wpgraphql-logging-expiry', time() - 1, false );
+		update_option( self::CACHE_OPTION, $this->manifest( [ 'version' => '1.0.0' ] ), false );
+		update_option( self::CACHE_EXPIRY_OPTION, time() - 1, false );
 		$this->mock_manifest( $this->manifest() );
 
 		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
@@ -271,7 +281,7 @@ class PluginUpdaterTest extends WPTestCase {
 
 	public function test_plugins_api_returns_plugin_information(): void {
 		$this->mock_manifest( $this->manifest() );
-		$args = (object) [ 'slug' => self::SLUG ];
+		$args = $this->info_args();
 
 		$info = $this->updater()->filter_plugin_update_info( false, 'plugin_information', $args );
 
@@ -286,15 +296,15 @@ class PluginUpdaterTest extends WPTestCase {
 		$this->mock_manifest( $this->manifest() );
 		$updater = $this->updater();
 
-		$this->assertFalse( $updater->filter_plugin_update_info( false, 'query_plugins', (object) [ 'slug' => self::SLUG ] ) );
-		$this->assertFalse( $updater->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => 'hello-dolly' ] ) );
+		$this->assertFalse( $updater->filter_plugin_update_info( false, 'query_plugins', $this->info_args() ) );
+		$this->assertFalse( $updater->filter_plugin_update_info( false, 'plugin_information', $this->info_args( 'hello-dolly' ) ) );
 		$this->assertSame( [], $this->requests );
 	}
 
 	public function test_plugins_api_passes_through_on_failure(): void {
 		$this->mock_manifest( '', 500 );
 
-		$this->assertFalse( $this->updater()->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] ) );
+		$this->assertFalse( $this->updater()->filter_plugin_update_info( false, 'plugin_information', $this->info_args() ) );
 	}
 
 	public function test_tested_version_mapping(): void {
@@ -306,12 +316,12 @@ class PluginUpdaterTest extends WPTestCase {
 
 		// Site is on a newer major version than tested: report the tested version.
 		$wp_version = '6.8.1';
-		$info       = $updater->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] );
+		$info       = $updater->filter_plugin_update_info( false, 'plugin_information', $this->info_args() );
 		$this->assertSame( '6.5', $info->tested );
 
 		// Site is on the tested major version: report the site version.
 		$wp_version = '6.5.3';
-		$info       = $updater->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] );
+		$info       = $updater->filter_plugin_update_info( false, 'plugin_information', $this->info_args() );
 		$this->assertSame( '6.5.3', $info->tested );
 
 		$wp_version = $original;
@@ -348,26 +358,26 @@ class PluginUpdaterTest extends WPTestCase {
 		// Core saves the update transient more than once per check.
 		$updater->filter_plugin_update_transient( $this->empty_transient() );
 		$updater->filter_plugin_update_transient( $this->empty_transient() );
-		$updater->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] );
+		$updater->filter_plugin_update_info( false, 'plugin_information', $this->info_args() );
 
 		$this->assertCount( 1, $this->requests );
 	}
 
 	public function test_invalid_cached_body_is_refetched(): void {
-		update_option( 'wpesu-plugin-wpgraphql-logging', 'not json', false );
-		update_option( 'wpesu-plugin-wpgraphql-logging-expiry', time() + HOUR_IN_SECONDS, false );
+		update_option( self::CACHE_OPTION, 'not json', false );
+		update_option( self::CACHE_EXPIRY_OPTION, time() + HOUR_IN_SECONDS, false );
 		$this->mock_manifest( $this->manifest() );
 
 		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
 
 		$this->assertCount( 1, $this->requests );
 		$this->assertArrayHasKey( $this->basename, $transient->response );
-		$this->assertSame( $this->manifest(), get_option( 'wpesu-plugin-wpgraphql-logging' ) );
+		$this->assertSame( $this->manifest(), get_option( self::CACHE_OPTION ) );
 	}
 
 	public function test_valid_cache_skips_the_request(): void {
-		update_option( 'wpesu-plugin-wpgraphql-logging', $this->manifest(), false );
-		update_option( 'wpesu-plugin-wpgraphql-logging-expiry', time() + HOUR_IN_SECONDS, false );
+		update_option( self::CACHE_OPTION, $this->manifest(), false );
+		update_option( self::CACHE_EXPIRY_OPTION, time() + HOUR_IN_SECONDS, false );
 		$this->mock_manifest( '', 500 );
 
 		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
@@ -406,7 +416,7 @@ class PluginUpdaterTest extends WPTestCase {
 			)
 		);
 
-		$info = $this->updater()->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] );
+		$info = $this->updater()->filter_plugin_update_info( false, 'plugin_information', $this->info_args() );
 
 		$this->assertSame( 'WPGraphQL Logging', $info->name );
 		$this->assertSame( '', $info->requires );
@@ -419,7 +429,7 @@ class PluginUpdaterTest extends WPTestCase {
 		unset( $manifest['sections'], $manifest['requires_php'], $manifest['tested'] );
 		$this->mock_manifest( (string) wp_json_encode( $manifest ) );
 
-		$info = $this->updater()->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] );
+		$info = $this->updater()->filter_plugin_update_info( false, 'plugin_information', $this->info_args() );
 
 		$this->assertSame( [ 'description' => '', 'changelog' => '' ], $info->sections );
 		$this->assertSame( '', $info->requires_php );
@@ -470,6 +480,6 @@ class PluginUpdaterTest extends WPTestCase {
 
 		$this->assertNotWPError( $info );
 		$this->assertSame( '999.0.0', $info->version );
-		$this->assertSame( [ 'https://wpe-plugin-updates.wpengine.com/wpgraphql-logging/info.json' ], $this->requests );
+		$this->assertSame( [ self::MANIFEST_URL ], $this->requests );
 	}
 }

@@ -207,7 +207,7 @@ class PluginUpdater {
 	 * The URL of this plugin's manifest on the updates API.
 	 */
 	public function get_manifest_url(): string {
-		return trailingslashit( self::API_URL ) . trailingslashit( $this->plugin_slug ) . 'info.json';
+		return self::API_URL . $this->plugin_slug . '/info.json';
 	}
 
 	/**
