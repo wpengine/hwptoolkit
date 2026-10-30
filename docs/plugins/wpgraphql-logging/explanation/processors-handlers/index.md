@@ -1,73 +1,49 @@
 ---
 title: "Explanation: Processors & Handlers"
-description: "Understanding the Processors and Handlers system in WPGraphQL Logging Plugin and how they process and store log data."
+description: "How the WPGraphQL Logging plugin uses Monolog processors to add data to log records and handlers to store them."
 ---
 
-The WPGraphQL Logging plugin builds on [Monolog](https://github.com/Seldaek/monolog), a widely adopted PHP logging library. Monolog's architecture separates concerns into two complementary systems: processors that enrich log data and handlers that determine where logs are written. Understanding this separation is key to extending the plugin's logging capabilities effectively.
+The plugin logs through [Monolog](https://github.com/Seldaek/monolog), the standard PHP logging library. Monolog splits the work in two: processors add or change data on each log record, and handlers decide where the record is written. Knowing which side a change belongs on tells you whether to write a processor or a handler.
 
-## Why Monolog?
+## Why Monolog
 
-Rather than building a custom logging system from scratch, the plugin leverages Monolog for several compelling reasons:
+Monolog is PSR-3 compliant and widely used, and it already has processors and handlers for most common needs, from memory usage to Slack alerts. Building on it means the plugin's own code only covers what is specific to WPGraphQL, and you can reuse any Monolog processor or handler without adapting it.
 
-1. **Battle-tested**: Monolog is the de facto standard for PHP logging, used by thousands of projects.
-2. **Extensible**: The processor and handler architecture provides clear extension points.
-3. **PSR-3 compliant**: Follows PHP Standards Recommendations for logging interfaces.
-4. **Rich ecosystem**: Access to dozens of pre-built processors and handlers for common tasks.
-5. **Channel-based**: Supports multiple logger instances with different configurations.
+## Processors
 
-## Processors: Enriching Log Data
+A processor receives a `LogRecord` and returns it with changes. Data passed in the log call goes in `context`, such as the query and its variables. Data a processor adds about the environment goes in `extra`, such as memory usage or request headers. Keeping the two apart makes it clear what the caller logged and what was collected automatically.
 
-Processors modify log records before handlers write them. Think of processors as middleware in the logging pipeline: each log record passes through a chain of processors, and each processor can add, modify, or remove data.
+`LoggerService::get_default_processors()` lists six processors:
 
-### What Processors Do
+- `MemoryUsageProcessor` and `MemoryPeakUsageProcessor` from Monolog
+- `WebProcessor` from Monolog, for the URL, method, IP and similar request data
+- `ProcessIdProcessor` from Monolog
+- `RequestHeadersProcessor`, the plugin's own, for the HTTP request headers
+- `DataSanitizationProcessor`, the plugin's own, for removing sensitive data
 
-A processor receives a `LogRecord` object and returns it, potentially modified. Processors typically add data to two key arrays on the record:
+Monolog's `pushProcessor()` adds each processor to the front of the stack, so they run in the reverse of the order they are pushed. Keep that in mind if a processor depends on data another one adds.
 
-- **context**: Domain-specific data passed when logging (query variables, operation names, etc.).
-- **extra**: Metadata added by processors (memory usage, request headers, server info, etc.).
+`DataSanitizationProcessor` applies rules from the Data Management settings. Each rule targets a key in dot notation, such as `variables.password`, and does one of three things: anonymize replaces the value with `***`, remove deletes the key, and truncate cuts the value to 47 characters plus `...`. The recommended rules anonymize the username, password and email variables and remove the viewer's capability data. The `wpgraphql_logging_data_sanitization_rules` filter can change the rules.
 
-This separation keeps intentional logged data (context) distinct from automatically captured metadata (extra).
+## Handlers
 
-### Default Processors
+A handler writes records somewhere: a database, a file, a remote service. A logger can have several, and each can ignore records below its own minimum level, so you can send everything to the database and only errors to Slack.
 
-The plugin configures six processors by default through `LoggerService::get_default_processors()`: MemoryUsageProcessor, MemoryPeakUsageProcessor, WebProcessor (HTTP request metadata), ProcessIdProcessor, RequestHeadersProcessor (custom, captures HTTP headers), and DataSanitizationProcessor (custom, anonymizes/removes/truncates sensitive data). These run in order, each receiving the record modified by previous processors.
+The default handler is `WordPressDatabaseHandler`, which writes to the plugin's log table through `LogStoreService`. If a write fails, it fires `wpgraphql_logging_write_database_error` with the exception instead of breaking the request.
 
-The DataSanitizationProcessor implements compliance-friendly logging by applying configurable rules. It supports three strategies: anonymize (replace with `'***'`), remove (delete the key), or truncate (shorten to 47 characters). The processor uses dot notation to target nested data like `variables.password` or `request.app_context.viewer.data`, with settings via the `wpgraphql_logging_data_sanitization_rules` filter.
+One GraphQL request produces several log records, so the database handler is wrapped in Monolog's `BufferHandler`. Records are held in memory and written together when the buffer reaches 50 records or the request ends. The `wpgraphql_logging_default_buffer_limit` filter changes the limit.
 
-## Handlers: Writing Log Data
+## How a record moves through the logger
 
-Handlers decide where logs are written: databases, files, streams, third-party services, or multiple destinations simultaneously. A single logger can use multiple handlers, each writing to different locations or filtering by log level.
+The log call merges in the default context, runs the processors, then hands the finished record to each handler. Every handler sees the same processed record, so sanitization applies to all destinations.
 
-### The WordPressDatabaseHandler
+## Extending
 
-The plugin's default handler extends Monolog's `AbstractProcessingHandler` and writes to a WordPress custom table via the `LogStoreService`. Key characteristics:
+`LoggerService::get_instance()` applies two filters when it creates a logger. `wpgraphql_logging_default_processors` receives the processor list, so you can add your own or remove one, such as `WebProcessor` if you don't want IP addresses stored. `wpgraphql_logging_default_handlers` receives the handler list, so you can replace the database handler or add another destination.
 
-- **Buffered by default**: Wrapped in a `BufferHandler` that batches up to 50 log records before writing, reducing database queries.
-- **Error resilient**: Catches exceptions during writes and fires `wpgraphql_logging_write_database_error` action without breaking execution.
-- **Level-aware**: Only writes records at or above its configured minimum level (default: all levels).
+Processors only run for events the [Rule Manager](../rule-manager/index.md) lets through, so sampling and exclusions also limit their cost. Handlers that call remote services add latency to the request, so give them a higher minimum level.
 
-### The Logging Pipeline
-
-A single GraphQL query can trigger multiple log events. Without buffering, each would cause an immediate database write. The `BufferHandler` accumulates up to 50 records in memory and writes them in one batch at the end of the request, drastically improving performance.
-
-The pipeline flows sequentially: log call → merge default context → run processors in order → pass final record to handlers → each handler checks level requirement → write to destinations. This ensures all enrichment happens before any storage, and different handlers can apply different level filters.
-
-## Extensibility
-
-The plugin exposes two filters when `LoggerService::get_instance()` creates a logger:
-
-- **wpgraphql_logging_default_processors**: Modify the array of processors. Add custom processors or remove defaults (e.g., remove WebProcessor for compliance).
-- **wpgraphql_logging_default_handlers**: Modify the array of handlers. Replace the database handler, add file/Slack handlers for errors, or combine multiple destinations with different level thresholds.
-
-## Performance Implications
-
-Processors add computational overhead: the more processors, the longer each log operation takes. However, processors only run when logging actually occurs, and the Rule Manager (see [Rule Manager Explanation](../rule-manager/index.md)) gates whether events log at all. Sampling rates and query exclusion rules ensure processors only run on a subset of requests.
-
-Handlers determine I/O overhead. Database writes are buffered, file writes are asynchronous (at OS level), but network handlers (HTTP, Slack) can introduce latency. Use level thresholds to minimize expensive handler invocations.
-
-## Related Documentation
-
-For practical implementation examples, see:
+## Related documentation
 
 - [How to add a new Processor](../../how-to/logger-add-processor/index.md)
 - [How to add a new Handler](../../how-to/logger-add-handler/index.md)
