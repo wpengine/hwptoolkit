@@ -107,9 +107,9 @@ class PluginUpdaterTest extends WPTestCase {
 		);
 	}
 
-	private function updater(): PluginUpdater {
-		$updater = PluginUpdater::check_for_updates( self::SLUG, $this->basename );
-		$this->assertInstanceOf( PluginUpdater::class, $updater );
+	private function updater( string $basename = '' ): PluginUpdater {
+		$updater = new PluginUpdater( self::SLUG, '' === $basename ? $this->basename : $basename );
+		$updater->register();
 		return $updater;
 	}
 
@@ -126,9 +126,12 @@ class PluginUpdaterTest extends WPTestCase {
 
 	public function test_check_for_updates_function_registers_filters(): void {
 		wpgraphql_logging_check_for_updates();
+		$updater = PluginUpdater::check_for_updates( self::SLUG, $this->basename );
 
-		$this->assertNotFalse( has_filter( 'pre_set_site_transient_update_plugins' ) );
-		$this->assertNotFalse( has_filter( 'plugins_api' ) );
+		$this->assertSame( 10, has_filter( 'pre_set_site_transient_update_plugins', [ $updater, 'filter_plugin_update_transient' ] ) );
+		$this->assertSame( 20, has_filter( 'plugins_api', [ $updater, 'filter_plugin_update_info' ] ) );
+
+		$updater->unregister();
 	}
 
 	public function test_register_adds_filters(): void {
@@ -138,9 +141,13 @@ class PluginUpdaterTest extends WPTestCase {
 		$this->assertSame( 20, has_filter( 'plugins_api', [ $updater, 'filter_plugin_update_info' ] ) );
 	}
 
-	public function test_returns_null_for_unknown_plugin(): void {
-		$this->assertNull( PluginUpdater::check_for_updates( self::SLUG, 'not-installed/not-installed.php' ) );
-		$this->assertFalse( has_filter( 'pre_set_site_transient_update_plugins' ) );
+	public function test_unknown_plugin_leaves_transient_unchanged(): void {
+		$this->mock_manifest( $this->manifest() );
+
+		$transient = $this->updater( 'not-installed/not-installed.php' )->filter_plugin_update_transient( $this->empty_transient() );
+
+		$this->assertSame( [], $transient->response );
+		$this->assertSame( [], $this->requests );
 	}
 
 	public function test_returns_null_for_empty_properties(): void {
@@ -170,7 +177,7 @@ class PluginUpdaterTest extends WPTestCase {
 		$this->assertSame( $this->basename, $update->plugin );
 		$this->assertSame( '8.1.2', $update->requires_php );
 		$this->assertStringEndsWith( 'wpgraphql-logging.999.0.0.zip', $update->package );
-		$this->assertSame( '999.0.0', $transient->checked[ $this->basename ] );
+		$this->assertSame( [], $transient->checked, 'The checked list holds installed versions and must not be changed.' );
 	}
 
 	public function test_transient_unchanged_when_installed_version_is_current(): void {
@@ -179,6 +186,7 @@ class PluginUpdaterTest extends WPTestCase {
 		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
 
 		$this->assertSame( [], $transient->response );
+		$this->assertArrayHasKey( $this->basename, $transient->no_update );
 	}
 
 	public function test_transient_without_response_property_is_handled(): void {
@@ -213,12 +221,13 @@ class PluginUpdaterTest extends WPTestCase {
 		$this->assertSame( [], $transient->response );
 	}
 
-	public function test_invalid_json_leaves_transient_unchanged(): void {
+	public function test_invalid_json_leaves_transient_unchanged_and_is_not_cached(): void {
 		$this->mock_manifest( 'not json' );
 
 		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
 
 		$this->assertSame( [], $transient->response );
+		$this->assertFalse( get_option( 'wpesu-plugin-wpgraphql-logging' ) );
 	}
 
 	public function test_manifest_missing_required_fields_is_ignored(): void {
@@ -231,10 +240,10 @@ class PluginUpdaterTest extends WPTestCase {
 
 	public function test_response_is_cached(): void {
 		$this->mock_manifest( $this->manifest() );
-		$updater = $this->updater();
 
-		$updater->filter_plugin_update_transient( $this->empty_transient() );
-		$updater->filter_plugin_update_transient( $this->empty_transient() );
+		$this->updater()->filter_plugin_update_transient( $this->empty_transient() );
+		// A new updater (as on the next request) reads the cached option.
+		$this->updater()->filter_plugin_update_transient( $this->empty_transient() );
 
 		$this->assertCount( 1, $this->requests );
 		$this->assertSame( $this->manifest(), get_option( 'wpesu-plugin-wpgraphql-logging' ) );

@@ -190,6 +190,10 @@ if ( ! function_exists( 'wpgraphql_logging_check_for_updates' ) ) {
 
 // Priority 5 so the filters are in place before core's _maybe_update_plugins() runs on admin_init.
 add_action( 'admin_init', 'wpgraphql_logging_check_for_updates', 5, 0 );
+// Also register before core's cron update check and auto-updater, which run without admin_init.
+/** @psalm-suppress HookNotFound */
+add_action( 'wp_update_plugins', 'wpgraphql_logging_check_for_updates', 5, 0 );
+add_action( 'wp_maybe_auto_update', 'wpgraphql_logging_check_for_updates', 5, 0 );
 
 /**
  * Load plugin text domain.

@@ -65,14 +65,28 @@ class PluginUpdater {
 	 *
 	 * @var string
 	 */
-	protected string $plugin_dirname = '';
+	protected string $plugin_dirname;
 
 	/**
-	 * The installed plugin version.
+	 * The installed plugin version. Null until looked up, empty if the plugin is not installed.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	protected string $plugin_version = '';
+	protected ?string $plugin_version = null;
+
+	/**
+	 * The manifest fetched during this request, so it is requested at most once per request.
+	 *
+	 * @var \stdClass|false|null Null until fetched, false if it could not be fetched.
+	 */
+	protected stdClass|false|null $manifest = null;
+
+	/**
+	 * Updaters registered during this request, keyed by plugin basename.
+	 *
+	 * @var array<string, self>
+	 */
+	protected static array $instances = [];
 
 	/**
 	 * Constructor.
@@ -83,46 +97,56 @@ class PluginUpdater {
 	public function __construct( string $plugin_slug, string $plugin_basename ) {
 		$this->plugin_slug     = $plugin_slug;
 		$this->plugin_basename = $plugin_basename;
+		$this->plugin_dirname  = dirname( $plugin_basename );
 	}
 
 	/**
 	 * Create an updater for the given plugin and register its hooks.
 	 *
-	 * Intended to be called on `admin_init`.
+	 * Safe to call more than once per request: later calls return the updater
+	 * that is already registered for the plugin.
 	 *
 	 * @param string $plugin_slug     The slug registered with the WP Engine plugin updates API.
 	 * @param string $plugin_basename The plugin basename as returned by plugin_basename().
 	 *
-	 * @return self|null The updater, or null if the plugin could not be found.
+	 * @return self|null The updater, or null if the slug or basename is empty.
 	 */
 	public static function check_for_updates( string $plugin_slug, string $plugin_basename ): ?self {
-		$updater = new self( $plugin_slug, $plugin_basename );
+		if ( '' === $plugin_slug || '' === $plugin_basename ) {
+			return null;
+		}
 
-		return $updater->register() ? $updater : null;
+		if ( ! isset( self::$instances[ $plugin_basename ] ) ) {
+			$updater = new self( $plugin_slug, $plugin_basename );
+			$updater->register();
+			self::$instances[ $plugin_basename ] = $updater;
+		}
+
+		return self::$instances[ $plugin_basename ];
 	}
 
 	/**
-	 * Resolve the installed plugin and register the update filters.
-	 *
-	 * @return bool Whether the filters were registered.
+	 * Register the update filters.
 	 */
-	public function register(): bool {
-		if ( '' === $this->plugin_slug || '' === $this->plugin_basename ) {
-			return false;
-		}
-
-		if ( ! $this->load_plugin_data() ) {
-			return false;
-		}
-
+	public function register(): void {
 		add_filter( 'plugins_api', [ $this, 'filter_plugin_update_info' ], 20, 3 );
 		add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'filter_plugin_update_transient' ], 10, 1 );
-
-		return true;
 	}
 
 	/**
-	 * Add this plugin to the update_plugins transient when a newer version is available.
+	 * Remove the update filters.
+	 */
+	public function unregister(): void {
+		remove_filter( 'plugins_api', [ $this, 'filter_plugin_update_info' ], 20 );
+		remove_filter( 'pre_set_site_transient_update_plugins', [ $this, 'filter_plugin_update_transient' ], 10 );
+		unset( self::$instances[ $this->plugin_basename ] );
+	}
+
+	/**
+	 * Report this plugin's update status in the update_plugins transient.
+	 *
+	 * Adds the plugin to `response` when a newer version is available, or to
+	 * `no_update` when it is current (which lets core offer auto-updates).
 	 *
 	 * @param mixed $transient The value of the `update_plugins` site transient.
 	 *
@@ -133,13 +157,21 @@ class PluginUpdater {
 			return $transient;
 		}
 
-		$result = $this->fetch_plugin_info();
+		$installed_version = $this->get_installed_version();
 
-		if ( null === $result || ! version_compare( $this->plugin_version, $result->version, '<' ) ) {
+		if ( '' === $installed_version ) {
 			return $transient;
 		}
 
-		return $this->add_update_to_transient( $transient, $result );
+		$manifest = $this->fetch_plugin_info();
+
+		if ( null === $manifest ) {
+			return $transient;
+		}
+
+		$has_update = version_compare( $installed_version, $manifest->version, '<' );
+
+		return $this->set_transient_item( $transient, $this->parse_plugin_info( $manifest ), $has_update );
 	}
 
 	/**
@@ -160,13 +192,13 @@ class PluginUpdater {
 			return $res;
 		}
 
-		$result = $this->fetch_plugin_info();
+		$manifest = $this->fetch_plugin_info();
 
-		if ( null === $result ) {
+		if ( null === $manifest ) {
 			return $res;
 		}
 
-		return $this->parse_plugin_info( $result );
+		return $this->parse_plugin_info( $manifest );
 	}
 
 	/**
@@ -191,71 +223,64 @@ class PluginUpdater {
 	}
 
 	/**
-	 * Look up the installed plugin and store its directory name and version.
+	 * Look up the installed plugin version.
 	 *
-	 * @return bool Whether the plugin was found.
+	 * Done lazily, only when an update check runs, because get_plugins() reads
+	 * every plugin's headers from disk.
+	 *
+	 * @return string The installed version, or an empty string if the plugin is not installed.
 	 */
-	protected function load_plugin_data(): bool {
+	protected function get_installed_version(): string {
+		if ( null !== $this->plugin_version ) {
+			return $this->plugin_version;
+		}
+
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
-		$plugins = get_plugins();
+		$plugins              = get_plugins();
+		$this->plugin_version = (string) ( $plugins[ $this->plugin_basename ]['Version'] ?? '' );
 
-		if ( ! isset( $plugins[ $this->plugin_basename ] ) ) {
-			return false;
-		}
-
-		$this->plugin_dirname = dirname( $this->plugin_basename );
-		$this->plugin_version = (string) $plugins[ $this->plugin_basename ]['Version'];
-
-		return true;
+		return $this->plugin_version;
 	}
 
 	/**
 	 * Fetch the plugin manifest from the cache or the updates API.
 	 *
+	 * The result, including a failure, is kept for the rest of the request so
+	 * the API is called at most once even though core saves the update
+	 * transient more than once per check.
+	 *
 	 * @return \stdClass|null The decoded manifest, or null if it is unavailable or invalid.
 	 */
 	protected function fetch_plugin_info(): ?stdClass {
-		$body = $this->get_cached_manifest();
-
-		if ( null === $body ) {
-			$body = $this->request_manifest();
+		if ( null === $this->manifest ) {
+			$this->manifest = $this->get_cached_manifest() ?? $this->request_manifest() ?? false;
 		}
 
-		if ( null === $body ) {
-			return null;
-		}
-
-		$decoded = json_decode( $body );
-
-		if ( ! $decoded instanceof stdClass || ! $this->is_valid_manifest( $decoded ) ) {
-			return null;
-		}
-
-		return $decoded;
+		return false === $this->manifest ? null : $this->manifest;
 	}
 
 	/**
-	 * Return the cached manifest body if it has not expired.
+	 * Return the cached manifest if it has not expired and is still valid.
 	 */
-	protected function get_cached_manifest(): ?string {
+	protected function get_cached_manifest(): ?stdClass {
 		$expiry = (int) get_option( $this->get_cache_expiry_option_name(), 0 );
 		$body   = get_option( $this->get_cache_option_name() );
 
-		if ( time() > $expiry || ! is_string( $body ) || '' === $body ) {
+		if ( time() > $expiry || ! is_string( $body ) ) {
 			return null;
 		}
 
-		return $body;
+		return $this->decode_manifest( $body );
 	}
 
 	/**
-	 * Request the manifest from the updates API and cache a successful response.
+	 * Request the manifest from the updates API and cache it if it is valid.
 	 */
-	protected function request_manifest(): ?string {
-		// Admin-only and cached for CACHE_TTL, so the 10s timeout used by FaustWP is acceptable here.
+	protected function request_manifest(): ?stdClass {
+		// Only runs during update checks and is cached for CACHE_TTL, so the 10s timeout used by FaustWP is acceptable here.
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 		$response = wp_remote_get(
 			$this->get_manifest_url(),
@@ -271,48 +296,61 @@ class PluginUpdater {
 			return null;
 		}
 
-		$body = wp_remote_retrieve_body( $response );
+		$body     = wp_remote_retrieve_body( $response );
+		$manifest = $this->decode_manifest( $body );
 
-		if ( '' === $body ) {
+		if ( null === $manifest ) {
 			return null;
 		}
 
 		update_option( $this->get_cache_expiry_option_name(), time() + self::CACHE_TTL, false );
 		update_option( $this->get_cache_option_name(), $body, false );
 
-		return $body;
+		return $manifest;
 	}
 
 	/**
-	 * Check that the manifest has the fields needed to offer an update.
+	 * Decode a manifest body and check it has the fields needed to offer an update.
 	 *
-	 * @param \stdClass $manifest The decoded manifest.
+	 * @param string $body The raw JSON body.
 	 */
-	protected function is_valid_manifest( stdClass $manifest ): bool {
+	protected function decode_manifest( string $body ): ?stdClass {
+		$manifest = json_decode( $body );
+
+		if ( ! $manifest instanceof stdClass ) {
+			return null;
+		}
+
 		foreach ( [ 'name', 'slug', 'version', 'download_link' ] as $field ) {
 			if ( ! isset( $manifest->$field ) || ! is_string( $manifest->$field ) || '' === $manifest->$field ) {
-				return false;
+				return null;
 			}
 		}
 
-		return true;
+		return '' === esc_url_raw( $manifest->download_link, [ 'https', 'http' ] ) ? null : $manifest;
 	}
 
 	/**
-	 * Add the update offer for this plugin to the update_plugins transient.
+	 * Put the plugin's item in `response` or `no_update` and remove it from the other list.
 	 *
-	 * @param \stdClass $transient The `update_plugins` site transient.
-	 * @param \stdClass $manifest  The decoded manifest.
+	 * @param \stdClass $transient  The `update_plugins` site transient.
+	 * @param \stdClass $item       The plugin update item.
+	 * @param bool      $has_update Whether a newer version is available.
 	 */
-	protected function add_update_to_transient( stdClass $transient, stdClass $manifest ): stdClass {
-		$response = isset( $transient->response ) && is_array( $transient->response ) ? $transient->response : [];
-		$checked  = isset( $transient->checked ) && is_array( $transient->checked ) ? $transient->checked : [];
+	protected function set_transient_item( stdClass $transient, stdClass $item, bool $has_update ): stdClass {
+		$add_to    = $has_update ? 'response' : 'no_update';
+		$remove_at = $has_update ? 'no_update' : 'response';
 
-		$response[ $this->plugin_basename ] = $this->parse_plugin_info( $manifest );
-		$checked[ $this->plugin_basename ]  = $manifest->version;
+		$add_list = isset( $transient->$add_to ) && is_array( $transient->$add_to ) ? $transient->$add_to : [];
 
-		$transient->response = $response;
-		$transient->checked  = $checked;
+		$add_list[ $this->plugin_basename ] = $item;
+		$transient->$add_to                 = $add_list;
+
+		if ( isset( $transient->$remove_at ) && is_array( $transient->$remove_at ) ) {
+			$remove_list = $transient->$remove_at;
+			unset( $remove_list[ $this->plugin_basename ] );
+			$transient->$remove_at = $remove_list;
+		}
 
 		return $transient;
 	}
@@ -320,27 +358,60 @@ class PluginUpdater {
 	/**
 	 * Map the manifest to the object WordPress expects for updates and plugin information.
 	 *
-	 * @param \stdClass $manifest The decoded manifest.
+	 * @param \stdClass $manifest The decoded, validated manifest.
 	 */
 	protected function parse_plugin_info( stdClass $manifest ): stdClass {
+		$download_link = esc_url_raw( $manifest->download_link, [ 'https', 'http' ] );
+		$version       = sanitize_text_field( $manifest->version );
+
 		$res                = new stdClass();
-		$res->name          = $manifest->name;
-		$res->slug          = $manifest->slug;
-		$res->version       = $manifest->version;
-		$res->requires      = $manifest->requires ?? '';
-		$res->requires_php  = $manifest->requires_php ?? '';
-		$res->download_link = $manifest->download_link;
-		$res->trunk         = $manifest->download_link;
-		$res->new_version   = $manifest->version;
+		$res->name          = sanitize_text_field( $manifest->name );
+		$res->slug          = sanitize_key( $manifest->slug );
+		$res->version       = $version;
+		$res->new_version   = $version;
+		$res->requires      = $this->get_string( $manifest, 'requires' );
+		$res->requires_php  = $this->get_string( $manifest, 'requires_php' );
+		$res->tested        = $this->get_tested_version( $this->get_string( $manifest, 'tested' ) );
+		$res->download_link = $download_link;
+		$res->trunk         = $download_link;
+		$res->package       = $download_link;
 		$res->plugin        = $this->plugin_basename;
-		$res->package       = $manifest->download_link;
-		$res->tested        = $this->get_tested_version( (string) ( $manifest->tested ?? '' ) );
-		$res->sections      = [
-			'description' => (string) ( $manifest->sections->description ?? '' ),
-			'changelog'   => (string) ( $manifest->sections->changelog ?? '' ),
-		];
+		$res->sections      = $this->get_sections( $manifest );
 
 		return $res;
+	}
+
+	/**
+	 * Read the description and changelog sections from the manifest.
+	 *
+	 * @param \stdClass $manifest The decoded manifest.
+	 *
+	 * @return array<string, string>
+	 */
+	protected function get_sections( stdClass $manifest ): array {
+		$sections = isset( $manifest->sections ) && $manifest->sections instanceof stdClass ? $manifest->sections : new stdClass();
+
+		return [
+			'description' => wp_kses_post( $this->get_string( $sections, 'description', false ) ),
+			'changelog'   => wp_kses_post( $this->get_string( $sections, 'changelog', false ) ),
+		];
+	}
+
+	/**
+	 * Read an optional scalar field from the manifest as a string.
+	 *
+	 * @param \stdClass $manifest The decoded manifest.
+	 * @param string    $field    The field name.
+	 * @param bool      $as_text  Whether to sanitize the value as plain text.
+	 */
+	protected function get_string( stdClass $manifest, string $field, bool $as_text = true ): string {
+		$value = $manifest->$field ?? '';
+
+		if ( ! is_scalar( $value ) ) {
+			return '';
+		}
+
+		return $as_text ? sanitize_text_field( (string) $value ) : (string) $value;
 	}
 
 	/**
