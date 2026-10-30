@@ -104,6 +104,20 @@ add_action( 'plugins_loaded', function() {
 
 With this in place, all logs from WPGraphQL Logging will be routed through your `MyFileLogService` and saved to a file instead of the database.
 
+## Supporting search in the admin
+
+The search box on GraphQL Logs -> All Logs passes the search term to `find_entities_by_where()` and `count_entities_by_where()` as a where condition with the pseudo-column `LogServiceInterface::SEARCH_COLUMN`:
+
+```php
+[
+    'column'   => LogServiceInterface::SEARCH_COLUMN, // 'search'
+    'operator' => 'LIKE',
+    'value'    => 'GetPosts', // The raw search term, not a LIKE pattern.
+]
+```
+
+Your service decides which fields to match the term against. If it doesn't support search, it can ignore this condition.
+
 ## Contributing
 
 We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.

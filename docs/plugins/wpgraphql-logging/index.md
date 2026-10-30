@@ -38,7 +38,7 @@ The plugin provides comprehensive data management capabilities, allowing you to 
 
 ### Admin UI
 
-The plugin delivers a admin UI with some filtering of logs around dates or level and the ability to download logs in CSV format.
+The plugin delivers a admin UI with a search box, some filtering of logs around dates or level and the ability to download logs in CSV format.
 
 ***
 
@@ -141,6 +141,14 @@ You can download individual logs in CSV format.
 ID,Date,Level,"Level Name",Message,Channel,Query,Context,Extra
 5293,"2025-10-06 15:41:34",200,INFO,"WPGraphQL Response",wpgraphql_logging,"{ posts(first: 10) ...""memory_peak_usage"":""18 MB""}"
 ```
+
+### Searching Logs
+
+Use the search box to find logs by their message (for example `WPGraphQL Response with Errors`) or by the text of the GraphQL query, such as an operation name like `GetPosts`. The search is case-insensitive, and it works together with the filters, sorting and pagination.
+
+To stay fast on large log tables, the search only looks at the message and the `query` in the log context, not the variables, request or response. A `LIKE '%term%'` search can't use an index, so combine it with a date or level filter when you have many logs.
+
+Developers can change or remove the search condition with the `wpgraphql_logging_logs_table_where_clauses` filter.
 
 ### Filtering Logs
 

@@ -171,9 +171,8 @@ class ListTable extends WP_List_Table {
 		}
 
 		$preserved_filters = [];
-		$filter_keys       = [ 'level_filter', 'start_date', 'end_date', 's' ];
 
-		foreach ( $filter_keys as $key ) {
+		foreach ( ViewLogsPage::FILTER_KEYS as $key ) {
 			$value = isset( $_REQUEST[ $key ] ) && is_string( $_REQUEST[ $key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $key ] ) ) : null;
 			if ( null !== $value && '' !== $value ) {
 				$preserved_filters[ $key ] = rawurlencode( $value );

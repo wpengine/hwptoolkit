@@ -39,6 +39,13 @@ class ViewLogsPage {
 	public const ADMIN_PAGE_DOWNLOAD_NONCE = 'wp_graphql_logging_download';
 
 	/**
+	 * The request keys for the search and filters of the logs list.
+	 *
+	 * @var array<string>
+	 */
+	public const FILTER_KEYS = [ 'start_date', 'end_date', 'level_filter', 's' ];
+
+	/**
 	 * The hook suffix for the admin page.
 	 *
 	 * @var string
@@ -248,14 +255,7 @@ class ViewLogsPage {
 	public function get_redirect_url(): string {
 		$redirect_url = menu_page_url( self::ADMIN_PAGE_SLUG, false );
 
-		$possible_filters = [
-			'start_date',
-			'end_date',
-			'level_filter',
-			's',
-			'orderby',
-			'order',
-		];
+		$possible_filters = [ ...self::FILTER_KEYS, 'orderby', 'order' ];
 		$filters          = [];
 		foreach ( $possible_filters as $key ) {
 			$value = $this->get_post_value( $key );
@@ -288,7 +288,7 @@ class ViewLogsPage {
 	 * @return bool True if any search or filter value changed.
 	 */
 	protected function filters_changed(array $filters): bool {
-		foreach ( [ 'start_date', 'end_date', 'level_filter', 's' ] as $key ) {
+		foreach ( self::FILTER_KEYS as $key ) {
 			$current = isset( $_GET[ $key ] ) && is_string( $_GET[ $key ] ) ? sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) : '';
 			if ( ( $filters[ $key ] ?? '' ) !== $current ) {
 				return true;
