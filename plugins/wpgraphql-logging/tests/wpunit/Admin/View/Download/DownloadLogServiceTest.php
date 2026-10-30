@@ -203,6 +203,11 @@ class DownloadLogServiceTest extends WPTestCase {
 		$this->assertSame([3, 7, 12], $this->service->sanitize_log_ids(['3', 7, 0, 'abc', 3, '12', null]));
 	}
 
+	public function test_sanitize_log_ids_drops_non_scalar_values(): void {
+		// absint() would turn a non-empty array into 1.
+		$this->assertSame([6], $this->service->sanitize_log_ids([['5'], '6', [1, 2], new \stdClass()]));
+	}
+
 	public function test_sanitize_log_ids_caps_at_bulk_download_limit(): void {
 		$this->assertSame(DownloadLogService::DEFAULT_BULK_DOWNLOAD_LIMIT, $this->service->get_bulk_download_limit());
 
@@ -245,6 +250,20 @@ class DownloadLogServiceTest extends WPTestCase {
 		$this->assertSame('First bulk log', $rows[1][4]);
 		$this->assertSame((string) $second_id, $rows[2][0]);
 		$this->assertSame('Second bulk log', $rows[2][4]);
+	}
+
+	public function test_write_csv_escapes_spreadsheet_formulas(): void {
+		$log_id = $this->create_log('=HYPERLINK("http://example.com","click")');
+
+		$stream = fopen('php://temp', 'w+');
+		$this->service->write_csv($stream, [$this->log_service->find_entity_by_id($log_id)]);
+		$rows = $this->read_csv($stream);
+		fclose($stream);
+
+		$this->assertSame("'=HYPERLINK(\"http://example.com\",\"click\")", $rows[1][4]);
+		// Values that are not formulas are left alone.
+		$this->assertSame((string) $log_id, $rows[1][0]);
+		$this->assertSame(wp_json_encode($this->fixture['context']), $rows[1][7]);
 	}
 
 	public function test_write_csv_with_no_logs_writes_nothing(): void {
