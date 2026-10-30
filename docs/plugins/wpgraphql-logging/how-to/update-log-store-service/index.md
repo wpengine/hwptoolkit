@@ -104,6 +104,40 @@ add_action( 'plugins_loaded', function() {
 
 With this in place, all logs from WPGraphQL Logging will be routed through your `MyFileLogService` and saved to a file instead of the database.
 
+## Supporting the dashboard
+
+The admin dashboard reads its numbers through `\WPGraphQL\Logging\Logger\Api\LogStatsInterface`. The built-in implementation queries the plugin's database table, so it is only used with the default log store. With a custom log store the dashboard shows a notice instead of charts.
+
+To enable the dashboard for your store, implement `LogStatsInterface` and return it from the `wpgraphql_logging_dashboard_stats_service` filter. All dates passed to the interface are in UTC, and each method should aggregate in your storage layer rather than loading every entry into PHP.
+
+```php
+<?php
+
+use WPGraphQL\Logging\Logger\Api\LogStatsInterface;
+
+class MyLogStats implements LogStatsInterface {
+    public function get_summary( DateTimeInterface $start, DateTimeInterface $end ): array {
+        return [ 'total' => 0, 'errors' => 0, 'operations' => 0 ];
+    }
+
+    public function get_time_series( DateTimeInterface $start, int $bucket_seconds, int $bucket_count ): array {
+        return array_fill( 0, $bucket_count, [ 'total' => 0, 'errors' => 0 ] );
+    }
+
+    public function get_level_breakdown( DateTimeInterface $start, DateTimeInterface $end ): array {
+        return [];
+    }
+
+    public function get_top_operations( DateTimeInterface $start, DateTimeInterface $end, int $limit = 10 ): array {
+        return [];
+    }
+}
+
+add_filter( 'wpgraphql_logging_dashboard_stats_service', function( $stats ) {
+    return new MyLogStats();
+} );
+```
+
 ## Contributing
 
 We welcome and appreciate contributions from the community. If you'd like to help improve this documentation, please check out our [Contributing Guide](https://github.com/wpengine/hwptoolkit/blob/main/CONTRIBUTING.md) for more details on how to get started.

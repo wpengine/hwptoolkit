@@ -38,7 +38,7 @@ The plugin provides comprehensive data management capabilities, allowing you to 
 
 ### Admin UI
 
-The plugin delivers a admin UI with some filtering of logs around dates or level and the ability to download logs in CSV format.
+The plugin delivers a admin UI with some filtering of logs around dates or level and the ability to download logs in CSV format, plus a dashboard with charts.
 
 ***
 
@@ -158,6 +158,40 @@ You can also filter logs with the following filters:
 ### Bulk Actions
 
 You can delete selected logs or all logs using the bulk action controls.
+
+## Dashboard
+
+GraphQL Logs -> Dashboard summarizes the logs for the last 24 hours, 7 days (the default) or 30 days:
+
+* Totals for log entries, errors (level `ERROR` and above), the error rate and the number of distinct operations.
+* A column chart of log entries over time, with errors stacked on top. The 24 hour range uses hourly columns; the other ranges use one column per day in the site time zone. A data table with the same numbers sits under the chart.
+* Log entries grouped by level.
+* The ten operations with the most log entries, with their error counts.
+
+The counts are log entries, not requests. One GraphQL request can write an entry for each enabled log point, and only sampled requests are logged. Operations are grouped by the `operationName` the client sends; requests without one are listed as "(unnamed)".
+
+The numbers are calculated in SQL and cached in a transient for 60 seconds. Change the cache lifetime, or return `0` to turn caching off, with the `wpgraphql_logging_dashboard_cache_ttl` filter:
+
+```php
+add_filter( 'wpgraphql_logging_dashboard_cache_ttl', function( int $ttl, string $range ) {
+    return 5 * MINUTE_IN_SECONDS;
+}, 10, 2 );
+```
+
+The available ranges can be changed with the `wpgraphql_logging_dashboard_ranges` filter. Each range needs a label, a bucket size in seconds and a bucket count:
+
+```php
+add_filter( 'wpgraphql_logging_dashboard_ranges', function( array $ranges ) {
+    $ranges['90d'] = [
+        'label'          => __( 'Last 90 days', 'my-plugin' ),
+        'bucket_seconds' => DAY_IN_SECONDS,
+        'bucket_count'   => 90,
+    ];
+    return $ranges;
+} );
+```
+
+If you [replace the log store](how-to/update-log-store-service/index.md), the dashboard shows a notice until you provide a stats service for your store. See that guide for details.
 
 ## Uninstallation
 
