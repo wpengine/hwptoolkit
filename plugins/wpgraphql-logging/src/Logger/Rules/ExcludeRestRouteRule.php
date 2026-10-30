@@ -10,8 +10,10 @@ use WPGraphQL\Logging\Logger\Api\LoggingRuleInterface;
 /**
  * Rule to check if a WordPress REST API route is excluded from logging.
  *
- * Each configured entry is treated as a route prefix, so `/wp/v2/users`
- * also excludes `/wp/v2/users/1` and `/wp/v2/users/me`.
+ * Each configured entry matches that route and everything below it, so
+ * `/wp/v2/users` also excludes `/wp/v2/users/1` and `/wp/v2/users/me`, but
+ * not `/wp/v2/users-extra`. Matching is case-insensitive, like WordPress
+ * REST route matching.
  *
  * @package WPGraphQL\Logging
  *
@@ -32,10 +34,10 @@ class ExcludeRestRouteRule implements LoggingRuleInterface {
 			return true;
 		}
 
-		$route           = '/' . ltrim( $query_string, '/' );
+		$route           = $this->normalize_route( $query_string );
 		$excluded_routes = array_filter( array_map( 'trim', explode( ',', $routes ) ), static fn( string $value ): bool => '' !== $value );
 		foreach ( $excluded_routes as $excluded_route ) {
-			if ( str_starts_with( $route, '/' . ltrim( $excluded_route, '/' ) ) ) {
+			if ( $this->matches( $route, $this->normalize_route( $excluded_route ) ) ) {
 				return false;
 			}
 		}
@@ -48,5 +50,24 @@ class ExcludeRestRouteRule implements LoggingRuleInterface {
 	 */
 	public function get_name(): string {
 		return 'exclude_rest_route_rule';
+	}
+
+	/**
+	 * Whether a route is the excluded route or sits below it.
+	 *
+	 * @param string $route          The normalized request route.
+	 * @param string $excluded_route The normalized excluded route.
+	 */
+	protected function matches( string $route, string $excluded_route ): bool {
+		return $route === $excluded_route || str_starts_with( $route, rtrim( $excluded_route, '/' ) . '/' );
+	}
+
+	/**
+	 * Normalize a route to a lowercase path with one leading slash and no trailing slash.
+	 *
+	 * @param string $route The route to normalize.
+	 */
+	protected function normalize_route( string $route ): string {
+		return '/' . strtolower( trim( $route, '/' ) );
 	}
 }

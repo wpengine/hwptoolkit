@@ -49,6 +49,19 @@ class ExcludeRestRouteRuleTest extends WPTestCase {
 		$this->assertTrue( $this->rule->passes( $config, '/wp/v2/posts' ) );
 	}
 
+	public function test_does_not_match_sibling_routes_sharing_a_prefix(): void {
+		$config = [ BasicConfigurationTab::EXCLUDE_REST_ROUTES => '/wp/v2/users/' ];
+
+		$this->assertFalse( $this->rule->passes( $config, '/wp/v2/users' ) );
+		$this->assertTrue( $this->rule->passes( $config, '/wp/v2/users-extra' ) );
+	}
+
+	public function test_matching_is_case_insensitive(): void {
+		$config = [ BasicConfigurationTab::EXCLUDE_REST_ROUTES => '/wp/v2/Users' ];
+
+		$this->assertFalse( $this->rule->passes( $config, '/WP/V2/USERS/1' ) );
+	}
+
 	public function test_get_name(): void {
 		$this->assertSame( 'exclude_rest_route_rule', $this->rule->get_name() );
 	}

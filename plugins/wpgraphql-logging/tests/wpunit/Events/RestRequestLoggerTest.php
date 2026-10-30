@@ -185,6 +185,63 @@ class RestRequestLoggerTest extends WPTestCase {
 		$this->assertCount( 1, $this->get_logs() );
 	}
 
+	public function test_log_points_setting_does_not_apply_to_rest(): void {
+		$this->create_instance( [ BasicConfigurationTab::EVENT_LOG_SELECTION => [] ] );
+		$this->serve( 'GET', '/wp/v2/posts' );
+
+		$this->assertCount( 1, $this->get_logs() );
+	}
+
+	public function test_rest_rules_filter_can_replace_rules(): void {
+		$callback = static fn(): array => [];
+		add_filter( 'wpgraphql_logging_rest_rules', $callback );
+		$this->create_instance( [ BasicConfigurationTab::LOG_REST_REQUESTS => false ] );
+		$this->serve( 'GET', '/wp/v2/posts' );
+		remove_filter( 'wpgraphql_logging_rest_rules', $callback );
+
+		$this->assertCount( 1, $this->get_logs() );
+	}
+
+	public function test_is_enabled_filter_applies_to_rest(): void {
+		add_filter( 'wpgraphql_logging_is_enabled', '__return_false' );
+		$this->create_instance( [] );
+		$this->serve( 'GET', '/wp/v2/posts' );
+		remove_filter( 'wpgraphql_logging_is_enabled', '__return_false' );
+
+		$this->assertCount( 0, $this->get_logs() );
+	}
+
+	public function test_duration_is_omitted_when_request_was_not_dispatched(): void {
+		$instance = $this->create_instance( [] );
+		$request  = new WP_REST_Request( 'GET', '/wp/v2/posts' );
+		$instance->log_rest_request( false, rest_ensure_response( [] ), $request );
+
+		$context = $this->get_logs()[0]->get_context();
+		$this->assertArrayNotHasKey( 'duration_ms', $context );
+		$this->assertSame( 200, $context['status'] );
+	}
+
+	public function test_only_the_first_dispatched_request_is_timed(): void {
+		$instance = $this->create_instance( [] );
+		$outer    = new WP_REST_Request( 'POST', '/batch/v1' );
+		$inner    = new WP_REST_Request( 'GET', '/wp/v2/posts' );
+		$instance->start_timer( null, rest_get_server(), $outer );
+		$instance->start_timer( null, rest_get_server(), $inner );
+
+		$property = new \ReflectionProperty( RestRequestLogger::class, 'start_time' );
+		$property->setAccessible( true );
+		$this->assertSame( [ spl_object_id( $outer ) ], array_keys( $property->getValue( $instance ) ) );
+	}
+
+	public function test_timer_is_reset_when_request_is_not_logged(): void {
+		$instance = $this->create_instance( [ BasicConfigurationTab::DATA_SAMPLING => '0' ] );
+		$this->serve( 'GET', '/wp/v2/posts' );
+
+		$property = new \ReflectionProperty( RestRequestLogger::class, 'start_time' );
+		$property->setAccessible( true );
+		$this->assertSame( [], $property->getValue( $instance ) );
+	}
+
 	public function test_error_response_logged_as_error(): void {
 		$this->create_instance( [] );
 		$this->serve( 'GET', '/wp/v2/does-not-exist' );
