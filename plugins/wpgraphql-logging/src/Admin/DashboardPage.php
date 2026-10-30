@@ -424,6 +424,20 @@ class DashboardPage {
 	}
 
 	/**
+	 * Shortens a label for display, keeping multibyte characters intact.
+	 *
+	 * @param string $text       The text to shorten.
+	 * @param int    $max_length Maximum number of characters before an ellipsis is added.
+	 */
+	public static function truncate( string $text, int $max_length = 80 ): string {
+		if ( mb_strlen( $text ) <= $max_length ) {
+			return $text;
+		}
+
+		return mb_substr( $text, 0, $max_length ) . "\u{2026}";
+	}
+
+	/**
 	 * Maps a Monolog level to the CSS modifier used for its bar: errors, warnings or entries.
 	 *
 	 * @param int $level The Monolog level.

@@ -246,6 +246,12 @@ class DashboardPageTest extends WPTestCase {
 		$this->assertSame( 'entries', DashboardPage::get_level_modifier( 250 ) );
 	}
 
+	public function test_truncate_keeps_short_text_and_shortens_long_text(): void {
+		$this->assertSame( 'GetPosts', DashboardPage::truncate( 'GetPosts' ) );
+		$this->assertSame( 'abc' . "\u{2026}", DashboardPage::truncate( 'abcdef', 3 ) );
+		$this->assertSame( 'ééé' . "\u{2026}", DashboardPage::truncate( 'éééé', 3 ) );
+	}
+
 	public function test_get_stats_service_defaults_to_database_and_is_filterable(): void {
 		$page = new DashboardPage();
 		$this->assertInstanceOf( WordPressDatabaseLogStats::class, $page->get_stats_service() );
@@ -345,6 +351,7 @@ class DashboardPageTest extends WPTestCase {
 		$this->assertStringContainsString( 'Show data table', $html );
 		$this->assertStringContainsString( 'aria-current="page"', $html );
 		$this->assertStringNotContainsString( '<img src=x', $html );
+		$this->assertStringContainsString( '&lt;img src=x onerror=alert(1)&gt;', $html );
 	}
 
 	public function test_render_page_shows_notice_when_dashboard_unavailable(): void {
