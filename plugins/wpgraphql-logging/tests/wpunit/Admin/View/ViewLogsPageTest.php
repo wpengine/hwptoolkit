@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Tests\Admin\View;
 
 
+use WPGraphQL\Logging\Admin\View\List\ListTable;
 use WPGraphQL\Logging\Admin\ViewLogsPage;
 use Codeception\TestCase\WPTestCase;
 use Brain\Monkey;
@@ -208,5 +209,42 @@ class ViewLogsPageTest extends WPTestCase {
 		$method = $reflection->getMethod('process_log_download');
 		$method->setAccessible(true);
 		$method->invoke($instance);
+	}
+
+	public function test_process_page_actions_before_rendering_handles_bulk_download_nonce(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+
+		unset($_GET['action'], $_GET['log']);
+		$_REQUEST['action']   = ListTable::BULK_DOWNLOAD_ACTION;
+		$_REQUEST['_wpnonce'] = 'invalid';
+		$_REQUEST['log']      = ['1'];
+
+		try {
+			$this->expectException(\WPDieException::class);
+			$this->expectExceptionMessage('Nonce verification failed!');
+			$instance->process_page_actions_before_rendering();
+		} finally {
+			unset($_REQUEST['action'], $_REQUEST['_wpnonce'], $_REQUEST['log']);
+		}
+	}
+
+	public function test_process_page_actions_before_rendering_runs_bulk_download(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+
+		unset($_GET['action'], $_GET['log']);
+		$_REQUEST['action']   = ListTable::BULK_DOWNLOAD_ACTION;
+		$_REQUEST['_wpnonce'] = wp_create_nonce('bulk-logs');
+		$_REQUEST['log']      = ['9999998', '9999999'];
+
+		// The IDs don't exist, so the download stops before any headers are sent.
+		try {
+			$this->expectException(\WPDieException::class);
+			$this->expectExceptionMessage('Logs not found.');
+			$instance->process_page_actions_before_rendering();
+		} finally {
+			unset($_REQUEST['action'], $_REQUEST['_wpnonce'], $_REQUEST['log']);
+		}
 	}
 }
