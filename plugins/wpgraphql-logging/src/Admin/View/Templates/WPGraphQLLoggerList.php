@@ -23,6 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<form method="post">
 		<?php $list_table->prepare_items(); ?>
+		<?php $list_table->search_box( __( 'Search Logs', 'wpgraphql-logging' ), 'wpgraphql-logging' ); ?>
 		<?php $list_table->display(); ?>
 	</form>
 </div>

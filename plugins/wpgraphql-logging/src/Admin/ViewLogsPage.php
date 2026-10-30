@@ -229,6 +229,11 @@ class ViewLogsPage {
 			return;
 		}
 
+		// The filters share a form with the bulk actions, which ListTable handles itself.
+		if ( $this->is_bulk_action_request() ) {
+			return;
+		}
+
 		$redirect_url = $this->get_redirect_url();
 
 		wp_safe_redirect( $redirect_url );
@@ -247,6 +252,7 @@ class ViewLogsPage {
 			'start_date',
 			'end_date',
 			'level_filter',
+			's',
 			'orderby',
 			'order',
 		];
@@ -258,11 +264,51 @@ class ViewLogsPage {
 			}
 		}
 
+		// Keep the typed page number only when the search and filters did not change.
+		$paged = $this->get_post_value( 'paged' );
+		if ( null !== $paged && absint( $paged ) > 1 && ! $this->filters_changed( $filters ) ) {
+			$filters['paged'] = (string) absint( $paged );
+		}
+
 		$redirect_url = add_query_arg( array_filter( $filters, static function ( $value ) {
 			return '' !== $value;
 		} ), $redirect_url );
 
 		return (string) apply_filters( 'wpgraphql_logging_filter_redirect_url', $redirect_url, $filters );
+	}
+
+	/**
+	 * Whether the submitted search or filters differ from the ones in the current URL.
+	 *
+	 * @param array<string, string> $filters The submitted filters.
+	 *
+	 * @phpcs:disable WordPress.Security.NonceVerification.Recommended
+	 *
+	 * @return bool True if any search or filter value changed.
+	 */
+	protected function filters_changed(array $filters): bool {
+		foreach ( [ 'start_date', 'end_date', 'level_filter', 's' ] as $key ) {
+			$current = isset( $_GET[ $key ] ) && is_string( $_GET[ $key ] ) ? sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) : '';
+			if ( ( $filters[ $key ] ?? '' ) !== $current ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Whether the submitted form is requesting a bulk action.
+	 *
+	 * @return bool True if a bulk action other than the "-1" placeholder was selected.
+	 */
+	protected function is_bulk_action_request(): bool {
+		foreach ( [ 'action', 'action2' ] as $key ) {
+			$value = $this->get_post_value( $key );
+			if ( null !== $value && '-1' !== $value ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

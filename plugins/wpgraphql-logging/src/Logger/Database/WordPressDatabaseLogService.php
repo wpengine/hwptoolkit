@@ -250,6 +250,10 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 			if ( '' === $column ) {
 				continue;
 			}
+			if ( self::SEARCH_COLUMN === $column ) {
+				$where_clauses[] = $this->prepare_search_clause( $condition );
+				continue;
+			}
 			if ( ! in_array( $column, $allowed_columns, true ) ) {
 				continue;
 			}
@@ -264,11 +268,48 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 			$this->where_values[] = $value;
 		}
 
+		$where_clauses = array_filter( $where_clauses, static fn( string $clause ): bool => '' !== $clause );
 		if ( ! empty( $where_clauses ) ) {
 			$sql .= ' WHERE ' . implode( ' AND ', $where_clauses );
 		}
 
 		return $sql;
+	}
+
+	/**
+	 * Builds the where clause for a free-text search condition.
+	 *
+	 * Only the message column and the top-level `query` key of the context JSON are searched.
+	 * A leading-wildcard LIKE cannot use an index, so the set is kept small on purpose: the
+	 * rest of the context (variables, request, response) can be large and would match noise.
+	 * Filtering by date or level narrows the rows first via the existing indexes.
+	 *
+	 * @param array{column: string, operator: string, value: string} $condition The search condition.
+	 *
+	 * @return string The where clause, or an empty string if the condition is invalid.
+	 */
+	protected function prepare_search_clause(array $condition): string {
+		global $wpdb;
+
+		if ( 'LIKE' !== $condition['operator'] || ! is_string( $condition['value'] ) ) {
+			return '';
+		}
+
+		$term = trim( $condition['value'] );
+		if ( '' === $term ) {
+			return '';
+		}
+
+		$like = '%' . $wpdb->esc_like( $term ) . '%';
+
+		// JSON_UNQUOTE() returns a binary collation on MySQL, so compare lowercase to stay case-insensitive.
+		$this->where_values[] = 'message';
+		$this->where_values[] = $like;
+		$this->where_values[] = 'context';
+		$this->where_values[] = '$.query';
+		$this->where_values[] = mb_strtolower( $like );
+
+		return '(%i LIKE %s OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(%i, %s))) LIKE %s)';
 	}
 
 	/**

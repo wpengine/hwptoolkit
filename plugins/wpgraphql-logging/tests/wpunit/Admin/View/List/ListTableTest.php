@@ -6,6 +6,7 @@ namespace WPGraphQL\Logging\Tests\Admin\View\List;
 
 
 use WPGraphQL\Logging\Admin\View\List\ListTable;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseLogService;
 use Codeception\TestCase\WPTestCase;
@@ -301,6 +302,63 @@ class ListTableTest extends WPTestCase {
 				'value' => '2025-12-31 00:00:00',
 			],
 		], $result);
+	}
+
+	public function test_process_where_handles_search(): void {
+		$reflection = new \ReflectionClass($this->list_table);
+		$method = $reflection->getMethod('process_where');
+		$method->setAccessible(true);
+
+		$request = [
+			'level_filter' => 'error',
+			's' => '  GetPosts <b>  ',
+		];
+		$result = $method->invoke($this->list_table, $request);
+
+		$this->assertSame([
+			[
+				'column' => 'level_name',
+				'operator' => '=',
+				'value' => 'error',
+			],
+			[
+				'column' => LogServiceInterface::SEARCH_COLUMN,
+				'operator' => 'LIKE',
+				'value' => 'GetPosts',
+			],
+		], $result);
+	}
+
+	public function test_process_where_ignores_empty_and_caps_long_search(): void {
+		$reflection = new \ReflectionClass($this->list_table);
+		$method = $reflection->getMethod('process_where');
+		$method->setAccessible(true);
+
+		$this->assertSame([], $method->invoke($this->list_table, ['s' => '   ']));
+		$this->assertSame([], $method->invoke($this->list_table, ['s' => ['array']]));
+
+		$result = $method->invoke($this->list_table, ['s' => str_repeat('a', ListTable::MAX_SEARCH_LENGTH + 50)]);
+		$this->assertSame(ListTable::MAX_SEARCH_LENGTH, strlen($result[0]['value']));
+	}
+
+	public function test_prepare_items_passes_search_to_count_and_find(): void {
+		$expected = [
+			[
+				'column' => LogServiceInterface::SEARCH_COLUMN,
+				'operator' => 'LIKE',
+				'value' => 'GetPosts',
+			],
+		];
+		$this->log_service->shouldReceive('count_entities_by_where')->once()->with($expected)->andReturn(1);
+		$this->log_service->shouldReceive('find_entities_by_where')->once()->with(Mockery::on(static function ($args) use ($expected) {
+			return $args['where'] === $expected;
+		}))->andReturn([]);
+
+		$_REQUEST = ['s' => 'GetPosts'];
+		$this->list_table->prepare_items();
+		$_REQUEST = [];
+
+		$this->assertSame([], $this->list_table->items);
 	}
 
 	public function test_prepare_items_sets_pagination_args(): void {
