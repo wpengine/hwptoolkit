@@ -13,6 +13,7 @@ use WPGraphQL\Logging\Admin\ViewLogsPage;
 use WPGraphQL\Logging\Events\EventManager;
 use WPGraphQL\Logging\Events\Events;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
+use WPGraphQL\Logging\Events\RestRequestLogger;
 use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Scheduler\DataDeletionScheduler;
 use WPGraphQL\Logging\Logger\Store\LogStoreService;
@@ -62,6 +63,7 @@ final class Plugin {
 	 */
 	public function setup(): void {
 		QueryEventLifecycle::init(); // Event lifecycle for capturing logs.
+		RestRequestLogger::init(); // REST API request logging (opt-in).
 		DataDeletionScheduler::init(); // Data deletion scheduler.
 
 		if ( is_admin() ) {
@@ -150,6 +152,7 @@ final class Plugin {
 					Events::RESPONSE_HEADERS_TO_SEND,
 				],
 				BasicConfigurationTab::LOG_RESPONSE        => false,
+				BasicConfigurationTab::LOG_REST_REQUESTS   => false,
 			],
 			DataManagementTab::get_name()     => [
 				DataManagementTab::DATA_DELETION_ENABLED => true,
