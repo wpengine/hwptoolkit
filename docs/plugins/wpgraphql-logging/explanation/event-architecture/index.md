@@ -9,9 +9,9 @@ The WPGraphQL Logging plugin implements a lightweight publish/subscribe event sy
 
 While WordPress already provides actions and filters, the plugin's event architecture adds several advantages:
 
-1. **Type safety and discoverability**: Event names are defined as constants in the `Events` class, making them easy to discover through IDE autocomplete and eliminating typos.
+1. **Discoverability**: Event names are defined as constants in the `Events` class, making them easy to discover through IDE autocomplete and eliminating typos.
 2. **Structured payloads**: Events carry well-defined data structures rather than arbitrary function arguments.
-3. **Priority-based execution**: Like WordPress hooks, but with explicit ordering guarantees (ascending numeric priority).
+3. **Priority-based execution**: Like WordPress hooks, with explicit ordering guarantees (ascending numeric priority).
 4. **Separation of concerns**: Subscribe for read-only observation or transform for mutation, making intent clear.
 5. **Error isolation**: Listener errors are caught and logged without breaking the execution pipeline.
 

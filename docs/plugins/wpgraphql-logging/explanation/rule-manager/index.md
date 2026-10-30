@@ -65,9 +65,11 @@ Performs substring matching against the query string to exclude specific operati
 
 ## Extensibility
 
-The `LoggingHelper::get_rule_manager()` method applies the `wpgraphql_logging_rules` filter to the default rules array before registering them. This filter is the primary extension point for custom rule logic. Because the filter receives the full array, you can add rules, remove rules, or replace the entire set.
+The plugin provides two filters for extending the rule system:
 
-After all rules evaluate, the `LoggingHelper::is_logging_enabled()` method applies one final filter: `wpgraphql_logging_is_enabled`. This filter receives the boolean result of `all_rules_pass()` and the configuration array, enabling dynamic control that bypasses all rules when necessary.
+**wpgraphql_logging_rules**: Applied in `LoggingHelper::get_rule_manager()` before rules are registered. This is the primary extension point for custom rule logic. Because the filter receives the full array, you can add, remove, or replace rules entirely.
+
+**wpgraphql_logging_is_enabled**: Applied in `LoggingHelper::is_logging_enabled()` after all rules evaluate. This filter receives the boolean result of `all_rules_pass()` and the configuration array, enabling dynamic control that bypasses all rules when necessary.
 
 ## Rule Evaluation Timing
 

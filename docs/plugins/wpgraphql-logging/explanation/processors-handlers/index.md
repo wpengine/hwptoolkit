@@ -61,7 +61,7 @@ The plugin exposes two filters when `LoggerService::get_instance()` creates a lo
 
 ## Performance Implications
 
-Processors add computational overhead: the more processors, the longer each log operation takes. However, processors only run when logging actually occurs, and the RuleManager (see [Rule Manager Explanation](../rule-manager/index.md)) gates whether events log at all. Sampling rates and query exclusion rules ensure processors only run on a subset of requests.
+Processors add computational overhead: the more processors, the longer each log operation takes. However, processors only run when logging actually occurs, and the Rule Manager (see [Rule Manager Explanation](../rule-manager/index.md)) gates whether events log at all. Sampling rates and query exclusion rules ensure processors only run on a subset of requests.
 
 Handlers determine I/O overhead. Database writes are buffered, file writes are asynchronous (at OS level), but network handlers (HTTP, Slack) can introduce latency. Use level thresholds to minimize expensive handler invocations.
 
