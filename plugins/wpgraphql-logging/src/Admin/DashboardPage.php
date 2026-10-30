@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Admin;
 
 use DateTimeImmutable;
-use DateTimeZone;
 use WPGraphQL\Logging\Admin\Dashboard\TimeSeriesChart;
 use WPGraphQL\Logging\Logger\Api\LogStatsInterface;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseLogService;
@@ -227,31 +226,51 @@ class DashboardPage {
 	}
 
 	/**
-	 * Computes the UTC start of the window for a range.
+	 * Computes the window and bucket boundaries for a range, aligned to the site time zone.
 	 *
-	 * Buckets are aligned to the site time zone: hourly ranges start at the top of the hour and
-	 * daily ranges start at local midnight, so the last bucket always contains "now".
+	 * Hourly ranges start at the top of a local hour. Daily ranges use local calendar days,
+	 * so a day can be 23 or 25 hours long when daylight saving time changes. The last bucket
+	 * always contains "now".
 	 *
-	 * @param int                     $bucket_seconds Bucket size in seconds.
-	 * @param int                     $bucket_count   Number of buckets.
-	 * @param \DateTimeImmutable|null $now            The current time (for testing).
+	 * @param array{label: string, bucket_seconds: int, bucket_count: int} $range The range definition.
+	 * @param \DateTimeImmutable|null                                      $now   The current time (for testing).
+	 *
+	 * @return array{start: int, end: int, bucket_starts: array<int, int>} Unix timestamps.
 	 */
-	public function get_window_start( int $bucket_seconds, int $bucket_count, ?DateTimeImmutable $now = null ): DateTimeImmutable {
-		$now = ( $now ?? new DateTimeImmutable( 'now' ) )->setTimezone( wp_timezone() );
+	public function get_window( array $range, ?DateTimeImmutable $now = null ): array {
+		$now            = ( $now ?? new DateTimeImmutable( 'now' ) )->setTimezone( wp_timezone() );
+		$bucket_seconds = max( 1, $range['bucket_seconds'] );
+		$bucket_count   = max( 1, $range['bucket_count'] );
+		$bucket_starts  = [];
 
 		if ( DAY_IN_SECONDS === $bucket_seconds ) {
-			// Step back in calendar days so the window starts at local midnight even across DST changes.
-			$start = $now->setTime( 0, 0 )->modify( sprintf( '-%d days', $bucket_count - 1 ) )->getTimestamp();
-			return ( new DateTimeImmutable( '@' . $start ) )->setTimezone( new DateTimeZone( 'UTC' ) );
+			$day = $now->setTime( 0, 0 )->modify( sprintf( '-%d days', $bucket_count - 1 ) );
+			for ( $i = 0; $i < $bucket_count; $i++ ) {
+				$bucket_starts[] = $day->getTimestamp();
+				$day             = $day->modify( '+1 day' );
+			}
+
+			return [
+				'start'         => $bucket_starts[0],
+				'end'           => $day->getTimestamp(),
+				'bucket_starts' => $bucket_starts,
+			];
 		}
 
-		$bucket_seconds = max( 1, $bucket_seconds );
-		$aligned        = HOUR_IN_SECONDS === $bucket_seconds
+		$aligned = HOUR_IN_SECONDS === $bucket_seconds
 			? $now->setTime( (int) $now->format( 'G' ), 0 )->getTimestamp()
 			: $now->getTimestamp() - ( $now->getTimestamp() % $bucket_seconds );
-		$start          = $aligned - ( $bucket_seconds * ( $bucket_count - 1 ) );
+		$start   = $aligned - ( $bucket_seconds * ( $bucket_count - 1 ) );
 
-		return ( new DateTimeImmutable( '@' . $start ) )->setTimezone( new DateTimeZone( 'UTC' ) );
+		for ( $i = 0; $i < $bucket_count; $i++ ) {
+			$bucket_starts[] = $start + ( $i * $bucket_seconds );
+		}
+
+		return [
+			'start'         => $start,
+			'end'           => $start + ( $bucket_seconds * $bucket_count ),
+			'bucket_starts' => $bucket_starts,
+		];
 	}
 
 	/**
@@ -277,11 +296,14 @@ class DashboardPage {
 	}
 
 	/**
-	 * Gets the dashboard data for a range, using a short-lived transient cache.
+	 * Gets the aggregated dashboard data for a range, using a short-lived transient cache.
+	 *
+	 * Only raw numbers and timestamps are cached; labels are formatted per request so each
+	 * user sees dates in their own locale.
 	 *
 	 * @param string $range The range slug.
 	 *
-	 * @return array{range: string, start: int, end: int, summary: array{total: int, errors: int, operations: int}, series: array<int, array{label: string, full_label: string, total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>}|null
+	 * @return array{range: string, start: int, end: int, bucket_starts: array<int, int>, summary: array{total: int, errors: int, operations: int}, series: array<int, array{total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>}|null
 	 */
 	public function get_dashboard_data( string $range ): ?array {
 		$ranges = $this->get_ranges();
@@ -297,32 +319,24 @@ class DashboardPage {
 		$cache_key = self::CACHE_KEY_PREFIX . $range;
 		$cached    = get_transient( $cache_key );
 		if ( is_array( $cached ) && isset( $cached['range'] ) && $range === $cached['range'] ) {
-			/** @var array{range: string, start: int, end: int, summary: array{total: int, errors: int, operations: int}, series: array<int, array{label: string, full_label: string, total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>} $cached */
+			/** @var array{range: string, start: int, end: int, bucket_starts: array<int, int>, summary: array{total: int, errors: int, operations: int}, series: array<int, array{total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>} $cached */
 			return $cached;
 		}
 
-		$bucket_seconds = $ranges[ $range ]['bucket_seconds'];
-		$bucket_count   = $ranges[ $range ]['bucket_count'];
-		$start          = $this->get_window_start( $bucket_seconds, $bucket_count );
-		$end            = $start->setTimestamp( $start->getTimestamp() + ( $bucket_seconds * $bucket_count ) );
+		$window = $this->get_window( $ranges[ $range ] );
+		$start  = new DateTimeImmutable( '@' . $window['start'] );
+		$end    = new DateTimeImmutable( '@' . $window['end'] );
 
 		$data = [
-			'range'      => $range,
-			'start'      => $start->getTimestamp(),
-			'end'        => $end->getTimestamp(),
-			'summary'    => $stats->get_summary( $start, $end ),
-			'series'     => $this->label_series( $stats->get_time_series( $start, $bucket_seconds, $bucket_count ), $start->getTimestamp(), $bucket_seconds ),
-			'levels'     => $stats->get_level_breakdown( $start, $end ),
-			'operations' => $stats->get_top_operations( $start, $end, self::TOP_OPERATIONS_LIMIT ),
+			'range'         => $range,
+			'start'         => $window['start'],
+			'end'           => $window['end'],
+			'bucket_starts' => $window['bucket_starts'],
+			'summary'       => $stats->get_summary( $start, $end ),
+			'series'        => $this->get_series( $stats, $window, $ranges[ $range ]['bucket_seconds'] ),
+			'levels'        => $stats->get_level_breakdown( $start, $end ),
+			'operations'    => $stats->get_top_operations( $start, $end, self::TOP_OPERATIONS_LIMIT ),
 		];
-
-		/**
-		 * Filters the dashboard data before it is cached and rendered.
-		 *
-		 * @param array  $data  The dashboard data.
-		 * @param string $range The range slug.
-		 */
-		$data = apply_filters( 'wpgraphql_logging_dashboard_data', $data, $range );
 
 		/**
 		 * Filters how long dashboard data is cached, in seconds. Return 0 to disable caching.
@@ -348,7 +362,8 @@ class DashboardPage {
 
 		$ranges        = $this->get_ranges(); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
 		$current_range = $this->get_current_range();
-		$data          = $this->get_dashboard_data( $current_range ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
+		$data          = $this->get_dashboard_data( $current_range );
+		$series        = null === $data ? [] : $this->label_series( $data['series'], $data['bucket_starts'], $ranges[ $current_range ]['bucket_seconds'] ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
 		$chart         = new TimeSeriesChart(); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
 		$base_url      = menu_page_url( self::ADMIN_PAGE_SLUG, false ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
 		$logs_url      = menu_page_url( ViewLogsPage::ADMIN_PAGE_SLUG, false ); // @phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
@@ -359,6 +374,39 @@ class DashboardPage {
 		}
 
 		require $template; // @phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	}
+
+	/**
+	 * Adds display labels to the bucket counts.
+	 *
+	 * @param array<int, array{total: int, errors: int}> $series         Bucket counts.
+	 * @param array<int, int>                            $bucket_starts  Bucket start timestamps.
+	 * @param int                                        $bucket_seconds The nominal bucket size.
+	 *
+	 * @return array<int, array{label: string, full_label: string, total: int, errors: int}>
+	 */
+	public function label_series( array $series, array $bucket_starts, int $bucket_seconds ): array {
+		$daily       = $bucket_seconds >= DAY_IN_SECONDS;
+		$date_format = (string) get_option( 'date_format', 'F j, Y' );
+		$time_format = (string) get_option( 'time_format', 'g:i a' );
+		/* translators: Short date format for chart axis labels, see https://www.php.net/manual/datetime.format.php */
+		$short_date = __( 'M j', 'wpgraphql-logging' );
+		$labelled   = [];
+
+		foreach ( array_values( $bucket_starts ) as $index => $timestamp ) {
+			$counts     = $series[ $index ] ?? [
+				'total'  => 0,
+				'errors' => 0,
+			];
+			$labelled[] = [
+				'label'      => (string) wp_date( $daily ? $short_date : $time_format, $timestamp ),
+				'full_label' => (string) wp_date( $daily ? $date_format : $date_format . ' ' . $time_format, $timestamp ),
+				'total'      => $counts['total'],
+				'errors'     => $counts['errors'],
+			];
+		}
+
+		return $labelled;
 	}
 
 	/**
@@ -389,6 +437,47 @@ class DashboardPage {
 	}
 
 	/**
+	 * Sums fixed-size source buckets into (possibly uneven) target buckets.
+	 *
+	 * @param array<int, array{total: int, errors: int}> $source         Source counts keyed by index.
+	 * @param int                                        $source_start   Start of source bucket 0 (Unix timestamp).
+	 * @param int                                        $source_seconds Size of each source bucket in seconds.
+	 * @param array<int, int>                            $bucket_starts  Ascending start timestamps of the target buckets.
+	 *
+	 * @return array<int, array{total: int, errors: int}> Target counts, one per bucket start.
+	 */
+	public static function fold_series( array $source, int $source_start, int $source_seconds, array $bucket_starts ): array {
+		$bucket_starts = array_values( $bucket_starts );
+		$count         = count( $bucket_starts );
+		if ( 0 === $count ) {
+			return [];
+		}
+
+		$totals = array_fill( 0, $count, 0 );
+		$errors = array_fill( 0, $count, 0 );
+
+		ksort( $source );
+		$bucket = 0;
+		foreach ( $source as $index => $counts ) {
+			$timestamp = $source_start + ( $index * $source_seconds );
+			while ( $bucket + 1 < $count && $timestamp >= $bucket_starts[ $bucket + 1 ] ) {
+				++$bucket;
+			}
+			$totals[ $bucket ] += $counts['total'];
+			$errors[ $bucket ] += $counts['errors'];
+		}
+
+		return array_map(
+			static fn ( int $total, int $error_count ): array => [
+				'total'  => $total,
+				'errors' => $error_count,
+			],
+			$totals,
+			$errors
+		);
+	}
+
+	/**
 	 * Checks that a filtered range has a key-safe slug, a label and positive integer bucket settings.
 	 *
 	 * @param string $slug  The range slug.
@@ -407,35 +496,27 @@ class DashboardPage {
 	}
 
 	/**
-	 * Adds display labels to time series buckets.
+	 * Gets the counts for each bucket in a window.
 	 *
-	 * @param array<int, array{total: int, errors: int}> $series         Counts keyed by bucket index.
-	 * @param int                                        $start          Window start as a Unix timestamp.
-	 * @param int                                        $bucket_seconds Bucket size in seconds.
+	 * Daily buckets follow local calendar days, which are not always 24 hours long, so they
+	 * are built from hourly counts rather than fixed 24-hour SQL buckets.
 	 *
-	 * @return array<int, array{label: string, full_label: string, total: int, errors: int}>
+	 * @param \WPGraphQL\Logging\Logger\Api\LogStatsInterface             $stats          The stats service.
+	 * @param array{start: int, end: int, bucket_starts: array<int, int>} $window         The window.
+	 * @param int                                                         $bucket_seconds The nominal bucket size.
+	 *
+	 * @return array<int, array{total: int, errors: int}>
 	 */
-	protected function label_series( array $series, int $start, int $bucket_seconds ): array {
-		$daily       = $bucket_seconds >= DAY_IN_SECONDS;
-		$date_format = (string) get_option( 'date_format', 'F j, Y' );
-		$time_format = (string) get_option( 'time_format', 'g:i a' );
-		$labelled    = [];
+	protected function get_series( LogStatsInterface $stats, array $window, int $bucket_seconds ): array {
+		$start = new DateTimeImmutable( '@' . $window['start'] );
 
-		ksort( $series );
-		foreach ( $series as $index => $counts ) {
-			$timestamp = $start + ( $index * $bucket_seconds );
-			if ( $daily ) {
-				// Label daily buckets by their midpoint so a DST shift cannot push the label onto the previous day.
-				$timestamp += intdiv( $bucket_seconds, 2 );
-			}
-			$labelled[] = [
-				'label'      => (string) wp_date( $daily ? 'M j' : $time_format, $timestamp ),
-				'full_label' => (string) wp_date( $daily ? $date_format : $date_format . ' ' . $time_format, $timestamp ),
-				'total'      => (int) $counts['total'],
-				'errors'     => (int) $counts['errors'],
-			];
+		if ( DAY_IN_SECONDS !== $bucket_seconds ) {
+			return array_values( $stats->get_time_series( $start, $bucket_seconds, count( $window['bucket_starts'] ) ) );
 		}
 
-		return $labelled;
+		$hours  = (int) ceil( ( $window['end'] - $window['start'] ) / HOUR_IN_SECONDS );
+		$hourly = $stats->get_time_series( $start, HOUR_IN_SECONDS, max( 1, $hours ) );
+
+		return self::fold_series( $hourly, $window['start'], HOUR_IN_SECONDS, $window['bucket_starts'] );
 	}
 }

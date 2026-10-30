@@ -11,7 +11,8 @@ use WPGraphQL\Logging\Admin\DashboardPage;
  *
  * @var array<string, array{label: string, bucket_seconds: int, bucket_count: int}> $ranges
  * @var string $current_range
- * @var array{range: string, start: int, end: int, summary: array{total: int, errors: int, operations: int}, series: array<int, array{label: string, full_label: string, total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>}|null $data
+ * @var array{range: string, start: int, end: int, bucket_starts: array<int, int>, summary: array{total: int, errors: int, operations: int}, series: array<int, array{total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>}|null $data
+ * @var array<int, array{label: string, full_label: string, total: int, errors: int}> $series
  * @var \WPGraphQL\Logging\Admin\Dashboard\TimeSeriesChart $chart
  * @var string $base_url
  * @var string $logs_url
@@ -100,7 +101,7 @@ $wpgraphql_logging_range_label = $ranges[ $current_range ]['label'] ?? '';
 			<figure class="wpgraphql-logging-chart">
 				<?php
 				$chart->render(
-					$data['series'],
+					$series,
 					'wpgraphql-logging-entries-chart',
 					/* translators: %s: time range label, e.g. "Last 7 days". */
 					sprintf( __( 'Log entries over time, %s', 'wpgraphql-logging' ), $wpgraphql_logging_range_label ),
@@ -125,7 +126,7 @@ $wpgraphql_logging_range_label = $ranges[ $current_range ]['label'] ?? '';
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ( $data['series'] as $wpgraphql_logging_point ) : ?>
+						<?php foreach ( $series as $wpgraphql_logging_point ) : ?>
 							<tr>
 								<th scope="row"><?php echo esc_html( $wpgraphql_logging_point['full_label'] ); ?></th>
 								<td class="num"><?php echo esc_html( number_format_i18n( $wpgraphql_logging_point['total'] ) ); ?></td>
@@ -200,7 +201,7 @@ $wpgraphql_logging_range_label = $ranges[ $current_range ]['label'] ?? '';
 										<?php if ( '' === $wpgraphql_logging_operation['operation'] ) : ?>
 											<em><?php esc_html_e( '(unnamed)', 'wpgraphql-logging' ); ?></em>
 										<?php else : ?>
-											<code><?php echo esc_html( $wpgraphql_logging_operation['operation'] ); ?></code>
+											<code title="<?php echo esc_attr( $wpgraphql_logging_operation['operation'] ); ?>"><?php echo esc_html( wp_html_excerpt( $wpgraphql_logging_operation['operation'], 80, '&hellip;' ) ); ?></code>
 										<?php endif; ?>
 									</th>
 									<td>
