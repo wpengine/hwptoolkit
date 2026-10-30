@@ -49,7 +49,7 @@ Checks if the query string exists and is not empty. Prevents logging when WPGrap
 
 ### 2. SamplingRateRule
 
-Implements probabilistic logging by checking a random number against the configured sampling rate (1-100%). For example, a 10% sampling rate means only 1 in 10 queries proceeds to logging. This rule is critical for high-traffic sites where logging everything is impractical. The randomness ensures representative samples without systematic bias.
+Implements probabilistic logging by checking a random number against the configured sampling rate (1-100%). The plugin defaults to a 10% sampling rate, meaning only 1 in 10 queries proceeds to logging. This rule is critical for high-traffic sites where logging everything is impractical. The randomness (using `wp_rand`) ensures representative samples without systematic bias.
 
 ### 3. EnabledRule
 
@@ -57,7 +57,7 @@ Checks the `BasicConfigurationTab::ENABLED` setting. This simple boolean provide
 
 ### 4. IpRestrictionsRule
 
-Evaluates whether the request IP matches any configured allow or deny lists. This enables targeted logging: only log queries from specific developer IPs during debugging, or exclude known bot IPs from production logs. IP-based filtering complements sampling by adding deterministic control over which clients get logged.
+Evaluates whether the request IP matches any configured allowlist IPs. When no IPs are configured, the rule passes (allows logging from all IPs). When IPs are configured, only requests from those specific IPs proceed to logging. This enables targeted logging: only log queries from specific developer IPs during debugging. IP-based filtering complements sampling by adding deterministic control over which clients get logged.
 
 ### 5. ExcludeQueryRule
 

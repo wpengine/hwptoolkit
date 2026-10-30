@@ -37,15 +37,15 @@ Every event published through the `EventManager` automatically triggers a corres
 
 ### Event Lifecycle
 
-The `QueryEventLifecycle` class orchestrates how WPGraphQL lifecycle events are captured and logged. It acts as a facade, mapping WPGraphQL core hooks (like `do_graphql_request`, `graphql_before_execute`, and `graphql_return_response`) to the plugin's event system.
+The `QueryEventLifecycle` class orchestrates how WPGraphQL lifecycle events are captured and logged. It acts as a facade, delegating to specialized logger classes (`QueryActionLogger` for actions, `QueryFilterLogger` for filters) and mapping WPGraphQL core hooks to the plugin's event system.
 
 When WPGraphQL executes a query, the lifecycle flows through several stages:
 
-1. `Events::PRE_REQUEST` maps to `do_graphql_request` (before the request is processed).
+1. `Events::PRE_REQUEST` maps to `do_graphql_request` action (before the request is processed).
 2. `Events::REQUEST_DATA` maps to `graphql_request_data` filter (captures the full payload).
-3. `Events::BEFORE_GRAPHQL_EXECUTION` maps to `graphql_before_execute` (before query execution).
+3. `Events::BEFORE_GRAPHQL_EXECUTION` maps to `graphql_before_execute` action (before query execution).
 4. `Events::REQUEST_RESULTS` maps to `graphql_request_results` filter (final execution results).
-5. `Events::BEFORE_RESPONSE_RETURNED` maps to `graphql_return_response` (before response sent to client).
+5. `Events::BEFORE_RESPONSE_RETURNED` maps to `graphql_return_response` action (before response sent to client).
 6. `Events::RESPONSE_HEADERS_TO_SEND` maps to `graphql_response_headers_to_send` filter (response headers).
 
 This mapping creates a consistent abstraction layer, shielding your code from WPGraphQL core implementation details.
