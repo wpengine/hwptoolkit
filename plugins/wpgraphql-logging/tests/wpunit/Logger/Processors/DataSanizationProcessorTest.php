@@ -179,4 +179,42 @@ class DataSanitizationProcessorTest extends WPTestCase {
 			'query' => 'query { posts { id } }'
 		]);
 	}
+
+	public function test_recommended_rules_anonymize_rest_params_and_response_password(): void {
+		$processor = $this->create_mock_processor(
+			[
+				DataManagementTab::DATA_SANITIZATION_ENABLED => true,
+				DataManagementTab::DATA_SANITIZATION_METHOD => 'recommended',
+			]
+		);
+
+		$record = new LogRecord(
+			new DateTimeImmutable('now'),
+			'wpgraphql_logging_rest',
+			Level::Info,
+			'WP REST POST /wp/v2/users',
+			[
+				'params' => [
+					'username' => 'admin',
+					'password' => 'secret',
+					'email'    => 'admin@example.com',
+					'name'     => 'Admin',
+				],
+				'response' => [
+					'name'     => 'App',
+					'password' => 'abcd efgh ijkl mnop',
+				],
+			],
+			[]
+		);
+
+		$context = $processor->__invoke($record)->toArray()['context'];
+
+		$this->assertSame('***', $context['params']['username']);
+		$this->assertSame('***', $context['params']['password']);
+		$this->assertSame('***', $context['params']['email']);
+		$this->assertSame('Admin', $context['params']['name']);
+		$this->assertSame('***', $context['response']['password']);
+		$this->assertSame('App', $context['response']['name']);
+	}
 }

@@ -70,6 +70,10 @@ class DataSanitizationProcessor implements ProcessorInterface {
 			'variables.username'                 => 'anonymize',
 			'variables.password'                 => 'anonymize',
 			'variables.email'                    => 'anonymize',
+			'params.username'                    => 'anonymize',
+			'params.password'                    => 'anonymize',
+			'params.email'                       => 'anonymize',
+			'response.password'                  => 'anonymize', // e.g. a new REST application password.
 		];
 
 		return apply_filters( 'wpgraphql_logging_data_sanitization_recommended_rules', $rules );

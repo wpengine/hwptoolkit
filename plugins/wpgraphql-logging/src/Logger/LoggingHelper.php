@@ -78,6 +78,22 @@ trait LoggingHelper {
 			return $this->rule_manager;
 		}
 
+		$this->rule_manager = new RuleManager();
+
+		/** @var \WPGraphQL\Logging\Logger\Api\LoggingRuleInterface $rule */
+		foreach ( $this->get_logging_rules() as $rule ) {
+			$this->rule_manager->add_rule( $rule );
+		}
+
+		return $this->rule_manager;
+	}
+
+	/**
+	 * Get the rules that decide whether a GraphQL event is logged.
+	 *
+	 * @return array<\WPGraphQL\Logging\Logger\Api\LoggingRuleInterface>
+	 */
+	protected function get_logging_rules(): array {
 		$default_rules = [
 			new QueryNullRule(),
 			new SamplingRateRule(),
@@ -91,16 +107,7 @@ trait LoggingHelper {
 		 *
 		 * @param array<\WPGraphQL\Logging\Logger\Api\LoggingRuleInterface> $rules Array of rule objects.
 		 */
-		$rules = apply_filters( 'wpgraphql_logging_rules', $default_rules );
-
-		$this->rule_manager = new RuleManager();
-
-		/** @var \WPGraphQL\Logging\Logger\Api\LoggingRuleInterface $rule */
-		foreach ( $rules as $rule ) {
-			$this->rule_manager->add_rule( $rule );
-		}
-
-		return $this->rule_manager;
+		return apply_filters( 'wpgraphql_logging_rules', $default_rules );
 	}
 
 	/**
