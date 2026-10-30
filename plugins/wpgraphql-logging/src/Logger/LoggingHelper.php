@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Logger;
 
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
+use WPGraphQL\Logging\Events\RequestTimer;
 use WPGraphQL\Logging\Logger\Rules\EnabledRule;
 use WPGraphQL\Logging\Logger\Rules\ExcludeQueryRule;
 use WPGraphQL\Logging\Logger\Rules\IpRestrictionsRule;
@@ -38,6 +39,25 @@ trait LoggingHelper {
 	public function should_log_response(array $config): bool {
 		$rule = new LogResponseRule();
 		return $rule->passes( $config );
+	}
+
+	/**
+	 * Adds the elapsed time of the current WPGraphQL request to the context.
+	 *
+	 * Used for the response events so the total request time is part of the
+	 * event context, which is what EventManager transforms and subscribers receive.
+	 *
+	 * @param array<string, mixed> $context The event context.
+	 *
+	 * @return array<string, mixed> The context, with `request_duration_ms` added when a request is being timed.
+	 */
+	public function add_request_duration(array $context): array {
+		$duration = RequestTimer::get_elapsed_ms();
+		if ( null !== $duration ) {
+			$context['request_duration_ms'] = $duration;
+		}
+
+		return $context;
 	}
 
 	/**

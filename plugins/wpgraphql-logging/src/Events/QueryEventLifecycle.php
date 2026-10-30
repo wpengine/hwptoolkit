@@ -87,6 +87,9 @@ class QueryEventLifecycle {
 	 * @psalm-suppress HookNotFound
 	 */
 	protected function setup(): void {
+		// Time the request lifecycle so records can include the elapsed duration.
+		RequestTimer::register_hooks();
+
 		// Map of action events to their corresponding logger methods and accepted args.
 		$action_events = [
 			Events::PRE_REQUEST              => [

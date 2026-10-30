@@ -10,6 +10,7 @@ use Monolog\Handler\BufferHandler;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Events\QueryFilterLogger;
 use WPGraphQL\Logging\Events\Events;
+use WPGraphQL\Logging\Events\RequestTimer;
 use GraphQL\Executor\ExecutionResult;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
@@ -188,6 +189,41 @@ class QueryFilterLoggerTest extends WPTestCase {
 		$response = new ExecutionResult(['query' => '{ test_query }']);
 		$instance->log_graphql_request_results($response, $schema, 'test_operation', $query, $variables, new Request(), null);
 		$this->assert_log_count(1);
+	}
+
+	public function test_graphql_request_results_includes_request_duration(): void {
+		$instance = $this->create_instance(
+			[
+				BasicConfigurationTab::ENABLED => true,
+				BasicConfigurationTab::EVENT_LOG_SELECTION => [Events::REQUEST_RESULTS],
+			]
+		);
+
+		$schema_config = SchemaConfig::create();
+		$schema = new WPSchema($schema_config, WPGraphQL::get_type_registry());
+		$request = new Request();
+		$response = new ExecutionResult(['query' => '{ test_query }']);
+
+		// Subscribers receive the context, so the duration must be part of it.
+		$published_context = null;
+		Plugin::on(Events::REQUEST_RESULTS, function(array $payload) use (&$published_context): void {
+			$published_context = $payload['context'];
+		});
+
+		RequestTimer::reset();
+		RequestTimer::on_request_data([]);
+		usleep(5000);
+		$instance->log_graphql_request_results($response, $schema, 'test_operation', '{ test_query }', null, $request, null);
+		RequestTimer::reset();
+		$this->assert_log_count(1);
+
+		$this->assertIsArray($published_context);
+		$this->assertArrayHasKey('request_duration_ms', $published_context);
+		$this->assertGreaterThanOrEqual(5, $published_context['request_duration_ms']);
+
+		$logs = $this->log_service->find_entities_by_where([]);
+		$this->assertCount(1, $logs);
+		$this->assertArrayHasKey('request_duration_ms', $logs[0]->get_context());
 	}
 
 	public function test_graphql_request_results_log_data_with_errors_array(): void {
