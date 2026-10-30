@@ -120,6 +120,7 @@ class RestRequestLoggerTest extends WPTestCase {
 		$this->assertSame( 200, $context['status'] );
 		$this->assertSame( '/wp/v2/posts', $context['matched_route'] );
 		$this->assertEquals( 1, $context['params']['per_page'] );
+		$this->assertArrayNotHasKey( 'order', $context['params'], 'Endpoint defaults should not be logged.' );
 		$this->assertArrayHasKey( 'duration_ms', $context );
 		$this->assertArrayNotHasKey( 'response', $context );
 		$this->assertArrayNotHasKey( 'errors', $context );

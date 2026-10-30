@@ -20,6 +20,10 @@ The plugin captures key events for the WPGraphQL event lifecycle (configurable)
 * **Response Headers**
 * **Request Results**
 
+### WordPress REST API Requests (opt-in)
+
+The plugin can also log WordPress REST API requests through the same pipeline, rules and admin screen. This is off by default. See [How to log WordPress REST API requests](how-to/log-rest-requests/index.md).
+
 ### Pub/Sub Event System
 
 Built with developers and plugins in mind, the plugin allows users to listen to individual events and transform or collect data from those events.
@@ -50,12 +54,13 @@ By default the following settings are pre-configured.
 
 ### Basic Configuration
 
-| Setting         | Default Value          | Description                                          |
-| --------------- | ---------------------- | ---------------------------------------------------- |
-| Enabled         | true                   | Master switch to enable/disable logging              |
-| Exclude Queries | `__schema,GetSeedNode` | To exclude introspection and Faust Seed Node queries |
-| Data Sampling   | 10%                    | Log only 10% of the queries                          |
-| Log Points      | Selects all            | Which lifecycle events to log                        |
+| Setting               | Default Value          | Description                                          |
+| --------------------- | ---------------------- | ---------------------------------------------------- |
+| Enabled               | true                   | Master switch to enable/disable logging              |
+| Exclude Queries       | `__schema,GetSeedNode` | To exclude introspection and Faust Seed Node queries |
+| Data Sampling         | 10%                    | Log only 10% of the queries                          |
+| Log Points            | Selects all            | Which lifecycle events to log                        |
+| Log REST API Requests | false                  | Also log WordPress REST API requests                 |
 
 ### Data Management
 
@@ -75,7 +80,9 @@ By default the following settings are pre-configured.
 * **Exclude Queries**: A comma-separated list of GraphQL query or mutation names to be excluded from logging.
 * **Data Sampling Rate**: A dropdown to select the percentage of requests that will be logged.
 * **Log Points**: A multi-select field to choose the specific WPGraphQL lifecycle events for which data should be logged.
-* **Log Response**: A toggle to determine whether the GraphQL response body should be included in the log.
+* **Log Response**: A toggle to determine whether the GraphQL response body should be included in the log. Also applies to REST API responses when REST logging is enabled.
+* **Log REST API Requests**: Also log WordPress REST API requests. Off by default. See [How to log WordPress REST API requests](how-to/log-rest-requests/index.md).
+* **Exclude REST Routes**: A comma-separated list of REST routes to skip, such as `/wp/v2/users`. Each entry also excludes the routes below it. Only used when REST logging is enabled.
 
 ### Data Management
 
@@ -85,7 +92,7 @@ By default the following settings are pre-configured.
 * **Number of Days to Retain Logs**: Number of days logged should be stored.
 * **Data Sanitization Enabled**: Enable data sanitization.
 * **Data Sanitization Method**: Choose between two sanitization methods (default is recommended)
-  * **Recommended Rules (Default)**: The following fields will be removed from the event data.
+  * **Recommended Rules (Default)**: The following fields will be removed or anonymized in the event data.
     * `request.app_context.viewer.data`
     * `request.app_context.viewer.allcaps`
     * `request.app_context.viewer.cap_key`
@@ -93,6 +100,8 @@ By default the following settings are pre-configured.
     * `variables.username`
     * `variables.password`
     * `variables.email`
+    * `params.username`, `params.password`, `params.email` (REST API request parameters)
+    * `response.password` (for example, a newly created application password in a REST response)
   * **Custom Rules**: Define your own sanitization rules by specifying fields to anonymize, remove, or truncate.
 
 ## Project Structure

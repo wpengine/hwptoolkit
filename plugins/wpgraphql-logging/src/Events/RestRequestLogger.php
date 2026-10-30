@@ -13,7 +13,6 @@ use WPGraphQL\Logging\Logger\Rules\EnabledRule;
 use WPGraphQL\Logging\Logger\Rules\ExcludeRestRouteRule;
 use WPGraphQL\Logging\Logger\Rules\IpRestrictionsRule;
 use WPGraphQL\Logging\Logger\Rules\LogRestRequestsRule;
-use WPGraphQL\Logging\Logger\Rules\RuleManager;
 use WPGraphQL\Logging\Logger\Rules\SamplingRateRule;
 use WP_HTTP_Response;
 use WP_REST_Request;
@@ -230,7 +229,7 @@ class RestRequestLogger {
 		$context = [
 			'method' => $request->get_method(),
 			'route'  => $request->get_route(),
-			'params' => $request->get_params(),
+			'params' => $this->get_sent_params( $request ),
 		];
 
 		if ( null !== $duration_ms ) {
@@ -261,17 +260,39 @@ class RestRequestLogger {
 	}
 
 	/**
-	 * Get the rule manager for REST requests, initializing it if necessary.
+	 * Get the parameters the client sent, leaving out endpoint defaults.
+	 *
+	 * WP_REST_Request::get_params() also returns every registered default
+	 * (page, per_page, context, order...), which would bloat each entry.
+	 * Values come from get_params(), so they are the sanitized values the
+	 * endpoint received.
+	 *
+	 * @param \WP_REST_Request $request The REST request.
+	 *
+	 * @return array<string, mixed>
+	 */
+	protected function get_sent_params( WP_REST_Request $request ): array {
+		$sent = array_merge(
+			$request->get_url_params(),
+			$request->get_query_params(),
+			$request->get_body_params(),
+			$request->get_json_params() ?? []
+		);
+
+		return array_intersect_key( $request->get_params(), $sent );
+	}
+
+	/**
+	 * Get the rules that decide whether a REST request is logged.
 	 *
 	 * GraphQL specific rules (query required, excluded queries) are swapped
 	 * for REST equivalents. The route is passed to rules in place of the
-	 * GraphQL query string.
+	 * GraphQL query string. Sampling runs last so the dice are only rolled
+	 * for requests that are otherwise eligible.
+	 *
+	 * @return array<\WPGraphQL\Logging\Logger\Api\LoggingRuleInterface>
 	 */
-	protected function get_rule_manager(): RuleManager {
-		if ( null !== $this->rule_manager ) {
-			return $this->rule_manager;
-		}
-
+	protected function get_logging_rules(): array {
 		$default_rules = [
 			new LogRestRequestsRule(),
 			new EnabledRule(),
@@ -285,15 +306,6 @@ class RestRequestLogger {
 		 *
 		 * @param array<\WPGraphQL\Logging\Logger\Api\LoggingRuleInterface> $rules Array of rule objects.
 		 */
-		$rules = apply_filters( 'wpgraphql_logging_rest_rules', $default_rules );
-
-		$this->rule_manager = new RuleManager();
-
-		/** @var \WPGraphQL\Logging\Logger\Api\LoggingRuleInterface $rule */
-		foreach ( $rules as $rule ) {
-			$this->rule_manager->add_rule( $rule );
-		}
-
-		return $this->rule_manager;
+		return apply_filters( 'wpgraphql_logging_rest_rules', $default_rules );
 	}
 }
