@@ -51,6 +51,9 @@ class RestRequestLoggerTest extends WPTestCase {
 			remove_filter( 'rest_pre_serve_request', [ $this->instance, 'log_rest_request' ], 10 );
 			$this->instance = null;
 		}
+		// The channel logger is a shared singleton with a BufferHandler. Flush records a test
+		// wrote but never read, so they are deleted here instead of leaking into the next test.
+		$this->flush();
 		$this->log_service->delete_all_entities();
 		parent::tearDown();
 	}
