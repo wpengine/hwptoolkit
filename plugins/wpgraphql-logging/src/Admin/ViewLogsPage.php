@@ -204,15 +204,17 @@ class ViewLogsPage {
 	 */
 	public function process_page_actions_before_rendering(): void {
 
-		// Nonce handled in process_log_download and process_filters_redirect.
+		// Nonce handled in process_log_download, ListTable::process_bulk_download and process_filters_redirect.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['action'] ) && 'download' === $_GET['action'] ) {
 			$this->process_log_download();
 		}
 
-		// Runs before rendering because it streams a CSV and exits. Nonce handled in the list table.
-		$list_table = new ListTable( $this->get_log_service() );
-		$list_table->process_bulk_download();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_REQUEST['action'] ) && ListTable::BULK_DOWNLOAD_ACTION === $_REQUEST['action'] ) {
+			$list_table = new ListTable( $this->get_log_service() );
+			$list_table->process_bulk_download();
+		}
 
 		$this->process_filters_redirect();
 	}

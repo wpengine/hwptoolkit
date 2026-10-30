@@ -133,7 +133,11 @@ Once setup, you can view logs under GraphQL Logs -> All Logs. The admin screen i
 
 ### Downloading Logs
 
-You can download individual logs in CSV format.
+You can download logs in CSV format, either one at a time with the "Download" row action, or several at once by checking them and choosing "Download Selected" from the bulk actions. A bulk download gives you one CSV with a header row and one row per selected log.
+
+Bulk downloads are streamed straight to the browser one row at a time, so no temporary files are written. A single bulk download is capped at 1,000 logs. You can change the cap with the `wpgraphql_logging_bulk_download_limit` filter, and rename the file with `wpgraphql_logging_bulk_csv_filename`.
+
+Cells that a spreadsheet would treat as a formula (starting with `=`, `+`, `-`, `@` and similar) are prefixed with `'`, because log values can come from unauthenticated GraphQL requests.
 
 **Example**
 
@@ -157,7 +161,7 @@ You can also filter logs with the following filters:
 
 ### Bulk Actions
 
-You can delete selected logs or all logs using the bulk action controls.
+You can download selected logs, delete selected logs, or delete all logs using the bulk action controls.
 
 ## Uninstallation
 
