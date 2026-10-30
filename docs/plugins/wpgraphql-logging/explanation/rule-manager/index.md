@@ -63,82 +63,19 @@ Evaluates whether the request IP matches any configured allowlist IPs. When no I
 
 Performs substring matching against the query string to exclude specific operations. The default configuration excludes `__schema` (introspection queries) and `GetSeedNode` (Faust.js internal queries). These automated queries add no debugging value but can dominate log volume on some sites. The rule uses case-insensitive matching to catch variations in query formatting.
 
-## The wpgraphql_logging_rules Filter
+## Extensibility
 
-The `LoggingHelper::get_rule_manager()` method applies the `wpgraphql_logging_rules` filter to the default rules array before registering them. This filter is the primary extension point for custom rule logic:
+The `LoggingHelper::get_rule_manager()` method applies the `wpgraphql_logging_rules` filter to the default rules array before registering them. This filter is the primary extension point for custom rule logic. Because the filter receives the full array, you can add rules, remove rules, or replace the entire set.
 
-```php
-add_filter( 'wpgraphql_logging_rules', function( $rules ) {
-    // Add a custom rule
-    $rules[] = new CustomRule();
-    
-    // Remove a specific rule
-    foreach ( $rules as $i => $rule ) {
-        if ( $rule instanceof EnabledRule ) {
-            unset( $rules[$i] );
-        }
-    }
-    
-    return array_values( $rules );
-} );
-```
-
-Because the filter receives the full array, you can add rules, remove rules, or replace the entire set. Remember to re-index with `array_values()` after unsetting elements to prevent sparse array issues.
+After all rules evaluate, the `LoggingHelper::is_logging_enabled()` method applies one final filter: `wpgraphql_logging_is_enabled`. This filter receives the boolean result of `all_rules_pass()` and the configuration array, enabling dynamic control that bypasses all rules when necessary.
 
 ## Rule Evaluation Timing
 
-Rules are evaluated multiple times during a request lifecycle, not just once:
-
-1. **Event-level evaluation**: The `LoggingHelper::should_log_event()` method checks rules before logging each event (pre-request, execution, response).
-2. **Query string dependency**: Some rules receive the query string, others don't. This means the same request might pass rules for one event but fail for another if the query hasn't been extracted yet.
-3. **Configuration caching**: The configuration array is retrieved once per request and passed to all rules, so rule decisions remain consistent within a single request.
-
-This multi-point evaluation ensures logging decisions reflect the latest state and context at each lifecycle stage.
-
-## Common Customization Patterns
-
-### Logging Only Failed Queries
-
-Create a rule that checks the response context for GraphQL errors. Only allow logging when errors are present, creating an error-focused log that ignores successful queries.
-
-### Limiting by Operation Name
-
-Extract the operation name from the query string and only log specific operations (e.g., mutations but not queries, or specific named operations). This focuses logs on high-value operations.
-
-### Time-based Logging
-
-Implement a rule that checks the current time and only logs during specific hours or days. Useful for reducing log volume during known high-traffic periods while maintaining coverage during lower-traffic times for detailed debugging.
-
-### User Role Restrictions
-
-Check the current user's capabilities or roles and only log queries from administrators or specific user segments. This supports compliance requirements that restrict logging of regular user activity.
+Rules are evaluated multiple times during a request lifecycle, not just once. The `LoggingHelper::should_log_event()` method checks rules before logging each event (pre-request, execution, response). Some rules receive the query string, others don't, meaning the same request might pass rules for one event but fail for another. The configuration array is retrieved once per request and passed to all rules, ensuring consistent decisions within a single request.
 
 ## Performance Characteristics
 
-The Rule Manager is designed for minimal overhead:
-
-- **Lazy initialization**: The `RuleManager` instantiates only when `get_rule_manager()` is first called.
-- **Short-circuit evaluation**: Early rule failures prevent later rule execution.
-- **No dynamic rule loading**: All rules register once per request, not per log operation.
-- **Singleton pattern**: One `RuleManager` instance serves all logging decisions in a request.
-
-The most expensive rule should be placed last in the filter to ensure it only runs when all cheaper rules pass.
-
-## The wpgraphql_logging_is_enabled Filter
-
-After all rules evaluate, the `LoggingHelper::is_logging_enabled()` method applies one final filter: `wpgraphql_logging_is_enabled`. This filter receives the boolean result of `all_rules_pass()` and the configuration array, allowing last-minute overrides:
-
-```php
-add_filter( 'wpgraphql_logging_is_enabled', function( $is_enabled, $config ) {
-    // Override rules for specific conditions
-    if ( defined( 'FORCE_LOGGING' ) && FORCE_LOGGING ) {
-        return true;
-    }
-    return $is_enabled;
-}, 10, 2 );
-```
-
-This filter is the ultimate escape hatch, enabling dynamic control that bypasses all rules when necessary.
+The Rule Manager is designed for minimal overhead through lazy initialization (instantiates only when first called), short-circuit evaluation (early rule failures prevent later rule execution), and a singleton pattern (one instance serves all logging decisions in a request). All rules register once per request, not per log operation. The most expensive rule should be placed last in the filter to ensure it only runs when all cheaper rules pass.
 
 ## Related Documentation
 

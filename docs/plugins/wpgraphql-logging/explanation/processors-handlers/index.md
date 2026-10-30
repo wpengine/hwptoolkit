@@ -30,30 +30,9 @@ This separation keeps intentional logged data (context) distinct from automatica
 
 ### Default Processors
 
-The plugin configures several processors by default through `LoggerService::get_default_processors()`:
+The plugin configures six processors by default through `LoggerService::get_default_processors()`: MemoryUsageProcessor, MemoryPeakUsageProcessor, WebProcessor (HTTP request metadata), ProcessIdProcessor, RequestHeadersProcessor (custom, captures HTTP headers), and DataSanitizationProcessor (custom, anonymizes/removes/truncates sensitive data). These run in order, each receiving the record modified by previous processors.
 
-1. **MemoryUsageProcessor**: Adds current memory consumption to track resource usage per query.
-2. **MemoryPeakUsageProcessor**: Captures peak memory usage during the request lifecycle.
-3. **WebProcessor**: Extracts HTTP request metadata (IP address, request method, URI, referrer).
-4. **ProcessIdProcessor**: Logs the PHP process ID, useful for debugging concurrent requests.
-5. **RequestHeadersProcessor**: Custom processor that captures and sanitizes HTTP request headers.
-6. **DataSanitizationProcessor**: Custom processor that anonymizes, removes, or truncates sensitive data.
-
-These processors run in order, each receiving the record modified by previous processors. The order matters: if one processor removes data that another processor expects, the second processor must run first.
-
-### The RequestHeadersProcessor
-
-This custom processor demonstrates a common pattern: extracting data from `$_SERVER` superglobal and adding it to the log record. It sanitizes header names and values before storing them in `extra['request_headers']`, ensuring no malicious input reaches log storage.
-
-### The DataSanitizationProcessor
-
-This processor implements compliance-friendly logging by applying configurable rules to remove or anonymize sensitive data. It supports three sanitization strategies:
-
-- **Anonymize**: Replace values with `'***'` (for passwords, emails, usernames).
-- **Remove**: Delete the key entirely (for user capability data, tokens).
-- **Truncate**: Shorten strings to 47 characters + `'...'` (for long query strings).
-
-The processor uses dot notation to target nested data (`variables.password`, `request.app_context.viewer.data`), making it flexible for complex log structures. Settings can use recommended defaults or custom field lists via `wpgraphql_logging_data_sanitization_rules` filter.
+The DataSanitizationProcessor implements compliance-friendly logging by applying configurable rules. It supports three strategies: anonymize (replace with `'***'`), remove (delete the key), or truncate (shorten to 47 characters). The processor uses dot notation to target nested data like `variables.password` or `request.app_context.viewer.data`, with settings via the `wpgraphql_logging_data_sanitization_rules` filter.
 
 ## Handlers: Writing Log Data
 
@@ -67,45 +46,18 @@ The plugin's default handler extends Monolog's `AbstractProcessingHandler` and w
 - **Error resilient**: Catches exceptions during writes and fires `wpgraphql_logging_write_database_error` action without breaking execution.
 - **Level-aware**: Only writes records at or above its configured minimum level (default: all levels).
 
-### Why Buffer Logs?
+### The Logging Pipeline
 
-A single GraphQL query can trigger multiple log events (pre-request, execution, response). Without buffering, each event would cause an immediate database write, potentially adding dozens of queries per request. The `BufferHandler` accumulates records in memory and writes them in one batch at the end of the request, drastically improving performance.
+A single GraphQL query can trigger multiple log events. Without buffering, each would cause an immediate database write. The `BufferHandler` accumulates up to 50 records in memory and writes them in one batch at the end of the request, drastically improving performance.
 
-### Handler vs. Processor Lifecycle
+The pipeline flows sequentially: log call → merge default context → run processors in order → pass final record to handlers → each handler checks level requirement → write to destinations. This ensures all enrichment happens before any storage, and different handlers can apply different level filters.
 
-Understanding when processors and handlers run is critical:
+## Extensibility
 
-1. Your code calls `$logger->info( 'message', $context )`.
-2. LoggerService merges `$context` with default context (WP version, plugin version, site URL).
-3. Each processor runs in order, modifying the `LogRecord`.
-4. After all processors finish, handlers receive the final `LogRecord`.
-5. Each handler checks if the record meets its minimum level requirement.
-6. Handlers write the record to their respective destinations.
+The plugin exposes two filters when `LoggerService::get_instance()` creates a logger:
 
-This pipeline ensures that all enrichment happens before any storage, and that different handlers can apply different level filters.
-
-## Extensibility Through Filters
-
-The plugin exposes two filters for customizing the logging pipeline:
-
-- **wpgraphql_logging_default_processors**: Modify the array of processors before they're added to the logger. Add custom processors or remove defaults.
-- **wpgraphql_logging_default_handlers**: Modify the array of handlers. Replace the database handler with a file handler, add a Slack handler for errors, or combine multiple destinations.
-
-These filters run when `LoggerService::get_instance()` creates a logger, so changes apply immediately to all log operations.
-
-## Common Customization Patterns
-
-### Adding a File Handler for Errors
-
-Add a `StreamHandler` that only writes ERROR and above to a file while keeping the default database handler for all levels. This creates an audit trail of serious issues without filling the database with debug logs.
-
-### Removing Sensitive Processors
-
-If your environment prohibits logging IP addresses, filter out the `WebProcessor` via `wpgraphql_logging_default_processors`, ensuring compliance without modifying core plugin files.
-
-### Multi-destination Logging
-
-Use multiple handlers to send INFO+ to the database, ERROR+ to a file, and CRITICAL+ to a Slack webhook. Each handler operates independently with its own level threshold.
+- **wpgraphql_logging_default_processors**: Modify the array of processors. Add custom processors or remove defaults (e.g., remove WebProcessor for compliance).
+- **wpgraphql_logging_default_handlers**: Modify the array of handlers. Replace the database handler, add file/Slack handlers for errors, or combine multiple destinations with different level thresholds.
 
 ## Performance Implications
 
