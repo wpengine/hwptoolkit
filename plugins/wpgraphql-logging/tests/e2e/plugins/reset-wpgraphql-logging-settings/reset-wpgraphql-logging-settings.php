@@ -15,6 +15,11 @@ add_action('init', function () {
     $table_name = $wpdb->prefix . 'wpgraphql_logging';
     $wpdb->query("TRUNCATE TABLE {$table_name}");
 
+    // Clear cached dashboard figures
+    foreach (array('24h', '7d', '30d') as $range) {
+      delete_transient('wpgraphql_logging_dashboard_' . $range);
+    }
+
 
 		// Remove admin notice dismissed meta data
 		delete_user_meta(get_current_user_id(), 'wpgraphql-logging-admin-notice');

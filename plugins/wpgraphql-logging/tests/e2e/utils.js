@@ -22,6 +22,16 @@ export async function goToLogsListPage(admin) {
 }
 
 /**
+ * Navigate to the WPGraphQL Logging dashboard page
+ */
+export async function goToDashboardPage(admin, range = "") {
+	const query = range ? `&range=${range}` : "";
+	await admin.visitAdminPage(
+		`/admin.php?page=wpgraphql-logging-dashboard${query}`
+	);
+}
+
+/**
  * Configure logging settings with common options
  */
 export async function configureLogging(page, settings = {}) {
