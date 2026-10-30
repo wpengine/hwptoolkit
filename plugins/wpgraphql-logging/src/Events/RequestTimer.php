@@ -7,9 +7,10 @@ namespace WPGraphQL\Logging\Events;
 /**
  * Tracks the elapsed time of the current WPGraphQL request lifecycle.
  *
- * The timer starts at the earliest WPGraphQL hook we can observe for a request
- * (`graphql_request_data`, falling back to `do_graphql_request`), is bound to the
- * request when `graphql_before_execute` fires, and is released on
+ * The timer starts at the earliest WPGraphQL hook we can observe for a request:
+ * `graphql_process_http_request` for HTTP requests, otherwise
+ * `graphql_request_data` or `do_graphql_request` for `graphql()` calls. It is
+ * bound to the request when `graphql_before_execute` fires and released on
  * `graphql_after_execute`.
  *
  * Timers are kept on a stack so that a `graphql()` call made while another
@@ -17,6 +18,10 @@ namespace WPGraphQL\Logging\Events;
  * and does not reset the outer request's timer. A batched HTTP request fires
  * `graphql_before_execute` / `graphql_after_execute` once, so all operations in
  * the batch share one timer that measures the whole HTTP request.
+ *
+ * All state is cleared when an HTTP request starts and when its response is
+ * ready (`graphql_process_http_request_response`), so a request that throws
+ * before `graphql_after_execute` cannot leak its timer into the next one.
  *
  * @package WPGraphQL\Logging
  *
@@ -38,10 +43,28 @@ final class RequestTimer {
 	public const STOP_PRIORITY = PHP_INT_MAX;
 
 	/**
+	 * WPGraphQL action: graphql_process_http_request.
+	 *
+	 * Fires once per HTTP request, before the WPGraphQL request is created.
+	 *
+	 * @var string
+	 */
+	public const HTTP_REQUEST_START_HOOK = 'graphql_process_http_request';
+
+	/**
+	 * WPGraphQL action: graphql_process_http_request_response.
+	 *
+	 * Fires once per HTTP request when the response is ready to be sent, including
+	 * when execution threw an error.
+	 *
+	 * @var string
+	 */
+	public const HTTP_REQUEST_END_HOOK = 'graphql_process_http_request_response';
+
+	/**
 	 * WPGraphQL action: graphql_after_execute.
 	 *
-	 * Fires once after a request (single or batch) has executed. Not a loggable
-	 * event, so it is not part of the Events list.
+	 * Fires once after a request (single or batch) has executed.
 	 *
 	 * @var string
 	 */
@@ -65,45 +88,55 @@ final class RequestTimer {
 	/**
 	 * Registers the hooks that drive the timer.
 	 *
+	 * These hooks are not logging events, so they are not part of the Events list.
+	 *
 	 * @psalm-suppress HookNotFound
 	 */
 	public static function register_hooks(): void {
+		add_action( self::HTTP_REQUEST_START_HOOK, [ self::class, 'on_http_request' ], self::START_PRIORITY, 0 );
 		add_filter( Events::REQUEST_DATA, [ self::class, 'on_request_data' ], self::START_PRIORITY, 1 );
-		add_action( Events::PRE_REQUEST, [ self::class, 'on_pre_request' ], self::START_PRIORITY, 0 );
+		add_action( Events::PRE_REQUEST, [ self::class, 'start' ], self::START_PRIORITY, 0 );
 		add_action( Events::BEFORE_GRAPHQL_EXECUTION, [ self::class, 'on_before_execute' ], self::START_PRIORITY, 0 );
 		add_action( self::AFTER_EXECUTE_HOOK, [ self::class, 'on_after_execute' ], self::STOP_PRIORITY, 0 );
+		add_action( self::HTTP_REQUEST_END_HOOK, [ self::class, 'reset' ], self::STOP_PRIORITY, 0 );
 	}
 
 	/**
-	 * Starts timing a new request when its data is parsed.
+	 * Starts timing a new HTTP request.
 	 *
-	 * Hooked to the `graphql_request_data` filter, which fires once per request
-	 * before any operation is processed. Always restarts the pending timer, since
-	 * this is the first hook of a new request.
-	 *
-	 * @param array<mixed> $data The request data.
-	 *
-	 * @return array<mixed> The request data, unchanged.
+	 * Hooked to `graphql_process_http_request`. An HTTP request is always the
+	 * outermost request, so any state left over from earlier requests is cleared.
 	 */
-	public static function on_request_data( array $data ): array {
-		self::$pending_start = hrtime( true );
+	public static function on_http_request(): void {
+		self::reset();
+		self::start();
+	}
+
+	/**
+	 * Starts timing when the request data is parsed, if not already started.
+	 *
+	 * Hooked to the `graphql_request_data` filter.
+	 *
+	 * @param mixed $data The request data. Returned unchanged.
+	 */
+	public static function on_request_data( mixed $data ): mixed {
+		self::start();
 
 		return $data;
 	}
 
 	/**
-	 * Starts timing if `graphql_request_data` did not fire for this request.
+	 * Starts timing a request that has been seen but not executed yet.
 	 *
-	 * Hooked to `do_graphql_request`, which fires once per operation. For a batch
-	 * this runs several times in a row, so it only starts the timer when one is
-	 * not already pending.
+	 * Does nothing if a pending timer already exists, so the earliest hook wins
+	 * and the repeated `do_graphql_request` calls of a batch do not restart it.
 	 */
-	public static function on_pre_request(): void {
+	public static function start(): void {
 		if ( null !== self::$pending_start ) {
 			return;
 		}
 
-		self::$pending_start = hrtime( true );
+		self::$pending_start = self::now();
 	}
 
 	/**
@@ -112,7 +145,7 @@ final class RequestTimer {
 	 * Hooked to `graphql_before_execute`.
 	 */
 	public static function on_before_execute(): void {
-		self::$stack[]       = self::$pending_start ?? hrtime( true );
+		self::$stack[]       = self::$pending_start ?? self::now();
 		self::$pending_start = null;
 	}
 
@@ -143,7 +176,7 @@ final class RequestTimer {
 			return null;
 		}
 
-		return round( ( hrtime( true ) - $start ) / 1000000, 2 );
+		return round( ( self::now() - $start ) / 1000000, 2 );
 	}
 
 	/**
@@ -160,7 +193,7 @@ final class RequestTimer {
 	 * A pending start belongs to a request that has been seen more recently than
 	 * any executing one, so it takes precedence over the stack.
 	 *
-	 * @return int|null The hrtime start in nanoseconds, or null if none.
+	 * @return int|null The start time in nanoseconds, or null if none.
 	 */
 	private static function get_start(): ?int {
 		if ( null !== self::$pending_start ) {
@@ -172,5 +205,20 @@ final class RequestTimer {
 		}
 
 		return self::$stack[ count( self::$stack ) - 1 ];
+	}
+
+	/**
+	 * Gets the current monotonic time in nanoseconds.
+	 *
+	 * Falls back to the wall clock if hrtime() is unavailable, so the timer can
+	 * never break a GraphQL request.
+	 */
+	private static function now(): int {
+		$time = hrtime( true );
+		if ( is_int( $time ) ) {
+			return $time;
+		}
+
+		return (int) ( microtime( true ) * 1000000000 );
 	}
 }

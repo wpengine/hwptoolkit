@@ -35,10 +35,40 @@ class RequestTimerTest extends WPTestCase {
 	public function test_register_hooks(): void {
 		RequestTimer::register_hooks();
 
+		$this->assertSame( RequestTimer::START_PRIORITY, has_action( RequestTimer::HTTP_REQUEST_START_HOOK, [ RequestTimer::class, 'on_http_request' ] ) );
 		$this->assertSame( RequestTimer::START_PRIORITY, has_filter( Events::REQUEST_DATA, [ RequestTimer::class, 'on_request_data' ] ) );
-		$this->assertSame( RequestTimer::START_PRIORITY, has_action( Events::PRE_REQUEST, [ RequestTimer::class, 'on_pre_request' ] ) );
+		$this->assertSame( RequestTimer::START_PRIORITY, has_action( Events::PRE_REQUEST, [ RequestTimer::class, 'start' ] ) );
 		$this->assertSame( RequestTimer::START_PRIORITY, has_action( Events::BEFORE_GRAPHQL_EXECUTION, [ RequestTimer::class, 'on_before_execute' ] ) );
 		$this->assertSame( RequestTimer::STOP_PRIORITY, has_action( RequestTimer::AFTER_EXECUTE_HOOK, [ RequestTimer::class, 'on_after_execute' ] ) );
+		$this->assertSame( RequestTimer::STOP_PRIORITY, has_action( RequestTimer::HTTP_REQUEST_END_HOOK, [ RequestTimer::class, 'reset' ] ) );
+	}
+
+	public function test_http_request_lifecycle(): void {
+		RequestTimer::on_http_request();
+		usleep( 5000 );
+
+		// Later hooks of the same request keep the HTTP start time.
+		RequestTimer::on_request_data( [] );
+		RequestTimer::start();
+		RequestTimer::on_before_execute();
+		$this->assertGreaterThanOrEqual( 5, RequestTimer::get_elapsed_ms() );
+
+		RequestTimer::on_after_execute();
+		$this->assertFalse( RequestTimer::is_running() );
+	}
+
+	public function test_http_request_clears_state_left_by_a_failed_request(): void {
+		// A request that threw after graphql_before_execute never reaches graphql_after_execute.
+		RequestTimer::on_request_data( [] );
+		RequestTimer::on_before_execute();
+		usleep( 20000 );
+
+		RequestTimer::on_http_request();
+
+		$this->assertLessThan( 20, RequestTimer::get_elapsed_ms() );
+		RequestTimer::on_before_execute();
+		RequestTimer::on_after_execute();
+		$this->assertFalse( RequestTimer::is_running() );
 	}
 
 	public function test_request_data_starts_timer_and_returns_data_unchanged(): void {
@@ -59,33 +89,37 @@ class RequestTimerTest extends WPTestCase {
 		$this->assertGreaterThanOrEqual( 5, RequestTimer::get_elapsed_ms() );
 	}
 
-	public function test_pre_request_starts_timer_when_not_pending(): void {
-		RequestTimer::on_pre_request();
+	public function test_start_starts_timer_when_not_pending(): void {
+		RequestTimer::start();
 		$this->assertTrue( RequestTimer::is_running() );
 	}
 
-	public function test_pre_request_does_not_restart_pending_timer_for_batch_operations(): void {
+	public function test_start_does_not_restart_pending_timer_for_batch_operations(): void {
 		RequestTimer::on_request_data( [] );
 		usleep( 5000 );
 
 		// A batch fires do_graphql_request once per operation.
-		RequestTimer::on_pre_request();
-		RequestTimer::on_pre_request();
+		RequestTimer::start();
+		RequestTimer::start();
 
 		$this->assertGreaterThanOrEqual( 5, RequestTimer::get_elapsed_ms() );
 	}
 
-	public function test_request_data_restarts_pending_timer(): void {
-		RequestTimer::on_request_data( [] );
-		usleep( 20000 );
+	public function test_request_data_keeps_earlier_pending_start(): void {
+		RequestTimer::start();
+		usleep( 5000 );
 		RequestTimer::on_request_data( [] );
 
-		$this->assertLessThan( 20, RequestTimer::get_elapsed_ms() );
+		$this->assertGreaterThanOrEqual( 5, RequestTimer::get_elapsed_ms() );
+	}
+
+	public function test_request_data_returns_non_array_data_unchanged(): void {
+		$this->assertNull( RequestTimer::on_request_data( null ) );
 	}
 
 	public function test_timer_spans_execution_and_stops_after_execute(): void {
 		RequestTimer::on_request_data( [] );
-		RequestTimer::on_pre_request();
+		RequestTimer::start();
 		usleep( 5000 );
 		RequestTimer::on_before_execute();
 
