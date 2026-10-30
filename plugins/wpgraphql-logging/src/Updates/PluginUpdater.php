@@ -77,9 +77,11 @@ class PluginUpdater {
 	/**
 	 * The manifest fetched during this request, so it is requested at most once per request.
 	 *
-	 * @var \stdClass|false|null Null until fetched, false if it could not be fetched.
+	 * Null until fetched, false if it could not be fetched.
+	 *
+	 * @var array<string, string>|false|null
 	 */
-	protected stdClass|false|null $manifest = null;
+	protected array|false|null $manifest = null;
 
 	/**
 	 * Updaters registered during this request, keyed by plugin basename.
@@ -169,7 +171,7 @@ class PluginUpdater {
 			return $transient;
 		}
 
-		$has_update = version_compare( $installed_version, $manifest->version, '<' );
+		$has_update = version_compare( $installed_version, $manifest['version'], '<' );
 
 		return $this->set_transient_item( $transient, $this->parse_plugin_info( $manifest ), $has_update );
 	}
@@ -239,8 +241,8 @@ class PluginUpdater {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
-		$plugins              = get_plugins();
-		$this->plugin_version = (string) ( $plugins[ $this->plugin_basename ]['Version'] ?? '' );
+		$version              = get_plugins()[ $this->plugin_basename ]['Version'] ?? '';
+		$this->plugin_version = is_string( $version ) ? $version : '';
 
 		return $this->plugin_version;
 	}
@@ -252,9 +254,9 @@ class PluginUpdater {
 	 * the API is called at most once even though core saves the update
 	 * transient more than once per check.
 	 *
-	 * @return \stdClass|null The decoded manifest, or null if it is unavailable or invalid.
+	 * @return array<string, string>|null The manifest, or null if it is unavailable or invalid.
 	 */
-	protected function fetch_plugin_info(): ?stdClass {
+	protected function fetch_plugin_info(): ?array {
 		if ( null === $this->manifest ) {
 			$this->manifest = $this->get_cached_manifest() ?? $this->request_manifest() ?? false;
 		}
@@ -264,12 +266,14 @@ class PluginUpdater {
 
 	/**
 	 * Return the cached manifest if it has not expired and is still valid.
+	 *
+	 * @return array<string, string>|null
 	 */
-	protected function get_cached_manifest(): ?stdClass {
-		$expiry = (int) get_option( $this->get_cache_expiry_option_name(), 0 );
+	protected function get_cached_manifest(): ?array {
+		$expiry = get_option( $this->get_cache_expiry_option_name(), 0 );
 		$body   = get_option( $this->get_cache_option_name() );
 
-		if ( time() > $expiry || ! is_string( $body ) ) {
+		if ( ! is_numeric( $expiry ) || time() > (int) $expiry || ! is_string( $body ) ) {
 			return null;
 		}
 
@@ -278,8 +282,10 @@ class PluginUpdater {
 
 	/**
 	 * Request the manifest from the updates API and cache it if it is valid.
+	 *
+	 * @return array<string, string>|null
 	 */
-	protected function request_manifest(): ?stdClass {
+	protected function request_manifest(): ?array {
 		// Only runs during update checks and is cached for CACHE_TTL, so the 10s timeout used by FaustWP is acceptable here.
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 		$response = wp_remote_get(
@@ -310,24 +316,40 @@ class PluginUpdater {
 	}
 
 	/**
-	 * Decode a manifest body and check it has the fields needed to offer an update.
+	 * Decode a manifest body into sanitized strings.
 	 *
 	 * @param string $body The raw JSON body.
+	 *
+	 * @return array<string, string>|null The manifest, or null if it is invalid or missing a required field.
 	 */
-	protected function decode_manifest( string $body ): ?stdClass {
-		$manifest = json_decode( $body );
+	protected function decode_manifest( string $body ): ?array {
+		$data = json_decode( $body );
 
-		if ( ! $manifest instanceof stdClass ) {
+		if ( ! $data instanceof stdClass ) {
 			return null;
 		}
 
-		foreach ( [ 'name', 'slug', 'version', 'download_link' ] as $field ) {
-			if ( ! isset( $manifest->$field ) || ! is_string( $manifest->$field ) || '' === $manifest->$field ) {
+		$sections = isset( $data->sections ) && $data->sections instanceof stdClass ? $data->sections : new stdClass();
+
+		$manifest = [
+			'name'          => sanitize_text_field( $this->get_string( $data, 'name' ) ),
+			'slug'          => sanitize_key( $this->get_string( $data, 'slug' ) ),
+			'version'       => sanitize_text_field( $this->get_string( $data, 'version' ) ),
+			'download_link' => esc_url_raw( $this->get_string( $data, 'download_link' ), [ 'https', 'http' ] ),
+			'requires'      => sanitize_text_field( $this->get_string( $data, 'requires' ) ),
+			'requires_php'  => sanitize_text_field( $this->get_string( $data, 'requires_php' ) ),
+			'tested'        => sanitize_text_field( $this->get_string( $data, 'tested' ) ),
+			'description'   => wp_kses_post( $this->get_string( $sections, 'description' ) ),
+			'changelog'     => wp_kses_post( $this->get_string( $sections, 'changelog' ) ),
+		];
+
+		foreach ( [ 'name', 'slug', 'version', 'download_link' ] as $required ) {
+			if ( '' === $manifest[ $required ] ) {
 				return null;
 			}
 		}
 
-		return '' === esc_url_raw( $manifest->download_link, [ 'https', 'http' ] ) ? null : $manifest;
+		return $manifest;
 	}
 
 	/**
@@ -358,60 +380,41 @@ class PluginUpdater {
 	/**
 	 * Map the manifest to the object WordPress expects for updates and plugin information.
 	 *
-	 * @param \stdClass $manifest The decoded, validated manifest.
+	 * @param array<string, string> $manifest The decoded manifest.
 	 */
-	protected function parse_plugin_info( stdClass $manifest ): stdClass {
-		$download_link = esc_url_raw( $manifest->download_link, [ 'https', 'http' ] );
-		$version       = sanitize_text_field( $manifest->version );
-
+	protected function parse_plugin_info( array $manifest ): stdClass {
 		$res                = new stdClass();
-		$res->name          = sanitize_text_field( $manifest->name );
-		$res->slug          = sanitize_key( $manifest->slug );
-		$res->version       = $version;
-		$res->new_version   = $version;
-		$res->requires      = $this->get_string( $manifest, 'requires' );
-		$res->requires_php  = $this->get_string( $manifest, 'requires_php' );
-		$res->tested        = $this->get_tested_version( $this->get_string( $manifest, 'tested' ) );
-		$res->download_link = $download_link;
-		$res->trunk         = $download_link;
-		$res->package       = $download_link;
+		$res->name          = $manifest['name'];
+		$res->slug          = $manifest['slug'];
+		$res->version       = $manifest['version'];
+		$res->new_version   = $manifest['version'];
+		$res->requires      = $manifest['requires'];
+		$res->requires_php  = $manifest['requires_php'];
+		$res->tested        = $this->get_tested_version( $manifest['tested'] );
+		$res->download_link = $manifest['download_link'];
+		$res->trunk         = $manifest['download_link'];
+		$res->package       = $manifest['download_link'];
 		$res->plugin        = $this->plugin_basename;
-		$res->sections      = $this->get_sections( $manifest );
+		$res->sections      = [
+			'description' => $manifest['description'],
+			'changelog'   => $manifest['changelog'],
+		];
 
 		return $res;
 	}
 
 	/**
-	 * Read the description and changelog sections from the manifest.
+	 * Read a scalar field from a decoded JSON object as a string.
 	 *
-	 * @param \stdClass $manifest The decoded manifest.
+	 * @param \stdClass $data  The decoded JSON object.
+	 * @param string    $field The field name.
 	 *
-	 * @return array<string, string>
+	 * @return string The value, or an empty string if it is missing or not a scalar.
 	 */
-	protected function get_sections( stdClass $manifest ): array {
-		$sections = isset( $manifest->sections ) && $manifest->sections instanceof stdClass ? $manifest->sections : new stdClass();
+	protected function get_string( stdClass $data, string $field ): string {
+		$value = $data->$field ?? '';
 
-		return [
-			'description' => wp_kses_post( $this->get_string( $sections, 'description', false ) ),
-			'changelog'   => wp_kses_post( $this->get_string( $sections, 'changelog', false ) ),
-		];
-	}
-
-	/**
-	 * Read an optional scalar field from the manifest as a string.
-	 *
-	 * @param \stdClass $manifest The decoded manifest.
-	 * @param string    $field    The field name.
-	 * @param bool      $as_text  Whether to sanitize the value as plain text.
-	 */
-	protected function get_string( stdClass $manifest, string $field, bool $as_text = true ): string {
-		$value = $manifest->$field ?? '';
-
-		if ( ! is_scalar( $value ) ) {
-			return '';
-		}
-
-		return $as_text ? sanitize_text_field( (string) $value ) : (string) $value;
+		return is_scalar( $value ) ? (string) $value : '';
 	}
 
 	/**

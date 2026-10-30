@@ -47,6 +47,11 @@ class PluginUpdaterTest extends WPTestCase {
 		remove_all_filters( 'pre_set_site_transient_update_plugins' );
 		delete_option( 'wpesu-plugin-wpgraphql-logging' );
 		delete_option( 'wpesu-plugin-wpgraphql-logging-expiry' );
+
+		// Forget updaters registered by earlier tests or by admin_init during bootstrap.
+		$instances = new \ReflectionProperty( PluginUpdater::class, 'instances' );
+		$instances->setAccessible( true );
+		$instances->setValue( null, [] );
 	}
 
 	/**
@@ -310,5 +315,161 @@ class PluginUpdaterTest extends WPTestCase {
 		$this->assertSame( '6.5.3', $info->tested );
 
 		$wp_version = $original;
+	}
+
+	public function test_cron_update_hooks_are_registered(): void {
+		$this->assertSame( 5, has_action( 'wp_update_plugins', 'wpgraphql_logging_check_for_updates' ) );
+		$this->assertSame( 5, has_action( 'wp_maybe_auto_update', 'wpgraphql_logging_check_for_updates' ) );
+	}
+
+	public function test_check_for_updates_is_idempotent(): void {
+		$first  = PluginUpdater::check_for_updates( self::SLUG, $this->basename );
+		$second = PluginUpdater::check_for_updates( self::SLUG, $this->basename );
+
+		$this->assertSame( $first, $second );
+
+		global $wp_filter;
+		$this->assertCount( 1, $wp_filter['pre_set_site_transient_update_plugins']->callbacks[10] );
+	}
+
+	public function test_unregister_removes_filters(): void {
+		$updater = PluginUpdater::check_for_updates( self::SLUG, $this->basename );
+		$updater->unregister();
+
+		$this->assertFalse( has_filter( 'pre_set_site_transient_update_plugins', [ $updater, 'filter_plugin_update_transient' ] ) );
+		$this->assertFalse( has_filter( 'plugins_api', [ $updater, 'filter_plugin_update_info' ] ) );
+		$this->assertNotSame( $updater, PluginUpdater::check_for_updates( self::SLUG, $this->basename ) );
+	}
+
+	public function test_failed_request_is_not_repeated_in_the_same_request(): void {
+		$this->mock_http( new WP_Error( 'http_request_failed', 'Timeout' ) );
+		$updater = $this->updater();
+
+		// Core saves the update transient more than once per check.
+		$updater->filter_plugin_update_transient( $this->empty_transient() );
+		$updater->filter_plugin_update_transient( $this->empty_transient() );
+		$updater->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] );
+
+		$this->assertCount( 1, $this->requests );
+	}
+
+	public function test_invalid_cached_body_is_refetched(): void {
+		update_option( 'wpesu-plugin-wpgraphql-logging', 'not json', false );
+		update_option( 'wpesu-plugin-wpgraphql-logging-expiry', time() + HOUR_IN_SECONDS, false );
+		$this->mock_manifest( $this->manifest() );
+
+		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
+
+		$this->assertCount( 1, $this->requests );
+		$this->assertArrayHasKey( $this->basename, $transient->response );
+		$this->assertSame( $this->manifest(), get_option( 'wpesu-plugin-wpgraphql-logging' ) );
+	}
+
+	public function test_valid_cache_skips_the_request(): void {
+		update_option( 'wpesu-plugin-wpgraphql-logging', $this->manifest(), false );
+		update_option( 'wpesu-plugin-wpgraphql-logging-expiry', time() + HOUR_IN_SECONDS, false );
+		$this->mock_manifest( '', 500 );
+
+		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
+
+		$this->assertSame( [], $this->requests );
+		$this->assertArrayHasKey( $this->basename, $transient->response );
+	}
+
+	public function test_non_http_download_link_is_rejected(): void {
+		$this->mock_manifest( $this->manifest( [ 'download_link' => 'javascript:alert(1)' ] ) );
+
+		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
+
+		$this->assertSame( [], $transient->response );
+	}
+
+	public function test_non_scalar_required_field_is_rejected(): void {
+		$this->mock_manifest( $this->manifest( [ 'version' => [ '999.0.0' ] ] ) );
+
+		$transient = $this->updater()->filter_plugin_update_transient( $this->empty_transient() );
+
+		$this->assertSame( [], $transient->response );
+	}
+
+	public function test_manifest_fields_are_sanitized(): void {
+		$this->mock_manifest(
+			$this->manifest(
+				[
+					'name'     => '<b>WPGraphQL Logging</b>',
+					'requires' => [ 'not', 'a', 'string' ],
+					'sections' => [
+						'description' => '<p>Description</p><script>alert(1)</script>',
+						'changelog'   => [ 'not a string' ],
+					],
+				]
+			)
+		);
+
+		$info = $this->updater()->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] );
+
+		$this->assertSame( 'WPGraphQL Logging', $info->name );
+		$this->assertSame( '', $info->requires );
+		$this->assertSame( '<p>Description</p>alert(1)', $info->sections['description'] );
+		$this->assertSame( '', $info->sections['changelog'] );
+	}
+
+	public function test_missing_sections_are_empty_strings(): void {
+		$manifest = json_decode( $this->manifest(), true );
+		unset( $manifest['sections'], $manifest['requires_php'], $manifest['tested'] );
+		$this->mock_manifest( (string) wp_json_encode( $manifest ) );
+
+		$info = $this->updater()->filter_plugin_update_info( false, 'plugin_information', (object) [ 'slug' => self::SLUG ] );
+
+		$this->assertSame( [ 'description' => '', 'changelog' => '' ], $info->sections );
+		$this->assertSame( '', $info->requires_php );
+		$this->assertSame( $GLOBALS['wp_version'], $info->tested );
+	}
+
+	public function test_update_moves_plugin_from_no_update_to_response(): void {
+		$this->mock_manifest( $this->manifest() );
+		$transient                              = $this->empty_transient();
+		$transient->no_update[ $this->basename ] = (object) [ 'new_version' => WPGRAPHQL_LOGGING_VERSION ];
+
+		$transient = $this->updater()->filter_plugin_update_transient( $transient );
+
+		$this->assertArrayHasKey( $this->basename, $transient->response );
+		$this->assertArrayNotHasKey( $this->basename, $transient->no_update );
+	}
+
+	public function test_current_version_moves_plugin_from_response_to_no_update(): void {
+		$this->mock_manifest( $this->manifest( [ 'version' => WPGRAPHQL_LOGGING_VERSION ] ) );
+		$transient                             = $this->empty_transient();
+		$transient->response[ $this->basename ] = (object) [ 'new_version' => '999.0.0' ];
+		$transient->no_update                   = [];
+
+		$transient = $this->updater()->filter_plugin_update_transient( $transient );
+
+		$this->assertArrayNotHasKey( $this->basename, $transient->response );
+		$this->assertArrayHasKey( $this->basename, $transient->no_update );
+	}
+
+	public function test_saving_the_update_transient_runs_the_updater(): void {
+		$this->mock_manifest( $this->manifest() );
+		$this->updater();
+
+		set_site_transient( 'update_plugins', $this->empty_transient() );
+		$transient = get_site_transient( 'update_plugins' );
+
+		$this->assertSame( '999.0.0', $transient->response[ $this->basename ]->new_version );
+
+		delete_site_transient( 'update_plugins' );
+	}
+
+	public function test_plugins_api_returns_plugin_information_through_core(): void {
+		require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+		$this->mock_manifest( $this->manifest() );
+		$this->updater();
+
+		$info = plugins_api( 'plugin_information', [ 'slug' => self::SLUG ] );
+
+		$this->assertNotWPError( $info );
+		$this->assertSame( '999.0.0', $info->version );
+		$this->assertSame( [ 'https://wpe-plugin-updates.wpengine.com/wpgraphql-logging/info.json' ], $this->requests );
 	}
 }
