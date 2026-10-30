@@ -257,6 +257,25 @@ class ViewLogsPageTest extends WPTestCase {
 		unset($_POST['wpgraphql_logging_nonce'], $_POST['action'], $_POST['action2']);
 	}
 
+	public function test_is_bulk_action_request(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+		$method = (new \ReflectionClass($instance))->getMethod('is_bulk_action_request');
+		$method->setAccessible(true);
+
+		// Both dropdowns left on the placeholder, as when filtering or searching.
+		$_POST['action'] = '-1';
+		$_POST['action2'] = '-1';
+		$this->assertFalse($method->invoke($instance));
+
+		// The bottom dropdown is used.
+		$_POST['action2'] = 'delete_all';
+		$this->assertTrue($method->invoke($instance));
+
+		unset($_POST['action'], $_POST['action2']);
+		$this->assertFalse($method->invoke($instance));
+	}
+
 	public function test_process_log_download_dies_without_nonce(): void {
 		$this->set_as_admin();
 		$instance = ViewLogsPage::init();

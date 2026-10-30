@@ -226,6 +226,16 @@ class WordPressDatabaseLogServiceTest extends WPTestCase
         $this->assertCount(0, $this->search('_iscount'));
     }
 
+    public function test_search_matches_quotes_and_backslashes_in_query(): void
+    {
+        $this->log_service->create_log_entity('wpgraphql_logging', 200, 'INFO', 'WPGraphQL Response', ['query' => 'query { posts(where: {search: "it\'s a \\\\ test"}) { nodes { id } } }']);
+
+        // The query is unquoted from the JSON before matching, so its quotes and backslashes are not JSON-escaped.
+        $this->assertCount(1, $this->search('search: "it\'s'));
+        $this->assertCount(1, $this->search('a \\\\ test'));
+        $this->assertCount(0, $this->search('a \\\\\\\\ test'));
+    }
+
     public function test_search_composes_with_other_conditions_and_count(): void
     {
         $this->insert_search_data();
