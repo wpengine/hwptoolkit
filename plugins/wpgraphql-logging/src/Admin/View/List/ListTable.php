@@ -37,6 +37,13 @@ class ListTable extends WP_List_Table {
 	public const DEFAULT_PER_PAGE = 20;
 
 	/**
+	 * Maximum length of the search term.
+	 *
+	 * @var int
+	 */
+	public const MAX_SEARCH_LENGTH = 200;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param \WPGraphQL\Logging\Logger\Api\LogServiceInterface $log_service The log service.
@@ -164,12 +171,11 @@ class ListTable extends WP_List_Table {
 		}
 
 		$preserved_filters = [];
-		$filter_keys       = [ 'level_filter', 'start_date', 'end_date' ];
 
-		foreach ( $filter_keys as $key ) {
+		foreach ( ViewLogsPage::FILTER_KEYS as $key ) {
 			$value = isset( $_REQUEST[ $key ] ) && is_string( $_REQUEST[ $key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $key ] ) ) : null;
 			if ( null !== $value && '' !== $value ) {
-				$preserved_filters[ $key ] = $value;
+				$preserved_filters[ $key ] = rawurlencode( $value );
 			}
 		}
 
@@ -465,6 +471,17 @@ class ListTable extends WP_List_Table {
 				'operator' => '<=',
 				'value'    => $date->format( 'Y-m-d H:i:s' ),
 			];
+		}
+
+		if ( isset( $request['s'] ) && is_string( $request['s'] ) ) {
+			$search = mb_substr( sanitize_text_field( wp_unslash( $request['s'] ) ), 0, self::MAX_SEARCH_LENGTH );
+			if ( '' !== $search ) {
+				$where_clauses[] = [
+					'column'   => LogServiceInterface::SEARCH_COLUMN,
+					'operator' => 'LIKE',
+					'value'    => $search,
+				];
+			}
 		}
 
 		// Allow developers to modify the where clauses.

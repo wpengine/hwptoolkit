@@ -13,9 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$wpgraphql_logging_current_level      = isset( $_POST['level_filter'] ) ? sanitize_text_field( wp_unslash( $_POST['level_filter'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-$wpgraphql_logging_current_start_date = isset( $_POST['start_date'] ) ? sanitize_text_field( wp_unslash( $_POST['start_date'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-$wpgraphql_logging_current_end_date   = isset( $_POST['end_date'] ) ? sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+// Filters are submitted by POST and redirected to GET, so read them from the request.
+$wpgraphql_logging_current_level      = isset( $_REQUEST['level_filter'] ) && is_string( $_REQUEST['level_filter'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['level_filter'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$wpgraphql_logging_current_start_date = isset( $_REQUEST['start_date'] ) && is_string( $_REQUEST['start_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['start_date'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$wpgraphql_logging_current_end_date   = isset( $_REQUEST['end_date'] ) && is_string( $_REQUEST['end_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['end_date'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 // Currently only use info and error.
 $wpgraphql_logging_log_levels = [ 'info', 'error' ];
@@ -23,6 +24,8 @@ $wpgraphql_logging_log_levels = apply_filters( 'wpgraphql_logging_log_levels', $
 ?>
 
 <div class="alignleft actions wpgraphql-logging-filters">
+	<?php wp_nonce_field( 'wpgraphql_logging_filter', 'wpgraphql_logging_nonce', false ); ?>
+
 	<input type="text"
 			name="start_date"
 			class="wpgraphql-logging-datepicker"

@@ -189,9 +189,91 @@ class ViewLogsPageTest extends WPTestCase {
 		$this->assertStringNotContainsString('level_filter', $url);
 		$this->assertEquals(
 			menu_page_url(ViewLogsPage::ADMIN_PAGE_SLUG, false) .
-			'&start_date=2025-01-01 00:00:00&end_date=2025-12-31 23:59:59&orderby=id&order=ASC',
+			'&start_date=2025-01-01%2000%3A00%3A00&end_date=2025-12-31%2023%3A59%3A59&orderby=id&order=ASC',
 			$url
 		);
+	}
+
+	public function test_get_redirect_url_includes_search(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+
+		$_POST['s'] = 'GetPosts';
+		$_POST['level_filter'] = 'error';
+
+		$url = $instance->get_redirect_url();
+		$this->assertEquals(
+			menu_page_url(ViewLogsPage::ADMIN_PAGE_SLUG, false) . '&level_filter=error&s=GetPosts',
+			$url
+		);
+
+		unset($_POST['s'], $_POST['level_filter']);
+	}
+
+	public function test_get_redirect_url_encodes_search(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+
+		$_POST['s'] = 'query GetPost($id: ID!) { post(id: $id) { title } } & #more';
+
+		$url = $instance->get_redirect_url();
+		$query = [];
+		parse_str((string) wp_parse_url($url, PHP_URL_QUERY), $query);
+		$this->assertSame($_POST['s'], $query['s']);
+		$this->assertSame($url, wp_sanitize_redirect($url), 'The URL should survive wp_safe_redirect() unchanged.');
+
+		unset($_POST['s']);
+	}
+
+	public function test_get_redirect_url_keeps_page_only_when_filters_unchanged(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+
+		// Typing a page number keeps the current search.
+		$_GET['s'] = 'GetPosts';
+		$_POST['s'] = 'GetPosts';
+		$_POST['paged'] = '3';
+		$this->assertStringContainsString('paged=3', $instance->get_redirect_url());
+
+		// A new search starts from the first page.
+		$_POST['s'] = 'GetMenus';
+		$this->assertStringNotContainsString('paged', $instance->get_redirect_url());
+
+		unset($_GET['s'], $_POST['s'], $_POST['paged']);
+	}
+
+	public function test_process_filters_redirect_skips_bulk_actions(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+
+		$_POST['wpgraphql_logging_nonce'] = wp_create_nonce('wpgraphql_logging_filter');
+		$_POST['action'] = 'delete';
+		$_POST['action2'] = '-1';
+
+		// Would redirect and exit if the bulk action was not detected.
+		$instance->process_filters_redirect();
+		$this->assertTrue(true);
+
+		unset($_POST['wpgraphql_logging_nonce'], $_POST['action'], $_POST['action2']);
+	}
+
+	public function test_is_bulk_action_request(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+		$method = (new \ReflectionClass($instance))->getMethod('is_bulk_action_request');
+		$method->setAccessible(true);
+
+		// Both dropdowns left on the placeholder, as when filtering or searching.
+		$_POST['action'] = '-1';
+		$_POST['action2'] = '-1';
+		$this->assertFalse($method->invoke($instance));
+
+		// The bottom dropdown is used.
+		$_POST['action2'] = 'delete_all';
+		$this->assertTrue($method->invoke($instance));
+
+		unset($_POST['action'], $_POST['action2']);
+		$this->assertFalse($method->invoke($instance));
 	}
 
 	public function test_process_log_download_dies_without_nonce(): void {
