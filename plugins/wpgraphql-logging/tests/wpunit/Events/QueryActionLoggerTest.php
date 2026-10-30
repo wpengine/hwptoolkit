@@ -9,6 +9,7 @@ use Monolog\Handler\BufferHandler;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Events\QueryActionLogger;
 use WPGraphQL\Logging\Events\Events;
+use WPGraphQL\Logging\Events\RequestTimer;
 use GraphQL\Executor\ExecutionResult;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
@@ -353,6 +354,36 @@ class QueryActionLoggerTest extends WPTestCase {
 		$response = new ExecutionResult(['query' => '{ test_query }']);
 		$instance->log_before_response_returned($response, $response, $schema, null, $query, $variables, new Request(), null);
 		$this->assert_log_count(1);
+	}
+
+	public function test_log_before_response_returned_includes_request_duration(): void {
+		$instance = $this->create_instance(
+			[
+				BasicConfigurationTab::ENABLED => true,
+				BasicConfigurationTab::EVENT_LOG_SELECTION => [Events::BEFORE_RESPONSE_RETURNED],
+			]
+		);
+
+		$schema_config = SchemaConfig::create();
+		$schema = new WPSchema($schema_config, WPGraphQL::get_type_registry());
+		$request = new Request();
+		$response = new ExecutionResult(['query' => '{ test_query }']);
+
+		RequestTimer::reset();
+		RequestTimer::on_request_data([]);
+		usleep(5000);
+		$instance->log_before_response_returned($response, $response, $schema, null, '{ test_query }', null, $request, null);
+		RequestTimer::reset();
+		$this->assert_log_count(1);
+
+		$logs = $this->log_service->find_entities_by_where([]);
+		$this->assertCount(1, $logs);
+		$context = $logs[0]->get_context();
+		$extra = $logs[0]->get_extra();
+		$this->assertArrayHasKey('request_duration_ms', $context);
+		$this->assertGreaterThanOrEqual(5, $context['request_duration_ms']);
+		$this->assertArrayHasKey(RequestTimer::DURATION_KEY, $extra);
+		$this->assertGreaterThanOrEqual($context['request_duration_ms'], $extra[RequestTimer::DURATION_KEY]);
 	}
 
 	public function test_log_before_response_returned_log_data_with_errors(): void {

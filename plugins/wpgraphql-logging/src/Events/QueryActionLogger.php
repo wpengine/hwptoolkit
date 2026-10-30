@@ -162,6 +162,7 @@ class QueryActionLogger {
 			if ( ! $this->should_log_response( $this->config ) ) {
 				unset( $context['response'] );
 			}
+			$context = $this->add_request_duration( $context );
 			$level   = Level::Info;
 			$message = 'WPGraphQL Response';
 			$errors  = $this->get_response_errors( $response );

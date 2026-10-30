@@ -42,6 +42,7 @@ WPGraphQL Logging plugin provides observability and visibility into the GraphQL 
   * Memory usage tracking
   * Web request context
   * Process ID tracking
+  * Request duration (milliseconds since the WPGraphQL request started)
   * GraphQL-specific request metadata
 
 **Customization Options**
