@@ -3,7 +3,6 @@ import {
 	goToLoggingSettingsPage,
 	goToDashboardPage,
 	configureLogging,
-	executeGraphQLQuery,
 	resetPluginSettings,
 } from "../utils";
 import { GET_POSTS_QUERY } from "../constants";
@@ -56,7 +55,11 @@ test.describe("Logging Dashboard", () => {
 			eventLogSelection: ["graphql_request_results"],
 		});
 
-		const response = await executeGraphQLQuery(request, GET_POSTS_QUERY);
+		// The dashboard groups by the operationName the client sends, so include it.
+		const response = await request.post("/graphql", {
+			data: { query: GET_POSTS_QUERY, operationName: "GetPosts" },
+			headers: { "Content-Type": "application/json" },
+		});
 		expect(response.ok()).toBeTruthy();
 
 		// The reset helper clears cached dashboard figures, so the new entry shows up straight away.
