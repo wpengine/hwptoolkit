@@ -224,15 +224,14 @@ class ListTable extends WP_List_Table {
 			wp_die( esc_html__( 'Nonce verification failed!', 'wpgraphql-logging' ) );
 		}
 
-		$ids = isset( $_REQUEST['log'] ) ? array_map( 'absint', (array) $_REQUEST['log'] ) : [];
-		$ids = array_filter( $ids, static fn( int $id ): bool => $id > 0 );
+		$downloader = new DownloadLogService( $this->log_service );
+		$ids        = isset( $_REQUEST['log'] ) ? $downloader->sanitize_log_ids( (array) wp_unslash( $_REQUEST['log'] ) ) : []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_log_ids() casts every ID with absint().
 
 		// Nothing selected: fall through and render the list as usual.
 		if ( [] === $ids ) {
 			return;
 		}
 
-		$downloader = new DownloadLogService( $this->log_service );
 		$downloader->generate_bulk_csv( $ids );
 	}
 

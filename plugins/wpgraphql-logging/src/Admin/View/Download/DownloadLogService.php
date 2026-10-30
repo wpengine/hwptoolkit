@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WPGraphQL\Logging\Admin\View\Download;
 
 use Generator;
+use League\Csv\EscapeFormula;
 use League\Csv\Writer;
 use WPGraphQL\Logging\Logger\Api\LogEntityInterface;
 use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
@@ -84,14 +85,15 @@ class DownloadLogService {
 	/**
 	 * Sanitizes a list of log IDs for a bulk download.
 	 *
-	 * Removes invalid and duplicate IDs and caps the list at the bulk download limit.
+	 * Removes non-scalar, invalid and duplicate IDs and caps the list at the bulk download limit.
 	 *
 	 * @param array<mixed> $log_ids The raw log IDs.
 	 *
 	 * @return array<int> The sanitized log IDs.
 	 */
 	public function sanitize_log_ids( array $log_ids ): array {
-		$log_ids = array_map( 'absint', $log_ids );
+		// absint() casts arrays to 1, so drop anything that isn't a scalar first.
+		$log_ids = array_map( 'absint', array_filter( $log_ids, 'is_scalar' ) );
 		$log_ids = array_values( array_unique( array_filter( $log_ids, static fn( int $id ): bool => $id > 0 ) ) );
 
 		return array_slice( $log_ids, 0, $this->get_bulk_download_limit() );
@@ -110,7 +112,9 @@ class DownloadLogService {
 	/**
 	 * Writes log entries as CSV rows to a stream.
 	 *
-	 * The header row is written once, before the first entry.
+	 * The header row is written once, before the first entry. Cells that a
+	 * spreadsheet would treat as a formula (=, +, -, @, ...) are escaped, since
+	 * log values can come from unauthenticated GraphQL requests.
 	 *
 	 * @param resource $stream The stream to write to.
 	 * @param iterable $logs   The log entries.
@@ -121,7 +125,8 @@ class DownloadLogService {
 	 */
 	public function write_csv( $stream, iterable $logs ): int {
 		$writer = Writer::from( $stream );
-		$count  = 0;
+		$writer->addFormatter( ( new EscapeFormula() )->escapeRecord( ... ) );
+		$count = 0;
 
 		foreach ( $logs as $log ) {
 			if ( 0 === $count ) {
@@ -217,6 +222,11 @@ class DownloadLogService {
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 		header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
 		header( 'Expires: 0' );
+
+		// Drop any open output buffers so rows go straight to the client instead of piling up in memory.
+		while ( ob_get_level() > 0 ) {
+			ob_end_clean();
+		}
 
 		$output = fopen( 'php://output', 'w' );
 		if ( ! is_resource( $output ) ) {
