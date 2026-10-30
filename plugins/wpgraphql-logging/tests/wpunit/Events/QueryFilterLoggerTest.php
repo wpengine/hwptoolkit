@@ -226,6 +226,22 @@ class QueryFilterLoggerTest extends WPTestCase {
 		$this->assertArrayHasKey('request_duration_ms', $logs[0]->get_context());
 	}
 
+	public function test_add_request_duration(): void {
+		$instance = $this->create_instance([]);
+		$context = ['query' => '{ test_query }'];
+
+		RequestTimer::reset();
+		$this->assertSame($context, $instance->add_request_duration($context));
+
+		RequestTimer::start();
+		$result = $instance->add_request_duration($context);
+		RequestTimer::reset();
+
+		$this->assertSame('{ test_query }', $result['query']);
+		$this->assertArrayHasKey('request_duration_ms', $result);
+		$this->assertIsFloat($result['request_duration_ms']);
+	}
+
 	public function test_graphql_request_results_log_data_with_errors_array(): void {
 		$instance = $this->create_instance(
 			[

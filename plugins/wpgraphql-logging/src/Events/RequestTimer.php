@@ -94,7 +94,9 @@ final class RequestTimer {
 	 */
 	public static function register_hooks(): void {
 		add_action( self::HTTP_REQUEST_START_HOOK, [ self::class, 'on_http_request' ], self::START_PRIORITY, 0 );
-		add_filter( Events::REQUEST_DATA, [ self::class, 'on_request_data' ], self::START_PRIORITY, 1 );
+		// Literal name (Events::REQUEST_DATA): psalm's WordPress plugin records hooks named by
+		// constants under one placeholder, so a filter here clashes with actions registered elsewhere.
+		add_filter( 'graphql_request_data', [ self::class, 'on_request_data' ], self::START_PRIORITY, 1 );
 		add_action( Events::PRE_REQUEST, [ self::class, 'start' ], self::START_PRIORITY, 0 );
 		add_action( Events::BEFORE_GRAPHQL_EXECUTION, [ self::class, 'on_before_execute' ], self::START_PRIORITY, 0 );
 		add_action( self::AFTER_EXECUTE_HOOK, [ self::class, 'on_after_execute' ], self::STOP_PRIORITY, 0 );
@@ -219,6 +221,6 @@ final class RequestTimer {
 			return $time;
 		}
 
-		return (int) ( microtime( true ) * 1000000000 );
+		return (int) ( microtime( true ) * 1e9 );
 	}
 }

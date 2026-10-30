@@ -6,6 +6,7 @@ namespace WPGraphQL\Logging\Tests\Events;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Events\QueryEventLifecycle;
+use WPGraphQL\Logging\Events\RequestTimer;
 use \WPGraphQL\Logging\Events\Events;
 
 /**
@@ -44,5 +45,10 @@ class QueryEventLifecycleTest extends WPTestCase {
 		$this->assertTrue(has_filter(Events::REQUEST_DATA, [$filterLogger, 'log_graphql_request_data']) !== false);
 		$this->assertTrue(has_filter(Events::REQUEST_RESULTS, [$filterLogger, 'log_graphql_request_results']) !== false);
 		$this->assertTrue(has_filter(Events::RESPONSE_HEADERS_TO_SEND, [$filterLogger, 'add_logging_headers']) !== false);
+
+		// Check that the request timer hooks are registered.
+		$this->assertSame(RequestTimer::START_PRIORITY, has_action(RequestTimer::HTTP_REQUEST_START_HOOK, [RequestTimer::class, 'on_http_request']));
+		$this->assertSame(RequestTimer::START_PRIORITY, has_action(Events::BEFORE_GRAPHQL_EXECUTION, [RequestTimer::class, 'on_before_execute']));
+		$this->assertSame(RequestTimer::STOP_PRIORITY, has_action(RequestTimer::AFTER_EXECUTE_HOOK, [RequestTimer::class, 'on_after_execute']));
 	}
 }

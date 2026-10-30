@@ -206,4 +206,27 @@ class RequestTimerTest extends WPTestCase {
 		$this->assertLessThan( 20, $captured[1] );
 		$this->assertFalse( RequestTimer::is_running() );
 	}
+
+	public function test_batched_graphql_request_times_each_operation(): void {
+		RequestTimer::register_hooks();
+
+		$captured = [];
+		$capture  = static function () use ( &$captured ): void {
+			$captured[] = RequestTimer::get_elapsed_ms();
+		};
+
+		add_action( Events::BEFORE_RESPONSE_RETURNED, $capture );
+		graphql(
+			[
+				[ 'query' => '{ __typename }' ],
+				[ 'query' => '{ __typename }' ],
+			]
+		);
+		remove_action( Events::BEFORE_RESPONSE_RETURNED, $capture );
+
+		$this->assertCount( 2, $captured );
+		$this->assertIsFloat( $captured[0] );
+		$this->assertIsFloat( $captured[1] );
+		$this->assertFalse( RequestTimer::is_running() );
+	}
 }
