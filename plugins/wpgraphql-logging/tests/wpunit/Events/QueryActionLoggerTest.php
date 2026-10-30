@@ -10,7 +10,6 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Events\QueryActionLogger;
 use WPGraphQL\Logging\Events\Events;
 use WPGraphQL\Logging\Events\RequestTimer;
-use WPGraphQL\Logging\Logger\Processors\RequestDurationProcessor;
 use GraphQL\Executor\ExecutionResult;
 use WPGraphQL\Logging\Logger\LoggerService;
 use WPGraphQL\Logging\Admin\Settings\Fields\Tab\BasicConfigurationTab;
@@ -383,8 +382,8 @@ class QueryActionLoggerTest extends WPTestCase {
 		$extra = $logs[0]->get_extra();
 		$this->assertArrayHasKey('request_duration_ms', $context);
 		$this->assertGreaterThanOrEqual(5, $context['request_duration_ms']);
-		$this->assertArrayHasKey(RequestDurationProcessor::EXTRA_KEY, $extra);
-		$this->assertGreaterThanOrEqual($context['request_duration_ms'], $extra[RequestDurationProcessor::EXTRA_KEY]);
+		$this->assertArrayHasKey(RequestTimer::DURATION_KEY, $extra);
+		$this->assertGreaterThanOrEqual($context['request_duration_ms'], $extra[RequestTimer::DURATION_KEY]);
 	}
 
 	public function test_log_before_response_returned_log_data_with_errors(): void {

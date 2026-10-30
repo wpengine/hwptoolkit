@@ -54,7 +54,7 @@ trait LoggingHelper {
 	public function add_request_duration(array $context): array {
 		$duration = RequestTimer::get_elapsed_ms();
 		if ( null !== $duration ) {
-			$context['request_duration_ms'] = $duration;
+			$context[ RequestTimer::DURATION_KEY ] = $duration;
 		}
 
 		return $context;

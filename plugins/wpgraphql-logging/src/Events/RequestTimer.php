@@ -29,6 +29,13 @@ namespace WPGraphQL\Logging\Events;
  */
 final class RequestTimer {
 	/**
+	 * The log data key for the elapsed time, used in both `extra` and `context`.
+	 *
+	 * @var string
+	 */
+	public const DURATION_KEY = 'request_duration_ms';
+
+	/**
 	 * Earliest hook priority, so the timer starts before other callbacks run.
 	 *
 	 * @var int
@@ -88,7 +95,8 @@ final class RequestTimer {
 	/**
 	 * Registers the hooks that drive the timer.
 	 *
-	 * These hooks are not logging events, so they are not part of the Events list.
+	 * The HTTP and after-execute hooks are not logging events, so their names are
+	 * defined here rather than in Events.
 	 *
 	 * @psalm-suppress HookNotFound
 	 */
@@ -158,13 +166,6 @@ final class RequestTimer {
 	 */
 	public static function on_after_execute(): void {
 		array_pop( self::$stack );
-	}
-
-	/**
-	 * Whether a request is currently being timed.
-	 */
-	public static function is_running(): bool {
-		return null !== self::get_start();
 	}
 
 	/**

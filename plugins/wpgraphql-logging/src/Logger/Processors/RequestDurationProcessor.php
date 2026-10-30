@@ -21,13 +21,6 @@ use WPGraphQL\Logging\Events\RequestTimer;
  */
 class RequestDurationProcessor implements ProcessorInterface {
 	/**
-	 * The key added to the record's 'extra' array.
-	 *
-	 * @var string
-	 */
-	public const EXTRA_KEY = 'request_duration_ms';
-
-	/**
 	 * This method is called for each log record. It adds the elapsed request
 	 * time to the record's 'extra' array.
 	 *
@@ -37,11 +30,9 @@ class RequestDurationProcessor implements ProcessorInterface {
 	 */
 	public function __invoke( LogRecord $record ): LogRecord {
 		$elapsed = RequestTimer::get_elapsed_ms();
-		if ( null === $elapsed ) {
-			return $record;
+		if ( null !== $elapsed ) {
+			$record->extra[ RequestTimer::DURATION_KEY ] = $elapsed;
 		}
-
-		$record->extra[ self::EXTRA_KEY ] = $elapsed;
 
 		return $record;
 	}

@@ -46,7 +46,7 @@ class RequestDurationProcessorTest extends WPTestCase {
 		$processor = new RequestDurationProcessor();
 		$record    = $processor( $this->create_record() );
 
-		$this->assertArrayNotHasKey( RequestDurationProcessor::EXTRA_KEY, $record->extra );
+		$this->assertArrayNotHasKey( RequestTimer::DURATION_KEY, $record->extra );
 	}
 
 	public function test_adds_elapsed_time_during_a_request(): void {
@@ -56,9 +56,9 @@ class RequestDurationProcessorTest extends WPTestCase {
 		$processor = new RequestDurationProcessor();
 		$record    = $processor( $this->create_record() );
 
-		$this->assertArrayHasKey( RequestDurationProcessor::EXTRA_KEY, $record->extra );
-		$this->assertIsFloat( $record->extra[ RequestDurationProcessor::EXTRA_KEY ] );
-		$this->assertGreaterThanOrEqual( 5, $record->extra[ RequestDurationProcessor::EXTRA_KEY ] );
+		$this->assertArrayHasKey( RequestTimer::DURATION_KEY, $record->extra );
+		$this->assertIsFloat( $record->extra[ RequestTimer::DURATION_KEY ] );
+		$this->assertGreaterThanOrEqual( 5, $record->extra[ RequestTimer::DURATION_KEY ] );
 	}
 
 	public function test_elapsed_time_grows_across_records_in_the_same_request(): void {
@@ -70,8 +70,8 @@ class RequestDurationProcessorTest extends WPTestCase {
 		$second = $processor( $this->create_record() );
 
 		$this->assertGreaterThan(
-			$first->extra[ RequestDurationProcessor::EXTRA_KEY ],
-			$second->extra[ RequestDurationProcessor::EXTRA_KEY ]
+			$first->extra[ RequestTimer::DURATION_KEY ],
+			$second->extra[ RequestTimer::DURATION_KEY ]
 		);
 	}
 

@@ -28,7 +28,7 @@ class RequestTimerTest extends WPTestCase {
 	}
 
 	public function test_not_running_by_default(): void {
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
@@ -54,7 +54,7 @@ class RequestTimerTest extends WPTestCase {
 		$this->assertGreaterThanOrEqual( 5, RequestTimer::get_elapsed_ms() );
 
 		RequestTimer::on_after_execute();
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_http_request_clears_state_left_by_a_failed_request(): void {
@@ -68,14 +68,14 @@ class RequestTimerTest extends WPTestCase {
 		$this->assertLessThan( 20, RequestTimer::get_elapsed_ms() );
 		RequestTimer::on_before_execute();
 		RequestTimer::on_after_execute();
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_request_data_starts_timer_and_returns_data_unchanged(): void {
 		$data = [ 'query' => '{ posts { nodes { id } } }' ];
 
 		$this->assertSame( $data, RequestTimer::on_request_data( $data ) );
-		$this->assertTrue( RequestTimer::is_running() );
+		$this->assertNotNull( RequestTimer::get_elapsed_ms() );
 
 		$elapsed = RequestTimer::get_elapsed_ms();
 		$this->assertIsFloat( $elapsed );
@@ -91,7 +91,7 @@ class RequestTimerTest extends WPTestCase {
 
 	public function test_start_starts_timer_when_not_pending(): void {
 		RequestTimer::start();
-		$this->assertTrue( RequestTimer::is_running() );
+		$this->assertNotNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_start_does_not_restart_pending_timer_for_batch_operations(): void {
@@ -123,26 +123,26 @@ class RequestTimerTest extends WPTestCase {
 		usleep( 5000 );
 		RequestTimer::on_before_execute();
 
-		$this->assertTrue( RequestTimer::is_running() );
+		$this->assertNotNull( RequestTimer::get_elapsed_ms() );
 		$this->assertGreaterThanOrEqual( 5, RequestTimer::get_elapsed_ms() );
 
 		RequestTimer::on_after_execute();
 
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_before_execute_starts_timer_without_earlier_hooks(): void {
 		RequestTimer::on_before_execute();
-		$this->assertTrue( RequestTimer::is_running() );
+		$this->assertNotNull( RequestTimer::get_elapsed_ms() );
 
 		RequestTimer::on_after_execute();
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_after_execute_without_running_timer_is_safe(): void {
 		RequestTimer::on_after_execute();
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_nested_request_does_not_reset_outer_request(): void {
@@ -159,11 +159,11 @@ class RequestTimerTest extends WPTestCase {
 		RequestTimer::on_after_execute();
 
 		// Back on the outer request.
-		$this->assertTrue( RequestTimer::is_running() );
+		$this->assertNotNull( RequestTimer::get_elapsed_ms() );
 		$this->assertGreaterThanOrEqual( 20, RequestTimer::get_elapsed_ms() );
 
 		RequestTimer::on_after_execute();
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_reset_clears_state(): void {
@@ -173,7 +173,7 @@ class RequestTimerTest extends WPTestCase {
 
 		RequestTimer::reset();
 
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_graphql_request_is_timed_and_each_request_starts_fresh(): void {
@@ -195,7 +195,7 @@ class RequestTimerTest extends WPTestCase {
 
 		$this->assertCount( 1, $captured );
 		$this->assertGreaterThanOrEqual( 20, $captured[0] );
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 
 		// The second request must not include the first request's time.
 		add_action( Events::PRE_REQUEST, $capture );
@@ -204,7 +204,7 @@ class RequestTimerTest extends WPTestCase {
 
 		$this->assertCount( 2, $captured );
 		$this->assertLessThan( 20, $captured[1] );
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 
 	public function test_batched_graphql_request_times_each_operation(): void {
@@ -227,6 +227,6 @@ class RequestTimerTest extends WPTestCase {
 		$this->assertCount( 2, $captured );
 		$this->assertIsFloat( $captured[0] );
 		$this->assertIsFloat( $captured[1] );
-		$this->assertFalse( RequestTimer::is_running() );
+		$this->assertNull( RequestTimer::get_elapsed_ms() );
 	}
 }
