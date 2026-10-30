@@ -270,9 +270,10 @@ class ViewLogsPage {
 			$filters['paged'] = (string) absint( $paged );
 		}
 
-		$redirect_url = add_query_arg( array_filter( $filters, static function ( $value ) {
+		// add_query_arg() does not encode values, and a search term can contain "&", "#" or "{".
+		$redirect_url = add_query_arg( array_map( 'rawurlencode', array_filter( $filters, static function ( $value ) {
 			return '' !== $value;
-		} ), $redirect_url );
+		} ) ), $redirect_url );
 
 		return (string) apply_filters( 'wpgraphql_logging_filter_redirect_url', $redirect_url, $filters );
 	}

@@ -189,7 +189,7 @@ class ViewLogsPageTest extends WPTestCase {
 		$this->assertStringNotContainsString('level_filter', $url);
 		$this->assertEquals(
 			menu_page_url(ViewLogsPage::ADMIN_PAGE_SLUG, false) .
-			'&start_date=2025-01-01 00:00:00&end_date=2025-12-31 23:59:59&orderby=id&order=ASC',
+			'&start_date=2025-01-01%2000%3A00%3A00&end_date=2025-12-31%2023%3A59%3A59&orderby=id&order=ASC',
 			$url
 		);
 	}
@@ -208,6 +208,21 @@ class ViewLogsPageTest extends WPTestCase {
 		);
 
 		unset($_POST['s'], $_POST['level_filter']);
+	}
+
+	public function test_get_redirect_url_encodes_search(): void {
+		$this->set_as_admin();
+		$instance = ViewLogsPage::init();
+
+		$_POST['s'] = 'query GetPost($id: ID!) { post(id: $id) { title } } & #more';
+
+		$url = $instance->get_redirect_url();
+		$query = [];
+		parse_str((string) wp_parse_url($url, PHP_URL_QUERY), $query);
+		$this->assertSame($_POST['s'], $query['s']);
+		$this->assertSame($url, wp_sanitize_redirect($url), 'The URL should survive wp_safe_redirect() unchanged.');
+
+		unset($_POST['s']);
 	}
 
 	public function test_get_redirect_url_keeps_page_only_when_filters_unchanged(): void {

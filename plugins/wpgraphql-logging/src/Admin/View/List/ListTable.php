@@ -176,7 +176,7 @@ class ListTable extends WP_List_Table {
 		foreach ( $filter_keys as $key ) {
 			$value = isset( $_REQUEST[ $key ] ) && is_string( $_REQUEST[ $key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $key ] ) ) : null;
 			if ( null !== $value && '' !== $value ) {
-				$preserved_filters[ $key ] = $value;
+				$preserved_filters[ $key ] = rawurlencode( $value );
 			}
 		}
 
