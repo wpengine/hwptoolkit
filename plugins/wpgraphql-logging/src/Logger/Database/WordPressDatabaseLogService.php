@@ -307,9 +307,9 @@ class WordPressDatabaseLogService implements LogServiceInterface {
 		$this->where_values[] = $like;
 		$this->where_values[] = 'context';
 		$this->where_values[] = '$.query';
-		$this->where_values[] = mb_strtolower( $like );
+		$this->where_values[] = $like;
 
-		return '(%i LIKE %s OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(%i, %s))) LIKE %s)';
+		return '(%i LIKE %s OR LOWER(JSON_UNQUOTE(JSON_EXTRACT(%i, %s))) LIKE LOWER(%s))';
 	}
 
 	/**
