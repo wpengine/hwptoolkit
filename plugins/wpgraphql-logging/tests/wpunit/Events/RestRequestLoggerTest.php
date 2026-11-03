@@ -318,6 +318,41 @@ class RestRequestLoggerTest extends WPTestCase {
 		$this->assertSame( 'hello', $params['search'] );
 	}
 
+	public function test_authenticated_rest_request_does_not_log_credentials(): void {
+		$user_id          = self::factory()->user->create();
+		$original_user_id = get_current_user_id();
+		wp_set_current_user( $user_id );
+
+		$server_keys = [ 'HTTP_AUTHORIZATION', 'HTTP_COOKIE', 'PHP_AUTH_PW' ];
+		$server      = array_intersect_key( $_SERVER, array_flip( $server_keys ) );
+		$_SERVER['HTTP_AUTHORIZATION'] = 'Authorization-secret-value';
+		$_SERVER['HTTP_COOKIE']        = 'session=cookie-secret';
+		$_SERVER['PHP_AUTH_PW']        = 'server-password';
+
+		try {
+			$this->create_instance( [] );
+			$this->serve( 'GET', '/wp/v2/users/me' );
+		} finally {
+			foreach ( $server_keys as $key ) {
+				if ( array_key_exists( $key, $server ) ) {
+					$_SERVER[ $key ] = $server[ $key ];
+				} else {
+					unset( $_SERVER[ $key ] );
+				}
+			}
+			wp_set_current_user( $original_user_id );
+		}
+
+		$logs = $this->get_logs();
+		$this->assertCount( 1, $logs );
+		$this->assertSame( 200, $logs[0]->get_context()['status'] );
+
+		$headers = $logs[0]->get_extra()['request_headers'];
+		$this->assertSame( '***', $headers['Authorization'] );
+		$this->assertSame( '***', $headers['Cookie'] );
+		$this->assertArrayNotHasKey( 'Auth-Pw', $headers );
+	}
+
 	public function test_serve_filter_value_is_returned_unchanged(): void {
 		$instance = $this->create_instance( [] );
 		$request  = new WP_REST_Request( 'GET', '/wp/v2/posts' );
