@@ -25,6 +25,7 @@ WPGraphQL Logging plugin provides observability and visibility into the GraphQL 
 
 **Advanced Admin Interface**
 * View and filter all logged GraphQL requests in the WordPress admin
+* Dashboard with charts of log entries over time, entries by level and the top operations
 * Search and sort by date, query name, log level, or custom criteria
 * Export logs to CSV for offline analysis
 * Configurable data retention policies with automatic cleanup
