@@ -226,7 +226,7 @@ class DownloadLogService {
 		// Drop any open output buffers so rows go straight to the client instead of piling up in memory.
 		while ( ob_get_level() > 0 ) {
 			$status = ob_get_status();
-			if ( false === $status || 0 === ( $status['flags'] & PHP_OUTPUT_HANDLER_REMOVABLE ) ) {
+			if ( ! isset( $status['flags'] ) || 0 === ( $status['flags'] & PHP_OUTPUT_HANDLER_REMOVABLE ) ) {
 				break;
 			}
 			if ( ! ob_end_clean() ) {
