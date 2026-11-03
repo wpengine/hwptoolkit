@@ -6,7 +6,7 @@
  * Description: A WPGraphQL logging plugin that provides visibility into the request lifecycle, giving developers the observability needed to quickly identify and resolve bottlenecks in their headless WordPress application.
  * Author: WPEngine Headless OSS Team
  * Author URI: https://github.com/wpengine
- * Update URI: https://github.com/wpengine/hwptoolkit
+ * Update URI: https://wpe-plugin-updates.wpengine.com/
  * Version: 1.0.2
  * Text Domain: wpgraphql-logging
  * Domain Path: /languages
@@ -32,6 +32,7 @@ declare(strict_types=1);
 
 use WPGraphQL\Logging\Autoloader;
 use WPGraphQL\Logging\Plugin;
+use WPGraphQL\Logging\Updates\PluginUpdater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -176,6 +177,23 @@ if ( ! function_exists( 'wpgraphql_logging_plugin_admin_notice_min_php_version' 
 		);
 	}
 }
+
+if ( ! function_exists( 'wpgraphql_logging_check_for_updates' ) ) {
+	/**
+	 * Check the WP Engine plugin updates API for new versions of this plugin.
+	 */
+	function wpgraphql_logging_check_for_updates(): void {
+		// The slug must match the key in https://wpe-plugin-updates.wpengine.com/plugins.json.
+		PluginUpdater::check_for_updates( 'wpgraphql-logging', plugin_basename( __FILE__ ) );
+	}
+}
+
+// Priority 5 so the filters are in place before core's _maybe_update_plugins() runs on admin_init.
+add_action( 'admin_init', 'wpgraphql_logging_check_for_updates', 5, 0 );
+// Also register before core's cron update check and auto-updater, which run without admin_init.
+/** @psalm-suppress HookNotFound */
+add_action( 'wp_update_plugins', 'wpgraphql_logging_check_for_updates', 5, 0 );
+add_action( 'wp_maybe_auto_update', 'wpgraphql_logging_check_for_updates', 5, 0 );
 
 /**
  * Load plugin text domain.
