@@ -34,7 +34,7 @@ class WordPressDatabaseLogStats implements LogStatsInterface {
 	 *
 	 * @var string
 	 */
-	protected const OPERATION_SQL = "COALESCE(NULLIF(JSON_UNQUOTE(JSON_EXTRACT(context, '$.operation_name')), 'null'), '')";
+	protected const OPERATION_SQL = "CASE WHEN JSON_TYPE(JSON_EXTRACT(context, '$.operation_name')) = 'STRING' THEN JSON_UNQUOTE(JSON_EXTRACT(context, '$.operation_name')) ELSE '' END";
 
 	/**
 	 * {@inheritDoc}
