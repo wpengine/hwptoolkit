@@ -244,10 +244,10 @@ class DashboardPage {
 		$bucket_starts  = [];
 
 		if ( DAY_IN_SECONDS === $bucket_seconds ) {
-			$day = $now->setTime( 0, 0 )->modify( sprintf( '-%d days', $bucket_count - 1 ) );
+			$day = $now->modify( sprintf( '-%d days', $bucket_count - 1 ) )->setTime( 0, 0 );
 			for ( $i = 0; $i < $bucket_count; $i++ ) {
 				$bucket_starts[] = $day->getTimestamp();
-				$day             = $day->modify( '+1 day' );
+				$day             = $day->modify( '+1 day' )->setTime( 0, 0 );
 			}
 
 			return [
