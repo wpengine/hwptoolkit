@@ -6,6 +6,7 @@ namespace WPGraphQL\Logging\Tests\Admin\View\List;
 
 
 use WPGraphQL\Logging\Admin\View\List\ListTable;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseLogService;
 use Codeception\TestCase\WPTestCase;
@@ -71,8 +72,10 @@ class ListTableTest extends WPTestCase {
 	public function test_get_bulk_actions_returns_expected_actions(): void {
 		$actions = $this->list_table->get_bulk_actions();
 
+		$this->assertArrayHasKey(ListTable::BULK_DOWNLOAD_ACTION, $actions);
 		$this->assertArrayHasKey('delete', $actions);
 		$this->assertArrayHasKey('delete_all', $actions);
+		$this->assertEquals('Download Selected', $actions[ListTable::BULK_DOWNLOAD_ACTION]);
 		$this->assertEquals('Delete Selected', $actions['delete']);
 		$this->assertEquals('Delete All', $actions['delete_all']);
 	}
@@ -303,6 +306,63 @@ class ListTableTest extends WPTestCase {
 		], $result);
 	}
 
+	public function test_process_where_handles_search(): void {
+		$reflection = new \ReflectionClass($this->list_table);
+		$method = $reflection->getMethod('process_where');
+		$method->setAccessible(true);
+
+		$request = [
+			'level_filter' => 'error',
+			's' => '  GetPosts <b>  ',
+		];
+		$result = $method->invoke($this->list_table, $request);
+
+		$this->assertSame([
+			[
+				'column' => 'level_name',
+				'operator' => '=',
+				'value' => 'error',
+			],
+			[
+				'column' => LogServiceInterface::SEARCH_COLUMN,
+				'operator' => 'LIKE',
+				'value' => 'GetPosts',
+			],
+		], $result);
+	}
+
+	public function test_process_where_ignores_empty_and_caps_long_search(): void {
+		$reflection = new \ReflectionClass($this->list_table);
+		$method = $reflection->getMethod('process_where');
+		$method->setAccessible(true);
+
+		$this->assertSame([], $method->invoke($this->list_table, ['s' => '   ']));
+		$this->assertSame([], $method->invoke($this->list_table, ['s' => ['array']]));
+
+		$result = $method->invoke($this->list_table, ['s' => str_repeat('a', ListTable::MAX_SEARCH_LENGTH + 50)]);
+		$this->assertSame(ListTable::MAX_SEARCH_LENGTH, strlen($result[0]['value']));
+	}
+
+	public function test_prepare_items_passes_search_to_count_and_find(): void {
+		$expected = [
+			[
+				'column' => LogServiceInterface::SEARCH_COLUMN,
+				'operator' => 'LIKE',
+				'value' => 'GetPosts',
+			],
+		];
+		$this->log_service->shouldReceive('count_entities_by_where')->once()->with($expected)->andReturn(1);
+		$this->log_service->shouldReceive('find_entities_by_where')->once()->with(Mockery::on(static function ($args) use ($expected) {
+			return $args['where'] === $expected;
+		}))->andReturn([]);
+
+		$_REQUEST = ['s' => 'GetPosts'];
+		$this->list_table->prepare_items();
+		$_REQUEST = [];
+
+		$this->assertSame([], $this->list_table->items);
+	}
+
 	public function test_prepare_items_sets_pagination_args(): void {
 		$this->log_service->shouldReceive('count_entities_by_where')->andReturn(50);
 		$this->log_service->shouldReceive('find_entities_by_where')->andReturn([]);
@@ -424,4 +484,61 @@ class ListTableTest extends WPTestCase {
 		$this->assertEquals('', $result);
 	}
 
+	public function test_process_bulk_download_ignores_other_actions(): void {
+		$_REQUEST['action'] = 'delete';
+		$this->log_service->shouldNotReceive('find_entity_by_id');
+
+		$this->list_table->process_bulk_download();
+		$this->assertTrue(true);
+
+		unset($_REQUEST['action']);
+	}
+
+	public function test_process_bulk_download_dies_with_invalid_nonce(): void {
+		$_REQUEST['action']   = ListTable::BULK_DOWNLOAD_ACTION;
+		$_REQUEST['_wpnonce'] = 'invalid';
+		$_REQUEST['log']      = ['1', '2'];
+
+		try {
+			$this->expectException(\WPDieException::class);
+			$this->expectExceptionMessage('Nonce verification failed!');
+			$this->list_table->process_bulk_download();
+		} finally {
+			unset($_REQUEST['action'], $_REQUEST['_wpnonce'], $_REQUEST['log']);
+		}
+	}
+
+	public function test_process_bulk_download_returns_when_nothing_selected(): void {
+		$_REQUEST['action']   = ListTable::BULK_DOWNLOAD_ACTION;
+		$_REQUEST['_wpnonce'] = wp_create_nonce('bulk-logs');
+		$_REQUEST['log']      = ['0', 'abc'];
+		$this->log_service->shouldNotReceive('find_entity_by_id');
+
+		$this->list_table->process_bulk_download();
+		$this->assertTrue(true);
+
+		unset($_REQUEST['action'], $_REQUEST['_wpnonce'], $_REQUEST['log']);
+	}
+
+	public function test_process_bulk_download_passes_selected_ids_to_downloader(): void {
+		$admin_user = $this->factory()->user->create(['role' => 'administrator']);
+		wp_set_current_user($admin_user);
+		set_current_screen('dashboard');
+
+		$_REQUEST['action']   = ListTable::BULK_DOWNLOAD_ACTION;
+		$_REQUEST['_wpnonce'] = wp_create_nonce('bulk-logs');
+		$_REQUEST['log']      = ['11', '12'];
+
+		// Neither ID exists, so the downloader dies before sending headers.
+		$this->log_service->shouldReceive('find_entity_by_id')->with(11)->once()->andReturn(null);
+		$this->log_service->shouldReceive('find_entity_by_id')->with(12)->once()->andReturn(null);
+
+		try {
+			$this->expectException(\WPDieException::class);
+			$this->expectExceptionMessage('Logs not found.');
+			$this->list_table->process_bulk_download();
+		} finally {
+			unset($_REQUEST['action'], $_REQUEST['_wpnonce'], $_REQUEST['log']);
+		}
+	}
 }
