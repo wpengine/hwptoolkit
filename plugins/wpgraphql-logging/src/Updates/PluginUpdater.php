@@ -68,13 +68,6 @@ class PluginUpdater {
 	protected string $plugin_dirname;
 
 	/**
-	 * The installed plugin version. Null until looked up, empty if the plugin is not installed.
-	 *
-	 * @var string|null
-	 */
-	protected ?string $plugin_version = null;
-
-	/**
 	 * The manifest fetched during this request, so it is requested at most once per request.
 	 *
 	 * Null until fetched, false if it could not be fetched.
@@ -190,7 +183,7 @@ class PluginUpdater {
 			return $res;
 		}
 
-		if ( ! is_object( $args ) || ! isset( $args->slug ) || $this->plugin_dirname !== $args->slug ) {
+		if ( ! is_object( $args ) || ! isset( $args->slug ) || $this->plugin_slug !== $args->slug ) {
 			return $res;
 		}
 
@@ -233,18 +226,13 @@ class PluginUpdater {
 	 * @return string The installed version, or an empty string if the plugin is not installed.
 	 */
 	protected function get_installed_version(): string {
-		if ( null !== $this->plugin_version ) {
-			return $this->plugin_version;
-		}
-
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
-		$version              = get_plugins()[ $this->plugin_basename ]['Version'] ?? '';
-		$this->plugin_version = is_string( $version ) ? $version : '';
+		$version = get_plugins()[ $this->plugin_basename ]['Version'] ?? '';
 
-		return $this->plugin_version;
+		return is_string( $version ) ? $version : '';
 	}
 
 	/**

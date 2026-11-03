@@ -292,6 +292,16 @@ class PluginUpdaterTest extends WPTestCase {
 		$this->assertSame( 'Description', $info->sections['description'] );
 	}
 
+	public function test_plugins_api_matches_slug_when_plugin_directory_is_renamed(): void {
+		$this->mock_manifest( $this->manifest() );
+
+		$info = $this->updater( 'wpgraphql-logging-custom/wpgraphql-logging.php' )
+			->filter_plugin_update_info( false, 'plugin_information', $this->info_args() );
+
+		$this->assertInstanceOf( stdClass::class, $info );
+		$this->assertSame( self::SLUG, $info->slug );
+	}
+
 	public function test_plugins_api_ignores_other_actions_and_plugins(): void {
 		$this->mock_manifest( $this->manifest() );
 		$updater = $this->updater();
@@ -481,5 +491,37 @@ class PluginUpdaterTest extends WPTestCase {
 		$this->assertNotWPError( $info );
 		$this->assertSame( '999.0.0', $info->version );
 		$this->assertSame( [ self::MANIFEST_URL ], $this->requests );
+	}
+
+	public function test_installed_version_is_refreshed_after_plugin_upgrade(): void {
+		$plugin_basename = 'wpgraphql-logging-test-' . wp_generate_password( 8, false, false ) . '.php';
+		$plugin_file     = WP_PLUGIN_DIR . '/' . $plugin_basename;
+
+		file_put_contents(
+			$plugin_file,
+			"<?php\n/**\n * Plugin Name: WPGraphQL Logging Test\n * Version: 1.0.0\n */\n"
+		);
+		wp_clean_plugins_cache();
+
+		$this->mock_manifest( $this->manifest( [ 'version' => '1.5.0' ] ) );
+		$updater = $this->updater( $plugin_basename );
+
+		try {
+			$first_transient = $updater->filter_plugin_update_transient( $this->empty_transient() );
+			$this->assertArrayHasKey( $plugin_basename, $first_transient->response );
+
+			file_put_contents(
+				$plugin_file,
+				"<?php\n/**\n * Plugin Name: WPGraphQL Logging Test\n * Version: 2.0.0\n */\n"
+			);
+			wp_clean_plugins_cache();
+
+			$second_transient = $updater->filter_plugin_update_transient( $this->empty_transient() );
+			$this->assertArrayHasKey( $plugin_basename, $second_transient->no_update );
+		} finally {
+			$updater->unregister();
+			wp_delete_file( $plugin_file );
+			wp_clean_plugins_cache();
+		}
 	}
 }
