@@ -214,6 +214,62 @@ class DashboardPageTest extends WPTestCase {
 		$this->assertLessThan( $window['end'], $now->getTimestamp() );
 	}
 
+	public function test_get_window_daily_resets_time_after_nonexistent_midnight(): void {
+		update_option( 'timezone_string', 'America/Santiago' );
+		$page = new DashboardPage();
+
+		$window = $page->get_window(
+			[
+				'label'          => '7d',
+				'bucket_seconds' => DAY_IN_SECONDS,
+				'bucket_count'   => 7,
+			],
+			new DateTimeImmutable( '2026-09-10 12:00:00', new DateTimeZone( 'America/Santiago' ) )
+		);
+
+		$local_starts = array_map(
+			static fn ( int $timestamp ): string => wp_date( 'Y-m-d H:i', $timestamp ),
+			$window['bucket_starts']
+		);
+
+		$this->assertSame(
+			[
+				'2026-09-04 00:00',
+				'2026-09-05 00:00',
+				'2026-09-06 01:00',
+				'2026-09-07 00:00',
+				'2026-09-08 00:00',
+				'2026-09-09 00:00',
+				'2026-09-10 00:00',
+			],
+			$local_starts
+		);
+	}
+
+	public function test_daily_series_respects_half_hour_dst_boundary(): void {
+		update_option( 'timezone_string', 'Australia/Lord_Howe' );
+		$timezone = new DateTimeZone( 'Australia/Lord_Howe' );
+		$page     = new DashboardPage();
+		$window   = $page->get_window(
+			[
+				'label'          => '7d',
+				'bucket_seconds' => DAY_IN_SECONDS,
+				'bucket_count'   => 7,
+			],
+			new DateTimeImmutable( '2026-10-07 12:00:00', $timezone )
+		);
+		$this->insert_row( ( new DateTimeImmutable( '2026-10-05 00:15:00', $timezone ) )->getTimestamp() );
+
+		$reflection = new ReflectionClass( DashboardPage::class );
+		$method     = $reflection->getMethod( 'get_series' );
+		$method->setAccessible( true );
+		/** @var array<int, array{total: int, errors: int}> $series */
+		$series = $method->invoke( $page, new WordPressDatabaseLogStats(), $window, DAY_IN_SECONDS );
+
+		$this->assertSame( 0, $series[3]['total'] );
+		$this->assertSame( 1, $series[4]['total'] );
+	}
+
 	public function test_fold_series_sums_into_uneven_buckets(): void {
 		$start  = 1000;
 		$source = [
@@ -293,6 +349,21 @@ class DashboardPageTest extends WPTestCase {
 		add_filter( 'wpgraphql_logging_dashboard_cache_ttl', '__return_zero' );
 		( new DashboardPage() )->get_dashboard_data( '24h' );
 		$this->assertFalse( get_transient( DashboardPage::CACHE_KEY_PREFIX . '24h' ) );
+	}
+
+	public function test_nonpositive_cache_ttl_bypasses_existing_cache(): void {
+		$cached = [
+			'range'   => '24h',
+			'summary' => [ 'total' => 99 ],
+		];
+		set_transient( DashboardPage::CACHE_KEY_PREFIX . '24h', $cached, MINUTE_IN_SECONDS );
+		$this->insert_row( time() - 60 );
+		add_filter( 'wpgraphql_logging_dashboard_cache_ttl', '__return_zero' );
+
+		$data = ( new DashboardPage() )->get_dashboard_data( '24h' );
+
+		$this->assertSame( 1, $data['summary']['total'] );
+		$this->assertSame( $cached, get_transient( DashboardPage::CACHE_KEY_PREFIX . '24h' ) );
 	}
 
 	public function test_custom_stats_service_is_used(): void {

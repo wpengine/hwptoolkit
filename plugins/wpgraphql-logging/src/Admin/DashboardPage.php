@@ -317,10 +317,19 @@ class DashboardPage {
 		}
 
 		$cache_key = self::CACHE_KEY_PREFIX . $range;
-		$cached    = get_transient( $cache_key );
-		if ( is_array( $cached ) && isset( $cached['range'] ) && $range === $cached['range'] ) {
-			/** @var array{range: string, start: int, end: int, bucket_starts: array<int, int>, summary: array{total: int, errors: int, operations: int}, series: array<int, array{total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>} $cached */
-			return $cached;
+		/**
+		 * Filters how long dashboard data is cached, in seconds. Return 0 to disable caching.
+		 *
+		 * @param int    $ttl   Cache lifetime in seconds.
+		 * @param string $range The range slug.
+		 */
+		$ttl = (int) apply_filters( 'wpgraphql_logging_dashboard_cache_ttl', self::CACHE_TTL, $range );
+		if ( $ttl > 0 ) {
+			$cached = get_transient( $cache_key );
+			if ( is_array( $cached ) && isset( $cached['range'] ) && $range === $cached['range'] ) {
+				/** @var array{range: string, start: int, end: int, bucket_starts: array<int, int>, summary: array{total: int, errors: int, operations: int}, series: array<int, array{total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>} $cached */
+				return $cached;
+			}
 		}
 
 		$window = $this->get_window( $ranges[ $range ] );
@@ -338,13 +347,6 @@ class DashboardPage {
 			'operations'    => $stats->get_top_operations( $start, $end, self::TOP_OPERATIONS_LIMIT ),
 		];
 
-		/**
-		 * Filters how long dashboard data is cached, in seconds. Return 0 to disable caching.
-		 *
-		 * @param int    $ttl   Cache lifetime in seconds.
-		 * @param string $range The range slug.
-		 */
-		$ttl = (int) apply_filters( 'wpgraphql_logging_dashboard_cache_ttl', self::CACHE_TTL, $range );
 		if ( $ttl > 0 ) {
 			set_transient( $cache_key, $data, $ttl );
 		}
@@ -513,7 +515,7 @@ class DashboardPage {
 	 * Gets the counts for each bucket in a window.
 	 *
 	 * Daily buckets follow local calendar days, which are not always 24 hours long, so they
-	 * are built from hourly counts rather than fixed 24-hour SQL buckets.
+	 * are built from fixed-size source buckets aligned with each calendar-day boundary.
 	 *
 	 * @param \WPGraphQL\Logging\Logger\Api\LogStatsInterface             $stats          The stats service.
 	 * @param array{start: int, end: int, bucket_starts: array<int, int>} $window         The window.
@@ -528,9 +530,28 @@ class DashboardPage {
 			return array_values( $stats->get_time_series( $start, $bucket_seconds, count( $window['bucket_starts'] ) ) );
 		}
 
-		$hours  = (int) ceil( ( $window['end'] - $window['start'] ) / HOUR_IN_SECONDS );
-		$hourly = $stats->get_time_series( $start, HOUR_IN_SECONDS, max( 1, $hours ) );
+		$boundaries     = array_merge( $window['bucket_starts'], [ $window['end'] ] );
+		$source_seconds = 0;
+		for ( $i = 1, $count = count( $boundaries ); $i < $count; $i++ ) {
+			$source_seconds = self::greatest_common_divisor( $source_seconds, $boundaries[ $i ] - $boundaries[ $i - 1 ] );
+		}
+		$source_seconds = max( 1, $source_seconds );
+		$source_count   = (int) ceil( ( $window['end'] - $window['start'] ) / $source_seconds );
+		$source         = $stats->get_time_series( $start, $source_seconds, max( 1, $source_count ) );
 
-		return self::fold_series( $hourly, $window['start'], HOUR_IN_SECONDS, $window['bucket_starts'] );
+		return self::fold_series( $source, $window['start'], $source_seconds, $window['bucket_starts'] );
+	}
+
+	/**
+	 * Gets the greatest common divisor of two non-negative integers.
+	 */
+	private static function greatest_common_divisor( int $a, int $b ): int {
+		while ( 0 !== $b ) {
+			$remainder = $a % $b;
+			$a         = $b;
+			$b         = $remainder;
+		}
+
+		return $a;
 	}
 }

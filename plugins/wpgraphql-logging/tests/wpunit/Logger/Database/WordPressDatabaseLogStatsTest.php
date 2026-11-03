@@ -174,4 +174,21 @@ class WordPressDatabaseLogStatsTest extends WPTestCase {
 
 		$this->assertSame( [ [ 'operation' => '', 'total' => 1, 'errors' => 0 ] ], $operations );
 	}
+
+	public function test_operation_name_null_is_distinct_from_an_unnamed_operation(): void {
+		$this->insert_row( '2026-01-01 01:00:00', 200, 'INFO', 'null' );
+		$this->insert_row( '2026-01-01 02:00:00', 200, 'INFO', null );
+
+		$this->assertSame( 1, $this->stats->get_summary( $this->start, $this->end( 24 ) )['operations'] );
+		$operations = $this->stats->get_top_operations( $this->start, $this->end( 24 ) );
+		usort( $operations, static fn ( array $left, array $right ): int => strcmp( $left['operation'], $right['operation'] ) );
+
+		$this->assertSame(
+			[
+				[ 'operation' => '', 'total' => 1, 'errors' => 0 ],
+				[ 'operation' => 'null', 'total' => 1, 'errors' => 0 ],
+			],
+			$operations
+		);
+	}
 }
