@@ -20,6 +20,19 @@ The plugin captures key events for the WPGraphQL event lifecycle (configurable)
 * **Response Headers**
 * **Request Results**
 
+### Request Duration
+
+Each log record written during a WPGraphQL request includes `request_duration_ms` in its `extra` data. This is the time in milliseconds from the start of the request to the moment the record was logged, so you can see where time is spent across the lifecycle.
+
+The response events (**Request Results** and **Before Response Return**) also include `request_duration_ms` in their `context`. This is the total time for the request, and because it is in the context, [event subscribers and transforms](how-to/event-pub-sub/index.md) receive it too.
+
+The timer starts at the earliest WPGraphQL hook the plugin can observe (`graphql_process_http_request` for HTTP requests, otherwise `graphql_request_data` or `do_graphql_request`) and stops after execution (`graphql_after_execute`). It resets for every request:
+
+* **Batch HTTP requests** share one timer, because WPGraphQL executes all operations of a batch in one step. Each operation's response record shows the time for the whole batch so far, not the time for that operation alone.
+* **Nested `graphql()` calls**, such as one made from inside a resolver, get their own timer and do not reset the outer request's timer.
+
+Records logged outside of a WPGraphQL request do not include `request_duration_ms`.
+
 ### Pub/Sub Event System
 
 Built with developers and plugins in mind, the plugin allows users to listen to individual events and transform or collect data from those events.
@@ -38,7 +51,7 @@ The plugin provides comprehensive data management capabilities, allowing you to 
 
 ### Admin UI
 
-The plugin delivers a admin UI with some filtering of logs around dates or level and the ability to download logs in CSV format.
+The plugin delivers a admin UI with a search box, some filtering of logs around dates or level and the ability to download logs in CSV format.
 
 ***
 
@@ -108,7 +121,7 @@ wpgraphql-logging/
 │   │   ├── Api/                # Api interfaces for fetching and writing log data
 │   │   ├── Database/           # Database entity and helper
 │   │   ├── Handlers/           # Monolog WordPress database handler for logging data
-│   │   ├── Processors/         # Monolog processors for data sanitization and request headers
+│   │   ├── Processors/         # Monolog processors for data sanitization, request headers and request duration
 │   │   ├── Rules/              # Rules and RuleManager to decide whether to log a query
 │   │   ├── Scheduler/          # Automated data cleanup and maintenance tasks
 │   │   └── Store/              # Log storage service
@@ -145,6 +158,14 @@ Cells that a spreadsheet would treat as a formula (starting with `=`, `+`, `-`, 
 ID,Date,Level,"Level Name",Message,Channel,Query,Context,Extra
 5293,"2025-10-06 15:41:34",200,INFO,"WPGraphQL Response",wpgraphql_logging,"{ posts(first: 10) ...""memory_peak_usage"":""18 MB""}"
 ```
+
+### Searching Logs
+
+Use the search box to find logs by their message (for example `WPGraphQL Response with Errors`) or by the text of the GraphQL query, such as an operation name like `GetPosts`. The search is case-insensitive, and it works together with the filters, sorting and pagination.
+
+To stay fast on large log tables, the search only looks at the message and the `query` in the log context, not the variables, request or response. A `LIKE '%term%'` search can't use an index, so combine it with a date or level filter when you have many logs.
+
+Developers can change or remove the search condition with the `wpgraphql_logging_logs_table_where_clauses` filter.
 
 ### Filtering Logs
 
