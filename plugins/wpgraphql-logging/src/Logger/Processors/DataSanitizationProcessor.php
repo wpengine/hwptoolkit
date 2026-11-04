@@ -139,7 +139,7 @@ class DataSanitizationProcessor implements ProcessorInterface {
 					return;
 				}
 
-				$remaining_key = implode( '.', array_slice( $keys, $index + 1 ) );
+				$remaining_key = implode( '.', array_merge( array_slice( $keys, $index + 1 ), [ $last_key ] ) );
 				foreach ( array_keys( $current ) as $array_key ) {
 					if ( is_array( $current[ $array_key ] ) ) {
 						$this->apply_rule( $current[ $array_key ], $remaining_key, $rule );
