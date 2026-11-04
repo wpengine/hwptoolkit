@@ -31,7 +31,7 @@ class RequestHeadersProcessor implements ProcessorInterface {
 			$header_key  = ucwords( strtolower( sanitize_text_field( $header_name ) ), '-' );
 			$value       = in_array( strtolower( $header_key ), [ 'authorization', 'proxy-authorization', 'cookie' ], true )
 				? '***'
-				: sanitize_text_field( (string) $value );
+				: sanitize_text_field( $value );
 			$headers[ $header_key ] = $value;
 		}
 
