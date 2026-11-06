@@ -24,15 +24,18 @@ class RequestHeadersProcessor implements ProcessorInterface {
 	private function get_headers(): array {
 		$headers = [];
 		foreach ( $_SERVER as $key => $value ) {
-			if ( ! str_starts_with( $key, 'HTTP_' ) || ! is_string( $value ) || empty( $value ) ) {
+			if ( ! str_starts_with( $key, 'HTTP_' ) ) {
+				continue;
+			}
+			if ( ! is_string( $value ) || empty( $value ) ) {
 				continue;
 			}
 			$header_name = str_replace( '_', '-', substr( $key, 5 ) );
 			$header_key  = ucwords( strtolower( sanitize_text_field( $header_name ) ), '-' );
-			$value       = in_array( strtolower( $header_key ), [ 'authorization', 'proxy-authorization', 'cookie' ], true )
+			$header_value = in_array( strtolower( $header_key ), [ 'authorization', 'proxy-authorization', 'cookie' ], true )
 				? '***'
 				: sanitize_text_field( $value );
-			$headers[ $header_key ] = $value;
+			$headers[ $header_key ] = $header_value;
 		}
 
 		return $headers;
