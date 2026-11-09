@@ -60,11 +60,11 @@ importers:
         version: 7.0.1
     devDependencies:
       '@playwright/test':
-        specifier: ^1.64.1
-        version: 1.64.1
+        specifier: ^1.65.0
+        version: 1.65.0
       '@wordpress/e2e-test-utils-playwright':
         specifier: ^3.1.0
-        version: 3.1.0(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(@playwright/test@1.64.1)(@types/node@26.4.0)(yauzl@2.10.0)
+        version: 3.1.0(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(@playwright/test@1.65.0)(@types/node@26.4.0)(yauzl@2.10.0)
       '@wordpress/env':
         specifier: ^12.0.0
         version: 12.0.0(@types/node@26.4.0)
@@ -113,11 +113,11 @@ importers:
   plugins/wpgraphql-logging:
     devDependencies:
       '@playwright/test':
-        specifier: ^1.64.1
-        version: 1.64.1
+        specifier: ^1.65.0
+        version: 1.65.0
       '@wordpress/e2e-test-utils-playwright':
         specifier: ^3.1.0
-        version: 3.1.0(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(@playwright/test@1.64.1)(@types/node@26.4.0)(yauzl@2.10.0)
+        version: 3.1.0(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(@playwright/test@1.65.0)(@types/node@26.4.0)(yauzl@2.10.0)
       '@wordpress/env':
         specifier: ^12.0.0
         version: 12.0.0(@types/node@26.4.0)
@@ -555,8 +555,8 @@ packages:
     engines: {node: '>=24.18.0', npm: '>=11.16.0'}
     hasBin: true
 
-  '@playwright/test@1.64.1':
-    resolution: {integrity: sha512-IaYGml/nSOiZWROfPtuIL7neuu9qDOZ3TNvNljUIrhDMxiGTgPjzj/g9p9RxpS2tSepPDRY+UwAaEeiKtUvIAg==}
+  '@playwright/test@1.65.0':
+    resolution: {integrity: sha512-iGURLGuKDLakSEl7Pgfv8h7f+XLT+V861Wfhz0zlEl5nyFuKUopdkFBPKqTllTUp06aOwPuH8iuUEb3yp3MpbQ==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -1992,13 +1992,13 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  playwright-core@1.64.1:
-    resolution: {integrity: sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==}
+  playwright-core@1.65.0:
+    resolution: {integrity: sha512-vNSKgH6YqtN7cdT/L334zo0a+YwkrpicyrHJlWWPIm/Q+Nn2SWInil01oT0mbu96U4GgoRtCYQD9CzJQgju+lA==}
     engines: {node: '>=20'}
     hasBin: true
 
-  playwright@1.64.1:
-    resolution: {integrity: sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==}
+  playwright@1.65.0:
+    resolution: {integrity: sha512-F3AMWcR44qMBt4kq+6Kb6mX7bjGXshktKFOPULd7reED6ZJWevjbNRqysP7q+AATE9kdPEZBibex1BYsvpVoeA==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -3180,9 +3180,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@playwright/test@1.64.1':
+  '@playwright/test@1.65.0':
     dependencies:
-      playwright: 1.64.1
+      playwright: 1.65.0
 
   '@puppeteer/browsers@3.2.6(yauzl@2.10.0)':
     dependencies:
@@ -3320,9 +3320,9 @@ snapshots:
 
   '@wolfy1339/lru-cache@11.0.2-patch.1': {}
 
-  '@wordpress/e2e-test-utils-playwright@3.1.0(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(@playwright/test@1.64.1)(@types/node@26.4.0)(yauzl@2.10.0)':
+  '@wordpress/e2e-test-utils-playwright@3.1.0(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(@playwright/test@1.65.0)(@types/node@26.4.0)(yauzl@2.10.0)':
     dependencies:
-      '@playwright/test': 1.64.1
+      '@playwright/test': 1.65.0
       change-case: 4.1.2
       get-port: 5.1.1
       lighthouse: 13.5.0(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(yauzl@2.10.0)
@@ -4913,11 +4913,11 @@ snapshots:
 
   pify@4.0.1: {}
 
-  playwright-core@1.64.1: {}
+  playwright-core@1.65.0: {}
 
-  playwright@1.64.1:
+  playwright@1.65.0:
     dependencies:
-      playwright-core: 1.64.1
+      playwright-core: 1.65.0
 
   pluralize@8.0.0: {}
 
