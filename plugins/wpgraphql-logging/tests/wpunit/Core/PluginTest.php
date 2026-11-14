@@ -98,6 +98,7 @@ class PluginTest extends WPTestCase {
 					Events::RESPONSE_HEADERS_TO_SEND,
 				],
 				BasicConfigurationTab::LOG_RESPONSE        => false,
+				BasicConfigurationTab::LOG_REST_REQUESTS   => false,
 			],
 			DataManagementTab::get_name()     => [
 				DataManagementTab::DATA_DELETION_ENABLED => true,

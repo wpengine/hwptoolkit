@@ -70,6 +70,13 @@ class DataSanitizationProcessor implements ProcessorInterface {
 			'variables.username'                 => 'anonymize',
 			'variables.password'                 => 'anonymize',
 			'variables.email'                    => 'anonymize',
+			'params.username'                    => 'anonymize',
+			'params.password'                    => 'anonymize',
+			'params.email'                       => 'anonymize',
+			'params.requests.*.body.password'    => 'anonymize',
+			'response.password'                  => 'anonymize', // e.g. a new REST application password.
+			'response.responses.*.body.password' => 'anonymize',
+			'response.body.password'             => 'anonymize',
 		];
 
 		return apply_filters( 'wpgraphql_logging_data_sanitization_recommended_rules', $rules );
@@ -126,7 +133,21 @@ class DataSanitizationProcessor implements ProcessorInterface {
 		$last_key = array_pop( $keys );
 
 		$current = &$data;
-		foreach ( $keys as $segment ) {
+		foreach ( $keys as $index => $segment ) {
+			if ( '*' === $segment ) {
+				if ( ! is_array( $current ) ) {
+					return;
+				}
+
+				$remaining_key = implode( '.', array_merge( array_slice( $keys, $index + 1 ), [ $last_key ] ) );
+				foreach ( array_keys( $current ) as $array_key ) {
+					if ( is_array( $current[ $array_key ] ) ) {
+						$this->apply_rule( $current[ $array_key ], $remaining_key, $rule );
+					}
+				}
+				return;
+			}
+
 			if ( ! is_array( $current ) || ! isset( $current[ $segment ] ) ) {
 				return;
 			}
