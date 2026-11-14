@@ -125,6 +125,7 @@ wpgraphql-logging/
 │   │   ├── Rules/              # Rules and RuleManager to decide whether to log a query
 │   │   ├── Scheduler/          # Automated data cleanup and maintenance tasks
 │   │   └── Store/              # Log storage service
+│   ├── Updates/                # Client for the WP Engine plugin updates API
 │   ├── Plugin.php              # Main plugin class (entry point)
 │   └── Autoloader.php          # PSR-4 autoloader
 ├── tests/                      # All test suites
@@ -217,6 +218,14 @@ add_filter( 'wpgraphql_logging_dashboard_ranges', function( array $ranges ) {
 ```
 
 If you [replace the log store](how-to/update-log-store-service/index.md), the dashboard shows a notice until you provide a stats service for your store. See that guide for details.
+
+## Updates
+
+The plugin checks the WP Engine plugin updates API for new versions, so new releases show up on the Plugins and Updates screens in wp-admin like any other plugin update, and you can turn on auto-updates for it. The plugin's `Update URI` header points at the updates API, so WordPress.org is never used for this plugin.
+
+The check runs when WordPress checks for plugin updates. It requests `https://wpe-plugin-updates.wpengine.com/wpgraphql-logging/info.json` and caches the response for five hours. If the API can't be reached, nothing changes and WordPress tries again on its next update check.
+
+If you manage the plugin with Composer, keep updating it with Composer so `composer.lock` stays in sync. wp-admin will still show available updates.
 
 ## Uninstallation
 
