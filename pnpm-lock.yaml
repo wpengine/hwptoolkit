@@ -44,6 +44,7 @@ overrides:
   postcss-selector-parser@>=7.0.0 <7.1.6: 7.1.6
   glob@>=9.0.0 <14.0.2: 14.0.2
   minimatch@<11.0.1: 11.0.1
+  isomorphic-git@<1.38.6: 1.38.6
 
 importers:
 
@@ -1512,8 +1513,8 @@ packages:
     resolution: {integrity: sha512-6B3tLtFqtQS4ekarvLVMZ+X+VlvQekbe4taUkf/rhVO3d/h0M2rfARm/pXLcPEsjjMsFgrFgSrhQIxcSVrBz8w==}
     engines: {node: '>=18'}
 
-  isomorphic-git@1.37.6:
-    resolution: {integrity: sha512-qr1NFCPsVTZ6YGqTXw0CzamnsHyH9QQ1OTEfeXIweSljRUMzuHFCJdUn0wc6OcjtTDns6knxjPb7N6LmJeftOA==}
+  isomorphic-git@1.38.6:
+    resolution: {integrity: sha512-lCmZ1m2R0LqbZ4QATtLCxhwNBQPNJc74R81dfyF90yLqP8xs2DZLedcnkVuRj6th/L2HYoIvWP5lBpS1ooAagw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -3409,7 +3410,7 @@ snapshots:
       '@php-wasm/universal': 3.1.62
       '@php-wasm/util': 3.1.62
       '@zip.js/zip.js': 2.7.57
-      isomorphic-git: 1.37.6
+      isomorphic-git: 1.38.6
       octokit: 3.1.2
       pako: 1.0.11
       sha.js: 2.4.12
@@ -4197,7 +4198,7 @@ snapshots:
 
   isexe@3.1.5: {}
 
-  isomorphic-git@1.37.6:
+  isomorphic-git@1.38.6:
     dependencies:
       async-lock: 1.4.1
       clean-git-ref: 2.0.1
