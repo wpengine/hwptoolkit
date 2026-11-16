@@ -70,7 +70,8 @@
       "baseline-browser-mapping@>=2.0.0 <2.11.0": "2.11.0",
       "postcss-selector-parser@>=7.0.0 <7.1.6": "7.1.6",
       "glob@>=9.0.0 <14.0.2": "14.0.2",
-      "minimatch@<11.0.1": "11.0.1"
+      "minimatch@<11.0.1": "11.0.1",
+      "isomorphic-git@<1.38.6": "1.38.6"
     }
   },
   "dependencies": {
