@@ -17,6 +17,13 @@ use Monolog\Processor\ProcessorInterface;
  */
 class RequestHeadersProcessor implements ProcessorInterface {
 	/**
+	 * Headers that carry credentials. Their values are replaced with '***'.
+	 *
+	 * @var array<string>
+	 */
+	private const REDACTED_HEADERS = [ 'authorization', 'proxy-authorization', 'cookie', 'x-wp-nonce' ];
+
+	/**
 	 * Retrieves the request headers from the $_SERVER superglobal.
 	 *
 	 * @return array<string, mixed> The request headers.
@@ -24,18 +31,15 @@ class RequestHeadersProcessor implements ProcessorInterface {
 	private function get_headers(): array {
 		$headers = [];
 		foreach ( $_SERVER as $key => $value ) {
-			if ( ! str_starts_with( $key, 'HTTP_' ) ) {
+			// Only real request headers; skips server fields such as PHP_AUTH_PW.
+			if ( ! str_starts_with( $key, 'HTTP_' ) || ! is_string( $value ) || empty( $value ) ) {
 				continue;
 			}
-			if ( ! is_string( $value ) || empty( $value ) ) {
-				continue;
-			}
-			$header_name = str_replace( '_', '-', substr( $key, 5 ) );
-			$header_key  = ucwords( strtolower( sanitize_text_field( $header_name ) ), '-' );
-			$header_value = in_array( strtolower( $header_key ), [ 'authorization', 'proxy-authorization', 'cookie' ], true )
+			$header_name            = str_replace( '_', '-', substr( $key, 5 ) );
+			$header_key             = ucwords( strtolower( sanitize_text_field( $header_name ) ), '-' );
+			$headers[ $header_key ] = in_array( strtolower( $header_key ), self::REDACTED_HEADERS, true )
 				? '***'
 				: sanitize_text_field( $value );
-			$headers[ $header_key ] = $header_value;
 		}
 
 		return $headers;

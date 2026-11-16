@@ -236,7 +236,9 @@ class DataSanitizationProcessorTest extends WPTestCase {
 					'requests' => [
 						[
 							'body' => [
+								'username' => 'batch-user',
 								'password' => 'batch request secret',
+								'email'    => 'batch@example.com',
 								'name'     => 'App',
 							],
 						],
@@ -262,7 +264,9 @@ class DataSanitizationProcessorTest extends WPTestCase {
 
 		$context = $processor->__invoke($record)->toArray()['context'];
 
+		$this->assertSame('***', $context['params']['requests'][0]['body']['username']);
 		$this->assertSame('***', $context['params']['requests'][0]['body']['password']);
+		$this->assertSame('***', $context['params']['requests'][0]['body']['email']);
 		$this->assertSame('App', $context['params']['requests'][0]['body']['name']);
 		$this->assertSame('***', $context['response']['responses'][0]['body']['password']);
 		$this->assertSame('App', $context['response']['responses'][0]['body']['name']);

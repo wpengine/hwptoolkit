@@ -323,10 +323,11 @@ class RestRequestLoggerTest extends WPTestCase {
 		$original_user_id = get_current_user_id();
 		wp_set_current_user( $user_id );
 
-		$server_keys = [ 'HTTP_AUTHORIZATION', 'HTTP_COOKIE', 'PHP_AUTH_PW' ];
+		$server_keys = [ 'HTTP_AUTHORIZATION', 'HTTP_COOKIE', 'HTTP_X_WP_NONCE', 'PHP_AUTH_PW' ];
 		$server      = array_intersect_key( $_SERVER, array_flip( $server_keys ) );
 		$_SERVER['HTTP_AUTHORIZATION'] = 'Authorization-secret-value';
 		$_SERVER['HTTP_COOKIE']        = 'session=cookie-secret';
+		$_SERVER['HTTP_X_WP_NONCE']    = 'nonce-secret';
 		$_SERVER['PHP_AUTH_PW']        = 'server-password';
 
 		try {
@@ -350,6 +351,7 @@ class RestRequestLoggerTest extends WPTestCase {
 		$headers = $logs[0]->get_extra()['request_headers'];
 		$this->assertSame( '***', $headers['Authorization'] );
 		$this->assertSame( '***', $headers['Cookie'] );
+		$this->assertSame( '***', $headers['X-Wp-Nonce'] );
 		$this->assertArrayNotHasKey( 'Auth-Pw', $headers );
 	}
 

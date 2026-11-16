@@ -73,10 +73,12 @@ class DataSanitizationProcessor implements ProcessorInterface {
 			'params.username'                    => 'anonymize',
 			'params.password'                    => 'anonymize',
 			'params.email'                       => 'anonymize',
+			'params.requests.*.body.username'    => 'anonymize', // Sub-requests of /batch/v1.
 			'params.requests.*.body.password'    => 'anonymize',
+			'params.requests.*.body.email'       => 'anonymize',
 			'response.password'                  => 'anonymize', // e.g. a new REST application password.
-			'response.responses.*.body.password' => 'anonymize',
-			'response.body.password'             => 'anonymize',
+			'response.responses.*.body.password' => 'anonymize', // Responses from /batch/v1.
+			'response.body.password'             => 'anonymize', // Responses wrapped by ?_envelope.
 		];
 
 		return apply_filters( 'wpgraphql_logging_data_sanitization_recommended_rules', $rules );
@@ -133,55 +135,6 @@ class DataSanitizationProcessor implements ProcessorInterface {
 	}
 
 	/**
-	 * Apply a sanitization rule to a path represented as an array of keys.
-	 *
-	 * @param array<string, mixed> $data The data array to sanitize.
-	 * @param array<string>        $keys The path keys to sanitize.
-	 * @param string               $rule The sanitization rule ('anonymize', 'remove', 'truncate').
-	 */
-	private function apply_rule_to_path(array &$data, array $keys, string $rule): void {
-		$last_key  = array_pop( $keys );
-		$current   = &$data;
-		foreach ( $keys as $index => $segment ) {
-			if ( '*' === $segment ) {
-				$remaining_keys = array_merge( array_slice( $keys, $index + 1 ), [ $last_key ] );
-				$this->apply_wildcard_rule( $current, $remaining_keys, $rule );
-				return;
-			}
-
-			if ( ! is_array( $current ) || ! isset( $current[ $segment ] ) ) {
-				return;
-			}
-			$current = &$current[ $segment ];
-		}
-
-		if ( ! is_array( $current ) || ! array_key_exists( $last_key, $current ) ) {
-			return;
-		}
-
-		$this->apply_sanitization_rule( $current, $last_key, $rule );
-	}
-
-	/**
-	 * Apply a sanitization rule to each array matching a wildcard path segment.
-	 *
-	 * @param mixed         $data The data to sanitize.
-	 * @param array<string> $keys The remaining path keys to sanitize.
-	 * @param string       $rule The sanitization rule ('anonymize', 'remove', 'truncate').
-	 */
-	private function apply_wildcard_rule( &$data, array $keys, string $rule): void {
-		if ( ! is_array( $data ) ) {
-			return;
-		}
-
-		foreach ( array_keys( $data ) as $array_key ) {
-			if ( is_array( $data[ $array_key ] ) ) {
-				$this->apply_rule_to_path( $data[ $array_key ], $keys, $rule );
-			}
-		}
-	}
-
-	/**
 	 * Apply the sanitization rule to the target value.
 	 *
 	 * @param array<string, mixed> $current The current array containing the target key.
@@ -204,6 +157,49 @@ class DataSanitizationProcessor implements ProcessorInterface {
 					$current[ $key ] = substr( $current[ $key ], 0, 47 ) . '...';
 				}
 				break;
+		}
+	}
+
+	/**
+	 * Apply a sanitization rule to a path of keys. A '*' segment matches every
+	 * child array at that level, e.g. 'params.requests.*.body.password'.
+	 *
+	 * @param array<mixed>  $data The data array to sanitize.
+	 * @param array<string> $keys The remaining path keys.
+	 * @param string        $rule The sanitization rule ('anonymize', 'remove', 'truncate').
+	 */
+	private function apply_rule_to_path(array &$data, array $keys, string $rule): void {
+		$segment = (string) array_shift( $keys );
+
+		if ( [] === $keys ) {
+			if ( array_key_exists( $segment, $data ) ) {
+				$this->apply_sanitization_rule( $data, $segment, $rule );
+			}
+			return;
+		}
+
+		if ( '*' === $segment ) {
+			$this->apply_wildcard_rule( $data, $keys, $rule );
+			return;
+		}
+
+		if ( isset( $data[ $segment ] ) && is_array( $data[ $segment ] ) ) {
+			$this->apply_rule_to_path( $data[ $segment ], $keys, $rule );
+		}
+	}
+
+	/**
+	 * Apply a sanitization rule to every child array of the given data.
+	 *
+	 * @param array<mixed>  $data The array whose children are matched by a '*' segment.
+	 * @param array<string> $keys The path keys after the '*' segment.
+	 * @param string        $rule The sanitization rule ('anonymize', 'remove', 'truncate').
+	 */
+	private function apply_wildcard_rule(array &$data, array $keys, string $rule): void {
+		foreach ( array_keys( $data ) as $child_key ) {
+			if ( is_array( $data[ $child_key ] ) ) {
+				$this->apply_rule_to_path( $data[ $child_key ], $keys, $rule );
+			}
 		}
 	}
 

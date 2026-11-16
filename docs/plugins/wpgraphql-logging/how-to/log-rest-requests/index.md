@@ -48,7 +48,7 @@ Each entry has:
   * `errors`: the error body, when the status is 400 or higher
   * `response`: the response body, when **Log Response** is on and the request succeeded
 
-The usual `extra` data (memory usage, request headers, process ID and so on) is added by the default processors.
+The usual `extra` data (memory usage, request headers, process ID and so on) is added by the default processors. The values of the `Authorization`, `Proxy-Authorization`, `Cookie` and `X-WP-Nonce` headers are replaced with `***`.
 
 ## Exclude routes
 
@@ -62,9 +62,9 @@ With this value, `/wp/v2/users` and `/wp/v2/users/me` are skipped, but `/wp/v2/u
 
 ## Sanitize sensitive data
 
-When **Data Sanitization** uses the **Recommended** rules, the plugin anonymizes `params.username`, `params.password`, `params.email` and `response.password` in REST entries.
+When **Data Sanitization** uses the **Recommended** rules, the plugin anonymizes `params.username`, `params.password`, `params.email` and `response.password` in REST entries. It does the same for the sub-requests and responses of `/batch/v1` and for responses wrapped with `?_envelope`.
 
-For anything else, choose **Custom** rules on the **Data Management** tab and use dot notation against the context. For example, `params.token` or `params.billing.phone`.
+For anything else, choose **Custom** rules on the **Data Management** tab and use dot notation against the context. For example, `params.token` or `params.billing.phone`. Use `*` to match every item in a list, as in `params.requests.*.body.token`.
 
 ## Tell REST and GraphQL entries apart
 
