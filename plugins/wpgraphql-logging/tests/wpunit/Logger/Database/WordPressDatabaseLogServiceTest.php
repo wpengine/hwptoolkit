@@ -8,6 +8,7 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseLogService;
 use WPGraphQL\Logging\Logger\Database\WordPressDatabaseEntity;
 use WPGraphQL\Logging\Logger\Api\LogEntityInterface;
+use WPGraphQL\Logging\Logger\Api\LogServiceInterface;
 
 /**
  * Test for the WordPressDatabaseLogService
@@ -183,5 +184,88 @@ class WordPressDatabaseLogServiceTest extends WPTestCase
 
         $logs = $this->log_service->find_entities_by_where();
         $this->assertCount(0, $logs);
+    }
+
+    public function insert_search_data(): void
+    {
+        $this->log_service->create_log_entity('wpgraphql_logging', 200, 'INFO', 'WPGraphQL Response', ['query' => 'query GetPosts { posts { nodes { title } } }']);
+        $this->log_service->create_log_entity('wpgraphql_logging', 400, 'ERROR', 'WPGraphQL Response with Errors', ['query' => 'query GetMenus { menus { nodes { name } } }']);
+        $this->log_service->create_log_entity('wpgraphql_logging', 200, 'INFO', 'Discount 100% applied', ['variables' => ['name' => 'GetPosts']]);
+    }
+
+    private function search(string $term, array $where = []): array
+    {
+        $where[] = [
+            'column'   => LogServiceInterface::SEARCH_COLUMN,
+            'operator' => 'LIKE',
+            'value'    => $term,
+        ];
+        return $this->log_service->find_entities_by_where(['where' => $where]);
+    }
+
+    public function test_search_matches_message(): void
+    {
+        $this->insert_search_data();
+        $logs = $this->search('with Errors');
+        $this->assertCount(1, $logs);
+        $this->assertEquals('WPGraphQL Response with Errors', $logs[0]->get_message());
+    }
+
+    public function test_search_matches_query_case_insensitively(): void
+    {
+        $this->insert_search_data();
+        $logs = $this->search('getposts');
+        $this->assertCount(1, $logs, 'Only the query should match, not variables in the context.');
+        $this->assertEquals('WPGraphQL Response', $logs[0]->get_message());
+    }
+
+    public function test_search_escapes_like_wildcards(): void
+    {
+        $this->insert_search_data();
+        $this->assertCount(1, $this->search('100%'));
+        $this->assertCount(0, $this->search('_iscount'));
+    }
+
+    public function test_search_matches_quotes_and_backslashes_in_query(): void
+    {
+        $this->log_service->create_log_entity('wpgraphql_logging', 200, 'INFO', 'WPGraphQL Response', ['query' => 'query { posts(where: {search: "it\'s a \\\\ test"}) { nodes { id } } }']);
+
+        // The query is unquoted from the JSON before matching, so its quotes and backslashes are not JSON-escaped.
+        $this->assertCount(1, $this->search('search: "it\'s'));
+        $this->assertCount(1, $this->search('a \\\\ test'));
+        $this->assertCount(0, $this->search('a \\\\\\\\ test'));
+    }
+
+    public function test_search_composes_with_other_conditions_and_count(): void
+    {
+        $this->insert_search_data();
+        $level = [
+            'column'   => 'level_name',
+            'operator' => '=',
+            'value'    => 'ERROR',
+        ];
+        $this->assertCount(2, $this->search('WPGraphQL Response'));
+        $logs = $this->search('WPGraphQL Response', [$level]);
+        $this->assertCount(1, $logs);
+        $this->assertEquals('ERROR', $logs[0]->get_level_name());
+
+        $where = [
+            $level,
+            ['column' => LogServiceInterface::SEARCH_COLUMN, 'operator' => 'LIKE', 'value' => 'menus'],
+        ];
+        $this->assertEquals(1, $this->log_service->count_entities_by_where($where));
+        $where[1]['value'] = 'GetPosts';
+        $this->assertEquals(0, $this->log_service->count_entities_by_where($where));
+    }
+
+    public function test_search_ignores_empty_term_and_unsupported_operator(): void
+    {
+        $this->insert_search_data();
+        $this->assertCount(3, $this->search('   '));
+
+        $logs = $this->log_service->find_entities_by_where(['where' => [
+            ['column' => LogServiceInterface::SEARCH_COLUMN, 'operator' => '=', 'value' => 'GetPosts'],
+        ]]);
+        $this->assertCount(3, $logs);
     }
 }

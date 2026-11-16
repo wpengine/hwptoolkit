@@ -15,6 +15,17 @@ use DateTime;
  */
 interface LogServiceInterface {
 	/**
+	 * Pseudo-column used in where conditions for a free-text search.
+	 *
+	 * A condition of `[ 'column' => self::SEARCH_COLUMN, 'operator' => 'LIKE', 'value' => $term ]`
+	 * asks the service to match `$term` against whichever fields it considers searchable.
+	 * Services that do not support search may ignore it.
+	 *
+	 * @var string
+	 */
+	public const SEARCH_COLUMN = 'search';
+
+	/**
 	 * Activates the log service.
 	 */
 	public function activate(): void;

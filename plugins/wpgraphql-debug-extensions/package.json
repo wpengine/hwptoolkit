@@ -11,6 +11,6 @@
 	"author": "wpengine",
 	"license": "GPL-2.0",
 	"devDependencies": {
-		"@wordpress/env": "^12.0.0"
+		"@wordpress/env": "^12.1.0"
 	}
 }

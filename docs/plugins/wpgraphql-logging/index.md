@@ -55,7 +55,7 @@ The plugin provides comprehensive data management capabilities, allowing you to 
 
 ### Admin UI
 
-The plugin delivers a admin UI with some filtering of logs around dates or level and the ability to download logs in CSV format.
+The plugin delivers an admin UI with a search box, filtering of logs by date or level, CSV downloads, and a dashboard with charts.
 
 ***
 
@@ -155,7 +155,11 @@ Once setup, you can view logs under GraphQL Logs -> All Logs. The admin screen i
 
 ### Downloading Logs
 
-You can download individual logs in CSV format.
+You can download logs in CSV format, either one at a time with the "Download" row action, or several at once by checking them and choosing "Download Selected" from the bulk actions. A bulk download gives you one CSV with a header row and one row per selected log.
+
+Bulk downloads are streamed straight to the browser one row at a time, so no temporary files are written. A single bulk download is capped at 1,000 logs. You can change the cap with the `wpgraphql_logging_bulk_download_limit` filter, and rename the file with `wpgraphql_logging_bulk_csv_filename`.
+
+Cells that a spreadsheet would treat as a formula (starting with `=`, `+`, `-`, `@` and similar) are prefixed with `'`, because log values can come from unauthenticated GraphQL requests.
 
 **Example**
 
@@ -163,6 +167,14 @@ You can download individual logs in CSV format.
 ID,Date,Level,"Level Name",Message,Channel,Query,Context,Extra
 5293,"2025-10-06 15:41:34",200,INFO,"WPGraphQL Response",wpgraphql_logging,"{ posts(first: 10) ...""memory_peak_usage"":""18 MB""}"
 ```
+
+### Searching Logs
+
+Use the search box to find logs by their message (for example `WPGraphQL Response with Errors`) or by the text of the GraphQL query, such as an operation name like `GetPosts`. The search is case-insensitive, and it works together with the filters, sorting and pagination.
+
+To stay fast on large log tables, the search only looks at the message and the `query` in the log context, not the variables, request or response. A `LIKE '%term%'` search can't use an index, so combine it with a date or level filter when you have many logs.
+
+Developers can change or remove the search condition with the `wpgraphql_logging_logs_table_where_clauses` filter.
 
 ### Filtering Logs
 
@@ -179,7 +191,41 @@ You can also filter logs with the following filters:
 
 ### Bulk Actions
 
-You can delete selected logs or all logs using the bulk action controls.
+You can download selected logs, delete selected logs, or delete all logs using the bulk action controls.
+
+## Dashboard
+
+GraphQL Logs -> Dashboard summarizes the logs for the last 24 hours, 7 days (the default) or 30 days:
+
+* Totals for log entries, errors (level `ERROR` and above), the error rate and the number of distinct operations.
+* A column chart of log entries over time, with errors stacked on top. The 24 hour range uses hourly columns; the other ranges use one column per day in the site time zone. A data table with the same numbers sits under the chart.
+* Log entries grouped by level.
+* The ten operations with the most log entries, with their error counts.
+
+The counts are log entries, not requests. One GraphQL request can write an entry for each enabled log point, and only sampled requests are logged. Operations are grouped by the `operationName` the client sends; requests without one are listed as "(unnamed)".
+
+The numbers are calculated in SQL and cached in a transient for 60 seconds. Change the cache lifetime, or return `0` to turn caching off, with the `wpgraphql_logging_dashboard_cache_ttl` filter:
+
+```php
+add_filter( 'wpgraphql_logging_dashboard_cache_ttl', function( int $ttl, string $range ) {
+    return 5 * MINUTE_IN_SECONDS;
+}, 10, 2 );
+```
+
+The available ranges can be changed with the `wpgraphql_logging_dashboard_ranges` filter. Each range needs a label, a bucket size in seconds and a bucket count:
+
+```php
+add_filter( 'wpgraphql_logging_dashboard_ranges', function( array $ranges ) {
+    $ranges['90d'] = [
+        'label'          => __( 'Last 90 days', 'my-plugin' ),
+        'bucket_seconds' => DAY_IN_SECONDS,
+        'bucket_count'   => 90,
+    ];
+    return $ranges;
+} );
+```
+
+If you [replace the log store](how-to/update-log-store-service/index.md), the dashboard shows a notice until you provide a stats service for your store. See that guide for details.
 
 ## Uninstallation
 
