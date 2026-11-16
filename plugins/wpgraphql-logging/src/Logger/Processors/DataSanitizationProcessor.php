@@ -129,22 +129,23 @@ class DataSanitizationProcessor implements ProcessorInterface {
 			return;
 		}
 
-		$keys     = explode( '.', $key );
-		$last_key = array_pop( $keys );
+		$this->apply_rule_to_path( $data, explode( '.', $key ), $rule );
+	}
 
-		$current = &$data;
+	/**
+	 * Apply a sanitization rule to a path represented as an array of keys.
+	 *
+	 * @param array<string, mixed> $data The data array to sanitize.
+	 * @param array<string>        $keys The path keys to sanitize.
+	 * @param string               $rule The sanitization rule ('anonymize', 'remove', 'truncate').
+	 */
+	private function apply_rule_to_path(array &$data, array $keys, string $rule): void {
+		$last_key  = array_pop( $keys );
+		$current   = &$data;
 		foreach ( $keys as $index => $segment ) {
 			if ( '*' === $segment ) {
-				if ( ! is_array( $current ) ) {
-					return;
-				}
-
-				$remaining_key = implode( '.', array_merge( array_slice( $keys, $index + 1 ), [ $last_key ] ) );
-				foreach ( array_keys( $current ) as $array_key ) {
-					if ( is_array( $current[ $array_key ] ) ) {
-						$this->apply_rule( $current[ $array_key ], $remaining_key, $rule );
-					}
-				}
+				$remaining_keys = array_merge( array_slice( $keys, $index + 1 ), [ $last_key ] );
+				$this->apply_wildcard_rule( $current, $remaining_keys, $rule );
 				return;
 			}
 
@@ -159,6 +160,25 @@ class DataSanitizationProcessor implements ProcessorInterface {
 		}
 
 		$this->apply_sanitization_rule( $current, $last_key, $rule );
+	}
+
+	/**
+	 * Apply a sanitization rule to each array matching a wildcard path segment.
+	 *
+	 * @param mixed         $data The data to sanitize.
+	 * @param array<string> $keys The remaining path keys to sanitize.
+	 * @param string       $rule The sanitization rule ('anonymize', 'remove', 'truncate').
+	 */
+	private function apply_wildcard_rule( &$data, array $keys, string $rule): void {
+		if ( ! is_array( $data ) ) {
+			return;
+		}
+
+		foreach ( array_keys( $data ) as $array_key ) {
+			if ( is_array( $data[ $array_key ] ) ) {
+				$this->apply_rule_to_path( $data[ $array_key ], $keys, $rule );
+			}
+		}
 	}
 
 	/**
