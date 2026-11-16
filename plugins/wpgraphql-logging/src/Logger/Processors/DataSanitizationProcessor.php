@@ -137,9 +137,9 @@ class DataSanitizationProcessor implements ProcessorInterface {
 	/**
 	 * Apply the sanitization rule to the target value.
 	 *
-	 * @param array<string, mixed> $current The current array containing the target key.
-	 * @param string               $key The key to sanitize.
-	 * @param string               $rule The sanitization rule to apply.
+	 * @param array<array-key, mixed> $current The array containing the target key (a list, when reached through a '*' path segment).
+	 * @param string                  $key     The key to sanitize.
+	 * @param string                  $rule    The sanitization rule to apply.
 	 *
 	 * @phpcs:disable Generic.Metrics.NestingLevel.TooHigh
 	 */

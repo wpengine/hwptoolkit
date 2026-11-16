@@ -31,8 +31,7 @@ class RequestHeadersProcessor implements ProcessorInterface {
 	private function get_headers(): array {
 		$headers = [];
 		foreach ( $_SERVER as $key => $value ) {
-			// Only real request headers; skips server fields such as PHP_AUTH_PW.
-			if ( ! str_starts_with( $key, 'HTTP_' ) || ! is_string( $value ) || empty( $value ) ) {
+			if ( ! $this->is_request_header( $key, $value ) ) {
 				continue;
 			}
 			$header_name            = str_replace( '_', '-', substr( $key, 5 ) );
@@ -43,6 +42,20 @@ class RequestHeadersProcessor implements ProcessorInterface {
 		}
 
 		return $headers;
+	}
+
+	/**
+	 * Whether a $_SERVER entry is a real request header with a value.
+	 *
+	 * Skips server fields such as PHP_AUTH_PW, which don't start with HTTP_.
+	 *
+	 * @param int|string $key   The $_SERVER key.
+	 * @param mixed      $value The $_SERVER value.
+	 *
+	 * @psalm-assert-if-true non-empty-string $value
+	 */
+	private function is_request_header( $key, $value ): bool {
+		return is_string( $key ) && str_starts_with( $key, 'HTTP_' ) && is_string( $value ) && '' !== $value;
 	}
 
 	/**
