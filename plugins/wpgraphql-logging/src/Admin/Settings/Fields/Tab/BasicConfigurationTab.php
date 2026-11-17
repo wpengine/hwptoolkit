@@ -60,6 +60,20 @@ class BasicConfigurationTab implements SettingsTabInterface {
 	public const LOG_RESPONSE = 'log_response';
 
 	/**
+	 * The field ID for whether to also log WordPress REST API requests.
+	 *
+	 * @var string
+	 */
+	public const LOG_REST_REQUESTS = 'log_rest_requests';
+
+	/**
+	 * The field ID for the exclude REST routes text input.
+	 *
+	 * @var string
+	 */
+	public const EXCLUDE_REST_ROUTES = 'exclude_rest_routes';
+
+	/**
 	 * Get the fields for this tab.
 	 *
 	 * @return array<string, \WPGraphQL\Logging\Admin\Settings\Fields\SettingsFieldInterface> Array of fields keyed by field ID.
@@ -132,6 +146,23 @@ class BasicConfigurationTab implements SettingsTabInterface {
 			__( 'Log Response', 'wpgraphql-logging' ),
 			'',
 			__( 'Whether or not to log the response from the WPGraphQL query into the context object.', 'wpgraphql-logging' ),
+		);
+
+		$fields[ self::LOG_REST_REQUESTS ] = new CheckboxField(
+			self::LOG_REST_REQUESTS,
+			self::get_name(),
+			__( 'Log REST API Requests', 'wpgraphql-logging' ),
+			'',
+			__( 'Also log WordPress REST API requests. Uses the same Enabled, IP Restrictions, Data Sampling Rate and Log Response settings as GraphQL logging. Log Points and Exclude Queries do not apply.', 'wpgraphql-logging' ),
+		);
+
+		$fields[ self::EXCLUDE_REST_ROUTES ] = new TextInputField(
+			self::EXCLUDE_REST_ROUTES,
+			self::get_name(),
+			__( 'Exclude REST Routes', 'wpgraphql-logging' ),
+			'',
+			__( 'Comma-separated list of REST route prefixes to exclude from logging. Only used when Log REST API Requests is enabled.', 'wpgraphql-logging' ),
+			__( 'e.g., /wp/v2/users, /wp-site-health/v1', 'wpgraphql-logging' )
 		);
 
 		return apply_filters( 'wpgraphql_logging_basic_configuration_fields', $fields );

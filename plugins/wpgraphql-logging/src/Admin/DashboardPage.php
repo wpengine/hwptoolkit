@@ -323,13 +323,10 @@ class DashboardPage {
 		 * @param int    $ttl   Cache lifetime in seconds.
 		 * @param string $range The range slug.
 		 */
-		$ttl = (int) apply_filters( 'wpgraphql_logging_dashboard_cache_ttl', self::CACHE_TTL, $range );
-		if ( $ttl > 0 ) {
-			$cached = get_transient( $cache_key );
-			if ( is_array( $cached ) && isset( $cached['range'] ) && $range === $cached['range'] ) {
-				/** @var array{range: string, start: int, end: int, bucket_starts: array<int, int>, summary: array{total: int, errors: int, operations: int}, series: array<int, array{total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>} $cached */
-				return $cached;
-			}
+		$ttl    = (int) apply_filters( 'wpgraphql_logging_dashboard_cache_ttl', self::CACHE_TTL, $range );
+		$cached = $ttl > 0 ? $this->get_cached_dashboard_data( $cache_key, $range ) : null;
+		if ( null !== $cached ) {
+			return $cached;
 		}
 
 		$window = $this->get_window( $ranges[ $range ] );
@@ -540,6 +537,24 @@ class DashboardPage {
 		$source         = $stats->get_time_series( $start, $source_seconds, max( 1, $source_count ) );
 
 		return self::fold_series( $source, $window['start'], $source_seconds, $window['bucket_starts'] );
+	}
+
+	/**
+	 * Gets cached dashboard data for a range, if the cache holds data for that range.
+	 *
+	 * @param string $cache_key The transient key.
+	 * @param string $range     The range slug.
+	 *
+	 * @return array{range: string, start: int, end: int, bucket_starts: array<int, int>, summary: array{total: int, errors: int, operations: int}, series: array<int, array{total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>}|null
+	 */
+	private function get_cached_dashboard_data( string $cache_key, string $range ): ?array {
+		$cached = get_transient( $cache_key );
+		if ( ! is_array( $cached ) || ! isset( $cached['range'] ) || $range !== $cached['range'] ) {
+			return null;
+		}
+
+		/** @var array{range: string, start: int, end: int, bucket_starts: array<int, int>, summary: array{total: int, errors: int, operations: int}, series: array<int, array{total: int, errors: int}>, levels: array<int, array{level: int, level_name: string, total: int}>, operations: array<int, array{operation: string, total: int, errors: int}>} $cached */
+		return $cached;
 	}
 
 	/**

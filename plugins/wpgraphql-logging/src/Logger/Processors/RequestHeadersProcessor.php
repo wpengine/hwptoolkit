@@ -17,6 +17,13 @@ use Monolog\Processor\ProcessorInterface;
  */
 class RequestHeadersProcessor implements ProcessorInterface {
 	/**
+	 * Headers that carry credentials. Their values are replaced with '***'.
+	 *
+	 * @var array<string>
+	 */
+	private const REDACTED_HEADERS = [ 'authorization', 'proxy-authorization', 'cookie', 'x-wp-nonce' ];
+
+	/**
 	 * Retrieves the request headers from the $_SERVER superglobal.
 	 *
 	 * @return array<string, mixed> The request headers.
@@ -24,16 +31,31 @@ class RequestHeadersProcessor implements ProcessorInterface {
 	private function get_headers(): array {
 		$headers = [];
 		foreach ( $_SERVER as $key => $value ) {
-			if ( ! is_string( $value ) || empty( $value ) ) {
+			if ( ! $this->is_request_header( $key, $value ) ) {
 				continue;
 			}
-			$header_key             = substr( $key, 5 );
-			$header_key             = str_replace( '_', '-', $header_key );
-			$header_key             = ucwords( strtolower( sanitize_text_field( $header_key ) ), '-' );
-			$headers[ $header_key ] = sanitize_text_field( $value );
+			$header_name            = str_replace( '_', '-', substr( $key, 5 ) );
+			$header_key             = ucwords( strtolower( sanitize_text_field( $header_name ) ), '-' );
+			$headers[ $header_key ] = in_array( strtolower( $header_key ), self::REDACTED_HEADERS, true )
+				? '***'
+				: sanitize_text_field( $value );
 		}
 
 		return $headers;
+	}
+
+	/**
+	 * Whether a $_SERVER entry is a real request header with a value.
+	 *
+	 * Skips server fields such as PHP_AUTH_PW, which don't start with HTTP_.
+	 *
+	 * @param int|string $key   The $_SERVER key.
+	 * @param mixed      $value The $_SERVER value.
+	 *
+	 * @psalm-assert-if-true non-empty-string $value
+	 */
+	private function is_request_header( $key, $value ): bool {
+		return is_string( $key ) && str_starts_with( $key, 'HTTP_' ) && is_string( $value ) && '' !== $value;
 	}
 
 	/**

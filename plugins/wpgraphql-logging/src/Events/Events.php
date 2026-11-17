@@ -64,4 +64,14 @@ final class Events {
 	 * @var string
 	 */
 	public const REQUEST_RESULTS = 'graphql_request_results';
+
+	/**
+	 * WordPress filter: rest_pre_serve_request.
+	 *
+	 * A WordPress REST API request is about to be served. Only used when
+	 * REST API request logging is enabled.
+	 *
+	 * @var string
+	 */
+	public const REST_REQUEST_SERVED = 'rest_pre_serve_request';
 }
