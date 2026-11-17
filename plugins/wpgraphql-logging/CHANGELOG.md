@@ -1,5 +1,39 @@
 # WPGraphQL Logging
 
+## [1.1.0](https://github.com/wpengine/hwptoolkit/compare/@wpengine/wpgraphql-logging-wordpress-plugin-1.0.2...@wpengine/wpgraphql-logging-wordpress-plugin-1.1.0) (2026-11-17)
+
+
+### Features
+
+* **logging:** add a search bar to the All Logs page ([7f1828b](https://github.com/wpengine/hwptoolkit/commit/7f1828bd73c020717a1c8002e15468a7ed219fc1))
+* **logging:** add a search bar to the All Logs page ([68d0434](https://github.com/wpengine/hwptoolkit/commit/68d0434aa5b003da75550933c6f9ad813bd465b5))
+* **logging:** add an admin dashboard with charts ([885c4a6](https://github.com/wpengine/hwptoolkit/commit/885c4a67c559eb0102b3121df1047b12d433f51a))
+* **logging:** add an admin dashboard with charts ([af952de](https://github.com/wpengine/hwptoolkit/commit/af952debc4a0007c17a3cc7c30df29d645716550))
+* **logging:** add bulk CSV download for selected log entries ([fe5341a](https://github.com/wpengine/hwptoolkit/commit/fe5341a15e296fff25d2fa91e53735f7339c38ef))
+* **logging:** add opt-in logging of WordPress REST API requests ([2e5019e](https://github.com/wpengine/hwptoolkit/commit/2e5019ea9f70a359242215f375835a697824cf9f))
+* **logging:** add opt-in logging of WordPress REST API requests ([13be291](https://github.com/wpengine/hwptoolkit/commit/13be2914bf7b43ac026f5632b309eee9a8db0f0e))
+* **logging:** add request duration to log records ([0caf979](https://github.com/wpengine/hwptoolkit/commit/0caf979b0642d31b47da8788291f95ef28b1d4a7))
+* **logging:** add request duration to log records ([084f2f4](https://github.com/wpengine/hwptoolkit/commit/084f2f4f4c7828218b7831cf68f10c73bede2469))
+* **logging:** add WP Engine Updater client ([2e9f698](https://github.com/wpengine/hwptoolkit/commit/2e9f698628cbd8077b46247199dca89fd6c96c5e))
+* **logging:** bulk download selected log entries as CSV ([5618144](https://github.com/wpengine/hwptoolkit/commit/5618144cc53bb157df98e4b24bbbc5139be15aba))
+* **logging:** check the WP Engine updater API for plugin updates ([69f0be6](https://github.com/wpengine/hwptoolkit/commit/69f0be6b2351e68b22ae264a21ce9cb913be9d74))
+
+
+### Bug Fixes
+
+* **logging:** address updater review feedback ([13d87f6](https://github.com/wpengine/hwptoolkit/commit/13d87f6dcfb121d2d2a383f752da056611bd7939))
+* **logging:** bring dashboard data under the cognitive complexity limit ([0cc8b18](https://github.com/wpengine/hwptoolkit/commit/0cc8b18da926e14f2221c30c3de7920695cba391))
+* **logging:** drop impossible false check on ob_get_status() result ([dd2a70e](https://github.com/wpengine/hwptoolkit/commit/dd2a70e9e1ee328049a920cbe9cee8328ed71138))
+* **logging:** encode filter values in the logs redirect URLs ([a2df704](https://github.com/wpengine/hwptoolkit/commit/a2df70456b71e9256426a6a46d325998c08389ed))
+* **logging:** finish REST credential redaction from review feedback ([b6f0eb1](https://github.com/wpengine/hwptoolkit/commit/b6f0eb18514bdcbfde3685c50432aca0f5ae21e8))
+* **logging:** follow local calendar days and user locale on the dashboard ([4f287ad](https://github.com/wpengine/hwptoolkit/commit/4f287adaa94579b531707bc8a1c7eee8714a88e1))
+* **logging:** harden CSV log downloads against formula injection ([ef6c222](https://github.com/wpengine/hwptoolkit/commit/ef6c222b34fe59f87f97fe31ecbdd0c8698f8c51))
+* **logging:** harden REST request logging edge cases ([f38a2b6](https://github.com/wpengine/hwptoolkit/commit/f38a2b6473d634443b93a6b6b4d51cf3a7ba700f))
+* **logging:** harden the updater's transient, cache and cron handling ([b227174](https://github.com/wpengine/hwptoolkit/commit/b2271742d83118f8e0c242ab7c53ac21640de8db))
+* **logging:** keep Tested up to only in readme.txt ([2f92bb5](https://github.com/wpengine/hwptoolkit/commit/2f92bb5d087007711024b6c05ee90a922f4eb5bc))
+* **logging:** satisfy Psalm in REST header and sanitizer processors ([5a84b94](https://github.com/wpengine/hwptoolkit/commit/5a84b94ae5663b5da1a98386f1ea0ccd4f7d640a))
+* **logging:** start the request timer per HTTP request and guard against leaks ([482f158](https://github.com/wpengine/hwptoolkit/commit/482f158e000c7ca502f729873b9a18e9ab8a10ba))
+
 ## [1.0.2](https://github.com/wpengine/hwptoolkit/compare/@wpengine/wpgraphql-logging-wordpress-plugin-1.0.1...@wpengine/wpgraphql-logging-wordpress-plugin-1.0.2) (2026-10-26)
 
 
