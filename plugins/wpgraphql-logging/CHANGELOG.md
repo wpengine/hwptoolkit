@@ -1,5 +1,12 @@
 # WPGraphQL Logging
 
+## [1.1.1](https://github.com/wpengine/hwptoolkit/compare/@wpengine/wpgraphql-logging-wordpress-plugin-1.1.0...@wpengine/wpgraphql-logging-wordpress-plugin-1.1.1) (2026-11-24)
+
+
+### Dependencies
+
+* bump monolog/monolog in /plugins/wpgraphql-logging ([d40c110](https://github.com/wpengine/hwptoolkit/commit/d40c1108685b3eb5ac7b44164997dc5009e120f8))
+
 ## [1.1.0](https://github.com/wpengine/hwptoolkit/compare/@wpengine/wpgraphql-logging-wordpress-plugin-1.0.2...@wpengine/wpgraphql-logging-wordpress-plugin-1.1.0) (2026-11-17)
 
 
